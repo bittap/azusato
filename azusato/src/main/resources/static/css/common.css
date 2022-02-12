@@ -1,0 +1,24 @@
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+@import url('https://fonts.googleapis.com/css2?family=Rampart+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&family=Rampart+One&display=swap');
+/* Japanese middle font*/
+@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nanum+Brush+Script&family=Rampart+One&display=swap');
+/* Japanese letter content font*/
+@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nanum+Brush+Script&family=Noto+Sans+JP:wght@900&family=Rampart+One&display=swap');
+
+
+body { /* 背景色 */
+	/*background-color:#f8f9fa;*//*rgba(var(--bs-light-rgb),var(--bs-bg-opacity))*/
+}
+
+a {
+	text-decoration:none;
+	color : black;
+}
+
+.bg-white { background-color: #fff; }
+.bg-purple-400 { background-color: #b794f4; }
+
+ul {
+	list-style: none;
+}

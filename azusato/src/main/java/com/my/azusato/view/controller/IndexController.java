@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.extern.slf4j.Slf4j;
 
-@RequestMapping("/")
+@RequestMapping(value = "*")
 @Controller
 @Slf4j
 public class IndexController {

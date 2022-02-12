@@ -1,0 +1,22 @@
+# ===============================
+# DATABASE Log 
+# =============================== 
+logging:
+  level:
+    org:
+      hibernate:
+# SQLクエリを出力するレベル。INFOにすると出力されない。
+        SQL: INFO
+        type:
+          descriptor:
+# PrepareStateMentにバインドされる値を出力する。DEBUGにすると出力されない。
+# ex)..extract - extracted value ([update_i5_0_0_] : [VARCHAR]) - [system]
+            sql:  DEBUG
+            
+      springframework:
+           jdbc:
+             core: TRACE
+# HikariPool ステータス出力はDEBUGなのでINFOにして出ないように            
+    com:
+      zaxxer:
+        hikari: INFO 

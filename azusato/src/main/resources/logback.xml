@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30">
+	<property name="LOGS_ABSOLUTE_PATH" value="./logs" /> 
+	<property name="LOGS_FILE_NAME" value="log" />
+	<springProperty scope="context" name="logLevel" source="logging.level.root" />
+	
+	<springProfile name="dev">
+		<!-- dev環境の場合基本ログ出力レベルはdebug -->
+		<property name="LOG_LEVEL" value="debug" />
+	</springProfile>
+	
+	<springProfile name="prod">
+			<!-- prod環境の場合基本ログ出力レベルはdebug -->
+			<property name="LOG_LEVEL" value="info" />
+	</springProfile>	
+
+    <!--出力ルール～コンソール～ -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{100}.%M - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<file>${LOGS_ABSOLUTE_PATH}/${LOGS_FILE_NAME}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        	日ずつファイル作成
+            <fileNamePattern>${LOGS_ABSOLUTE_PATH}/%d{yyyyMM}/${LOGS_FILE_NAME}.%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+            	<maxFileSize>5MB</maxFileSize>
+        	</timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        
+        出力メッセージ
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{100}.%M - %msg%n</pattern>
+        </encoder>
+    </appender> -->
+    
+    <!-- Thymeleafに関するものの設定 -->
+    <logger name="org.thymeleaf.TemplateEngine" level="INFO">
+    	<appender-ref ref="STDOUT"/>
+    	<!-- <appender-ref ref="FILE" /> -->
+    </logger>
+    
+    <!-- バインドされるEntity内容見えないように。 -->
+    <logger name="org.hibernate.engine.internal.TwoPhaseLoad" level="INFO">
+    	<appender-ref ref="STDOUT"/>
+    	<!-- <appender-ref ref="FILE" /> -->
+    </logger>
+    
+    <!-- 基本ログ出力レベル設定 -->
+    <root level="${LOG_LEVEL}">
+      <appender-ref ref="STDOUT"/>
+      <!-- <appender-ref ref="FILE" /> -->
+    </root>
+
+    
+</configuration>
