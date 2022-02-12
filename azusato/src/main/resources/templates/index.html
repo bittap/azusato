@@ -8,13 +8,7 @@
 <body>
 	<style>
 	.jumbotron .carousel-inner {
-		max-height: 90vh;
-	}
-	@media screen and (max-width: 480px) {
-		.jumbotron .carousel-inner {
-	    	max-height: 30vh;
-			min-height: 30vh;
-	  	}
+		max-height: 700px;
 	}
 	</style>
 	<style>
@@ -42,6 +36,16 @@
 		font-size: 30px;
 		color: purple;
 	}
+	.nav-item svg{
+		width : 40px;
+		height : 40px;
+	}
+	@media screen and (max-width:380px){ /* Iphone seの場合 一行ずれてしまうため、削除*/
+		.navbar-nav audio {
+			display : none;
+		}
+	}
+	
 	</style>
 	<style>
 	.wrapper{ /*main background-color*/
@@ -55,9 +59,15 @@
 				<nav class="navbar navbar-expand-lg">
 					<a class="navbar-brand" href="#">あずさと</a>
 					<ul class="navbar-nav list-group-horizontal ms-auto">
+					  <li class="nav-item px-1">
+						<audio controls style="width: 100px;">
+						   <source src="/video\background.mp3" type="audio/mpeg">
+						</audio>
+					  </li>
 				      <li class="nav-item px-1">
-						<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-house-heart" viewBox="0 0 16 16">
-						  <path fill-rule="evenodd" d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.707L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.646a.5.5 0 0 0 .708-.707L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207l-5-5-5 5V13.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V7.207Zm-5-.225C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.309 8 6.982Z"/>
+						<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-house-heart-fill" viewBox="0 0 16 16">
+						  <path fill-rule="evenodd" d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.707L8 2.207l6.646 6.646a.5.5 0 0 0 .708-.707L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z"/>
+						  <path fill-rule="evenodd" d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Zm0 5.189c1.664-1.673 5.825 1.254 0 5.018-5.825-3.764-1.664-6.691 0-5.018Z"/>
 						</svg>
 				      </li>
 				     <!-- <li class="nav-item px-1">
@@ -65,14 +75,14 @@
 						  <path fill-rule="evenodd" d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1.133l.941.502A2 2 0 0 1 16 5.4V14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V5.4a2 2 0 0 1 1.059-1.765L2 3.133V2Zm0 2.267-.47.25A1 1 0 0 0 1 5.4v.817l1 .6v-2.55Zm1 3.15 3.75 2.25L8 8.917l1.25.75L13 7.417V2a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v5.417Zm11-.6 1-.6V5.4a1 1 0 0 0-.53-.882L14 4.267v2.55ZM8 2.982C9.664 1.309 13.825 4.236 8 8 2.175 4.236 6.336 1.31 8 2.982Zm7 4.401-4.778 2.867L15 13.117V7.383Zm-.035 6.88L8 10.082l-6.965 4.18A1 1 0 0 0 2 15h12a1 1 0 0 0 .965-.738ZM1 13.116l4.778-2.867L1 7.383v5.734Z"/>
 						</svg>
 				      </li>-->
-				      <li class="nav-item px-1">
-				       <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+				      <li class="nav-item px-1 " style="display:none">
+				       <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
 						  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
 						</svg>
 				      </li>
 				      <li class="nav-item px-1 dropdown">
 						<a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-globe" viewBox="0 0 16 16">
+							<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-globe" viewBox="0 0 16 16">
 							  <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855A7.97 7.97 0 0 0 5.145 4H7.5V1.077zM4.09 4a9.267 9.267 0 0 1 .64-1.539 6.7 6.7 0 0 1 .597-.933A7.025 7.025 0 0 0 2.255 4H4.09zm-.582 3.5c.03-.877.138-1.718.312-2.5H1.674a6.958 6.958 0 0 0-.656 2.5h2.49zM4.847 5a12.5 12.5 0 0 0-.338 2.5H7.5V5H4.847zM8.5 5v2.5h2.99a12.495 12.495 0 0 0-.337-2.5H8.5zM4.51 8.5a12.5 12.5 0 0 0 .337 2.5H7.5V8.5H4.51zm3.99 0V11h2.653c.187-.765.306-1.608.338-2.5H8.5zM5.145 12c.138.386.295.744.468 1.068.552 1.035 1.218 1.65 1.887 1.855V12H5.145zm.182 2.472a6.696 6.696 0 0 1-.597-.933A9.268 9.268 0 0 1 4.09 12H2.255a7.024 7.024 0 0 0 3.072 2.472zM3.82 11a13.652 13.652 0 0 1-.312-2.5h-2.49c.062.89.291 1.733.656 2.5H3.82zm6.853 3.472A7.024 7.024 0 0 0 13.745 12H11.91a9.27 9.27 0 0 1-.64 1.539 6.688 6.688 0 0 1-.597.933zM8.5 12v2.923c.67-.204 1.335-.82 1.887-1.855.173-.324.33-.682.468-1.068H8.5zm3.68-1h2.146c.365-.767.594-1.61.656-2.5h-2.49a13.65 13.65 0 0 1-.312 2.5zm2.802-3.5a6.959 6.959 0 0 0-.656-2.5H12.18c.174.782.282 1.623.312 2.5h2.49zM11.27 2.461c.247.464.462.98.64 1.539h1.835a7.024 7.024 0 0 0-3.072-2.472c.218.284.418.598.597.933zM10.855 4a7.966 7.966 0 0 0-.468-1.068C9.835 1.897 9.17 1.282 8.5 1.077V4h2.355z"/>
 							</svg>
 						</a>
@@ -91,13 +101,13 @@
 				<div id="jumbotron" class="carousel slide jumbotron" data-bs-ride="carousel">
 				  <div class="carousel-inner">
 				    <div class="carousel-item active" data-bs-interval="5000">
-				      <img src="/image/jumbotron1.jpg" class="d-block w-100 img-fluid" alt="jumbotron1">
+				      <img src="/image/jumbotron1.jpg" class="d-block w-100 img-fluid rounded" alt="jumbotron1">
 				    </div>
 				    <div class="carousel-item" data-bs-interval="5000">
-				      <img src="/image/jumbotron2.jpg" class="d-block w-100 img-fluid" alt="jumbotron2">
+				      <img src="/image/jumbotron2.jpg" class="d-block w-100 img-fluid rounded" alt="jumbotron2">
 				    </div>
 				    <div class="carousel-item">
-				      <img src="/image/jumbotron3.jpg" class="d-block w-100 img-fluid" alt="jumbotron3">
+				      <img src="/image/jumbotron3.jpg" class="d-block w-100 img-fluid rounded" alt="jumbotron3">
 				    </div>
 				  </div>
 				  <button class="carousel-control-prev" type="button" data-bs-target="#jumbotron" data-bs-slide="prev">
@@ -118,7 +128,7 @@
 				.main-middle-text{ /*中間のテキスト*/
 					padding-bottom:40px;
 					font-family: 'Mochiy Pop One', sans-serif;
-					font-size:40px;
+					/*font-size:2rem;*/
 					border-bottom:1px dotted #ccc;
 					margin-top:50px;
 				}
@@ -126,48 +136,48 @@
 					margin-top:80px;
 					font-size:30px;
 					margin-bottom:40px;
-					
 				}	
+
 				.main-video{
 					border-top:1px dotted #ccc;
 				}
 				.main-letter .letter-content-wrapper{
 					background-color: gray;
 				}
-				.cotent-letter{
+				.letter-right{
 					font-size: 25px;
 				}
 				
-				.cotent-letter ul li svg{
+				.letter-right ul li svg{
 					width : 40px;
 					height : 40px;
 				}
 				
-				.cotent-letter ul li span {
+				.letter-right ul li span {
 					font-family: 'Mochiy Pop One', sans-serif;
 					color: white;
 					display: inline-block;
 				}
-				.cotent-letter h2{
+				.letter-right h3{
 					font-family: 'Noto Sans JP', sans-serif;
-					font-size : 20px;
+					font-size : 3.5vw;
 				}
 			</style>
 			<!-- main  content -->
 			<div class="container">
-				<h2 class="main-middle-text text-center">
+				<h1 class="main-middle-text text-center">
 					僕たち結婚します。
-				</h2>
+				</h1>
 				<div class="main-letter">
 					<div class="row letter-content-wrapper">
 						<div class="col-4 px-0 tmp">
-							<img src="/image/letter1.jpg" class="img-fluid" alt="letter-image1">
-							<img src="/image/letter2.jpg" class="img-fluid" alt="letter-image2">
-							<img src="/image/letter3.jpg" class="img-fluid" alt="letter-image3">
-							<img src="/image/letter4.jpg" class="img-fluid" alt="letter-image4">
-							<img src="/image/letter5.jpg" class="img-fluid" alt="letter-image4">
+							<img src="/image/letter1.jpg" class="img-fluid img-thumbnail" alt="letter-image1">
+							<img src="/image/letter2.jpg" class="img-fluid img-thumbnail" alt="letter-image2">
+							<img src="/image/letter3.jpg" class="img-fluid img-thumbnail" alt="letter-image3">
+							<img src="/image/letter4.jpg" class="img-fluid img-thumbnail" alt="letter-image4">
+							<img src="/image/letter5.jpg" class="img-fluid img-thumbnail" alt="letter-image4">
 						</div>
-						<div class="col-8 cotent-letter">
+						<div class="col-8 letter-right">
 							<div>
 								<ul class="py-5">
 									<li class="py-3">
@@ -180,11 +190,11 @@
 										<svg xmlns="http://www.w3.org/2000/svg" fill="pink" class="bi bi-heart-fill" viewBox="0 0 16 16">
 									  		<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
 										</svg>
-										<span class="ps-2">山本 あずさ</span>
+										<span class="ps-2">あずさ</span>
 									</li>
 								</ul>
 							</div>
-							<h2 class="text-white-50 pb-2">
+							<h3 class="text-white-50 pb-2">
 								風薫るさわやかな季節となりましたが、いかがお過ごしでしょうか。
 								さて、建築中でした私どもの住まいもようやく完成いたしまして、
 								このほど転居いたしました。
@@ -199,13 +209,13 @@
 								おいでいただけますようお願い申し上げます。
 								
 								略図を添えましたが、わかりにくいようでしたらお迎えに参りますので、駅からでもお電話くださ
-							</h2>
-						</div>
-					</div>
+							</h3>
+						</div> <!-- End letter-content-wrapper-->
+					</div> <!-- End main-letter-->
 				</div>
 				<div class="main-video py-5">
 					<div class="ratio ratio-16x9">
-						<iframe class="embed-responsive-item" src="https://www.youtube.com/embed/lE51fdcOxqQ" allowfullscreen></iframe>
+						<iframe class="embed-responsive-item" src="https://www.youtube.com/embed/lE51fdcOxqQ?autoplay=1" allowfullscreen></iframe>
 					</div>
 				</div>
 			</div>
@@ -218,7 +228,6 @@
 			</div>
 		</div>
 	</div>
-	<!--<h1 th:text="#{greeting}"></h1>-->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
 <!--	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
