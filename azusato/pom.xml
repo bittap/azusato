@@ -45,6 +45,8 @@
 	</dependencies>
 
 	<build>
+		<!-- jar file name -->
+		<finalName>azusato</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
