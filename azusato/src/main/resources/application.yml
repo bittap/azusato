@@ -6,6 +6,7 @@ server:
 # =============================== 
 logging:
   level:
+    root: DEBUG
     org:
       hibernate:
 # SQLクエリを出力するレベル。INFOにすると出力されない。

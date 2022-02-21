@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
 
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -18,7 +17,7 @@ public class LocaleBean {
 
 	@Bean
 	public LocaleResolver localeResolver() {
-		log.info("localResolver create bean");
+		log.info("localResolver create bean"); 
 		return new LocalePathResolver();
 	}
 }

@@ -19,20 +19,27 @@ public class LocalePathResolver implements LocaleResolver {
 
 	@Override
 	public Locale resolveLocale(HttpServletRequest request) {
-		log.info("!!resolveLocale!!");
 		String getPath = request.getRequestURI();
 		log.info("getPath : {}",getPath);
+
+		String[] paths = getPath.split("/");
 		
-//		String language = getPath.split("/")[1];
-//		
-//		if(language.equals("ko")) {
-//			log.info("this language is korea");
-//			return Locale.KOREAN;
-//		}else {
-//			return Locale.JAPANESE;
-//		}
+		if(paths.length >= 1) {
+			String language = paths[1];
+			if(language.equals("ko")) {
+				log.info("containt specific languae : Korean");
+				return Locale.KOREAN;
+			}else {
+				log.info("containt specific languae : JAPANESE");
+				return Locale.JAPANESE;
+			}
+		}else {
+			log.info("not containt specific languae :"+request.getLocale());
+			return request.getLocale();
+		}
 		
-		return Locale.JAPANESE;
+		
+
 	}
 
 	@SuppressWarnings("static-access")

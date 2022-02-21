@@ -17,5 +17,4 @@ public class WebConfigure implements WebMvcConfigurer {
 //		log.info("addInterceptors");
 //	    registry.addInterceptor(lci);
 //	}
-
 }

@@ -57,7 +57,7 @@
 			<!-- nav -->
 			<div class="container">
 				<nav class="navbar navbar-expand-lg">
-					<a class="navbar-brand" href="#">あずさと</a>
+					<a class="navbar-brand" href="#" th:text="#{navbar.brand}"></a>
 					<ul class="navbar-nav list-group-horizontal ms-auto">
 					  <li class="nav-item px-1">
 						<audio controls style="width: 100px;">
@@ -165,9 +165,7 @@
 			</style>
 			<!-- main  content -->
 			<div class="container">
-				<h1 class="main-middle-text text-center">
-					僕たち結婚します。
-				</h1>
+				<h1 class="main-middle-text text-center" th:text="#{main.text-center}"></h1>
 				<div class="main-letter">
 					<div class="row letter-content-wrapper">
 						<div class="col-4 px-0 tmp">
@@ -184,32 +182,17 @@
 										<svg xmlns="http://www.w3.org/2000/svg"  fill="pink" class="bi bi-heart-fill" viewBox="0 0 16 16">
 									  		<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
 										</svg>
-										<span class="ps-2">金太永</span>
+										<span class="ps-2"　th:text="#{main.letter-name1}">金太永</span>
 									</li>
 									<li class="py-3">
 										<svg xmlns="http://www.w3.org/2000/svg" fill="pink" class="bi bi-heart-fill" viewBox="0 0 16 16">
 									  		<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
 										</svg>
-										<span class="ps-2">あずさ</span>
+										<span class="ps-2" th:text="#{main.letter-name2}">あずさ</span>
 									</li>
 								</ul>
 							</div>
-							<h3 class="text-white-50 pb-2">
-								風薫るさわやかな季節となりましたが、いかがお過ごしでしょうか。
-								さて、建築中でした私どもの住まいもようやく完成いたしまして、
-								このほど転居いたしました。
-								都心からは遠くなりましたが、海沿いということもあり
-								窓から見える景色の良さは格別です。
-								<br>
-								<br>
-								
-								つきましては、5月24日の日曜日に拙宅にて、
-								ささやかながら新築祝いを催したいと存じます。
-								格別の用意もございませんが、何卒ご都合お繰り合わせの上、
-								おいでいただけますようお願い申し上げます。
-								
-								略図を添えましたが、わかりにくいようでしたらお迎えに参りますので、駅からでもお電話くださ
-							</h3>
+							<h3 class="text-white-50 pb-2" th:text="#{main-letter-content}"></h3>
 						</div> <!-- End letter-content-wrapper-->
 					</div> <!-- End main-letter-->
 				</div>

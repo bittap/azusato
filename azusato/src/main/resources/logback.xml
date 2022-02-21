@@ -52,7 +52,7 @@
     </logger>
     
     <!-- 基本ログ出力レベル設定 -->
-    <root level="${LOG_LEVEL}">
+    <root level="${logLevel}">
       <appender-ref ref="STDOUT"/>
       <!-- <appender-ref ref="FILE" /> -->
     </root>
