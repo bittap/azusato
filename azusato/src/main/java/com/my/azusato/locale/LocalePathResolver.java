@@ -31,7 +31,7 @@ public class LocalePathResolver implements LocaleResolver {
 				if(language.equals("ko")) {
 					log.info("containt specific languae : Korean");
 					return Locale.KOREAN;
-				}else if(language.equals("jp")){
+				}else if(language.equals("ja")){
 					log.info("containt specific languae : JAPANESE");
 					return Locale.JAPANESE;
 				}

@@ -17,7 +17,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.locale.LocalePathResolver;
 
-public class LocalPathResolver {
+public class LocalPathResloverTest {
 
 	LocalePathResolver target;
 	
@@ -69,7 +69,7 @@ public class LocalPathResolver {
 			
 			
 			@ParameterizedTest
-			@MethodSource("com.my.azusato.unit.locale.LocalPathResolver#providePaths")
+			@MethodSource("com.my.azusato.unit.locale.LocalPathResloverTest#providePaths")
 			public void givenPath_thenReturnLocale(String path, Locale expected) {
 				mhsr.setRequestURI(path);
 				Locale result = target.resolveLocale(mhsr);
@@ -95,7 +95,7 @@ public class LocalPathResolver {
 		return Stream.of(
 					Arguments.of(TestConstant.HOST,defaultlocale),
 					Arguments.of(TestConstant.HOST.concat("/ko"),Locale.KOREAN),
-					Arguments.of(TestConstant.HOST.concat("/jp"),Locale.JAPANESE),
+					Arguments.of(TestConstant.HOST.concat("/ja"),Locale.JAPANESE),
 					Arguments.of(TestConstant.HOST.concat("/api"),defaultlocale)
 				);
 		
