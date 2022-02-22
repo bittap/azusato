@@ -1,4 +1,4 @@
-package com.my.azusato.local;
+package com.my.azusato.locale;
 
 import java.util.Locale;
 
@@ -42,7 +42,6 @@ public class LocalePathResolver implements LocaleResolver {
 
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public void setLocale(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		throw new UnsupportedOperationException("Method of setLocale is not supported");

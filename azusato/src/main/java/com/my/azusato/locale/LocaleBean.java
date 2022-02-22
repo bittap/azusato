@@ -1,4 +1,4 @@
-package com.my.azusato.local;
+package com.my.azusato.locale;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
