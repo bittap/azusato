@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.my.azusato.common.TestConstant;
+import com.my.azusato.locale.LocaleConstant;
 
 @SpringBootTest
 @AutoConfigureMockMvc // full configuration
@@ -48,7 +49,7 @@ public class LocalPathResloverTest {
 						.locale(Locale.ENGLISH))
 						.andDo(print())
 						.andExpect(status().isOk())
-						.andExpect(header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_DEFAULT_STR));
+						.andExpect(header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_JA_STR));
 		}
 		
 		@Test
@@ -81,7 +82,7 @@ public class LocalPathResloverTest {
 						.get(URL))
 						.andDo(print())
 						.andExpect(status().isOk())
-						.andExpect(header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_DEFAULT_STR));
+						.andExpect(header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_JA_STR));
 		}
 		
 		@Test
@@ -122,21 +123,21 @@ public class LocalPathResloverTest {
 					// url : locale : expcetResult
 				
 					// default : default : default
-					Arguments.of(URL,TestConstant.DEFAULT_LOCALE, header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_DEFAULT_STR)),
+					Arguments.of(URL,LocaleConstant.DEFAULT_LOCALE, header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_JA_STR)),
 					// default : ko : ko
 					Arguments.of(URL,Locale.KOREAN, header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_KO_STR)),
 					// default : ja : ja
 					Arguments.of(URL,Locale.JAPANESE, header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_JA_STR)),
 					
 					// ko : default : ko
-					Arguments.of(KO_URL,TestConstant.DEFAULT_LOCALE,header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_KO_STR)),
+					Arguments.of(KO_URL,LocaleConstant.DEFAULT_LOCALE,header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_KO_STR)),
 					// ko : ko : ko
 					Arguments.of(KO_URL,Locale.KOREAN,header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_KO_STR)),
 					// ko : ja : ko
 					Arguments.of(KO_URL,Locale.JAPANESE,header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_KO_STR)),
 					
 					// ja : default : ja
-					Arguments.of(JA_URL,TestConstant.DEFAULT_LOCALE,header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_JA_STR)),
+					Arguments.of(JA_URL,LocaleConstant.DEFAULT_LOCALE,header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_JA_STR)),
 					// ja : ko : ja
 					Arguments.of(JA_URL,Locale.KOREAN,header().string(HEADER_TARGET_STRING, TestConstant.LOCALE_JA_STR)),
 					// ja : ja : ja

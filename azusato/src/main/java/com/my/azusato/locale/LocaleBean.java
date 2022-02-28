@@ -18,6 +18,6 @@ public class LocaleBean {
 	@Bean
 	public LocaleResolver localeResolver() {
 		log.info("localResolver create bean"); 
-		return new LocalePathResolver();
+		return new LocalePathAndHeaderResolver();
 	}
 }

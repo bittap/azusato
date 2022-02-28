@@ -24,3 +24,5 @@ logging:
     com:
       zaxxer:
         hikari: INFO 
+spring:
+  main:    allow-bean-definition-overriding: true
