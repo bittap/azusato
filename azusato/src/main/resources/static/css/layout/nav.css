@@ -1,0 +1,36 @@
+.nav-item {
+	text-align: right;
+}
+.nav-item > a > svg {
+	cursor : pointer;
+}
+/* TODO 言語によってfont違うようにすること */
+.navbar-brand {
+	font-family: 'Rampart One', cursive;
+}
+.dropdown {
+	position : relative!important;
+}
+.dropdown-menu {
+	position : absolute!important;
+	min-width : 7rem;
+	right : -2px!important;
+}
+/*
+.navbar-brand {
+	font-family: 'Nanum Brush Script', cursive;
+}
+*/
+.navbar-brand{
+	font-size: 30px;
+	color: purple;
+}
+.nav-item svg{
+	width : 40px;
+	height : 40px;
+}
+@media screen and (max-width:380px){ /* Iphone seの場合 一行ずれてしまうため、削除*/
+	.navbar-nav audio {
+		display : none;
+	}
+}
