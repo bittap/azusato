@@ -1,3 +1,8 @@
+<!--/*
+This fragment include basically common css of the body, footer, js file of the bootstrap. 
+@param body_contents contents of file of the html. you want to include to this fragment
+@param scripts script tags. This is rendered at end.
+*/-->
 <div class="container-fluld wrapper" th:fragment = "body(body_contents,scripts)">
 	<link rel="stylesheet" href="/layout/body.css">
 	<th:block th:replace = "${body_contents}"></th:block>
