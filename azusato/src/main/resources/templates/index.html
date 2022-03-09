@@ -1,22 +1,14 @@
 <html>
-<head th:include = "layout/header :: header(_)"></head>
+<head th:include = "layout/header :: header(~{::link})">
+	<link rel="stylesheet" href="/css/index.css">
+</head>
 <body>
-	<style>
-	.jumbotron .carousel-inner {
-		max-height: 700px;
-	}
-	</style>
-
-	<style>
-	.wrapper{ /*main background-color*/
-		background-color:rgba(245,245,245,1); 
-	}
-	</style>
 	<!-- nav -->
 	<th:block th:replace = "layout/nav :: nav()"></th:block>
-	<div class="container-fluid wrapper">
-			<!-- image -->
-			<!-- main  content -->
+	<th:block th:replace = "layout/body :: body(~{::th:block#body_contents},_)">
+		<!-- main  content -->
+		<th:block id="body_contents">
+			<!-- jumbotron -->
 			<div class="container">
 				<div id="jumbotron" class="carousel slide jumbotron" data-bs-ride="carousel">
 				  <div class="carousel-inner">
@@ -41,45 +33,6 @@
 				</div>
 			</div>
 			<hr>
-			<style>
-				.main-middle-text{ /*中間のテキスト*/
-					padding-bottom:40px;
-					font-family: 'Mochiy Pop One', sans-serif;
-					/*font-size:2rem;*/
-					border-bottom:1px dotted #ccc;
-					margin-top:50px;
-				}
-				.main-letter{
-					margin-top:80px;
-					font-size:30px;
-					margin-bottom:40px;
-				}	
-
-				.main-video{
-					border-top:1px dotted #ccc;
-				}
-				.main-letter .letter-content-wrapper{
-					background-color: gray;
-				}
-				.letter-right{
-					font-size: 25px;
-				}
-				
-				.letter-right ul li svg{
-					width : 40px;
-					height : 40px;
-				}
-				
-				.letter-right ul li span {
-					font-family: 'Mochiy Pop One', sans-serif;
-					color: white;
-					display: inline-block;
-				}
-				.letter-right h3{
-					font-family: 'Noto Sans JP', sans-serif;
-					font-size : 3.5vw;
-				}
-			</style>
 			<div class="container">
 				<h1 class="main-middle-text text-center" th:text="#{main.text-center}"></h1>
 				<div class="main-letter">
@@ -98,13 +51,13 @@
 										<svg xmlns="http://www.w3.org/2000/svg"  fill="pink" class="bi bi-heart-fill" viewBox="0 0 16 16">
 									  		<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
 										</svg>
-										<span class="ps-2"　th:text="#{main.letter-name1}">金太永</span>
+										<span class="ps-2"　th:text="#{main.letter-name1}"></span>
 									</li>
 									<li class="py-3">
 										<svg xmlns="http://www.w3.org/2000/svg" fill="pink" class="bi bi-heart-fill" viewBox="0 0 16 16">
 									  		<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
 										</svg>
-										<span class="ps-2" th:text="#{main.letter-name2}">あずさ</span>
+										<span class="ps-2" th:text="#{main.letter-name2}"></span>
 									</li>
 								</ul>
 							</div>
@@ -114,17 +67,14 @@
 				</div>
 				<div class="main-video py-5">  
 					<div class="ratio ratio-16x9">
-						<video width="100%" height="100%" controls>  
+						<video controls>  
 						  <source src="/video/main.mp4" type="video/mp4">
 						</video>
 						<!--<iframe class="embed-responsive-item" src="/video/main.mp4" allowfullscreen></iframe>-->
 					</div>
 				</div>
-			</div>
-		<hr>
-		<!-- footer -->
-		<th:block th:replace = "/layout/footer :: footer()"></th:block>
-	</div>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+			</th:block>
+	</th:block>
+			
 </body>
 </html>
