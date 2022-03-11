@@ -4,7 +4,7 @@
 </head>
 <body>
 	<!-- nav -->
-	<th:block th:replace = "layout/nav :: nav()"></th:block>
+	<th:block th:replace = "layout/nav"></th:block>
 	<th:block th:replace = "layout/body :: body(~{::th:block#body_contents},_)">
 		<!-- main  content -->
 		<th:block id="body_contents">
