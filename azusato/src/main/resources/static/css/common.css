@@ -6,11 +6,6 @@
 /* Japanese letter content font*/
 @import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nanum+Brush+Script&family=Noto+Sans+JP:wght@900&family=Rampart+One&display=swap');
 
-
-body { /* 背景色 */
-	/*background-color:#f8f9fa;*//*rgba(var(--bs-light-rgb),var(--bs-bg-opacity))*/
-}
-
 a {
 	text-decoration:none;
 	color : black;
