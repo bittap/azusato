@@ -4,8 +4,7 @@
 
 .main-middle-text{ /*中間のテキスト*/
 	padding-bottom:40px;
-	font-family: 'Mochiy Pop One', sans-serif;
-	/*font-size:2rem;*/
+	font-family: 'Mochiy Pop One', 'Single Day',sans-serif;
 	border-bottom:1px dotted #ccc;
 	margin-top:50px;
 }

@@ -1,0 +1,8 @@
+/** css related to japaness language**/
+.navbar-brand{
+	font-size: 30px;
+}
+
+.main-middle-text{ /*中間のテキスト*/
+	font-size:3rem;
+}

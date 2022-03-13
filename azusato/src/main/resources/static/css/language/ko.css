@@ -1,0 +1,8 @@
+/** css related to korean language**/
+.navbar-brand{
+	font-size: 35px;
+}
+
+.main-middle-text{ /*中間のテキスト*/
+	font-size:4rem;
+}
