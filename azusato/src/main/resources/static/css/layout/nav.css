@@ -17,11 +17,6 @@
 	right : -2px!important;
 }
 .nav-item svg{
-	width : 40px;
-	height : 40px;
-}
-@media screen and (max-width:380px){ /* Iphone seの場合 一行ずれてしまうため、削除*/
-	.navbar-nav audio {
-		display : none;
-	}
+	width : 2rem;
+	height : 2rem;
 }

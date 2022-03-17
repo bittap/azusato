@@ -33,9 +33,9 @@ public class LocalPathResloverTest {
 	
 	private final static String HEADER_TARGET_STRING = "Content-Language";
 	
-	private final static String KO_URL = URL + "ko";
+	private final static String KO_URL = URL + "ko/";
 	
-	private final static String JA_URL = URL + "ja";
+	private final static String JA_URL = URL + "ja/";
 	
 	
 	

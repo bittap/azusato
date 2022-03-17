@@ -1,5 +1,4 @@
-@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
-@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nanum+Brush+Script&family=Noto+Sans+JP:wght@900&family=Rampart+One&family=Single+Day&family=Yuji+Hentaigana+Akari&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Nanum+Brush+Script&family=Nanum+Gothic&family=Noto+Sans+JP:wght@900&family=Rampart+One&family=Single+Day&family=Yeon+Sung&family=Yuji+Hentaigana+Akari&display=swap');
 
 a {
 	text-decoration:none;
@@ -11,4 +10,26 @@ a {
 
 ul {
 	list-style: none;
+}
+
+body.modal-open { /* prevent body from scrolling when a modal is opend */
+    overflow: hidden;
+}
+
+
+html {
+    font-size: 20px;
+}
+
+@media (min-width: 381px) and (max-width: 767px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+
+@media (max-width: 380px) {
+  html {
+    font-size: 12px;
+  }
 }

@@ -5,7 +5,7 @@
 <body>
 	<!-- nav -->
 	<th:block th:replace = "layout/nav"></th:block>
-	<th:block th:replace = "layout/body :: body(~{::th:block#body_contents},_)">
+	<th:block th:replace = "layout/body :: body(~{::th:block#body_contents},~{::script})">
 		<!-- main  content -->
 		<th:block id="body_contents">
 			<!-- jumbotron -->
@@ -37,23 +37,23 @@
 				<h1 class="main-middle-text text-center" th:text="#{main.text-center}"></h1>
 				<div class="main-letter">
 					<div class="row letter-content-wrapper">
-						<div class="col-4 px-0 tmp">
+						<div class="letter-left px-0 tmp">
 							<img src="/image/letter1.jpg" class="img-fluid img-thumbnail" alt="letter-image1">
 							<img src="/image/letter2.jpg" class="img-fluid img-thumbnail" alt="letter-image2">
 							<img src="/image/letter3.jpg" class="img-fluid img-thumbnail" alt="letter-image3">
 							<img src="/image/letter4.jpg" class="img-fluid img-thumbnail" alt="letter-image4">
-							<img src="/image/letter5.jpg" class="img-fluid img-thumbnail" alt="letter-image4">
+							<img src="/image/letter5.jpg" class="img-fluid img-thumbnail" alt="letter-image5">
 						</div>
-						<div class="col-8 letter-right">
+						<div class="letter-right">
 							<div>
-								<ul class="py-5">
-									<li class="py-3">
+								<ul class="py-1">
+									<li class="py-1">
 										<svg xmlns="http://www.w3.org/2000/svg"  fill="pink" class="bi bi-heart-fill" viewBox="0 0 16 16">
 									  		<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
 										</svg>
 										<span class="ps-2"　th:text="#{main.letter-name1}"></span>
 									</li>
-									<li class="py-3">
+									<li class="py-1">
 										<svg xmlns="http://www.w3.org/2000/svg" fill="pink" class="bi bi-heart-fill" viewBox="0 0 16 16">
 									  		<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
 										</svg>
@@ -61,19 +61,21 @@
 									</li>
 								</ul>
 							</div>
-							<h3 class="text-white-50 pb-2" th:text="#{main-letter-content}"></h3>
+							<h3 class="text-white-50 pb-2" th:utext="#{main-letter-content}"></h3>
 						</div> <!-- End letter-content-wrapper-->
 					</div> <!-- End main-letter-->
 				</div>
 				<div class="main-video py-5">  
 					<div class="ratio ratio-16x9">
-						<video controls>  
+						<video controls="controls">  
 						  <source src="/video/main.mp4" type="video/mp4">
 						</video>
 						<!--<iframe class="embed-responsive-item" src="/video/main.mp4" allowfullscreen></iframe>-->
 					</div>
 				</div>
 			</th:block>
+			<script src="/js/backgroundMusic.js"></script>
+			<script src="/js/video.js"></script>
 	</th:block>
 			
 </body>

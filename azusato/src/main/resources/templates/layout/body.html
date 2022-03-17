@@ -8,9 +8,18 @@ This fragment include basically common css of the body, footer, js file of the b
 	<th:block th:replace = "${body_contents}"></th:block>
 	<hr>
 	<!-- footer -->
-	<th:block th:replace = "/layout/footer"></th:block>
+	<th:block th:replace = "layout/footer"></th:block>
+	<!-- modal -->
+	<th:block th:replace = "layout/modal"></th:block>
+	<!-- Jquery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<!-- bootstrap js-->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+	<!-- for environment variable beacuse thymeleaf doesn't recognize js file only recognize html file -->
+	<script th:inline="javascript">
+		window.language = /*[[${#locale}]]*/ "language";
+	</script>
 	<!-- script area -->
+	<script src="/js/common/modal.js"></script>
 	<th:block th:replace = "${scripts}"></th:block>
 </div>

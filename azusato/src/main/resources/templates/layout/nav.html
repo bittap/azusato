@@ -4,13 +4,8 @@
 	<div class="container">
 		<!-- nav -->
 		<nav class="navbar navbar-expand-lg">
-			<a class="navbar-brand" href="#" th:text="#{navbar.brand}"></a>
+			<a class="navbar-brand" th:href="@{'/'+${#locale}+'/'}" th:text="#{navbar.brand}"></a>
 			<ul class="navbar-nav list-group-horizontal ms-auto">
-			  <li class="nav-item px-1">
-				<audio controls style="width: 100px;">
-				   <source src="/music/background.mp3" type="audio/mpeg">
-				</audio>
-			  </li>
 		      <li class="nav-item px-1">
 				<a th:href="@{'/'+${#locale}+'/'}">
 					<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-house-heart-fill" viewBox="0 0 16 16">

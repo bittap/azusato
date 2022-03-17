@@ -1,0 +1,19 @@
+<!-- trigger twoBtnModal -->
+<button style="display:none" type="button" id="twoBtnModal-trigger" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#twoBtnModal">btn</button>
+
+<!-- Modal With Two button -->
+<div class="modal fade" id="twoBtnModal" tabindex="-1" aria-labelledby="twoBtnModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+ 	  <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button id="twoBtnModal-no" type="button" class="btn btn-secondary noBtn" data-bs-dismiss="modal" th:text="#{twoBtnModal.no-text}"></button>
+        <button id="twoBtnModal-yes" type="button" class="btn btn-primary yesBtn" th:text="#{twoBtnModal.yes-text}"></button>
+      </div>
+    </div>
+  </div>
+</div>	

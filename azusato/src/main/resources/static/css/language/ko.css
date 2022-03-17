@@ -1,8 +1,19 @@
 /** css related to korean language**/
 .navbar-brand{
-	font-size: 35px;
+	font-size: 2.5rem;
 }
 
 .main-middle-text{ /*中間のテキスト*/
-	font-size:4rem;
+	font-size:3rem;
+}
+
+.letter-right h3{
+	font-size : 0.5em;
+}
+
+@media (min-width: 1281px) {
+	.letter-right h3{
+		font-size : 0.45em;
+	}
+	
 }
