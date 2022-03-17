@@ -12,6 +12,10 @@ $(document).ready(function(){
 	
 	function stopBackgroundMusic(){
 		const audio = document.querySelector("#background-audio");
-		audio.pause();
+		// exist a element
+		if(audio != null){
+			audio.pause();
+		}
+		
 	}
 })
