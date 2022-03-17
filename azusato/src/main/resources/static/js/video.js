@@ -1,12 +1,12 @@
 $(document).ready(function(){
 	
-	$('video').click(function(){
+	$('video').on('touchstart click', function(){
 		console.log("video click event");
 		if(this.paused){
 			stopBackgroundMusic();
-			$(this).play();
+			this.play();
 		}else{
-			$(this).pause();
+			this.pause();
 		}
 	});
 	
