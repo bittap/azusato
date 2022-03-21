@@ -1,0 +1,8 @@
+<!--/*
+	Resolve varables of environment, model from back-end, or etc...
+	This file is created because The thymeleaf can't realize Js file.
+	Declare varables here. This is used /layout/body.html 
+*/-->
+<script th:inline="javascript">
+	window.language = /*[[${#locale}]]*/ "language";
+</script>
