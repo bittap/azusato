@@ -9,7 +9,7 @@ $(document).ready(function(){
 	if(window.language == "ko"){
 		modalTitle = "배경음악재생";
 		modalBody　= "배경음악을 재생 하시겠습니까?";
-		musucSrc = "/music/background_ko.mp3";
+		musucSrc = "/music/background_ja.mp3";
 	}else{
 		modalTitle = "バックグラウンド音楽再生";
 		modalBody　= "バックグラウンド音楽を再生しますか？";
