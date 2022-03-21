@@ -31,8 +31,9 @@ function ModalTwoBtn(title, body , yesBtnAction, noBtnTitle, yesBtnTitle, noBtnA
 	// for passing parameter in anonymous function
 	const enclosingYesBtnAction = (modalWithBootstrap) =>{
 		return function(){
-			yesBtnAction();
 			modalWithBootstrap.hide();
+			yesBtnAction();
+
 		}
 	}
 	this.yesBtnTag.addEventListener('click',enclosingYesBtnAction(this.modalWithBootstrap));
