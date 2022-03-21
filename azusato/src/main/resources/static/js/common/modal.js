@@ -1,4 +1,12 @@
+/*
+ * Initialize a modal with yes button and no button.
+ * @param {string} title title of header part
+ * @param {string} body message of body part
+ * @param {function} yesBtnAction invoked action when the yes button is clicked. this is executed order that is closed modal and then "yesBtnAction". (can't not be 'null')
+ * @param {function} noBtnAction invoked action when the no button is clicked. If this is null, close modal. If this is not null, execute it.
+ */
 function ModalTwoBtn(title, body , yesBtnAction, noBtnTitle, yesBtnTitle, noBtnAction){
+	// declare variables
 	this.modalTag = document.getElementById('twoBtnModal');
 	this.noBtnTag = document.getElementById("twoBtnModal-no");
 	this.yesBtnTag = document.getElementById("twoBtnModal-yes");
