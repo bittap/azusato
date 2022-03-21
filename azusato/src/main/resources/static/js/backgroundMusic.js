@@ -19,7 +19,7 @@ $(document).ready(function(){
 	const twoBtnModal =new ModalTwoBtn(modalTitle,modalBody,function(){
 		createAudioTag();
 		console.log("yes start music play");
-		document.querySelector('audio').play();
+		document.querySelector('#background-audio').play();
 	});
 
 	// open confirm modal
