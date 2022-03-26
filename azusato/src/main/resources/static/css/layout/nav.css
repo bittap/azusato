@@ -1,9 +1,24 @@
 .nav-item {
 	text-align: right;
+	position: relative;
 }
 .nav-item > a > svg {
 	cursor : pointer;
 }
+
+.nav-item > a > .notice{
+	position: absolute;
+	right:0px;
+	bottom: -5px;
+}
+
+.nav-item > a > .notice > mark{
+	color:purple;
+	border-radius: 50%;
+	font-size:0.7rem; 
+	font-family:sans-serif;
+}
+
 .navbar-brand {
 	font-family: 'Rampart One', 'Nanum Brush Script',cursive;
 	color: purple;
