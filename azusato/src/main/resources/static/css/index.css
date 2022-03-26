@@ -2,12 +2,6 @@
 	max-height: 700px;
 }
 
-.main-middle-text{ /*中間のテキスト*/
-	padding-bottom:40px;
-	font-family: 'Mochiy Pop One', 'Single Day',sans-serif;
-	border-bottom:1px dotted #ccc;
-	margin-top:50px;
-}
 .main-letter{
 	margin-top:80px;
 	margin-bottom:40px;
