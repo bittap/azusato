@@ -5,38 +5,11 @@
 <body>
 	<!-- nav -->
 	<th:block th:replace = "layout/nav"></th:block>
-	<th:block th:replace = "layout/body :: body_withTop(
-			~{::th:block#top_body_contents},
+	<th:block th:replace = "layout/body :: body(
 			~{::th:block#body_contents},
-			~{::script},
-			#{index.title})">
+			_,
+			#{celebration.title})">
 		<!-- main  content -->
-		<th:block id="top_body_contents">
-			<!-- jumbotron -->
-			<div class="container">
-				<div id="jumbotron" class="carousel slide jumbotron" data-bs-ride="carousel">
-				  <div class="carousel-inner">
-				    <div class="carousel-item active" data-bs-interval="3000">
-				      <img src="/image/jumbotron1.jpg" class="d-block w-100 img-fluid rounded" alt="jumbotron1">
-				    </div>
-				    <div class="carousel-item" data-bs-interval="3000">
-				      <img src="/image/jumbotron2.jpg" class="d-block w-100 img-fluid rounded" alt="jumbotron2">
-				    </div>
-				    <div class="carousel-item" data-bs-interval="3000">
-				      <img src="/image/jumbotron3.jpg" class="d-block w-100 img-fluid rounded" alt="jumbotron3">
-				    </div>
-				  </div>
-				  <button class="carousel-control-prev" type="button" data-bs-target="#jumbotron" data-bs-slide="prev">
-				    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-				    <span class="visually-hidden">Previous</span>
-				  </button>
-				  <button class="carousel-control-next" type="button" data-bs-target="#jumbotron" data-bs-slide="next">
-				    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-				    <span class="visually-hidden">Next</span>
-				  </button>
-				</div>
-			</div> <!-- End container-->
-		</th:block>
 		<th:block id="body_contents">
 			<div class="container">
 				<div class="main-letter">
@@ -79,9 +52,6 @@
 				</div>
 			</div>	<!-- End Container-->
 		</th:block>
-		
-		<script src="/js/backgroundMusic.js"></script>
-		<script src="/js/video.js"></script>
 	</th:block>
 			
 </body>

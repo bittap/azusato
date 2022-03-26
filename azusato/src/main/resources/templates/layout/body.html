@@ -1,10 +1,31 @@
 <!--/*
+	exclude top_body_contents and delegate to delegate_body
+*/-->
+<div class="container-fluld wrapper" th:fragment = "body(body_contents,scripts,page_title)">
+	<th:block th:replace = "layout/body :: delegate_body(_,${body_contents},${scripts},${page_title})"></th:block>
+</div>
+
+<!--/*
+	include top_body_contents and delegate to delegate_body
+*/-->
+<div class="container-fluld wrapper" th:fragment = "body_withTop(top_body_contents,body_contents,scripts,page_title)">
+	<th:block th:replace = "layout/body :: delegate_body(${top_body_contents},${body_contents},${scripts},${page_title})"></th:block>
+</div>
+
+<!--/*
 This fragment include basically common css of the body, footer, js file of the bootstrap. 
+@param top_body_contents {tag} page_title above
 @param body_contents contents of file of the html. you want to include to this fragment
 @param scripts script tags. This is rendered at end.
+@param page_title {string} title of page.
 */-->
-<div class="container-fluld wrapper" th:fragment = "body(body_contents,scripts)">
+<div class="container-fluld wrapper" th:fragment = "delegate_body(top_body_contents,body_contents,scripts,page_title)">
 	<link rel="stylesheet" href="/css/layout/body.css">
+	<th:block th:replace = "${top_body_contents}"></th:block>
+	<hr>
+	<div class="container">
+		<h1 class="page-title text-center" th:text="${page_title}"></h1>
+	</div>
 	<th:block th:replace = "${body_contents}"></th:block>
 	<hr>
 	<!-- footer -->

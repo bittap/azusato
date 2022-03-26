@@ -1,5 +1,7 @@
 package com.my.azusato.view.controller.common;
 
+import com.my.azusato.view.controller.CelebrationController;
+
 /**
  * constant of URL
  * @author Carmel
@@ -18,4 +20,9 @@ public class UrlConstant {
 	public static final String KOREAN_CONTROLLER_REQUEST = "ko/";
 	
 	public static final String INDEX_CONTROLLER_REQUSET = "/";
+	
+	/**
+	 * mapping url for {@link CelebrationController}
+	 */
+	public static final String CELEBRATION_CONTROLLER_REQUSET = "celebration";
 }
