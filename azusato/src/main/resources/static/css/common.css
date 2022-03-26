@@ -20,7 +20,6 @@ body.modal-open { /* prevent body from scrolling when a modal is opend */
 	padding-bottom:40px;
 	font-family: 'Mochiy Pop One', 'Single Day',sans-serif;
 	border-bottom:1px dotted #ccc;
-	margin-top:50px;
 }
 
 

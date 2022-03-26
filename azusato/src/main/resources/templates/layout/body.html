@@ -1,16 +1,16 @@
 <!--/*
 	exclude top_body_contents and delegate to delegate_body
 */-->
-<div class="container-fluld wrapper" th:fragment = "body(body_contents,scripts,page_title)">
+<th:block th:fragment = "body(body_contents,scripts,page_title)">
 	<th:block th:replace = "layout/body :: delegate_body(_,${body_contents},${scripts},${page_title})"></th:block>
-</div>
+</th:block>
 
 <!--/*
 	include top_body_contents and delegate to delegate_body
 */-->
-<div class="container-fluld wrapper" th:fragment = "body_withTop(top_body_contents,body_contents,scripts,page_title)">
+<th:block th:fragment = "body_withTop(top_body_contents,body_contents,scripts,page_title)">
 	<th:block th:replace = "layout/body :: delegate_body(${top_body_contents},${body_contents},${scripts},${page_title})"></th:block>
-</div>
+</th:block>
 
 <!--/*
 This fragment include basically common css of the body, footer, js file of the bootstrap. 
@@ -24,7 +24,8 @@ This fragment include basically common css of the body, footer, js file of the b
 	<th:block th:replace = "${top_body_contents}"></th:block>
 	<hr>
 	<div class="container">
-		<h1 class="page-title text-center" th:text="${page_title}"></h1>
+		<!--/* if the top content exists, add margin-top  */-->
+		<h1 th:style="${top_body_contents} != _ ? 'margin-top:50px;'" class="page-title text-center" th:text="${page_title}"></h1>
 	</div>
 	<th:block th:replace = "${body_contents}"></th:block>
 	<hr>
