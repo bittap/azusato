@@ -14,7 +14,6 @@
 
 .nav-item > a > .notice > mark{
 	color:purple;
-	border-radius: 50%;
 	font-size:0.7rem; 
 	font-family:sans-serif;
 }

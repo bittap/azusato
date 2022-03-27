@@ -5,6 +5,10 @@ a {
 	color : black;
 }
 
+p {
+	font-family: sans-serif;
+}
+
 .bg-white { background-color: #fff; }
 .bg-purple-400 { background-color: #b794f4; }
 

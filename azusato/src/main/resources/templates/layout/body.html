@@ -22,7 +22,7 @@ This fragment include basically common css of the body, footer, js file of the b
 <div class="container-fluld wrapper" th:fragment = "delegate_body(top_body_contents,body_contents,scripts,page_title)">
 	<link rel="stylesheet" href="/css/layout/body.css">
 	<th:block th:replace = "${top_body_contents}"></th:block>
-	<hr>
+	<hr th:if="${top_body_contents} != _">
 	<div class="container">
 		<h1 class="page-title text-center" th:text="${page_title}"></h1>
 	</div>
