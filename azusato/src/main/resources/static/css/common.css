@@ -9,6 +9,21 @@ p {
 	font-family: sans-serif;
 }
 
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary:visited { /* change color from black to white. because the color of purpul color is black   */
+    color:#fff;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active,
+.btn-outline-primary:visited{ /* change color from black to white. because the color of purpul color is black   */
+	color: #343a40;
+}
+
 .bg-white { background-color: #fff; }
 .bg-purple-400 { background-color: #b794f4; }
 

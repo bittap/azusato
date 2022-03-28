@@ -13,12 +13,31 @@
 	height:2rem;
 }
 
+/*.list > .reply > .write{
+	font-size:12px;
+}*/
+
 .list > .reply > .write{
 	height:2.5rem;
 }
 
-@media (max-width: 767px) { /*size of imgs is 100% on mobile */
-	.list > .content > .body img{
+.list > .reply > .write > button{
+	width:20%;
+}
+
+@media (min-width: 768px) {
+	.list > .reply{
+		margin-left:3rem;
+		margin-right: 3rem;
+	}
+	
+	.list > .reply > .write > button{
+		width:10%;
+	}
+}
+
+@media (max-width: 767px) {
+	.list > .content > .body img{  /*size of imgs is 100% on mobile */
 		width:100%!important
 	}
 }
