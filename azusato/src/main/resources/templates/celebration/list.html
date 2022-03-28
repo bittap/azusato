@@ -12,7 +12,7 @@
 		<!-- main  content -->
 		<th:block id="body_contents">
 			<div class="container">
-				<div class="my-3 p-3 rounded shadow">
+				<div class="p-3 rounded shadow">
 					<div class="text-muted pt-3 list">
 						<!-- title area -->
 						<div class="d-flex title"> 
@@ -133,7 +133,7 @@
 						        	<span aria-hidden="true">&raquo;</span>
 						     	</a>
 						    	</li>
-								<button type="button" class="btn btn-outline-primary ms-auto me-0">作成</button>
+								<a th:href="@{'/'+${#locale}+'/celebration/write'}" class="btn btn-outline-primary ms-auto me-0">作成</a>
 						  	</ul>
 						</nav>
 					</small>			
