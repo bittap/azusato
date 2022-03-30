@@ -39,6 +39,18 @@ public class CelebrationController {
 		return mav;
 	}
 	
+	@GetMapping("/write")
+	public ModelAndView write() {
+		log.debug("list controller");
+		
+		ModelAndView mav = new ModelAndView(VIEW_FOLDER_NAME+"write");
+		
+		// set header
+		addHeaderModel(mav);
+		
+		return mav;
+	}
+	
 	/**
 	 * set a header model for activating celebration menu
 	 * @param mav ModelAndView

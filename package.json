@@ -1,0 +1,22 @@
+{
+  "name": "azusato",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bittap/azusato.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bittap/azusato/issues"
+  },
+  "homepage": "https://github.com/bittap/azusato#readme",
+  "dependencies": {
+    "bootstrap": "^5.1.3"
+  }
+}

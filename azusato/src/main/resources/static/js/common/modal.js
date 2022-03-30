@@ -5,11 +5,13 @@
  * @param {function} yesBtnAction invoked action when the yes button is clicked. this is executed order that is closed modal and then "yesBtnAction". (can't not be 'null')
  * @param {function} noBtnAction invoked action when the no button is clicked. If this is null, close modal. If this is not null, execute it.
  */
-function ModalTwoBtn(title, body , yesBtnAction, noBtnTitle, yesBtnTitle, noBtnAction){
+function ModalTwoBtn(title, body , yesBtnAction, noBtnTitle, yesBtnTitle, noBtnAction, centered = false){
 	// declare variables
 	this.modalTag = document.getElementById('twoBtnModal');
+	this.modalDialogTag = this.modalTag.querySelector('.modal-dialog');
 	this.noBtnTag = document.getElementById("twoBtnModal-no");
 	this.yesBtnTag = document.getElementById("twoBtnModal-yes");
+	this.centerdClassName = "modal-dialog-centered";
 	// create modal with bootstrap for using show, hide etc..
 	// Note can't use display, fade etc ... without this
 	this.modalWithBootstrap = new bootstrap.Modal(document.getElementById('twoBtnModal'), {
@@ -43,6 +45,13 @@ function ModalTwoBtn(title, body , yesBtnAction, noBtnTitle, yesBtnTitle, noBtnA
 			yesBtnAction();
 
 		}
+	}
+	
+	// set modal position to vertically center
+	if(centered == true){
+		this.modalDialogTag.classList.add(this.centerdClassName);
+	}else{
+		this.modalDialogTag.classList.remove(this.centerdClassName);
 	}
 	this.yesBtnTag.addEventListener('click',enclosingYesBtnAction(this.modalWithBootstrap));
 }

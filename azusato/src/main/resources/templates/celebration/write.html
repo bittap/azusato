@@ -1,0 +1,69 @@
+<html>
+<head th:include = "layout/header :: header(~{::link})">
+	<link rel="stylesheet" href="/css/celebration/write.css"/>
+	<!-- include summernote css-->
+   	<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+</head>
+<body>
+	<!-- nav -->
+	<th:block th:replace = "layout/nav"></th:block>
+	<th:block th:replace = "layout/body :: body(
+			~{::th:block#body_contents},
+			#{celebration.title})">
+		<!-- main  content -->
+		<th:block id="body_contents">
+			<div class="container">
+			    <form>
+			      <div class="panel mb-4">
+					<div class="panel-heading">
+			          <span class="panel-title">プロフィール</span>
+			        </div>
+			        <div class="panel-body text-center"> 
+					  <img src="https://bootdey.com/img/Content/avatar/avatar6.png" id="profile-avatar" class="rounded-circle profile-avatar" alt="User avatar">
+					  <div class="form-text">
+						イメージをクリックするとイメージの変更ができます。
+					  </div>
+					</div>
+			      </div>
+			      <div class="panel panel-default">
+			        <div class="panel-heading">
+			          <h4 class="panel-title">入力情報</h4>
+			        </div>
+			        <div class="panel-body">
+			          <div class="row"> 
+						<label class="control-label">ネーム</label>
+						<div class="name-wrap">
+							<input class="form-control" type="text" placeholder="石原 さとみ">
+						</div>
+						<!-- remain area -->
+						<div></div>
+			          </div>
+			          <div class="row"> 
+						<label class="control-label">タイトル</label>
+						<div class="title-wrap">
+							<input class="form-control" type="text" placeholder="おめでとう！">
+						</div>
+						<!-- remain area -->
+						<div></div>
+			          </div>
+					  <div class="summbernote row" id="summernote"></div>
+					  <div class="pt-3 btn-outline-wrap text-end">
+						<button type="button" class="btn btn-primary">修正</button>
+						<button type="button" class="btn btn-secondary">キャンセル</button>
+					  </div>
+			        </div>
+			      </div>
+			    </form>
+			</div>	<!-- End Container-->
+		</th:block>
+	</th:block>
+	<script src="/js/celebration/write.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script>
+      $('#summernote').summernote({
+        tabsize: 2,
+        height: 500,
+      });
+    </script>
+</body>
+</html>

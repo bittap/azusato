@@ -7,7 +7,6 @@
 	<th:block th:replace = "layout/nav"></th:block>
 	<th:block th:replace = "layout/body :: body(
 			~{::th:block#body_contents},
-			_,
 			#{celebration.title})">
 		<!-- main  content -->
 		<th:block id="body_contents">
@@ -133,7 +132,7 @@
 						        	<span aria-hidden="true">&raquo;</span>
 						     	</a>
 						    	</li>
-								<a th:href="@{'/'+${#locale}+'/celebration/write'}" class="btn btn-outline-primary ms-auto me-0">作成</a>
+								<a th:href="@{'/'+${#locale}+'/celebration/write'}" class="btn btn-primary ms-auto me-0">作成</a>
 						  	</ul>
 						</nav>
 					</small>			

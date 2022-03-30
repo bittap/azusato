@@ -8,7 +8,6 @@
 	<th:block th:replace = "layout/body :: body_withTop(
 			~{::th:block#top_body_contents},
 			~{::th:block#body_contents},
-			~{::script},
 			#{index.title})">
 		<!-- main  content -->
 		<th:block id="top_body_contents">
@@ -79,10 +78,8 @@
 				</div>
 			</div>	<!-- End Container-->
 		</th:block>
-		
-		<script src="/js/backgroundMusic.js"></script>
-		<script src="/js/video.js"></script>
 	</th:block>
-			
+	<script src="/js/backgroundMusic.js"></script>
+	<script src="/js/video.js"></script>		
 </body>
 </html>
