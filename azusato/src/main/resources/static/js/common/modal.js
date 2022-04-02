@@ -41,9 +41,8 @@ function ModalTwoBtn(title, body , yesBtnAction, noBtnTitle, yesBtnTitle, noBtnA
 	// for passing parameter in anonymous function
 	const enclosingYesBtnAction = (modalWithBootstrap) =>{
 		return function(){
-			modalWithBootstrap.hide();
 			yesBtnAction();
-
+			modalWithBootstrap.hide();
 		}
 	}
 	
@@ -54,5 +53,7 @@ function ModalTwoBtn(title, body , yesBtnAction, noBtnTitle, yesBtnTitle, noBtnA
 		this.modalDialogTag.classList.remove(this.centerdClassName);
 	}
 	this.yesBtnTag.addEventListener('click',enclosingYesBtnAction(this.modalWithBootstrap));
+	
+	return this.modalWithBootstrap;
 }
 

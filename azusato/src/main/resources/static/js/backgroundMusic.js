@@ -23,7 +23,7 @@ $(document).ready(function(){
 	});
 
 	// open confirm modal
-	twoBtnModal.modalWithBootstrap.show();
+	twoBtnModal.show();
 	
 	function createAudioTag(){
 		const audioTag = document.createElement('audio');

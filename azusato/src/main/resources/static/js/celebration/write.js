@@ -6,7 +6,16 @@ const local_twoBtnModal =new ModalTwoBtn("プロフィール写真変更","プ�
 	alert("click!");
 });
 
+// initalize summbernote
+$('#summernote').summernote({
+    tabsize: 2,
+    height: 500,
+		lang: 'ja-JP' // default: 'en-US'
+});
+
 profileAvatar.addEventListener('click',() =>{
 	// open confirm modal
-	local_twoBtnModal.modalWithBootstrap.show();
+	local_twoBtnModal.show();
 });
+
+
