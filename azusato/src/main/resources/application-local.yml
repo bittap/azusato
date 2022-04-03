@@ -1,0 +1,14 @@
+# ===============================
+# DATABASE
+# =============================== 
+spring:
+  datasource:    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/azusato
+    username: admin
+    password: password  flyway:    user: admin
+    password: password
+    url: jdbc:mysql://localhost:3306/azusato
+    # to make schema history table
+    baseline-on-migrate: true
+    # ignore order
+    out-of-order: true

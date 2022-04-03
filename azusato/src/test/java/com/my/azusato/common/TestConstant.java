@@ -26,4 +26,6 @@ public class TestConstant {
 	 * spring model size include {@link BindingResult}.
 	 */
 	public final static int SPRING_MODEL_SIZE = 1;
+	
+	public final static String PROFILES = "local";
 }
