@@ -2,6 +2,18 @@
 server:
   port : 8081
 # ===============================
+# DATABASE
+# =============================== 
+spring:
+  datasource:    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${database-url}
+    username: ${database-username}
+    password: ${database-password}  flyway:    user: ${database-username}
+    password: ${database-password}
+    url: ${database-url}
+    # to make schema history table
+    baseline-on-migrate: true
+# ===============================
 # DATABASE Log 
 # =============================== 
 logging:
