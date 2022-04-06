@@ -9,6 +9,8 @@ import javax.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -47,14 +49,32 @@ public class UserEntityTest {
 								.id(TestConstant.Entity.createdVarChars[0])
 								.password(TestConstant.Entity.createdVarChars[1])
 								.userType(OK_TYPE)
-								.profile(ProfileEntityTest.insertedData_normal_case())
+								.profile(ProfileEntityTest.insertedData_normal_case(savedData.getProfile().getNo()))
 								.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdNow).updateDatetime(TestConstant.Entity.updatedNow).build())
 								.commonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.CreatedBoolean).build())
 								.build();
+
+			Assertions.assertEquals(expect, savedData);
+		}
+		
+		@ParameterizedTest
+		@EnumSource(value = Type.class)
+		public void type_normal_test(Type type) throws Exception {
+			userRepo.save(insertedData_normal_case(type));
+			List<UserEntity> results = userRepo.findAll();
 			
-			// exclude difficult values for comparing
-			TestUtils.excludeColumn(savedData.getProfile());
+			UserEntity savedData = TestUtils.getLastElement(results);
 			
+			UserEntity expect =	UserEntity.builder()
+								.no(savedData.getNo())
+								.id(TestConstant.Entity.createdVarChars[0])
+								.password(TestConstant.Entity.createdVarChars[1])
+								.userType(type)
+								.profile(ProfileEntityTest.insertedData_normal_case(savedData.getProfile().getNo()))
+								.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdNow).updateDatetime(TestConstant.Entity.updatedNow).build())
+								.commonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.CreatedBoolean).build())
+								.build();
+
 			Assertions.assertEquals(expect, savedData);
 		}
 	}
@@ -79,7 +99,7 @@ public class UserEntityTest {
 			savedProfileEntity.setImageBase64(TestConstant.Entity.updatedVarChars[2]);
 			savedProfileEntity.setImageType(TestConstant.Entity.updatedVarChars[3]);
 			savedProfileEntity.getCommonDate().setUpdateDatetime(updatedNowForTest);
-			savedProfileEntity.setCommonDate(savedData.getCommonDate());
+			savedProfileEntity.setCommonDate(savedProfileEntity.getCommonDate());
 			savedProfileEntity.setCommonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.UpdatedBoolean).build());
 			savedData.setProfile(savedProfileEntity);
 			
@@ -97,7 +117,6 @@ public class UserEntityTest {
 			expectedProfile.setImageBase64(TestConstant.Entity.updatedVarChars[2]);
 			expectedProfile.setImageType(TestConstant.Entity.updatedVarChars[3]);
 			expectedProfile.setCommonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdNow).updateDatetime(updatedNowForTest).build());
-			expectedProfile.setCommonDate(expectedProfile.getCommonDate());
 			expectedProfile.setCommonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.UpdatedBoolean).build());
 			
 			return UserEntity.builder()
@@ -116,11 +135,18 @@ public class UserEntityTest {
 	 * return inserted entity which is normal case.
 	 */
 	public static UserEntity insertedData_normal_case() throws Exception {
+		return insertedData_normal_case(OK_TYPE);
+	}
+	
+	/**
+	 * return inserted entity which is normal case.
+	 */
+	public static UserEntity insertedData_normal_case(Type type) throws Exception {
 		return UserEntity.builder()
 					.id(TestConstant.Entity.createdVarChars[0])
 					.password(TestConstant.Entity.createdVarChars[1])
 					.profile(ProfileEntityTest.insertedData_normal_case())
-					.userType(OK_TYPE)
+					.userType(type)
 					.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdNow).updateDatetime(TestConstant.Entity.updatedNow).build())
 					.commonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.CreatedBoolean).build())
 					.build();

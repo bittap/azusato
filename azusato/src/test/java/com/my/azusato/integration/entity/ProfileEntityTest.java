@@ -111,6 +111,18 @@ public class ProfileEntityTest {
 		.build();
 	}
 	
+	/**
+	 * return inserted entity which is normal case.
+	 */
+	public static ProfileEntity insertedData_normal_case(long no) throws Exception {
+		return ProfileEntity.builder()
+				.no(no)
+				.ImageBase64(getBase64()).ImageType(TestConstant.Entity.ImageType[0])
+				.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdNow).updateDatetime(TestConstant.Entity.updatedNow).build())
+				.commonFlag(CommonFlagEntity.builder().deleteFlag(true).build())
+				.build();
+	}
+	
 	@SuppressWarnings("unused")
 	private static Stream<Arguments> save() throws Exception{
 		return Stream.of(
