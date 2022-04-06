@@ -13,6 +13,11 @@ spring:
     url: ${database-url}
     # to make schema history table
     baseline-on-migrate: true
+    # ignore order
+    out-of-order: true
+  jpa:
+    hibernate:
+      # use strategy identity not table for auto      use-new-id-generator-mappings: false
 # ===============================
 # DATABASE Log 
 # =============================== 
@@ -22,12 +27,12 @@ logging:
     org:
       hibernate:
 # SQLクエリを出力するレベル。INFOにすると出力されない。
-        SQL: INFO
+        SQL: DEBUG
         type:
           descriptor:
 # PrepareStateMentにバインドされる値を出力する。DEBUGにすると出力されない。
 # ex)..extract - extracted value ([update_i5_0_0_] : [VARCHAR]) - [system]
-            sql:  DEBUG
+            sql:  TRACE
             
       springframework:
            jdbc:
