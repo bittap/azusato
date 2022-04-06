@@ -6,9 +6,9 @@ create table user (
     id VARCHAR(50) not null COMMENT 'ユーザID',
     password varchar(50) not null COMMENT 'パスワード',
 	profile_no INT not null COMMENT 'プロフィール管理テーブルFK',
-	TYPE ENUM('admin','nonmember','kakao','line') not null COMMENT 'admin(管理者),nonmember(非ログイン),kakao(カカオログイン),line(Lineログイン)',
-	create_datetime TIMESTAMP not null,
-	update_datetime TIMESTAMP not null,
+	user_type ENUM('admin','nonmember','kakao','line') not null COMMENT 'admin(管理者),nonmember(非ログイン),kakao(カカオログイン),line(Lineログイン)',
+	create_datetime TIMESTAMP not null DEFAULT CURRENT_TIMESTAMP,
+	update_datetime TIMESTAMP not null DEFAULT CURRENT_TIMESTAMP,
 	delete_flag BOOLEAN not null default 0 COMMENT '基本 false',
 	PRIMARY KEY (no),
 	CONSTRAINT UC_id UNIQUE (id)

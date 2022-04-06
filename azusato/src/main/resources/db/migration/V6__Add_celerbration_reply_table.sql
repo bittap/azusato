@@ -4,9 +4,9 @@ DROP TABLE IF EXISTS celerbration_reply CASCADE;
 create table celerbration_reply (
     celerbration_no INT not null COMMENT 'お祝いテーブルのFK',
     content VARCHAR(500) not null COMMENT '内容',
-	create_datetime TIMESTAMP not null,
+	create_datetime TIMESTAMP not null DEFAULT CURRENT_TIMESTAMP,
+	update_datetime TIMESTAMP not null DEFAULT CURRENT_TIMESTAMP,
 	create_user_no INT not null,
-	update_datetime TIMESTAMP not null,
 	update_user_no INT not null,
 	delete_flag BOOLEAN not null default 0 COMMENT '基本 false',
 	PRIMARY KEY (celerbration_no),

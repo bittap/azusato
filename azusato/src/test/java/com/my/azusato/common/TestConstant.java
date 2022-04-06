@@ -27,5 +27,13 @@ public class TestConstant {
 	 */
 	public final static int SPRING_MODEL_SIZE = 1;
 	
-	public final static String PROFILES = "local";
+	/**
+	 * for using the test database
+	 */
+	public final static String PROFILES = "test";
+	
+	/**
+	 * common location for test data
+	 */
+	public final static String COMMON_TEST_DATA_FOLDER = "src/test/data/";
 }
