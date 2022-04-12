@@ -2,12 +2,16 @@
 # DATABASE
 # =============================== 
 spring:
-  datasource:    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/test
-    username: admin
-    password: password  flyway:    user: admin
+  datasource:
+    # servermode = AUTO_SERVER. for connecting console
+    url: jdbc:h2:./testdb/h2;MODE=MYSQL;DB_CLOSE_ON_EXIT=false;AUTO_SERVER=TRUE
+    username: sa
     password: password
-    url: jdbc:mysql://localhost:3306/test
+    driverClassName: org.h2.Driver
+  flyway:
+    user: sa
+    password: password
+    url: jdbc:h2:./testdb/h2;MODE=MYSQL;DB_CLOSE_ON_EXIT=false;AUTO_SERVER=TRUE
     # to make schema history table
     baseline-on-migrate: true
     # ignore order

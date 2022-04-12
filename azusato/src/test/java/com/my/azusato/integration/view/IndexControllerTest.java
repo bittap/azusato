@@ -9,23 +9,19 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.my.azusato.common.TestConstant;
+import com.my.azusato.integration.AbstractIntegration;
 import com.my.azusato.view.controller.common.ModelConstant;
 import com.my.azusato.view.controller.common.UrlConstant;
 import com.my.azusato.view.controller.response.HeaderReponse;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles(TestConstant.PROFILES)
-public class IndexControllerTest {
+
+public class IndexControllerTest extends AbstractIntegration {
 
 	@Autowired
 	MockMvc mockMvc;
