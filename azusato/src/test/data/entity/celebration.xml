@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-    <profile 
+    <profile
+    	no='1'
     	image_base64='varchar1' 
     	image_type='png' 
     	create_datetime='2022-01-02 03:04:05' 
     	update_datetime='2022-01-02 03:04:05' 
     	delete_flag='true'
+    />
+    <user 
+    	id='varchar1' 
+    	password='varchar2' 
+    	profile_no='1' 
+    	user_type='admin' 
+    	create_datetime='2022-01-02 03:04:05' 
+    	update_datetime='2022-01-02 03:04:05' 
+    	delete_flag='true'
+    	
     />
 </dataset>

@@ -403,13 +403,28 @@
 											"top": 363,
 											"width": 233.57958984375,
 											"height": 13
+										},
+										{
+											"_type": "ERDColumnView",
+											"_id": "AAAAAAF/+OG0tb1Ef5Q=",
+											"_parent": {
+												"$ref": "AAAAAAF/6rQSM5/WDmA="
+											},
+											"model": {
+												"$ref": "AAAAAAF/+OG0r71BHNU="
+											},
+											"font": "Arial;13;0",
+											"left": 997,
+											"top": 378,
+											"width": 233.57958984375,
+											"height": 13
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 992,
 									"top": 343,
 									"width": 243.57958984375,
-									"height": 38
+									"height": 53
 								}
 							],
 							"font": "Arial;13;0",
@@ -1690,8 +1705,9 @@
 								"$ref": "AAAAAAF/6p3Rb582LwE="
 							},
 							"name": "user_type",
-							"documentation": "ユーザタイプ\nENUM型\nadmin(管理者)\nnonmember(非ログイン)\nkakao(カカオログイン)\nline(Lineログイン)",
-							"length": 0
+							"documentation": "ユーザタイプ\nadmin(管理者)\nnonmember(非ログイン)\nkakao(カカオログイン)\nline(Lineログイン)",
+							"type": "VARCHAR",
+							"length": "10"
 						},
 						{
 							"_type": "ERDColumn",
@@ -1744,10 +1760,21 @@
 							"_parent": {
 								"$ref": "AAAAAAF/6rQSM5/SYdM="
 							},
-							"name": "profile_base64",
+							"name": "image_base64",
 							"documentation": "プロフィール写真のbase64\n今はbase64を使い、後はストレージに保存する予定\nMEDIUMTEXT",
 							"type": "TEXT",
 							"length": 0
+						},
+						{
+							"_type": "ERDColumn",
+							"_id": "AAAAAAF/+OG0r71BHNU=",
+							"_parent": {
+								"$ref": "AAAAAAF/6rQSM5/SYdM="
+							},
+							"name": "image_type",
+							"documentation": "プロフィール写真のbase64のファイル拡張子",
+							"type": "VARCHAR",
+							"length": "10"
 						}
 					]
 				},

@@ -61,7 +61,7 @@ public class UserEntityTest extends AbstractIntegration {
 								.no(savedData.getNo())
 								.id(TestConstant.Entity.createdVarChars[0])
 								.password(TestConstant.Entity.createdVarChars[1])
-								.userType(OK_TYPE)
+								.userType(OK_TYPE.toString())
 								.profile(expectedProfileEntity())
 								.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetime).build())
 								.commonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.CreatedBoolean).build())
@@ -82,7 +82,7 @@ public class UserEntityTest extends AbstractIntegration {
 								.no(savedData.getNo())
 								.id(TestConstant.Entity.createdVarChars[0])
 								.password(TestConstant.Entity.createdVarChars[1])
-								.userType(type)
+								.userType(type.toString())
 								.profile(expectedProfileEntity())
 								.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetime).build())
 								.commonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.CreatedBoolean).build())
@@ -106,7 +106,7 @@ public class UserEntityTest extends AbstractIntegration {
 			
 			savedData.setId(TestConstant.Entity.updatedVarChars[0]);
 			savedData.setPassword(TestConstant.Entity.updatedVarChars[1]);
-			savedData.setUserType(UPDATE_TYPE);
+			savedData.setUserType(UPDATE_TYPE.toString());
 			
 			ProfileEntity savedProfileEntity = savedData.getProfile();
 			savedProfileEntity.setImageBase64(TestConstant.Entity.updatedVarChars[2]);
@@ -136,7 +136,7 @@ public class UserEntityTest extends AbstractIntegration {
 					.no(userNo)
 					.id(TestConstant.Entity.updatedVarChars[0])
 					.password(TestConstant.Entity.updatedVarChars[1])
-					.userType(UPDATE_TYPE)
+					.userType(UPDATE_TYPE.toString())
 					.profile(expectedProfile)
 					.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(updatedDatetimeForTest).build())
 					.commonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.UpdatedBoolean).build())
@@ -169,7 +169,7 @@ public class UserEntityTest extends AbstractIntegration {
 					.id(TestConstant.Entity.createdVarChars[0])
 					.password(TestConstant.Entity.createdVarChars[1])
 					.profile(expectedProfileEntity())
-					.userType(type)
+					.userType(type.toString())
 					.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetime).build())
 					.commonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.CreatedBoolean).build())
 					.build();

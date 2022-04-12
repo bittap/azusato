@@ -19,9 +19,7 @@ import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestUtils;
 import com.my.azusato.dbunit.DBUnitComponent;
 import com.my.azusato.entity.CelebrationEntity;
-import com.my.azusato.entity.ProfileEntity;
 import com.my.azusato.entity.UserEntity;
-import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.entity.common.CommonDateEntity;
 import com.my.azusato.entity.common.CommonFlagEntity;
 import com.my.azusato.entity.common.CommonUserEntity;
@@ -47,28 +45,6 @@ public class CelebrationEntityTest extends AbstractIntegration {
 	@BeforeEach
 	public void beforeEach() throws Exception {
 		dbunitCompo.initalizeTable(Paths.get(TestConstant.COMMON_ENTITY_FOLDER,"celebration.xml"));
-		/*
-		 * add user table separately, 
-		 * because dbunit can't realize enum type of mysql.
-		 * I tried this But doesn't work.
-		 * https://stackoverflow.com/questions/4877034/dbunit-nosuchcolumnexception-and-case-sensitivity
-		 */
-		userRepo.save(insertedUserData_normal_case());
-	}
-	
-	private ProfileEntity expectedProfileEntity() {
-		return profileRepo.findAll().get(0);
-	}
-	
-	private UserEntity insertedUserData_normal_case() throws Exception {
-		return UserEntity.builder()
-					.id(TestConstant.Entity.createdVarChars[0])
-					.password(TestConstant.Entity.createdVarChars[1])
-					.profile(expectedProfileEntity())
-					.userType(Type.admin)
-					.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetime).build())
-					.commonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.CreatedBoolean).build())
-					.build();
 	}
 	
 	@Nested

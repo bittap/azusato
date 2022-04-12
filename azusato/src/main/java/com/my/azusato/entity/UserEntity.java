@@ -1,11 +1,8 @@
 package com.my.azusato.entity;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -41,9 +38,7 @@ public class UserEntity {
 	@JoinColumn(name = "profile_no", referencedColumnName = "no")
 	private ProfileEntity profile;
 	
-	@Column(columnDefinition = "ENUM('admin', 'nonmember', 'kakao','line')")
-	@Enumerated(EnumType.STRING)
-	private Type userType;
+	private String userType;
 	
 	@Embedded
 	private CommonDateEntity commonDate;
