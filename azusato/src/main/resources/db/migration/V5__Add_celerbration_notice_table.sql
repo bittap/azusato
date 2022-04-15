@@ -1,12 +1,12 @@
 -- DO not modify create table if the app is relased.
-DROP TABLE IF EXISTS user_celerbration_unread CASCADE;
+DROP TABLE IF EXISTS celebration_notice CASCADE;
 
-create table user_celerbration_unread (
+create table celebration_notice (
     celerbration_no INT not null COMMENT 'celerbrationテーブルのFK',
     user_no INT not null COMMENT 'userテーブルのFK',
 	PRIMARY KEY (celerbration_no,user_no),
 	FOREIGN KEY (celerbration_no)
-		REFERENCES celerbration (no)
+		REFERENCES celebration (no)
 		ON UPDATE CASCADE
 		ON DELETE RESTRICT,
 	FOREIGN KEY (user_no)

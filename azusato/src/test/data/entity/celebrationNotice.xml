@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <profile
+    	no='1'
+    	image_base64='varchar1' 
+    	image_type='png' 
+    	create_datetime='2022-01-02 03:04:05' 
+    	update_datetime='2022-01-02 03:04:05' 
+    	delete_flag='true'
+    />
+    <profile
+    	no='2'
+    	image_base64='varchar1' 
+    	image_type='png' 
+    	create_datetime='2022-01-02 03:04:05' 
+    	update_datetime='2022-01-02 03:04:05' 
+    	delete_flag='true'
+    />
+    <profile
+    	no='3'
+    	image_base64='varchar1' 
+    	image_type='png' 
+    	create_datetime='2022-01-02 03:04:05' 
+    	update_datetime='2022-01-02 03:04:05' 
+    	delete_flag='true'
+    />
+    <user 
+    	no='1'
+    	id='varchar1' 
+    	password='varchar2' 
+    	profile_no='1' 
+    	user_type='admin' 
+    	create_datetime='2022-01-02 03:04:05' 
+    	update_datetime='2022-01-02 03:04:05' 
+    	delete_flag='true'
+    	
+    />
+    <user 
+    	no='2'
+    	id='varchar3' 
+    	password='varchar4' 
+    	profile_no='2' 
+    	user_type='admin' 
+    	create_datetime='2022-01-02 03:04:05' 
+    	update_datetime='2022-01-02 03:04:05' 
+    	delete_flag='true' 	
+    />
+   <user 
+   		no='3'
+    	id='varchar5' 
+    	password='varchar6'
+    	profile_no='3' 
+    	user_type='nonmember' 
+    	create_datetime='2022-01-02 03:04:05' 
+    	update_datetime='2022-01-02 03:04:05' 
+    	delete_flag='true' 	
+    />
+    <celebration 
+    	title='varchar1' 
+    	content='varchar2'
+    	read_count='0' 
+    	create_datetime='2022-01-02 03:04:05' 
+    	update_datetime='2022-01-02 03:04:05' 
+    	create_user_no="1"
+    	update_user_no="1"
+    	delete_flag='true' 	
+    />
+    
+</dataset>

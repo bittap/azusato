@@ -1,7 +1,7 @@
 -- DO not modify create table if the app is relased.
-DROP TABLE IF EXISTS celerbration CASCADE;
+DROP TABLE IF EXISTS celebration CASCADE;
 
-create table celerbration (
+create table celebration (
     no INT not null AUTO_INCREMENT COMMENT '番号',
     title VARCHAR(50) not null COMMENT 'タイトル',
 	content LONGTEXT not null COMMENT '内容(htmlタグ)',
