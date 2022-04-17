@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.transaction.TestTransaction;
 
 import com.my.azusato.common.TestConstant;
+import com.my.azusato.repository.CelebrationReplyRepository;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.ProfileRepository;
 import com.my.azusato.repository.UserRepository;
@@ -36,6 +37,9 @@ public abstract class AbstractIntegration  {
 	@Autowired
 	protected CelebrationRepository celeRepo;
 	
+	@Autowired
+	protected CelebrationReplyRepository celeReplyRepo;
+	
 	/**
 	 * delete all data. commit for deleting all data and then start to commit for avoiding lazy exception. Because session is closed 
 	 * Reference this <a href="https://stackoverflow.com/questions/11746499/how-to-solve-the-failed-to-lazily-initialize-a-collection-of-role-hibernate-ex.">lazily-initialize</a>  
@@ -43,9 +47,14 @@ public abstract class AbstractIntegration  {
 	@BeforeEach
 	public void allDataDelete() {
 		profileRepo.deleteAll();
+		celeReplyRepo.deleteAll();
 		celeRepo.deleteAll();
 		userRepo.deleteAll();
 		
+		commitAndStart();
+	}
+	
+	protected void commitAndStart() {
 		// commit to delete all data  
 		TestTransaction.end();
 		// start transaction.

@@ -1,15 +1,12 @@
 package com.my.azusato.entity;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -23,34 +20,26 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "celebration")
+@Table(name = "celebration_reply")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CelebrationEntity {
-	
+public class CelebrationReplyEntity {
+
 	@Id
-	@GeneratedValue
-	private Long no;
+	private Long celebrationNo;
 	
-	private String title;
-	
-	@Lob
 	private String content;
-	
-	private Integer readCount;
 	
 	@OneToMany
 	@JoinTable(
-		name = "celebration_notice",
-		joinColumns = @JoinColumn(name="celebration_no"),
-		inverseJoinColumns = @JoinColumn(name="user_no")
+			name = "celebration_reply_notice",
+			joinColumns = @JoinColumn(name="celebration_reply_no"),
+			inverseJoinColumns = @JoinColumn(name="user_no")
+			
 	)
-	private Set<UserEntity> notices;
-	
-	@OneToMany(mappedBy = "celebrationNo")
-	private List<CelebrationReplyEntity> replys;
+	private Set<UserEntity> replyNotices;
 	
 	@Embedded
 	private CommonUserEntity commonUser;
