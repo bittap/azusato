@@ -49,11 +49,10 @@ public class CelebrationReplyTest extends AbstractIntegration {
 									.commonUser(CommonUserEntity.builder().createUserEntity(expectedUserEntity()).updateUserEntity(expectedUserEntity()).build())
 									.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetimeWhenCreate).build())
 									.commonFlag(CommonFlagEntity.builder().deleteFlag(true).build())
+									.replyNotices(Set.of())
 									.build();
 			
-			celeReplyRepo.save(celebrationReplyEntity);
-			// commit and transaction start
-			commitAndStart();
+			celeReplyRepo.saveAndFlush(celebrationReplyEntity);
 			
 			List<CelebrationEntity> results = celeRepo.findAll();
 			CelebrationEntity result = TestUtils.getLastElement(results);
