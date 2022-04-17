@@ -5,8 +5,8 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import com.my.azusato.entity.common.CommonDateEntity;
@@ -34,8 +34,8 @@ public class UserEntity {
 	
 	private String password;
 	
-	@OneToOne(cascade = CascadeType.ALL) // authorization for relative table
-	@JoinColumn(name = "profile_no", referencedColumnName = "no")
+	@PrimaryKeyJoinColumn
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL) // authorization for relative table
 	private ProfileEntity profile;
 	
 	private String userType;

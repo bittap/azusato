@@ -14,20 +14,14 @@ import lombok.NoArgsConstructor;
 @Table(name = "celebration_notice")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor 
 @Builder
 @IdClass(CelebrationNoticePk.class)
 public class CelebrationNoticeEntity {
 	
 	@Id
-//	@ManyToOne
-//	@JoinColumn(name = "celerbration_no", referencedColumnName = "no")
-	private CelebrationEntity celebrationEntity;
+	private Long celebrationNo;
 	
 	@Id
-//	@OneToMany
-//	@JoinColumn(name = "user_no", referencedColumnName = "no")
-	private UserEntity userEntitys;
-	
-
+	private Long userNo;
 }

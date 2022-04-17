@@ -1,5 +1,0 @@
-ALTER TABLE user
-    ADD FOREIGN KEY (profile_no)
-    REFERENCES profile (no)
-	ON UPDATE CASCADE
-	ON DELETE CASCADE

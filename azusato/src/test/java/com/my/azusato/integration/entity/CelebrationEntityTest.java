@@ -8,7 +8,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -57,7 +56,6 @@ public class CelebrationEntityTest extends AbstractIntegration {
 			List<CelebrationEntity> results = mainRepo.findAll();
 			
 			CelebrationEntity result = TestUtils.getLastElement(results);
-			
 			CelebrationEntity expect = CelebrationEntity.builder()
 										.no(result.getNo())
 										.title(TestConstant.Entity.createdVarChars[0])
@@ -91,7 +89,7 @@ public class CelebrationEntityTest extends AbstractIntegration {
 			savedData.setCommonFlag(new CommonFlagEntity(TestConstant.Entity.UpdatedBoolean));
 			
 			CelebrationEntity result = mainRepo.save(savedData);
-
+			
 			Assertions.assertEquals(getExpect(savedData.getNo(),savedData.getCommonUser()), result);
 		}
 		
@@ -109,11 +107,6 @@ public class CelebrationEntityTest extends AbstractIntegration {
 		}
 	}
 	
-	@AfterEach
-	public void afterEach() throws Exception {
-		dbunitCompo.deleteTable();
-	}
-
 	/**
 	 * return inserted entity which is normal case.
 	 */

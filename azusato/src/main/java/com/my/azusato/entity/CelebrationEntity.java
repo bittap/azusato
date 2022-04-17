@@ -1,9 +1,15 @@
 package com.my.azusato.entity;
 
+import java.util.Set;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.my.azusato.entity.common.CommonDateEntity;
@@ -29,9 +35,18 @@ public class CelebrationEntity {
 	
 	private String title;
 	
+	@Lob
 	private String content;
 	
 	private Integer readCount;
+	
+	@OneToMany()
+	@JoinTable(
+		name = "celebration_notice",
+		joinColumns = @JoinColumn(name="celebration_no"),
+		inverseJoinColumns = @JoinColumn(name="user_no")
+	)
+	private Set<UserEntity> notices;
 	
 	@Embedded
 	private CommonUserEntity commonUser;

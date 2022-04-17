@@ -4,16 +4,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.dbunit.IDatabaseTester;
+import org.dbunit.assertion.DbUnitAssert;
 import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.test.context.transaction.TestTransaction;
 
 @Component
 public class DBUnitComponent {
 	
 	@Autowired
 	IDatabaseTester databaseTester;
+	
+	DbUnitAssert asserter = new DbUnitAssert();
 
 	public void initalizeTable(String dataSourceUrl) throws Exception {
 		initalizeTable(Paths.get(dataSourceUrl));
@@ -23,6 +28,32 @@ public class DBUnitComponent {
 		IDataSet dataSet = new FlatXmlDataSetBuilder().build(dataSourcePath.toFile());
 		databaseTester.setDataSet(dataSet);
 		databaseTester.onSetup();
+	}
+	
+	public void compareTable(Path dataSourcePath, String tableName) throws Exception {
+		TestTransaction.end();
+		IDataSet dataSet = new FlatXmlDataSetBuilder().build(dataSourcePath.toFile());
+		compare(tableName, dataSet);
+	}
+	
+	/**
+	 * compare all tables in dataSourcePath.
+	 * @param dataSourcePath
+	 * @throws Exception 
+	 */
+	public void compareTable(Path dataSourcePath) throws Exception {
+		TestTransaction.end();
+		IDataSet dataSet = new FlatXmlDataSetBuilder().build(dataSourcePath.toFile());
+		String[] tables = dataSet.getTableNames();
+		for (String table : tables) {
+			compare(table, dataSet);
+		}
+	}
+	
+	private void compare(String tableName,IDataSet dataSet) throws Exception {
+		ITable expect = dataSet.getTable(tableName);
+		ITable result = databaseTester.getConnection().createDataSet().getTable(tableName);
+		asserter.assertEquals(expect, result);
 	}
 	
 	public void deleteTable() throws Exception {

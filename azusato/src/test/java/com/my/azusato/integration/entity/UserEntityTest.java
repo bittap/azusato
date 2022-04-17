@@ -1,10 +1,11 @@
 package com.my.azusato.integration.entity;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -38,68 +39,78 @@ public class UserEntityTest extends AbstractIntegration {
 	
 	private static final Type OK_TYPE = Type.values()[0];
 	
-	/**
-	 * add data for a profile table
-	 * @throws Exception
-	 */
-	@BeforeEach
-	public void setUp() throws Exception {
-		dbunit.initalizeTable(TestConstant.COMMON_ENTITY_FOLDER + "user.xml");
-	}
+	private final String CURRENT_FOLDER = "user"; 
 	
 	@Nested
 	class Save{
-		
+
 		@Test
 		public void normal_test() throws Exception {
-			userRepo.save(insertedData_normal_case());
-			List<UserEntity> results = userRepo.findAll();
-			
-			UserEntity savedData = TestUtils.getLastElement(results);
-			
+			// save data
+			UserEntity savedData = save();
+
 			UserEntity expect =	UserEntity.builder()
 								.no(savedData.getNo())
 								.id(TestConstant.Entity.createdVarChars[0])
 								.password(TestConstant.Entity.createdVarChars[1])
 								.userType(OK_TYPE.toString())
-								.profile(expectedProfileEntity())
+								.profile(insertedProfileData_normal_case(savedData.getNo()))
 								.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetime).build())
 								.commonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.CreatedBoolean).build())
 								.build();
-
+			
 			Assertions.assertEquals(expect, savedData);
 		}
 		
 		@ParameterizedTest
 		@EnumSource(value = Type.class)
 		public void type_normal_test(Type type) throws Exception {
-			userRepo.save(insertedData_normal_case(type));
-			List<UserEntity> results = userRepo.findAll();
-			
-			UserEntity savedData = TestUtils.getLastElement(results);
+			// save data
+			UserEntity savedData = save(type);
 			
 			UserEntity expect =	UserEntity.builder()
 								.no(savedData.getNo())
 								.id(TestConstant.Entity.createdVarChars[0])
 								.password(TestConstant.Entity.createdVarChars[1])
 								.userType(type.toString())
-								.profile(expectedProfileEntity())
+								.profile(insertedProfileData_normal_case(savedData.getNo()))
 								.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetime).build())
 								.commonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.CreatedBoolean).build())
 								.build();
 
 			Assertions.assertEquals(expect, savedData);
 		}
+		
+		private UserEntity save() throws Exception {
+			return save(OK_TYPE);
+		}
+		
+		private UserEntity save(Type type) throws Exception {
+			// profile
+			ProfileEntity pe = insertedProfileData_normal_case();
+			// user
+			UserEntity ue = insertedData_normal_case(type);
+			pe.setUser(ue);
+			ue.setProfile(pe);
+			
+			return userRepo.save(ue);
+		}
 	}
 	
 	@Nested
 	class Update{
 		private final Type UPDATE_TYPE = Type.values()[1];
-		private final LocalDateTime updatedDatetimeForTest = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+		/**
+		 * add data for a profile table
+		 * @throws Exception
+		 */
+		@BeforeEach
+		public void setUp() throws Exception {
+			dbunit.initalizeTable(Paths.get(TestConstant.COMMON_ENTITY_FOLDER,CURRENT_FOLDER,"init","update.xml"));
+		}
 		
 		@Test
 		public void normal_test() throws Exception{
-			userRepo.save(insertedData_normal_case());
 			List<UserEntity> results = userRepo.findAll();
 			
 			UserEntity savedData = TestUtils.getLastElement(results);
@@ -111,56 +122,62 @@ public class UserEntityTest extends AbstractIntegration {
 			ProfileEntity savedProfileEntity = savedData.getProfile();
 			savedProfileEntity.setImageBase64(TestConstant.Entity.updatedVarChars[2]);
 			savedProfileEntity.setImageType(TestConstant.Entity.updatedVarChars[3]);
-			savedProfileEntity.getCommonDate().setUpdateDatetime(updatedDatetimeForTest);
-			savedProfileEntity.setCommonDate(savedProfileEntity.getCommonDate());
-			savedProfileEntity.setCommonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.UpdatedBoolean).build());
 			savedData.setProfile(savedProfileEntity);
 			
-			savedData.setCommonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(updatedDatetimeForTest).build());
+			savedData.setCommonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetime).build());
 			savedData.setCommonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.UpdatedBoolean).build());
 			
 			UserEntity result = userRepo.save(savedData);
 			
-			Assertions.assertEquals(getExpect(result.getNo(),result.getProfile().getNo()), result);
+			Assertions.assertEquals(getExpect(result.getNo()), result);
 		}
 		
-		private UserEntity getExpect(long userNo, long profileNo) {
+		private UserEntity getExpect(long userNo) {
 			ProfileEntity expectedProfile = new ProfileEntity();
-			expectedProfile.setNo(profileNo);
+			expectedProfile.setUserNo(userNo);
 			expectedProfile.setImageBase64(TestConstant.Entity.updatedVarChars[2]);
 			expectedProfile.setImageType(TestConstant.Entity.updatedVarChars[3]);
-			expectedProfile.setCommonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(updatedDatetimeForTest).build());
-			expectedProfile.setCommonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.UpdatedBoolean).build());
 			
-			return UserEntity.builder()
-					.no(userNo)
-					.id(TestConstant.Entity.updatedVarChars[0])
-					.password(TestConstant.Entity.updatedVarChars[1])
-					.userType(UPDATE_TYPE.toString())
-					.profile(expectedProfile)
-					.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(updatedDatetimeForTest).build())
-					.commonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.UpdatedBoolean).build())
-					.build();
+			UserEntity expectedUser = UserEntity.builder()
+			.no(userNo)
+			.id(TestConstant.Entity.updatedVarChars[0])
+			.password(TestConstant.Entity.updatedVarChars[1])
+			.userType(UPDATE_TYPE.toString())
+			.profile(expectedProfile)
+			.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetime).build())
+			.commonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.UpdatedBoolean).build())
+			.build();
+			
+			expectedProfile.setUser(expectedUser);
+			
+			return expectedUser;
 		}
 	}
 	
-	@AfterEach
-	public void after() throws Exception {
-		dbunit.deleteTable();
+	private static String getBase64() throws Exception {
+		Path path = Paths.get(TestConstant.COMMON_TEST_DATA_FOLDER,"base64OfImage(PNG).txt");
+		return Files.lines(path).collect(Collectors.joining());
 	}
 	
-	
-	private ProfileEntity expectedProfileEntity() {
-		return profileRepo.findAll().get(0);
-	}
-
 	/**
 	 * return inserted entity which is normal case.
 	 */
-	private UserEntity insertedData_normal_case() throws Exception {
-		return insertedData_normal_case(OK_TYPE);
+	public ProfileEntity insertedProfileData_normal_case() throws Exception {
+		return ProfileEntity.builder()
+		.ImageBase64(getBase64()).ImageType(TestConstant.Entity.ImageType[0])
+		.build();
 	}
 	
+	/**
+	 * return inserted entity which is normal case.
+	 */
+	public static ProfileEntity insertedProfileData_normal_case(long userNo) throws Exception {
+		return ProfileEntity.builder()
+				.userNo(userNo)
+				.ImageBase64(getBase64()).ImageType(TestConstant.Entity.ImageType[0])
+				.build();
+	}
+
 	/**
 	 * return inserted entity which is normal case.
 	 */
@@ -168,7 +185,6 @@ public class UserEntityTest extends AbstractIntegration {
 		return UserEntity.builder()
 					.id(TestConstant.Entity.createdVarChars[0])
 					.password(TestConstant.Entity.createdVarChars[1])
-					.profile(expectedProfileEntity())
 					.userType(type.toString())
 					.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetime).build())
 					.commonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.CreatedBoolean).build())

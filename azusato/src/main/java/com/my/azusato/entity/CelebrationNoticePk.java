@@ -2,9 +2,7 @@ package com.my.azusato.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.Column;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,11 +16,9 @@ import lombok.NoArgsConstructor;
 public class CelebrationNoticePk implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	@ManyToOne
-	@JoinColumn(name = "celerbration_no", referencedColumnName = "no")
-	private CelebrationEntity celebrationEntity;
+	@Column(name = "celebration_no")
+	private Long celebrationNo;
 	
-	@OneToOne
-	@JoinColumn(name = "user_no", referencedColumnName = "no")
-	private UserEntity userEntitys;
+	@Column(name = "user_no")
+	private Long userNo;
 }
