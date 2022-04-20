@@ -13,7 +13,7 @@ create table celebration_reply (
 	FOREIGN KEY (create_user_no)
 		REFERENCES user (no)
 		ON UPDATE CASCADE
-		ON DELETE RESTRICT,
+		ON DELETE CASCADE,
 	FOREIGN KEY (update_user_no)
 		REFERENCES user (no)
 		ON UPDATE CASCADE

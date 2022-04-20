@@ -1,0 +1,1 @@
+1.celebration_notice, celebration_reply_noticeにreaded追加
