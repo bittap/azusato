@@ -6,6 +6,12 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * properties relate to user. prefix = user
+ * 
+ * @author kim-t
+ *
+ */
 @ConfigurationProperties(prefix = "user")
 @ConstructorBinding
 @AllArgsConstructor
