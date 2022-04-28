@@ -43,6 +43,14 @@
 			<scope>test</scope>
 		</dependency>
 		
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+		<!-- for RandomStringUtils -->
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-lang3</artifactId>
+		    <version>3.12.0</version>
+		</dependency>
+		
 		<!-- database START -->
 			<dependency>
 			    <groupId>mysql</groupId>
@@ -76,6 +84,11 @@
 			    <scope>runtime</scope>
 			</dependency>
 		<!-- related to junit END -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 
 	<build>

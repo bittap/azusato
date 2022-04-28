@@ -39,7 +39,7 @@ public class CelebrationController {
 		return mav;
 	}
 	
-	@GetMapping("/write")
+	@GetMapping("write")
 	public ModelAndView write() {
 		log.debug("list controller");
 		

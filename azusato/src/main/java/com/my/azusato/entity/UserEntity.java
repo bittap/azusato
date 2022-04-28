@@ -32,6 +32,8 @@ public class UserEntity {
 	
 	private String id;
 	
+	private String name;
+	
 	private String password;
 	
 	@PrimaryKeyJoinColumn

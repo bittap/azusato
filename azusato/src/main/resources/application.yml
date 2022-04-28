@@ -1,17 +1,20 @@
 # jenkins use 8080
 server:
-  port : 8081
+  port: 8081
 # ===============================
 # DATABASE
-# =============================== 
+# ===============================
 spring:
   h2:
     console.enabled: true
     console.path: /h2-console
-  datasource:    driver-class-name: com.mysql.cj.jdbc.Driver
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${database-url}
     username: ${database-username}
-    password: ${database-password}  flyway:    user: ${database-username}
+    password: ${database-password}
+  flyway:
+    user: ${database-username}
     password: ${database-password}
     url: ${database-url}
     # to make schema history table
@@ -21,27 +24,33 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-      # use strategy identity not table for auto      use-new-id-generator-mappings: false
+      # use strategy identity not table for auto
+      use-new-id-generator-mappings: false
 # ===============================
-# DATABASE Log 
-# =============================== 
+# DATABASE Log
+# ===============================
 logging:
   level:
     root: DEBUG
     org:
       hibernate:
-# SQLクエリを出力するレベル。INFOにすると出力されない。
+        # SQLクエリを出力するレベル。INFOにすると出力されない。
         SQL: DEBUG
         type:
           descriptor:
-# PrepareStateMentにバインドされる値を出力する。DEBUGにすると出力されない。
-# ex)..extract - extracted value ([update_i5_0_0_] : [VARCHAR]) - [system]
-            sql:  TRACE
-            
+            # PrepareStateMentにバインドされる値を出力する。DEBUGにすると出力されない。
+            # ex)..extract - extracted value ([update_i5_0_0_] : [VARCHAR]) - [system]
+            sql: TRACE
+
       springframework:
-           jdbc:
-             core: TRACE
-# HikariPool ステータス出力はDEBUGなのでINFOにして出ないように            
+        jdbc:
+          core: TRACE
+    # HikariPool ステータス出力はDEBUGなのでINFOにして出ないように
     com:
       zaxxer:
-        hikari: INFO 
+        hikari: INFO
+user:
+  # length of id for nonmember
+  non-member-id-length: 30
+  # max-age of cookie 10 years
+  non-member-cookie-max-time: 315360000

@@ -24,5 +24,9 @@ public class UrlConstant {
 	/**
 	 * mapping url for {@link CelebrationController}
 	 */
-	public static final String CELEBRATION_CONTROLLER_REQUSET = "celebration";
+	public static final String CELEBRATION_CONTROLLER_REQUSET = "celebration/";
+
+	public static final String API_CONTROLLER_REQUSET = "api/";
+	
+	public static final String USER_CONTROLLER_REQUSET = "user";
 }

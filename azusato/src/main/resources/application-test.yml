@@ -1,6 +1,6 @@
 # ===============================
 # DATABASE
-# =============================== 
+# ===============================
 spring:
   datasource:
     # servermode = AUTO_SERVER. for connecting console

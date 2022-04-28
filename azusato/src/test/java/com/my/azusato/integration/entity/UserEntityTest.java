@@ -53,6 +53,7 @@ public class UserEntityTest extends AbstractIntegration {
 								.no(savedData.getNo())
 								.id(TestConstant.Entity.createdVarChars[0])
 								.password(TestConstant.Entity.createdVarChars[1])
+								.name(TestConstant.Entity.createdVarChars[2])
 								.userType(OK_TYPE.toString())
 								.profile(insertedProfileData_normal_case(savedData.getNo()))
 								.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetime).build())
@@ -72,6 +73,7 @@ public class UserEntityTest extends AbstractIntegration {
 								.no(savedData.getNo())
 								.id(TestConstant.Entity.createdVarChars[0])
 								.password(TestConstant.Entity.createdVarChars[1])
+								.name(TestConstant.Entity.createdVarChars[2])
 								.userType(type.toString())
 								.profile(insertedProfileData_normal_case(savedData.getNo()))
 								.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetime).build())
@@ -118,7 +120,7 @@ public class UserEntityTest extends AbstractIntegration {
 			savedData.setId(TestConstant.Entity.updatedVarChars[0]);
 			savedData.setPassword(TestConstant.Entity.updatedVarChars[1]);
 			savedData.setUserType(UPDATE_TYPE.toString());
-			
+			savedData.setName(TestConstant.Entity.updatedVarChars[2]);
 			ProfileEntity savedProfileEntity = savedData.getProfile();
 			savedProfileEntity.setImageBase64(TestConstant.Entity.updatedVarChars[2]);
 			savedProfileEntity.setImageType(TestConstant.Entity.updatedVarChars[3]);
@@ -142,6 +144,7 @@ public class UserEntityTest extends AbstractIntegration {
 			.no(userNo)
 			.id(TestConstant.Entity.updatedVarChars[0])
 			.password(TestConstant.Entity.updatedVarChars[1])
+			.name(TestConstant.Entity.updatedVarChars[2])
 			.userType(UPDATE_TYPE.toString())
 			.profile(expectedProfile)
 			.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetime).build())
@@ -185,6 +188,7 @@ public class UserEntityTest extends AbstractIntegration {
 		return UserEntity.builder()
 					.id(TestConstant.Entity.createdVarChars[0])
 					.password(TestConstant.Entity.createdVarChars[1])
+					.name(TestConstant.Entity.createdVarChars[2])
 					.userType(type.toString())
 					.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetime).build())
 					.commonFlag(CommonFlagEntity.builder().deleteFlag(TestConstant.Entity.CreatedBoolean).build())

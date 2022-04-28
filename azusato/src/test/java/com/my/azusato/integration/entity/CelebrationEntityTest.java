@@ -50,7 +50,7 @@ public class CelebrationEntityTest extends AbstractIntegration {
 	class Save{
 		
 		@Test
-		public void normal_case() throws Exception {
+		public void normal_case() throws Exception { 
 			mainRepo.save(insertedData_normal_case());
 			
 			List<CelebrationEntity> results = mainRepo.findAll();
@@ -121,8 +121,9 @@ public class CelebrationEntityTest extends AbstractIntegration {
 				.build();
 	}
 	
-	private UserEntity expectedUserEntity() {
-		return userRepo.findAll().get(TestConstant.Entity.GET_INDEXS[0]);
+	private UserEntity expectedUserEntity() {		UserEntity userEntity = userRepo.findAll().get(TestConstant.Entity.GET_INDEXS[0]);
+		userEntity.setPassword("aaaaaaaaaaaaaaaaaaa");
+		return userEntity;
 	}
 	
 	private String getContent() throws Exception {
