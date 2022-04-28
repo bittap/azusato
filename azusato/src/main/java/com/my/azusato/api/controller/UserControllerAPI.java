@@ -67,9 +67,9 @@ public class UserControllerAPI {
 			AddNonMemberUserServiceAPIRequest serviceReq = AddNonMemberUserServiceAPIRequest.builder()
 					.name(req.getName()).profileImageBase64(req.getProfileImageBase64())
 					.profileImageType(req.getProfileImageType()).id(id).build();
-			String savedId = userAPIService.addNonMember(serviceReq);
+			long savedNo = userAPIService.addNonMember(serviceReq);
 
-			Cookie nonMemberCookie = createNonmemberCookie(savedId);
+			Cookie nonMemberCookie = createNonmemberCookie(String.valueOf(savedNo));
 			servletResponse.addCookie(nonMemberCookie);
 
 			log.debug("{}#addNonMember END, cookie {} : {}", UserControllerAPI.class.getName(),
@@ -81,11 +81,11 @@ public class UserControllerAPI {
 	/**
 	 * create a cookie by id.
 	 * 
-	 * @param id value of cookie
+	 * @param userNo value of cookie
 	 * @return key : {@link CookieConstant#NON_MEMBER_KEY}, value : id
 	 */
-	private Cookie createNonmemberCookie(String id) {
-		Cookie cookie = new Cookie(CookieConstant.NON_MEMBER_KEY, id);
+	private Cookie createNonmemberCookie(String userNo) {
+		Cookie cookie = new Cookie(CookieConstant.NON_MEMBER_KEY, userNo);
 		cookie.setMaxAge(userProperty.getNonMemberCookieMaxTime());
 
 		return cookie;

@@ -37,7 +37,7 @@ public class UserServiceAPI {
 	 * 
 	 * @param req request parameter
 	 */
-	public String addNonMember(AddNonMemberUserServiceAPIRequest req) {
+	public long addNonMember(AddNonMemberUserServiceAPIRequest req) {
 		log.debug("{}#addNonMember , req : {}", UserServiceAPI.class.getName(), req);
 
 		ProfileEntity profileEntity = ProfileEntity.builder().ImageBase64(req.getProfileImageBase64())
@@ -54,6 +54,6 @@ public class UserServiceAPI {
 
 		UserEntity savedUserEntity = userRepo.save(userEntity);
 
-		return savedUserEntity.getId();
+		return savedUserEntity.getNo();
 	}
 }
