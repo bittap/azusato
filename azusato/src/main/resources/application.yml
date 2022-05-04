@@ -54,3 +54,9 @@ user:
   non-member-id-length: 30
   # max-age of cookie 10 years
   non-member-cookie-max-time: 315360000
+
+profile:
+  # 基本イメージの最大番号
+  default-max-number: 8
+  # 基本イメージのイメージタイプ
+  default-image-type: image/png

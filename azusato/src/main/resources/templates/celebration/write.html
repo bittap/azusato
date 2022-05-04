@@ -16,40 +16,39 @@
 			    <form>
 			      <div class="panel mb-4">
 					<div class="panel-heading">
-			          <span class="panel-title">プロフィール</span>
+			          <span class="panel-title" th:text="#{celebration.write.profile}"></span>
 			        </div>
 			        <div class="panel-body text-center"> 
 					  <img src="https://bootdey.com/img/Content/avatar/avatar6.png" id="profile-avatar" class="rounded-circle profile-avatar" alt="User avatar">
-					  <div class="form-text">
-						イメージをクリックするとイメージの変更ができます。
+					  <div class="form-text" th:text="#{celebration.write.profile.placeholder}">
 					  </div>
 					</div>
 			      </div>
 			      <div class="panel panel-default">
 			        <div class="panel-heading">
-			          <h4 class="panel-title">入力情報</h4>
+			          <h4 class="panel-title" th:text="#{celebration.write.area.title}"></h4>
 			        </div>
 			        <div class="panel-body">
 			          <div class="row"> 
-						<label class="control-label">ネーム</label>
+						<label class="control-label" th:text="#{celebration.write.name}"></label>
 						<div class="name-wrap">
-							<input class="form-control" type="text" placeholder="石原 さとみ">
+							<input class="form-control" type="text" th:placeholder="#{celebration.write.name.placeholder}">
 						</div>
 						<!-- remain area -->
 						<div></div>
 			          </div>
 			          <div class="row"> 
-						<label class="control-label">タイトル</label>
+						<label class="control-label" th:text="#{celebration.write.title}"></label>
 						<div class="title-wrap">
-							<input class="form-control" type="text" placeholder="おめでとう！">
+							<input class="form-control" type="text" th:placeholder="#{celebration.write.title.placeholder}">
 						</div>
 						<!-- remain area -->
 						<div></div>
 			          </div>
 					  <div class="summbernote row" id="summernote"></div>
 					  <div class="pt-3 btn-outline-wrap text-end">
-						<button type="button" class="btn btn-primary">修正</button>
-						<button type="button" class="btn btn-secondary">キャンセル</button>
+						<button type="button" class="btn btn-primary" th:text="#{celebration.write.button.write}"></button>
+						<button type="button" class="btn btn-secondary" th:text="#{celebration.write.button.cancle}"></button>
 					  </div>
 			        </div>
 			      </div>
@@ -58,7 +57,12 @@
 		</th:block>
 	</th:block>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-	<script src="/external/summernote/lang/summernote-ja-JP.min.js"></script>
+    <th:block th:if="__${#locale}__ == 'ko'">
+	  <script src="/external/summernote/lang/summernote-ko-KR.min.js"></script>
+	</th:block>
+	<th:block th:if="__${#locale}__ == 'ja'">
+	  <script src="/external/summernote/lang/summernote-ja-JP.min.js"></script>
+	</th:block>
 	<script src="/js/celebration/write.js"></script>
 </body>
 </html>
