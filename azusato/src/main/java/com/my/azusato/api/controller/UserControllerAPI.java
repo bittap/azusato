@@ -20,7 +20,7 @@ import com.my.azusato.api.service.request.AddNonMemberUserServiceAPIRequest;
 import com.my.azusato.exception.AlreadyExistNonMemberException;
 import com.my.azusato.property.UserProperty;
 import com.my.azusato.view.controller.common.CookieConstant;
-import com.my.azusato.view.controller.common.UrlConstant;
+import com.my.azusato.view.controller.common.UrlConstant.Api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @RestController
-@RequestMapping(value = UrlConstant.API_CONTROLLER_REQUSET + UrlConstant.USER_CONTROLLER_REQUSET)
+@RequestMapping(value = Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET)
 @RequiredArgsConstructor
 @Slf4j
 public class UserControllerAPI {

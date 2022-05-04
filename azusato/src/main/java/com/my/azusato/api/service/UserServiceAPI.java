@@ -2,6 +2,8 @@ package com.my.azusato.api.service;
 
 import java.time.LocalDateTime;
 
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import com.my.azusato.api.service.request.AddNonMemberUserServiceAPIRequest;
@@ -37,6 +39,7 @@ public class UserServiceAPI {
 	 * 
 	 * @param req request parameter
 	 */
+	@Transactional
 	public long addNonMember(AddNonMemberUserServiceAPIRequest req) {
 		log.debug("{}#addNonMember , req : {}", UserServiceAPI.class.getName(), req);
 

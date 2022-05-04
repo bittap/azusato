@@ -26,33 +26,32 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserEntity {
 
+	public static final String TABLE_NAME = "user";
+
 	@GeneratedValue
 	@Id
 	private Long no;
-	
+
 	private String id;
-	
+
 	private String name;
-	
+
 	private String password;
-	
+
 	@PrimaryKeyJoinColumn
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL) // authorization for relative table
 	private ProfileEntity profile;
-	
+
 	private String userType;
-	
+
 	@Embedded
 	private CommonDateEntity commonDate;
-	
+
 	@Embedded
 	private CommonFlagEntity commonFlag;
-	
+
 	@Getter
-	public enum Type{
-		admin,
-		nonmember,
-		kakao,
-		line;
+	public enum Type {
+		admin, nonmember, kakao, line;
 	}
 }

@@ -1,3 +1,5 @@
 ﻿1.celebration_notice, celebration_reply_noticeにreaded追加
 
 2.書き込みから詳細設計書作成
+
+3.登録APIからUserRepository削除

@@ -1,6 +1,7 @@
 package com.my.azusato.common;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 import org.springframework.validation.BindingResult;
 
@@ -17,6 +18,16 @@ public class TestConstant {
 	public final static String DEFAULT_CHARSET = "UTF-8";
 
 	public final static String MAKE_ABSOLUTE_URL = "/";
+
+	/**
+	 * korean of LOCALE
+	 */
+	public final static Locale LOCALE_KO = Locale.KOREAN;
+
+	/**
+	 * Japanese of LOCALE
+	 */
+	public final static Locale LOCALE_JA = Locale.JAPANESE;
 
 	/**
 	 * Stirng of korean of LOCALE
@@ -38,6 +49,14 @@ public class TestConstant {
 	 * for using the test database
 	 */
 	public final static String PROFILES = "test";
+
+	public final static String EXPECT_XML_FILE_NAME = "expect.xml";
+
+	public final static String INIT_XML_FILE_NAME = "init.xml";
+
+	public final static String[] DEFAULT_EXCLUDE_COLUMNS = { "no", "create_datetime", "update_datetime" };
+
+	public final static String[] DEFAULT_EXCLUDE_DATE_COLUMNS = { "create_datetime", "update_datetime" };
 
 	/**
 	 * common location for test data

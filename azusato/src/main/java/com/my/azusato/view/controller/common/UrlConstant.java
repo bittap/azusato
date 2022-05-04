@@ -27,7 +27,11 @@ public class UrlConstant {
 	 */
 	public static final String CELEBRATION_CONTROLLER_REQUSET = "celebration/";
 
-	public static final String API_CONTROLLER_REQUSET = "api/";
+	public static class Api {
+		public static final String COMMON_REQUSET = "api/";
 
-	public static final String USER_CONTROLLER_REQUSET = "user/";
+		public static final String USER_CONTROLLER_REQUSET = "user/";
+
+		public static final String CELEBRATION_CONTROLLER_REQUSET = "celebration/";
+	}
 }
