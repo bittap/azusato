@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import java.util.Random;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -47,7 +47,7 @@ public class ProfileControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	@PostMapping(value = Api.RANDOM_PROFILE_URL)
+	@GetMapping(value = Api.RANDOM_PROFILE_URL)
 	public DefaultRandomProfileResponse getDefaultRandomProfile() throws IOException {
 		log.debug("{}#getDefaultRandomProfile START ", ProfileControllerAPI.class.getName());
 		DefaultRandomProfileResponse response = new DefaultRandomProfileResponse();
