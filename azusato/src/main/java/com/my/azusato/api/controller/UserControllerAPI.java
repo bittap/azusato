@@ -10,12 +10,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,6 +25,7 @@ import com.my.azusato.api.service.request.AddNonMemberUserServiceAPIRequest;
 import com.my.azusato.api.service.response.GetSessionUserServiceAPIResponse;
 import com.my.azusato.dto.LoginUserDto;
 import com.my.azusato.exception.AzusatoException;
+import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.property.UserProperty;
 import com.my.azusato.view.controller.common.CookieConstant;
 import com.my.azusato.view.controller.common.SessionConstant;
@@ -62,21 +63,28 @@ public class UserControllerAPI {
 
 	/**
 	 * セッションにあるユーザのテーブル情報を返す。
+	 * <ul>
+	 * <li>200 : セッションが存在 かつ ログイン情報取得に成功</li>
+	 * <li>404 : セッションが存在しない</li>
+	 * <li>500 : セッションにあるユーザ情報により、検索できない場合</li>
+	 * </ul>
 	 * 
 	 * @return ユーザ情報
 	 */
 	@GetMapping
-	@ResponseBody
-	@ResponseStatus(HttpStatus.OK)
-	public GetSessionUserServiceAPIResponse getSessionUser() {
+	public ResponseEntity<Object> getSessionUser() {
 		log.debug("{}#getMyUser START, req : {}", UserControllerAPI.class.getName());
 
 		if (Objects.nonNull(httpSession.getAttribute(SessionConstant.LOGIN_KEY))) {
 			LoginUserDto userDto = (LoginUserDto) httpSession.getAttribute(SessionConstant.LOGIN_KEY);
-			return userAPIService.getSessionUser(userDto.getNo(), servletRequest.getLocale());
+			GetSessionUserServiceAPIResponse responseBody = userAPIService.getSessionUser(userDto.getNo(),
+					servletRequest.getLocale());
+			return ResponseEntity.ok(responseBody);
 		} else {
-			throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0002,
+			ErrorResponse errorResponse = new ErrorResponse(AzusatoException.I0002,
 					messageSource.getMessage(AzusatoException.I0002, null, servletRequest.getLocale()));
+
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 		}
 
 	}
