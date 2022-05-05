@@ -2,28 +2,24 @@ package com.my.azusato.api.controller;
 
 import java.util.Objects;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.my.azusato.api.controller.request.AddCelebrationAPIReqeust;
 import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.dto.LoginUserDto;
 import com.my.azusato.entity.UserEntity.Type;
-import com.my.azusato.view.controller.common.CookieConstant;
-import com.my.azusato.view.controller.common.MessageConstant;
+import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.view.controller.common.SessionConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
@@ -51,11 +47,11 @@ public class CelebrationControllerAPI {
 
 	private final CelebrationServiceAPI celeAPIService;
 
+	private final HttpServletRequest servletRequest;
+
 	/**
 	 * add a celebration. The first, check session. if session exists check user
-	 * Type is admin, then isAdmin = true. if session doesn't exists, check cookie.
-	 * if cookie exists isAdmin = false. if session or cookie doesn't exist throw
-	 * error
+	 * Type is admin, then isAdmin = true. if session doesn't exist throw error
 	 * 
 	 * 
 	 * @param req             requestbody, Validated
@@ -64,11 +60,9 @@ public class CelebrationControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value = "add")
-	public void addCelebartion(@RequestBody @Validated AddCelebrationAPIReqeust req,
-			@CookieValue(value = CookieConstant.NON_MEMBER_KEY, required = false) Cookie nonmemberCookie,
-			HttpServletRequest servletRequest) {
+	public void addCelebartion(@RequestBody @Validated AddCelebrationAPIReqeust req) {
 		log.debug("{}#addNonMember START, req : {}, nonmemberCookie : {}", CelebrationControllerAPI.class.getName(),
-				req, nonmemberCookie);
+				req);
 
 		Object loginInfoObj = httpSession.getAttribute(SessionConstant.LOGIN_KEY);
 
@@ -83,15 +77,8 @@ public class CelebrationControllerAPI {
 				celeAPIService.addCelebartion(serviceReq, servletRequest.getLocale());
 			}
 		} else {
-			if (Objects.isNull(nonmemberCookie)) {
-				String errorMsg = messageSource.getMessage(MessageConstant.ERROR401, null, servletRequest.getLocale());
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, errorMsg);
-			} else {
-				AddCelebrationServiceAPIRequest serviceReq = AddCelebrationServiceAPIRequest.builder()
-						.title(req.getTitle()).content(req.getContent())
-						.userNo(Long.parseLong(nonmemberCookie.getValue())).build();
-				celeAPIService.addCelebartion(serviceReq, servletRequest.getLocale());
-			}
+			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
+					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
 		}
 	}
 }

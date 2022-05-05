@@ -10,7 +10,5 @@ import org.springframework.context.MessageSource;
  */
 public class MessageConstant {
 
-	public static final String ERROR401 = "exception.401";
-
 	public static final String ERROR500 = "exception.500";
 }

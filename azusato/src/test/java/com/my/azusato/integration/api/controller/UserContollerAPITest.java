@@ -24,7 +24,7 @@ import com.my.azusato.api.controller.request.AddNonMemberUserAPIRequest;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.common.TestCookie;
-import com.my.azusato.exception.AlreadyExistNonMemberException;
+import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.integration.AbstractIntegration;
 import com.my.azusato.view.controller.common.CookieConstant;
@@ -48,7 +48,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 		public void normal_case() throws Exception {
 			mockMvc.perform(MockMvcRequestBuilders
 					.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET
-							+ "add/nonmember")
+							+ Api.ADD_NONMEMBER_URL)
 					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)).andDo(print())
 					.andExpect(status().isCreated())
 					.andExpect(cookie().value(CookieConstant.NON_MEMBER_KEY, notNullValue()));
@@ -61,7 +61,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 			MvcResult mvcResult = mockMvc
 					.perform(MockMvcRequestBuilders
 							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET
-									+ "add/nonmember")
+									+ Api.ADD_NONMEMBER_URL)
 							.locale(locale).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
 							.cookie(TestCookie.getNonmemberCookie()))
 					.andDo(print()).andExpect(status().isBadRequest()).andReturn();
@@ -70,9 +70,8 @@ public class UserContollerAPITest extends AbstractIntegration {
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
 			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
 
-			AlreadyExistNonMemberException expectException = new AlreadyExistNonMemberException(locale, ms);
-
-			assertEquals(new ErrorResponse(expectException.getTitle(), expectException.getMessage()), result);
+			assertEquals(new ErrorResponse(AzusatoException.I0003, ms.getMessage(AzusatoException.I0003, null, locale)),
+					result);
 		}
 
 		private String getRequestBody() throws Exception {

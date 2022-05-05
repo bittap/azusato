@@ -26,7 +26,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserEntity {
 
-	public static final String TABLE_NAME = "user";
+	/**
+	 * message.propertyのテーブルネームのキー
+	 */
+	public static final String TABLE_NAME_KEY = "table.name.user";
 
 	@GeneratedValue
 	@Id

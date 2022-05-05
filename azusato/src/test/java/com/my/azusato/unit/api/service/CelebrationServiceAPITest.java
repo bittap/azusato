@@ -13,13 +13,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.dbunit.DBUnitComponent;
+import com.my.azusato.entity.UserEntity;
+import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.integration.AbstractIntegration;
 import com.my.azusato.repository.CelebrationNoticeRepository;
 import com.my.azusato.repository.UserRepository;
@@ -122,15 +123,15 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			AddCelebrationServiceAPIRequest req = new AddCelebrationServiceAPIRequest();
 			req.setUserNo(100000L);
 
-			ResponseStatusException expect = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-					messageSource.getMessage("exception.500", null, locale));
+			String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
+			AzusatoException expect = new AzusatoException(HttpStatus.INTERNAL_SERVER_ERROR, AzusatoException.E0001,
+					messageSource.getMessage(AzusatoException.E0001, new String[] { tableName }, locale));
 
-			ResponseStatusException result = Assertions.assertThrows(ResponseStatusException.class, () -> {
+			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
 				celeServiceAPI.addCelebartion(req, locale);
 			});
 
-			assertEquals(expect.getRawStatusCode(), result.getRawStatusCode());
-			assertEquals(expect.getMessage(), result.getMessage());
+			assertEquals(expect, result);
 
 		}
 

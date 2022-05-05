@@ -30,12 +30,14 @@ public class UrlConstant {
 	public static class Api {
 		public static final String COMMON_REQUSET = "api/";
 
-		public static final String USER_CONTROLLER_REQUSET = "user/";
+		public static final String USER_CONTROLLER_REQUSET = "user";
 
 		public static final String CELEBRATION_CONTROLLER_REQUSET = "celebration/";
 
 		public static final String PROFILE_CONTROLLER_REQUSET = "profile/";
 
 		public static final String RANDOM_PROFILE_URL = "randomProfile";
+
+		public static final String ADD_NONMEMBER_URL = "/add/nonmember";
 	}
 }

@@ -60,3 +60,7 @@ profile:
   default-max-number: 8
   # 基本イメージのイメージタイプ
   default-image-type: image/png
+  
+session:
+  # セッション維持時間
+  max-interval-seconds: 3600 

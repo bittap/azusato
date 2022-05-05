@@ -2,7 +2,6 @@ package com.my.azusato.api.service;
 
 import java.time.LocalDateTime;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.transaction.Transactional;
@@ -10,7 +9,6 @@ import javax.transaction.Transactional;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.entity.CelebrationEntity;
@@ -20,6 +18,7 @@ import com.my.azusato.entity.common.CommonDateEntity;
 import com.my.azusato.entity.common.CommonFlagEntity;
 import com.my.azusato.entity.common.CommonUserEntity;
 import com.my.azusato.entity.common.DefaultValueConstant;
+import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.UserRepository;
 
@@ -81,15 +80,12 @@ public class CelebrationServiceAPI {
 	private void addCelebartion(AddCelebrationServiceAPIRequest req, Locale locale, String userType) {
 		log.debug("{}#addCelebartion , req : {}, locale : {}", CelebrationServiceAPI.class.getName(), req, locale);
 
-		Optional<UserEntity> opUserEntity = userRepo.findById(req.getUserNo());
-
-		if (opUserEntity.isEmpty()) {
-			log.error("not exist {} table, no : {}", UserEntity.TABLE_NAME, req.getUserNo());
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-					messageSource.getMessage("exception.500", null, locale));
-		}
-
-		UserEntity userEntity = opUserEntity.get();
+		UserEntity userEntity = userRepo.findById(req.getUserNo()).orElseThrow(() -> {
+			String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
+			log.error("not exist {} table, no : {}", tableName, req.getUserNo());
+			throw new AzusatoException(HttpStatus.INTERNAL_SERVER_ERROR, AzusatoException.E0001,
+					messageSource.getMessage(AzusatoException.E0001, new String[] { tableName }, locale));
+		});
 
 		Set<UserEntity> admins = null;
 

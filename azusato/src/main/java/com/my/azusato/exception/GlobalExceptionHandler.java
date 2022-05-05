@@ -40,7 +40,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(value = { Exception.class })
 	public ResponseEntity<Object> handleMyException(Exception ex) throws JsonProcessingException {
-		log.error("error : {}", ex.getStackTrace());
+		log.error("error", ex);
 
 		if (ex instanceof AzusatoException) {
 			AzusatoException azusatoException = (AzusatoException) ex;

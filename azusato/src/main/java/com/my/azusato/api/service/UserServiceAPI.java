@@ -1,17 +1,22 @@
 package com.my.azusato.api.service;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 import javax.transaction.Transactional;
 
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.my.azusato.api.service.request.AddNonMemberUserServiceAPIRequest;
+import com.my.azusato.api.service.response.GetSessionUserServiceAPIResponse;
 import com.my.azusato.entity.ProfileEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.entity.common.CommonDateEntity;
 import com.my.azusato.entity.common.CommonFlagEntity;
+import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.repository.UserRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
 
@@ -33,6 +38,8 @@ import lombok.extern.slf4j.Slf4j;
 public class UserServiceAPI {
 
 	private final UserRepository userRepo;
+
+	private final MessageSource messageSource;
 
 	/**
 	 * add nonmember for user table.
@@ -58,5 +65,27 @@ public class UserServiceAPI {
 		UserEntity savedUserEntity = userRepo.save(userEntity);
 
 		return savedUserEntity.getNo();
+	}
+
+	/**
+	 * ユーザを情報を返す。もし、ない場合はエラーをスロー
+	 * 
+	 * @param no 該当するユーザ
+	 * @return ユーザ情報
+	 * @throws AzusatoException 該当するユーザ情報がない場合
+	 */
+	public GetSessionUserServiceAPIResponse getSessionUser(Long no, Locale locale) {
+		UserEntity userEntity = userRepo.findById(no).orElseThrow(() -> {
+			String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
+			log.error("not exist {} table, no : {}", tableName, no);
+			throw new AzusatoException(HttpStatus.INTERNAL_SERVER_ERROR, AzusatoException.E0001,
+					messageSource.getMessage(AzusatoException.E0001, new String[] { tableName }, locale));
+		});
+
+		GetSessionUserServiceAPIResponse response = GetSessionUserServiceAPIResponse.builder().id(userEntity.getId())
+				.name(userEntity.getName()).profileImageBase64(userEntity.getProfile().getImageBase64())
+				.profileImageType(userEntity.getProfile().getImageType()).build();
+
+		return response;
 	}
 }

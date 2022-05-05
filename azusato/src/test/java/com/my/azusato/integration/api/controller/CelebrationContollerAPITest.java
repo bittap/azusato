@@ -32,10 +32,10 @@ import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.common.TestCookie;
 import com.my.azusato.common.TestSession;
 import com.my.azusato.dbunit.DBUnitComponent;
+import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.integration.AbstractIntegration;
 import com.my.azusato.view.controller.common.HttpConstant;
-import com.my.azusato.view.controller.common.MessageConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
 public class CelebrationContollerAPITest extends AbstractIntegration {
@@ -101,8 +101,8 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
 			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
 
-			assertEquals(new ErrorResponse(HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-					ms.getMessage(MessageConstant.ERROR401, null, locale)), result);
+			assertEquals(new ErrorResponse(AzusatoException.I0001, ms.getMessage(AzusatoException.I0001, null, locale)),
+					result);
 		}
 
 		@ParameterizedTest

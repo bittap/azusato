@@ -1,6 +1,9 @@
 package com.my.azusato.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * information of user logged in.
@@ -9,6 +12,9 @@ import lombok.Data;
  *
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginUserDto {
 
 	private Long no;
