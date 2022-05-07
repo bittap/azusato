@@ -8,8 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * parameter of
- * {@link UserServiceAPI#addNonMember(AddNonMemberUserServiceAPIRequest)}
+ * response of {@link UserServiceAPI#getSessionUser(Long, java.util.Locale)}
  * 
  * @author kim-t
  *

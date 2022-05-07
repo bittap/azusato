@@ -14,6 +14,11 @@ import lombok.Data;
 public class CelebrationWriteResponse {
 
 	/**
+	 * ユーザ情報のネーム
+	 */
+	private String name;
+
+	/**
 	 * プロフィールbase64
 	 */
 	private String ImageBase64;
