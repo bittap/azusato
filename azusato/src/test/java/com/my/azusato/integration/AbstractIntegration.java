@@ -6,11 +6,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.transaction.TestTransaction;
+import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.my.azusato.common.TestConstant;
+import com.my.azusato.dbunit.DBUnitComponent;
 import com.my.azusato.repository.CelebrationReplyRepository;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.ProfileRepository;
@@ -27,6 +31,17 @@ import com.my.azusato.repository.UserRepository;
 @Transactional
 @Commit
 public abstract class AbstractIntegration  {
+	
+	@Autowired
+	protected MockMvc mockMvc;
+	
+	protected ObjectMapper om = new ObjectMapper();
+	
+	@Autowired
+	protected DBUnitComponent dbUnitCompo;
+	
+	@Autowired
+	protected MessageSource messageSource;
 	
 	@Autowired
 	protected ProfileRepository profileRepo;
