@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,9 +19,6 @@ import com.my.azusato.view.controller.common.UrlConstant;
 import com.my.azusato.view.controller.response.HeaderReponse;
 
 public class IndexControllerTest extends AbstractIntegration {
-
-	@Autowired
-	MockMvc mockMvc;
 
 	private final int MODEL_SIZE = 1 + TestConstant.SPRING_MODEL_SIZE;
 

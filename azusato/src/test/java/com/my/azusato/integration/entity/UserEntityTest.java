@@ -12,30 +12,17 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestUtils;
-import com.my.azusato.dbunit.DBUnitComponent;
 import com.my.azusato.entity.ProfileEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.entity.common.CommonDateEntity;
 import com.my.azusato.entity.common.CommonFlagEntity;
 import com.my.azusato.integration.AbstractIntegration;
-import com.my.azusato.repository.ProfileRepository;
-import com.my.azusato.repository.UserRepository;
 
 public class UserEntityTest extends AbstractIntegration {
-	
-	@Autowired
-	DBUnitComponent dbunit;
-	
-	@Autowired
-	UserRepository userRepo;
-	
-	@Autowired
-	ProfileRepository profileRepo;
 	
 	private static final Type OK_TYPE = Type.values()[0];
 	
@@ -108,7 +95,7 @@ public class UserEntityTest extends AbstractIntegration {
 		 */
 		@BeforeEach
 		public void setUp() throws Exception {
-			dbunit.initalizeTable(Paths.get(TestConstant.COMMON_ENTITY_FOLDER,CURRENT_FOLDER,"init","update.xml"));
+			dbUnitCompo.initalizeTable(Paths.get(TestConstant.COMMON_ENTITY_FOLDER,CURRENT_FOLDER,"init","update.xml"));
 		}
 		
 		@Test

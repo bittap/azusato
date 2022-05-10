@@ -12,38 +12,21 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestUtils;
-import com.my.azusato.dbunit.DBUnitComponent;
 import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.common.CommonDateEntity;
 import com.my.azusato.entity.common.CommonFlagEntity;
 import com.my.azusato.entity.common.CommonUserEntity;
 import com.my.azusato.integration.AbstractIntegration;
-import com.my.azusato.repository.CelebrationRepository;
-import com.my.azusato.repository.ProfileRepository;
-import com.my.azusato.repository.UserRepository;
 
 public class CelebrationEntityTest extends AbstractIntegration {
-	
-	@Autowired
-	CelebrationRepository mainRepo;
-	
-	@Autowired
-	UserRepository userRepo;
-	
-	@Autowired
-	DBUnitComponent dbunitCompo;
-	
-	@Autowired
-	ProfileRepository profileRepo;
-	
+
 	@BeforeEach
 	public void beforeEach() throws Exception {
-		dbunitCompo.initalizeTable(Paths.get(TestConstant.COMMON_ENTITY_FOLDER,"celebration.xml"));
+		dbUnitCompo.initalizeTable(Paths.get(TestConstant.COMMON_ENTITY_FOLDER,"celebration.xml"));
 	}
 	
 	@Nested
@@ -51,9 +34,9 @@ public class CelebrationEntityTest extends AbstractIntegration {
 		
 		@Test
 		public void normal_case() throws Exception { 
-			mainRepo.save(insertedData_normal_case());
+			celeRepo.save(insertedData_normal_case());
 			
-			List<CelebrationEntity> results = mainRepo.findAll();
+			List<CelebrationEntity> results = celeRepo.findAll();
 			
 			CelebrationEntity result = TestUtils.getLastElement(results);
 			CelebrationEntity expect = CelebrationEntity.builder()
@@ -77,9 +60,9 @@ public class CelebrationEntityTest extends AbstractIntegration {
 
 		@Test
 		public void normal_case() throws Exception {
-			mainRepo.save(insertedData_normal_case());
+			celeRepo.save(insertedData_normal_case());
 					
-			List<CelebrationEntity> results = mainRepo.findAll();
+			List<CelebrationEntity> results = celeRepo.findAll();
 			CelebrationEntity savedData = TestUtils.getLastElement(results);
 			
 			savedData.setTitle(TestConstant.Entity.updatedVarChars[0]);
@@ -88,7 +71,7 @@ public class CelebrationEntityTest extends AbstractIntegration {
 			savedData.setCommonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.updatedDatetime).updateDatetime(updatedNowForTest).build());
 			savedData.setCommonFlag(new CommonFlagEntity(TestConstant.Entity.UpdatedBoolean));
 			
-			CelebrationEntity result = mainRepo.save(savedData);
+			CelebrationEntity result = celeRepo.save(savedData);
 			
 			Assertions.assertEquals(getExpect(savedData.getNo(),savedData.getCommonUser()), result);
 		}

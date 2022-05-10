@@ -12,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -23,9 +21,6 @@ import com.my.azusato.locale.LocaleConstant;
 
 public class LocalPathResloverTest extends AbstractIntegration {
 
-	@Autowired
-	MockMvc mockMvc;
-	
 	private final static String URL = "/";
 	
 	private final static String HEADER_TARGET_STRING = "Content-Language";

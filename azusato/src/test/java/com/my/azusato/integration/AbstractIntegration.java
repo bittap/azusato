@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.dbunit.DBUnitComponent;
+import com.my.azusato.repository.CelebrationNoticeRepository;
 import com.my.azusato.repository.CelebrationReplyRepository;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.ProfileRepository;
@@ -54,6 +55,9 @@ public abstract class AbstractIntegration  {
 	
 	@Autowired
 	protected CelebrationReplyRepository celeReplyRepo;
+	
+	@Autowired
+	protected CelebrationNoticeRepository celeNoticeRepo;
 	
 	/**
 	 * delete all data. commit for deleting all data and then start to commit for avoiding lazy exception. Because session is closed 

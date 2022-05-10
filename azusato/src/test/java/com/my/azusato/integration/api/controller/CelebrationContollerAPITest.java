@@ -17,21 +17,16 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.my.azusato.api.controller.request.AddCelebrationAPIReqeust;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.common.TestCookie;
 import com.my.azusato.common.TestSession;
-import com.my.azusato.dbunit.DBUnitComponent;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.integration.AbstractIntegration;
@@ -39,19 +34,6 @@ import com.my.azusato.view.controller.common.HttpConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
 public class CelebrationContollerAPITest extends AbstractIntegration {
-
-	@Autowired
-	MockMvc mockMvc;
-
-	@Autowired
-	MessageSource ms;
-
-	@Autowired
-	DBUnitComponent dbUnitCompo;
-
-	ObjectMapper om = new ObjectMapper();
-
-	MockHttpSession session;
 
 	final static String RESOUCE_BASIC_PATH = "src/test/data/integration/api/controller/";
 
@@ -101,7 +83,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
 			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
 
-			assertEquals(new ErrorResponse(AzusatoException.I0001, ms.getMessage(AzusatoException.I0001, null, locale)),
+			assertEquals(new ErrorResponse(AzusatoException.I0001, messageSource.getMessage(AzusatoException.I0001, null, locale)),
 					result);
 		}
 

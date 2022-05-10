@@ -15,11 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestUtils;
-import com.my.azusato.dbunit.DBUnitComponent;
 import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.entity.CelebrationNoticeEntity;
 import com.my.azusato.entity.UserEntity;
@@ -28,31 +26,11 @@ import com.my.azusato.entity.common.CommonDateEntity;
 import com.my.azusato.entity.common.CommonFlagEntity;
 import com.my.azusato.entity.common.CommonUserEntity;
 import com.my.azusato.integration.AbstractIntegration;
-import com.my.azusato.repository.CelebrationNoticeRepository;
-import com.my.azusato.repository.CelebrationRepository;
-import com.my.azusato.repository.ProfileRepository;
-import com.my.azusato.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CelebrationNoticeTest extends AbstractIntegration {
-	
-	@Autowired
-	CelebrationRepository celeRepo;
-	
-	@Autowired
-	UserRepository userRepo;
-	
-	@Autowired
-	DBUnitComponent dbunitCompo;
-	
-	@Autowired
-	ProfileRepository profileRepo;
-	
-	@Autowired
-	CelebrationNoticeRepository celeNoticeRepo;
-	
 	
 	public final String CURRENT_FOLDER =  TestConstant.COMMON_ENTITY_FOLDER+"celebration_notice";
 	
@@ -61,7 +39,7 @@ public class CelebrationNoticeTest extends AbstractIntegration {
 		
 		@BeforeEach
 		public void beforeEach() throws Exception {
-			dbunitCompo.initalizeTable(Paths.get(CURRENT_FOLDER,"init","save.xml"));
+			dbUnitCompo.initalizeTable(Paths.get(CURRENT_FOLDER,"init","save.xml"));
 		}
 		
 		@Test
@@ -120,7 +98,7 @@ public class CelebrationNoticeTest extends AbstractIntegration {
 		
 		@BeforeEach
 		public void beforeEach() throws Exception {
-			dbunitCompo.initalizeTable(Paths.get(CURRENT_FOLDER,"init","delete.xml"));
+			dbUnitCompo.initalizeTable(Paths.get(CURRENT_FOLDER,"init","delete.xml"));
 		}
 		
 		@Test
@@ -144,7 +122,7 @@ public class CelebrationNoticeTest extends AbstractIntegration {
 		
 		@BeforeEach
 		public void beforeEach() throws Exception {
-			dbunitCompo.initalizeTable(Paths.get(CURRENT_FOLDER,"init","select.xml"));
+			dbUnitCompo.initalizeTable(Paths.get(CURRENT_FOLDER,"init","select.xml"));
 		}
 		
 		@ParameterizedTest

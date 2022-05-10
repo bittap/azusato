@@ -26,7 +26,6 @@ import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.integration.AbstractIntegration;
-import com.my.azusato.repository.UserRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
 
 public class UserServiceAPITest extends AbstractIntegration {
@@ -36,9 +35,6 @@ public class UserServiceAPITest extends AbstractIntegration {
 
 	@Autowired
 	UserControllerAPI userControllerAPI;
-
-	@Autowired
-	UserRepository userRepository;
 	
 	final String RESOUCE_BASIC_PATH = "src/test/data/unit/api/service/";
 	
@@ -90,7 +86,7 @@ public class UserServiceAPITest extends AbstractIntegration {
 
 			userServiceAPI.addNonMember(serviceReq);
 
-			UserEntity result = userRepository.findAll().get(Entity.GET_INDEXS[0]);
+			UserEntity result = userRepo.findAll().get(Entity.GET_INDEXS[0]);
 
 			assertEquals(id, result.getId());
 			assertEquals(Entity.createdVarChars[0], result.getName());

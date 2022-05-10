@@ -19,11 +19,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.my.azusato.api.controller.ProfileControllerAPI;
 import com.my.azusato.api.controller.response.DefaultRandomProfileResponse;
 import com.my.azusato.common.TestConstant;
@@ -34,20 +32,9 @@ import com.my.azusato.view.controller.common.UrlConstant.Api;
 public class ProfileControllerAPITest extends AbstractIntegration {
 
 	@Autowired
-	private MockMvc mockMvc;
-
-	@Autowired
 	private ProfileProperty profileProperty;
-
-	private ObjectMapper om;
-
 	@Autowired
 	private ProfileControllerAPI profileControllerAPI;
-
-	@BeforeEach
-	public void beforeEach() throws Exception {
-		om = new ObjectMapper();
-	}
 
 	@Nested
 	class RandomProfile {

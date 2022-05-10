@@ -8,11 +8,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestUtils;
-import com.my.azusato.dbunit.DBUnitComponent;
 import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.entity.CelebrationReplyEntity;
 import com.my.azusato.entity.UserEntity;
@@ -26,9 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CelebrationReplyTest extends AbstractIntegration {
 	
-	@Autowired
-	DBUnitComponent dbunitCompo;
-
 	public final String CURRENT_FOLDER =  TestConstant.COMMON_ENTITY_FOLDER+"celebration_reply";
 	
 	@Nested
@@ -38,7 +33,7 @@ public class CelebrationReplyTest extends AbstractIntegration {
 		
 		@BeforeEach
 		public void beforeEach() throws Exception {
-			dbunitCompo.initalizeTable(Paths.get(CURRENT_FOLDER,"init","save.xml"));
+			dbUnitCompo.initalizeTable(Paths.get(CURRENT_FOLDER,"init","save.xml"));
 		}
 		
 		@Test

@@ -9,9 +9,7 @@ import javax.servlet.http.Cookie;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -25,9 +23,6 @@ import com.my.azusato.view.controller.common.SessionConstant;
 
 public class SessionInterceptorTest extends AbstractIntegration {
 
-	@Autowired
-	MockMvc mockMvc;
-	
 	private final String NOT_EXIST_URL = "test";
 	
 	@Nested
