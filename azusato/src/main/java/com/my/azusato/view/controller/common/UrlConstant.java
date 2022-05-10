@@ -39,5 +39,7 @@ public class UrlConstant {
 		public static final String RANDOM_PROFILE_URL = "randomProfile";
 
 		public static final String ADD_NONMEMBER_URL = "/add/nonmember";
+		
+		public static final String CELEBRATION_WRITE_URL = "/write";
 	}
 }

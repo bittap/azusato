@@ -1,5 +1,9 @@
 package com.my.azusato.view.controller;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -8,11 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.my.azusato.api.controller.ProfileControllerAPI;
+import com.my.azusato.api.controller.UserControllerAPI;
 import com.my.azusato.api.controller.response.DefaultRandomProfileResponse;
 import com.my.azusato.api.service.response.GetSessionUserServiceAPIResponse;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.view.controller.common.ModelConstant;
+import com.my.azusato.view.controller.common.SessionConstant;
 import com.my.azusato.view.controller.common.UrlConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 import com.my.azusato.view.controller.response.CelebrationWriteResponse;
@@ -38,6 +45,12 @@ public class CelebrationController {
 	private final static String VIEW_FOLDER_NAME = "celebration/";
 
 	private final RestTemplate restTemplate;
+	
+	private final HttpServletRequest servletRequest;
+	
+	private final UserControllerAPI userControllerAPI;
+	
+	private final ProfileControllerAPI profileControllerAPI;
 
 	@GetMapping
 	public ModelAndView list() {
@@ -55,13 +68,15 @@ public class CelebrationController {
 	 * セッションユーザ情報APIを呼び出す。もし、ある場合は、そのユーザの情報を返す。ない場合はランダムプロフィールAPIを呼び出し、その情報を返す。
 	 * 
 	 * @return {@link CelebrationWriteResponse}と{@link HeaderReponse}
+	 * @throws IOException 既に登録した基本イメージが指定した位置に存在しない場合。通常起きないエラー
 	 */
-	@GetMapping("/write")
-	public ModelAndView write() {
+	@GetMapping(Api.CELEBRATION_WRITE_URL)
+	public ModelAndView write() throws IOException {
 		log.debug("write controller");
+		
+		servletRequest.getSession().getAttribute(SessionConstant.LOGIN_KEY);
 
-		ResponseEntity<Object> resSessionUserInfo = restTemplate
-				.getForEntity(Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET, Object.class);
+		ResponseEntity<Object> resSessionUserInfo = userControllerAPI.getSessionUser();
 
 		CelebrationWriteResponse writeResponse = new CelebrationWriteResponse();
 
@@ -74,9 +89,7 @@ public class CelebrationController {
 			// セッションなし
 		} else if (resSessionUserInfo.getStatusCode() == HttpStatus.NOT_FOUND) {
 			// random基本イメージを取得
-			DefaultRandomProfileResponse randomImageResponse = restTemplate.getForObject(
-					Api.COMMON_REQUSET + Api.PROFILE_CONTROLLER_REQUSET + Api.RANDOM_PROFILE_URL,
-					DefaultRandomProfileResponse.class);
+			DefaultRandomProfileResponse randomImageResponse = profileControllerAPI.getDefaultRandomProfile();
 
 			writeResponse.setImageBase64(randomImageResponse.getImageBase64());
 			writeResponse.setImageType(randomImageResponse.getImageType());

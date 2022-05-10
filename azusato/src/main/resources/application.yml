@@ -64,3 +64,7 @@ profile:
 session:
   # セッション維持時間
   max-interval-seconds: 3600 
+  
+rest:
+  # RestAPIの基本パス。FullURIがない場合割り当てられる。
+  default-uri: http://localhost:8081/

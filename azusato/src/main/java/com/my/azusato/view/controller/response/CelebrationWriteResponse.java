@@ -2,7 +2,10 @@ package com.my.azusato.view.controller.response;
 
 import com.my.azusato.view.controller.CelebrationController;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * {@link CelebrationController#write()}に対するレスポンス
@@ -11,6 +14,9 @@ import lombok.Data;
  *
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CelebrationWriteResponse {
 
 	/**

@@ -65,7 +65,7 @@ public class UserControllerAPI {
 	 * セッションにあるユーザのテーブル情報を返す。
 	 * <ul>
 	 * <li>200 : セッションが存在 かつ ログイン情報取得に成功</li>
-	 * <li>404 : セッションが存在しない</li>
+	 * <li>204 : セッションが存在しない</li>
 	 * <li>500 : セッションにあるユーザ情報により、検索できない場合</li>
 	 * </ul>
 	 * 
@@ -73,7 +73,7 @@ public class UserControllerAPI {
 	 */
 	@GetMapping
 	public ResponseEntity<Object> getSessionUser() {
-		log.debug("{}#getMyUser START, req : {}", UserControllerAPI.class.getName());
+		log.debug("{}#getMyUser START ", UserControllerAPI.class.getName());
 
 		if (Objects.nonNull(httpSession.getAttribute(SessionConstant.LOGIN_KEY))) {
 			LoginUserDto userDto = (LoginUserDto) httpSession.getAttribute(SessionConstant.LOGIN_KEY);
