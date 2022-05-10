@@ -20,6 +20,6 @@ public class AddCelebrationAPIReqeust {
 	@NotNull(message = "{notNull}")
 	// TODO 正規表現基礎勉強
 	// https://stackoverflow.com/questions/1240275/how-to-negate-specific-word-in-regex
-	@Pattern(regexp = "^(?!.*<script>).*$", message = "{celebration.title.regex}")
+	@Pattern(regexp = "^(?!.*<script>).*$", message = "{regex}")
 	String content;
 }

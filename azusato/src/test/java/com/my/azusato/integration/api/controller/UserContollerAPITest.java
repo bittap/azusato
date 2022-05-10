@@ -9,12 +9,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -102,12 +105,15 @@ public class UserContollerAPITest extends AbstractIntegration {
 	@Nested
 	class AddNonMember {
 
-		@Test
-		public void normal_case() throws Exception {
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.integration.api.controller.UserContollerAPITest#givenVaildParameter_resultOk")
+		public void givenVaildParameter_resultOk(AddNonMemberUserAPIRequest req) throws Exception {
+			String requestBody = om.writeValueAsString(req);
+			
 			mockMvc.perform(MockMvcRequestBuilders
 					.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET
 							+ Api.ADD_NONMEMBER_URL)
-					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)).andDo(print())
+					.content(requestBody).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)).andDo(print())
 					.andExpect(status().isCreated())
 					.andExpect(cookie().value(CookieConstant.NON_MEMBER_KEY, notNullValue()));
 		}
@@ -131,12 +137,46 @@ public class UserContollerAPITest extends AbstractIntegration {
 			assertEquals(new ErrorResponse(AzusatoException.I0003, messageSource.getMessage(AzusatoException.I0003, null, locale)),
 					result);
 		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.integration.api.controller.UserContollerAPITest#givenInvaildParameter_result400")
+		public void givenInvaildParameter_result400(Locale locale, AddNonMemberUserAPIRequest req, String expectedMessage)
+				throws Exception {
+			String requestBody = om.writeValueAsString(req);
+			MvcResult mvcResult = mockMvc
+					.perform(MockMvcRequestBuilders
+							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET
+									+ Api.ADD_NONMEMBER_URL)
+							.content(requestBody).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING).locale(locale))
+					.andDo(print()).andExpect(status().is(400)).andReturn();
 
-		private String getRequestBody() throws Exception {
-			AddNonMemberUserAPIRequest req = AddNonMemberUserAPIRequest.builder().name(Entity.createdVarChars[0])
-					.profileImageType(Entity.createdVarChars[1]).profileImageBase64(Entity.createdVarChars[2]).build();
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
 
-			return om.writeValueAsString(req);
+			assertEquals(new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase(), expectedMessage), result);
 		}
+	}
+	
+	@SuppressWarnings("unused")
+	private static Stream<Arguments> givenVaildParameter_resultOk() {
+		return Stream.of(
+				Arguments.of(AddNonMemberUserAPIRequest.builder().name(Entity.createdVarChars[0])
+						.profileImageType("image/png").profileImageBase64(Entity.createdVarChars[2]).build()),
+				Arguments.of(AddNonMemberUserAPIRequest.builder().name(Entity.createdVarChars[0])
+						.profileImageType("image/jpeg").profileImageBase64(Entity.createdVarChars[2]).build())
+				);
+	}
+	
+	@SuppressWarnings("unused")
+	private static Stream<Arguments> givenInvaildParameter_result400() {
+		return Stream.of(
+				Arguments.of(TestConstant.LOCALE_JA,
+						AddNonMemberUserAPIRequest.builder().profileImageType("image/svg+xml").build(),
+						"プロフィールイメージはpng、jpegのみ可能です。"),
+				Arguments.of(TestConstant.LOCALE_KO,
+						AddNonMemberUserAPIRequest.builder().profileImageType("image/svg+xml").build(),
+						"프로필사진은 png, jpeg만 지원됩니다.")
+				);
 	}
 }

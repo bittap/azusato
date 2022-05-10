@@ -11,6 +11,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -98,7 +99,7 @@ public class UserControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value = Api.ADD_NONMEMBER_URL)
-	public void addNonMember(@RequestBody(required = false) AddNonMemberUserAPIRequest req,
+	public void addNonMember(@RequestBody(required = false) @Validated AddNonMemberUserAPIRequest req,
 			@CookieValue(value = CookieConstant.NON_MEMBER_KEY, required = false) Cookie nonmemberCookie) {
 		log.debug("{}#addNonMember START, req : {}", UserControllerAPI.class.getName(), req);
 		if (nonmemberCookie != null) {
