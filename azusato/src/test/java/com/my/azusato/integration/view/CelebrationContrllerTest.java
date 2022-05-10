@@ -3,7 +3,9 @@ package com.my.azusato.integration.view;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.nio.charset.Charset;
 import java.nio.file.Paths;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MvcResult;
@@ -20,6 +23,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.common.TestSession;
+import com.my.azusato.entity.UserEntity;
+import com.my.azusato.exception.AzusatoException;
+import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.integration.AbstractIntegration;
 import com.my.azusato.property.ProfileProperty;
 import com.my.azusato.view.controller.common.ModelConstant;
@@ -77,6 +83,28 @@ public class CelebrationContrllerTest extends AbstractIntegration {
 									.build();
 			
 			Assertions.assertEquals(expectWr, resultWr);
+		}
+		
+		/**
+		 * セッションがあるがデータがない場合、500エラー返す。
+		 * @throws Exception
+		 */
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenSessionAndNotExistData_result500(Locale locale) throws Exception{
+			MvcResult mvcResult = mockMvc.perform(
+						MockMvcRequestBuilders.get( UrlConstant.CELEBRATION_CONTROLLER_REQUSET + Api.CELEBRATION_WRITE_URL).session(TestSession.getAdminSession()).locale(locale)
+						)
+					.andDo(print())
+					.andExpect(status().isInternalServerError()).andReturn();
+			
+			String resultStrBody = mvcResult.getResponse().getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultStrBody, ErrorResponse.class);
+			
+			String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
+			ErrorResponse expect = new ErrorResponse(AzusatoException.E0001,messageSource.getMessage(AzusatoException.E0001, new String[] { tableName }, locale));
+			
+			Assertions.assertEquals(expect, result);
 		}
 		
 		/**

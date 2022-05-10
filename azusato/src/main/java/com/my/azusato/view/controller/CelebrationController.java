@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.my.azusato.api.controller.ProfileControllerAPI;
@@ -44,8 +43,6 @@ public class CelebrationController {
 
 	private final static String VIEW_FOLDER_NAME = "celebration/";
 
-	private final RestTemplate restTemplate;
-	
 	private final HttpServletRequest servletRequest;
 	
 	private final UserControllerAPI userControllerAPI;
