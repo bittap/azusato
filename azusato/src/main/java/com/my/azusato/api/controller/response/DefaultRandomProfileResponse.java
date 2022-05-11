@@ -16,10 +16,9 @@ public class DefaultRandomProfileResponse {
 	/**
 	 * プロフィールbase64
 	 */
-	private String ImageBase64;
-
+	private String profileImageBase64;
 	/**
 	 * プロフィールイメージタイプ
 	 */
-	private String ImageType;
+	private String profileImageType;
 }

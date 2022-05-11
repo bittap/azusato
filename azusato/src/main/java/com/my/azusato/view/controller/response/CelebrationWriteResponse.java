@@ -25,12 +25,7 @@ public class CelebrationWriteResponse {
 	private String name;
 
 	/**
-	 * プロフィールbase64
+	 * プロフィールimageSrc
 	 */
-	private String ImageBase64;
-
-	/**
-	 * プロフィールイメージタイプ
-	 */
-	private String ImageType;
+	private String imageSrc;
 }

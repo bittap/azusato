@@ -18,7 +18,6 @@ import com.my.azusato.api.service.response.GetSessionUserServiceAPIResponse;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.view.controller.common.ModelConstant;
-import com.my.azusato.view.controller.common.SessionConstant;
 import com.my.azusato.view.controller.common.UrlConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 import com.my.azusato.view.controller.response.CelebrationWriteResponse;
@@ -69,10 +68,8 @@ public class CelebrationController {
 	 */
 	@GetMapping(Api.CELEBRATION_WRITE_URL)
 	public ModelAndView write() throws IOException {
-		log.debug("write controller");
+		log.debug("[お祝い投稿ページ] START");
 		
-		servletRequest.getSession().getAttribute(SessionConstant.LOGIN_KEY);
-
 		ResponseEntity<Object> resSessionUserInfo = userControllerAPI.getSessionUser();
 
 		CelebrationWriteResponse writeResponse = new CelebrationWriteResponse();
@@ -81,15 +78,13 @@ public class CelebrationController {
 		if (resSessionUserInfo.getStatusCode() == HttpStatus.OK) {
 			GetSessionUserServiceAPIResponse resBody = (GetSessionUserServiceAPIResponse) resSessionUserInfo.getBody();
 			writeResponse.setName(resBody.getName());
-			writeResponse.setImageBase64(resBody.getProfileImageBase64());
-			writeResponse.setImageType(resBody.getProfileImageType());
+			writeResponse.setImageSrc("data:" + resBody.getProfileImageType() + ";base64,"+ resBody.getProfileImageBase64());
 			// セッションなし
 		} else if (resSessionUserInfo.getStatusCode() == HttpStatus.NOT_FOUND) {
 			// random基本イメージを取得
 			DefaultRandomProfileResponse randomImageResponse = profileControllerAPI.getDefaultRandomProfile();
 
-			writeResponse.setImageBase64(randomImageResponse.getImageBase64());
-			writeResponse.setImageType(randomImageResponse.getImageType());
+			writeResponse.setImageSrc("data:" + randomImageResponse.getProfileImageType() + ";base64,"+ randomImageResponse.getProfileImageBase64());
 			// エラー
 		} else {
 			ErrorResponse resBody = (ErrorResponse) resSessionUserInfo.getBody();
@@ -101,7 +96,7 @@ public class CelebrationController {
 		mav.addObject(ModelConstant.DATA_KEY, writeResponse);
 		// set header
 		addHeaderModel(mav);
-
+		log.debug("[お祝い投稿ページ] END response : {}",mav);
 		return mav;
 	}
 

@@ -66,7 +66,7 @@ public class UserControllerAPI {
 	 * セッションにあるユーザのテーブル情報を返す。
 	 * <ul>
 	 * <li>200 : セッションが存在 かつ ログイン情報取得に成功</li>
-	 * <li>204 : セッションが存在しない</li>
+	 * <li>404 : セッションが存在しない</li>
 	 * <li>500 : セッションにあるユーザ情報により、検索できない場合</li>
 	 * </ul>
 	 * 
@@ -74,18 +74,21 @@ public class UserControllerAPI {
 	 */
 	@GetMapping
 	public ResponseEntity<Object> getSessionUser() {
-		log.debug("{}#getMyUser START ", UserControllerAPI.class.getName());
+		log.debug("{}#getSessionUser START ", UserControllerAPI.class.getName());
 
 		if (Objects.nonNull(httpSession.getAttribute(SessionConstant.LOGIN_KEY))) {
 			LoginUserDto userDto = (LoginUserDto) httpSession.getAttribute(SessionConstant.LOGIN_KEY);
 			GetSessionUserServiceAPIResponse responseBody = userAPIService.getSessionUser(userDto.getNo(),
 					servletRequest.getLocale());
-			return ResponseEntity.ok(responseBody);
+			ResponseEntity<Object> response = ResponseEntity.ok(responseBody);
+			log.debug("[セッション情報が存在する] END, response : {}",response);
+			return response;
 		} else {
 			ErrorResponse errorResponse = new ErrorResponse(AzusatoException.I0002,
 					messageSource.getMessage(AzusatoException.I0002, null, servletRequest.getLocale()));
-
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+			ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+			log.debug("[セッション情報が存在しない] END, response : {}",response);
+			return response;
 		}
 
 	}

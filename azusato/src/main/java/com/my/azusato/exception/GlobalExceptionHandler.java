@@ -98,7 +98,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		}
 
-		ErrorResponse responseBody = new ErrorResponse(status.getReasonPhrase(),
+		ErrorResponse responseBody = new ErrorResponse(AzusatoException.I0004,
 				errorMsgs.stream().collect(Collectors.joining("\n")));
 
 		return new ResponseEntity<>(responseBody, headers, status);

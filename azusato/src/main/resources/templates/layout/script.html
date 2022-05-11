@@ -4,5 +4,6 @@
 	Declare varables here. This is used /layout/body.html 
 */-->
 <script th:inline="javascript">
-	window.language = /*[[${#locale}]]*/ "language";
+	const language = /*[[${#locale}]]*/ "language";
+	const apiUrl = "/"+/*[[${@environment.getProperty('common.api-url')}]]*/ "commonApiUrl";
 </script>

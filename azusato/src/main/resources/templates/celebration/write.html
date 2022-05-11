@@ -19,9 +19,11 @@
 			          <span class="panel-title" th:text="#{celebration.write.profile}"></span>
 			        </div>
 			        <div class="panel-body text-center"> 
-					  <img src="https://bootdey.com/img/Content/avatar/avatar6.png" id="profile-avatar" class="rounded-circle profile-avatar" alt="User avatar">
+					  <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" id="profile-avatar" class="rounded-circle profile-avatar" alt="User avatar">
 					  <div class="form-text" th:text="#{celebration.write.profile.placeholder}">
 					  </div>
+					  <!-- プロフィールモーダルでファイル選択時利用するfileタグ-->
+					  <input id="file-input" type="file" accept="image/jpeg, image/png" hidden/>
 					</div>
 			      </div>
 			      <div class="panel panel-default">
@@ -63,6 +65,15 @@
 	<th:block th:if="__${#locale}__ == 'ja'">
 	  <script src="/external/summernote/lang/summernote-ja-JP.min.js"></script>
 	</th:block>
+	<script th:inline="javascript">
+		const profileModalTitle = /*[[#{celebration.write.profile-modal.title}]]*/ "プロフィールモーダルのタイトル";
+		const profileModalBody = /*[[#{celebration.write.profile-modal.body}]]*/ "プロフィールモーダルの内容";
+		const profileModalFirstBtnMsg = /*[[#{celebration.write.profile-modal.first-button}]]*/ "プロフィールモーダルの最初のボタンの文字列";
+		const profileModalSecondBtnMsg = /*[[#{celebration.write.profile-modal.second-button}]]*/ "プロフィールモーダルの二番目のボタンの文字列";
+		const badRequestProfileType = /*[[#{celebration.write.bad-request.profile.type}]]*/ "拡張子ミス";
+		
+		const summernote_lang = window.language == "ko" ? "ko-KR" : "ja-JP";
+	</script>
 	<script src="/js/celebration/write.js"></script>
 </body>
 </html>

@@ -1,24 +1,24 @@
 package com.my.azusato.view.action.controller.reqeust;
 
-import org.springframework.lang.NonNull;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
 @Data
 public class CelebrationWriteReqeust {
 
-	@NonNull
+	@NotNull
 	String title;
 	
-	@NonNull
+	@NotNull
 	String content;
 	
-	@NonNull
+	@NotNull
 	String name;
 	
-	@NonNull
+	@NotNull
 	String profileImageType;
 	
-	@NonNull
+	@NotNull
 	String profileImageBase64;
 }

@@ -20,7 +20,7 @@ public class FileToBase64 {
 			byte[] bytes = FileUtils
 					.readFileToByteArray(Paths.get(commonPath, targetPath, "avatar" + i + ".png").toFile());
 
-			String base64 = Base64.getEncoder().encodeToString(bytes);
+			String base64 = Base64.getMimeEncoder().encodeToString(bytes);
 
 			BufferedWriter bw = new BufferedWriter(
 					new FileWriter(Paths.get(commonPath, destinationPath, "avatar" + i + ".txt").toFile()));

@@ -50,5 +50,6 @@
 
 .panel > .panel-body > .profile-avatar{
 	width: 13rem;
+	height: 13rem;
 	cursor: pointer;
 }

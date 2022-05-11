@@ -25,6 +25,11 @@ public class AzusatoException extends RuntimeException {
 	 * 既に存在する非会員
 	 */
 	public static final String I0003 = "I-0003";
+	
+	/**
+	 * パラメータエラー
+	 */
+	public static final String I0004 = "I-0004";
 
 	/**
 	 * テーブル情報が存在しない場合

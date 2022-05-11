@@ -68,3 +68,6 @@ session:
 rest:
   # RestAPIの基本パス。FullURIがない場合割り当てられる。
   default-uri: http://localhost:8081/
+  
+common:
+  api-url: api

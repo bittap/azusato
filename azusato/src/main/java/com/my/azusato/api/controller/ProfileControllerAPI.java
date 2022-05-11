@@ -49,13 +49,13 @@ public class ProfileControllerAPI {
 	@ResponseBody
 	@GetMapping(value = Api.RANDOM_PROFILE_URL)
 	public DefaultRandomProfileResponse getDefaultRandomProfile() throws IOException {
-		log.debug("{}#getDefaultRandomProfile START ", ProfileControllerAPI.class.getName());
+		log.debug("[ランダムイメージ取得] START");
 		DefaultRandomProfileResponse response = new DefaultRandomProfileResponse();
 
-		response.setImageType(profileProperty.getDefaultImageType());
-		response.setImageBase64(getDefaultProfileBase64());
+		response.setProfileImageType(profileProperty.getDefaultImageType());
+		response.setProfileImageBase64(getDefaultProfileBase64());
 
-		log.debug("{}#getDefaultRandomProfile END. response : {}", ProfileControllerAPI.class.getName(), response);
+		log.debug("[ランダムイメージ取得] END response : {}", response);
 		return response;
 
 	}

@@ -1,16 +1,54 @@
-<!-- Modal With Two button -->
-<div class="modal fade" id="twoBtnModal" tabindex="-1" aria-labelledby="twoBtnModalLabel" aria-hidden="true">
+<div class="modal fade" id="errorBtnModal" tabindex="-1" aria-labelledby="twoBtnModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"></h5>
+        <h5 class="modal-title text-danger"></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
  	  <div class="modal-body"></div>
       <div class="modal-footer">
-		<button id="twoBtnModal-yes" type="button" class="btn btn-primary yesBtn" th:text="#{twoBtnModal.yes-text}"></button>
-        <button id="twoBtnModal-no" type="button" class="btn btn-secondary noBtn" data-bs-dismiss="modal" th:text="#{twoBtnModal.no-text}"></button>
+        <button id="errorBtnModal-yes" type="button" class="btn btn-danger" data-bs-dismiss="modal" th:text="#{twoBtnModal.yes-text}"></button>
       </div>
     </div>
   </div>
 </div>	
+
+
+<!-- Modal With Two button -->
+<template id="template-twoBtnModal">
+	<div class="modal fade" id="twoBtnModal" tabindex="-1" aria-labelledby="twoBtnModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title"></h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	 	  <div class="modal-body"></div>
+	      <div class="modal-footer">
+			<button id="twoBtnModal-yes" type="button" class="btn btn-primary yesBtn" th:text="#{twoBtnModal.yes-text}"></button>
+	        <button id="twoBtnModal-no" type="button" class="btn btn-secondary noBtn" data-bs-dismiss="modal" th:text="#{twoBtnModal.no-text}"></button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+</template>
+
+<!-- Modal With Three button -->
+<template id="template-threeBtnModal">
+	<div class="modal fade" id="threeBtnModal" tabindex="-1" aria-labelledby="twoBtnModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title"></h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	 	  <div class="modal-body"></div>
+	      <div class="modal-footer">
+			<button id="firstBtn" type="button" class="btn btn-primary" ></button>
+			<button id="secondBtn" type="button" class="btn btn-success" ></button>
+	        <button id="thirdBtn" type="button" class="btn btn-secondary noBtn" data-bs-dismiss="modal" th:text="#{twoBtnModal.no-text}"></button>
+	      </div>
+	    </div>
+	  </div>
+	</div>	
+</template>

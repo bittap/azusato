@@ -78,8 +78,7 @@ public class CelebrationContrllerTest extends AbstractIntegration {
 			CelebrationWriteResponse resultWr = (CelebrationWriteResponse)mapsOfResult.get(ModelConstant.DATA_KEY);
 			CelebrationWriteResponse expectWr = CelebrationWriteResponse.builder()
 									.name(Entity.createdVarChars[2])
-									.ImageBase64(Entity.createdVarChars[0])
-									.ImageType(Entity.ImageType[0])
+									.imageSrc("data:" + Entity.ImageType[0] + ";base64,"+ Entity.createdVarChars[0])
 									.build();
 			
 			Assertions.assertEquals(expectWr, resultWr);
@@ -127,8 +126,7 @@ public class CelebrationContrllerTest extends AbstractIntegration {
 			CelebrationWriteResponse resultWr = (CelebrationWriteResponse)mapsOfResult.get(ModelConstant.DATA_KEY);
 
 			Assertions.assertTrue(Objects.isNull(resultWr.getName()));
-			Assertions.assertTrue(Objects.nonNull(resultWr.getImageBase64()));
-			Assertions.assertEquals(profileProperty.getDefaultImageType(), resultWr.getImageType());
+			Assertions.assertTrue(Objects.nonNull(resultWr.getImageSrc()));
 		}
 		
 		private void compareHeader(Map<String, Object> mapsOfResult) {

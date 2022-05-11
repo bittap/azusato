@@ -15,6 +15,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import com.my.azusato.dto.LoginUserDto;
 import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.property.SessionProperty;
+import com.my.azusato.util.SessionUtil;
 import com.my.azusato.view.controller.common.CookieConstant;
 import com.my.azusato.view.controller.common.SessionConstant;
 
@@ -22,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * セッションに関数る。interceptor
+ * セッションに関する。interceptor
  * 
  * @author kim-t
  *
@@ -41,8 +42,8 @@ public class SessionInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		HttpSession session = request.getSession();
-		// セッション情報があるセッションの有効期限を更新する。
-		if (Objects.nonNull(session.getAttribute(SessionConstant.LOGIN_KEY))) {
+		if(SessionUtil.isLoginSession(request.getSession())) {
+			log.debug("[既にログインセッションが存在。log更新]");
 			session.setMaxInactiveInterval(sessionProperty.getMaxIntervalSeconds());
 			// セッション情報がない かつ 非ログインの場合はログイン扱いにする。
 		} else {
@@ -56,13 +57,16 @@ public class SessionInterceptor implements HandlerInterceptor {
 				// 非ログイン会員扱いにする。
 				if (opNonmemberCookie.isPresent()) {
 					String userNo = opNonmemberCookie.get().getValue();
-					log.debug("[SessionInterceptor#preHandle][非ログイン会員扱いログイン] userNo : {}", userNo);
+					log.debug("[非ログイン会員扱いログイン] userNo : {}", userNo);
 					LoginUserDto loginDto = LoginUserDto.builder().no(Long.valueOf(userNo))
 							.userType(Type.nonmember.toString()).build();
 					session.setAttribute(SessionConstant.LOGIN_KEY, loginDto);
 					session.setMaxInactiveInterval(sessionProperty.getMaxIntervalSeconds());
+					return true;
 				}
 			}
+				
+			log.debug("[ログインセッションが存在しません。]");
 
 		}
 

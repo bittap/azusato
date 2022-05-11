@@ -31,6 +31,8 @@ public class UrlConstant {
 		public static final String COMMON_REQUSET = "api/";
 
 		public static final String USER_CONTROLLER_REQUSET = "user";
+		
+		public static final String SESSION_CONTROLLER_REQUSET = "session";
 
 		public static final String CELEBRATION_CONTROLLER_REQUSET = "celebration/";
 
@@ -41,5 +43,7 @@ public class UrlConstant {
 		public static final String ADD_NONMEMBER_URL = "/add/nonmember";
 		
 		public static final String CELEBRATION_WRITE_URL = "/write";
+		
+		public static final String CHECK_EXIST_SESSION_URL = "/login-info";
 	}
 }

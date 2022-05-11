@@ -63,8 +63,8 @@ public class ProfileControllerAPITest extends AbstractIntegration {
 			DefaultRandomProfileResponse result = om.readValue(mvcResult.getResponse().getContentAsString(),
 					DefaultRandomProfileResponse.class);
 
-			assertEquals(profileProperty.getDefaultImageType(), result.getImageType());
-			assertTrue(expects.containsKey(result.getImageBase64()));
+			assertEquals(profileProperty.getDefaultImageType(), result.getProfileImageType());
+			assertTrue(expects.containsKey(result.getProfileImageBase64()));
 		}
 
 		/**
