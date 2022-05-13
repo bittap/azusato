@@ -24,5 +24,11 @@ public class AddCelebrationServiceAPIRequest {
 
 	String content;
 
-	long userNo;
+	Long userNo;
+	
+	String name;
+
+	String profileImageType;
+
+	String profileImageBase64;
 }

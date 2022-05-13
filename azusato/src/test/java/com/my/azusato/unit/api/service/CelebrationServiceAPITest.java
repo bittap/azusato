@@ -47,6 +47,9 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 				if (table.equals("celebration")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 							TestConstant.DEFAULT_EXCLUDE_COLUMNS);
+				} else if(table.equals("user") || table.equals("profile")) {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
 				} else {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
 				}
@@ -71,6 +74,9 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 				} else if (table.equals("celebration_notice")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 							new String[] { "celebration_no" });
+				} else if(table.equals("user") || table.equals("profile")) {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
 				} else {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
 				}
@@ -92,6 +98,9 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 				if (table.equals("celebration")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 							TestConstant.DEFAULT_EXCLUDE_COLUMNS);
+				} else if(table.equals("user") || table.equals("profile")) {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
 				} else {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
 				}
@@ -120,8 +129,10 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 		}
 
 		private AddCelebrationServiceAPIRequest getNormalReq() {
-			return AddCelebrationServiceAPIRequest.builder().title(Entity.createdVarChars[0])
-					.content(Entity.createdVarChars[1]).userNo(Entity.createdInts[0]).build();
+			return AddCelebrationServiceAPIRequest.builder()
+					.name(Entity.updatedVarChars[0]).profileImageBase64(Entity.updatedVarChars[1]).profileImageType(Entity.updatedVarChars[2])
+					.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1]).userNo(Long.valueOf(Entity.createdInts[0]))
+					.build();
 		}
 	}
 }

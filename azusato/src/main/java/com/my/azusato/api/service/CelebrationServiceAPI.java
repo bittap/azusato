@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.entity.CelebrationEntity;
+import com.my.azusato.entity.ProfileEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.entity.common.CommonDateEntity;
@@ -94,8 +95,17 @@ public class CelebrationServiceAPI {
 			// Select that user type is admin.
 			admins = userRepo.findByUserType(Type.admin.toString());
 		}
-
+		
 		LocalDateTime nowLdt = LocalDateTime.now();
+		
+		ProfileEntity profileEntity = userEntity.getProfile();
+		profileEntity.setImageBase64(req.getProfileImageBase64());
+		profileEntity.setImageType(req.getProfileImageType());
+
+		CommonDateEntity commonDateEntity = userEntity.getCommonDate();
+		commonDateEntity.setUpdateDatetime(nowLdt);
+		
+		userEntity.setName(req.getName());
 
 		CelebrationEntity insertedEntity = CelebrationEntity.builder().title(req.getTitle()).content(req.getContent())
 				.commonUser(
@@ -106,7 +116,6 @@ public class CelebrationServiceAPI {
 
 		celeRepo.save(insertedEntity);
 
-		log.debug("{}#addCelebartion complete, req : {}, locale : {}", CelebrationServiceAPI.class.getName(), req,
-				locale);
+		log.debug("{}#addCelebartion END");
 	}
 }

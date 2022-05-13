@@ -20,7 +20,7 @@ import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.dto.LoginUserDto;
 import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.exception.AzusatoException;
-import com.my.azusato.view.controller.common.SessionConstant;
+import com.my.azusato.util.SessionUtil;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
 import lombok.RequiredArgsConstructor;
@@ -63,22 +63,23 @@ public class CelebrationControllerAPI {
 	public void addCelebartion(@RequestBody @Validated AddCelebrationAPIReqeust req) {
 		log.debug("{}#addNonMember START, req : {}, nonmemberCookie : {}", CelebrationControllerAPI.class.getName(),
 				req);
-
-		Object loginInfoObj = httpSession.getAttribute(SessionConstant.LOGIN_KEY);
-
-		if (Objects.nonNull(loginInfoObj)) {
-			LoginUserDto loginInfo = (LoginUserDto) loginInfoObj;
-			AddCelebrationServiceAPIRequest serviceReq = AddCelebrationServiceAPIRequest.builder().title(req.getTitle())
-					.content(req.getContent()).userNo(loginInfo.getNo()).build();
+		
+		Object loginSessionObj = SessionUtil.getLoginSession(httpSession);
+		
+		if(Objects.isNull(loginSessionObj)) {
+			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
+					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
+		}else {
+			LoginUserDto loginInfo = (LoginUserDto) loginSessionObj;
+			AddCelebrationServiceAPIRequest serviceReq = AddCelebrationServiceAPIRequest.builder()
+					.name(req.getName()).profileImageBase64(req.getProfileImageBase64()).profileImageType(req.getProfileImageType())
+					.title(req.getTitle()).content(req.getContent()).userNo(loginInfo.getNo()).build();
 
 			if (loginInfo.getUserType().equals(Type.admin.toString())) {
 				celeAPIService.addCelebartionAdmin(serviceReq, servletRequest.getLocale());
 			} else {
 				celeAPIService.addCelebartion(serviceReq, servletRequest.getLocale());
 			}
-		} else {
-			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
-					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
 		}
 	}
 }
