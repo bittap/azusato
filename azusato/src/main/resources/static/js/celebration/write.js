@@ -5,7 +5,7 @@ const FR = new FileReader();
 const writeBtnTag = document.querySelector("#writeBtn");
 
 // initalize modal
-const profileModal =new ModalThreeBtn(profileModalTitle,profileModalBody,profileModalFirstBtnMsg,function(){
+const profileModal = modalCommon.modalThreeBtn(profileModalTitle,profileModalBody,profileModalFirstBtnMsg,function(){
 	fileInputTag.click();
 },profileModalSecondBtnMsg,async function(){
 	const res = await fetch(apiUrl+"/profile/randomProfile");
@@ -14,21 +14,18 @@ const profileModal =new ModalThreeBtn(profileModalTitle,profileModalBody,profile
 });
 
 // initalize modal
-const writeBtnModal =new ModalTwoBtn(writeModalTitle,writeModalBody,function(){
-	isSessionLoginInfo().then(result =>{
-		// セッションがある。
-		if(result == "true"){
-			// TODO
-			return fetch(apiUrl+"/user")
+const writeBtnModal = modalCommon.modalTwoBtn(writeModalTitle,writeModalBody,function(){
+	isSessionLoginInfo().then(async (result) => {
 		// セッションがない。
-		}else{
-			return addnonMember();
+		if(Boolean(result) == false){
+			await addnonMember();
 		}
-	}).then(result => {
-		return addCelebration();
-	}).then(result => {
-		modalCommon.displayErrorModal("完了title","完了body");
-	})
+		return await addCelebration();
+	}).then(() => {
+		location.href = `/${language}/celebration`; 
+	}).catch(e =>{
+		modalCommon.displayApiErrorModal(e);
+	});
 });
 
 // initalize summbernote
@@ -39,6 +36,7 @@ $('#summernote').summernote({
 });
 
 const addnonMember = async function(){
+	console.log("非会員ユーザ作成API");
 	const res = await fetch(apiUrl+"/user/add/nonmember",{
 		method: 'POST',
 		headers: {
@@ -48,13 +46,20 @@ const addnonMember = async function(){
 		 body: JSON.stringify({
 			 name: document.querySelector('[name="name"]').value, 
 			 profileImageType: document.querySelector('[name="profileImageType"]').value, 
-			 profileImageBase64: document.querySelector('[name="profileImageType"]').value, 
+			 profileImageBase64: document.querySelector('[name="profileImageBase64"]').value, 
 		})
 	});
-	return await res.json();
+	
+	if(!res.ok) {
+		const result = await res.json();
+		return Promise.reject(result);
+	}else{
+		return Promise.resolve();
+	}
 }
 
 const addCelebration = async function(){
+	console.log("お祝い投稿API");
 	const res = await fetch(apiUrl+"/celebration/add",{
 		method: 'POST',
 		headers: {
@@ -63,10 +68,19 @@ const addCelebration = async function(){
 		},
 		 body: JSON.stringify({
 			 title: document.querySelector('[name="title"]').value, 
-			 content: $('#summernote').summernote('code')
+			 content: $('#summernote').summernote('code'),
+			 name: document.querySelector('[name="name"]').value, 
+			 profileImageType: document.querySelector('[name="profileImageType"]').value, 
+			 profileImageBase64: document.querySelector('[name="profileImageBase64"]').value
 		})
 	});
-	return await res.json();
+	
+	if(!res.ok) {
+		const result = await res.json();
+		return Promise.reject(result);
+	}else{
+		return Promise.resolve();
+	}
 }
 
 /*
@@ -75,9 +89,9 @@ const addCelebration = async function(){
  * @return {boolean} true or false
  */
 const isSessionLoginInfo = async function(){
+	console.log("ログイン有無確認API");
 	const res = await fetch(apiUrl+"/session/login-info");
-	// TODO検証
-	// もしこれでできたら、他のAPIも修正
+
 	if(!res.ok) {
 		const result = res.json();
 		throw new Error(result);
@@ -86,20 +100,45 @@ const isSessionLoginInfo = async function(){
 	}
 }
 
+const getUser = async function(){
+	console.log("ユーザ情報取得");
+	const res = await fetch(apiUrl+"/user");
+	
+	const result = await res.json();
+	
+	if(!res.ok) {
+		return Promise.reject(result);
+	}else{
+		document.querySelector("[name='name']").value = result.name;
+		changeProfileByTypeAndBase64(result.profileImageType,result.profileImageBase64);
+	}
+}
+
+const getRandomImage = async function(){
+	console.log("ランダムイメージ取得");
+	const res = await fetch(apiUrl+"/profile/randomProfile");
+	
+	const result = await res.json();
+	
+	if(!res.ok) {
+		return Promise.reject(result);
+	}else{
+		changeProfileByTypeAndBase64(result.profileImageType,result.profileImageBase64);
+	}
+}
+
+
+
 const initialize = function(){
 	isSessionLoginInfo().then(result =>{
 		console.log(`ログイン有無 : ${result}`);
 		// セッションがある。
-		if(result == "true"){
-			return fetch(apiUrl+"/user")
+		if(Boolean(result) == true){
+			getUser();
 		// セッションがない。
 		}else{
-			return fetch(apiUrl+"/profile/randomProfile")
+			getRandomImage();
 		}
-	}).then(res => {
-		return res.json();
-	}).then(result => {
-		changeProfileByTypeAndBase64(result.profileImageType,result.profileImageBase64);
 	}).catch(e =>{
 		modalCommon.displayApiErrorModal(e);
 	});

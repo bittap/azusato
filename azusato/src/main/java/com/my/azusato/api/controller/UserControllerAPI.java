@@ -105,7 +105,10 @@ public class UserControllerAPI {
 	public void addNonMember(@RequestBody @Validated AddNonMemberUserAPIRequest req,
 			@CookieValue(value = CookieConstant.NON_MEMBER_KEY, required = false) Cookie nonmemberCookie) {
 		log.debug("{}#addNonMember START, req : {}", UserControllerAPI.class.getName(), req);
+		log.debug("parameter cookie exist : {}", Objects.nonNull(nonmemberCookie));
+		log.debug("parameter cookie exist : {}", Objects.nonNull(servletRequest.getCookies()));
 		if (nonmemberCookie != null) {
+			log.debug("[既に存在する非会員ユーザ] cookieNo : {}", nonmemberCookie.getValue());
 			throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0003,
 					messageSource.getMessage(AzusatoException.I0003, null, servletRequest.getLocale()));
 		} else {

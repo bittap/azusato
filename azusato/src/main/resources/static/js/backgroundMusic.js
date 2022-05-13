@@ -16,7 +16,7 @@ $(document).ready(function(){
 		musucSrc = "/music/background_ja.mp3";
 	}
 	// initalize modal
-	const twoBtnModal =new ModalTwoBtn(modalTitle,modalBody,function(){
+	const twoBtnModal = modalCommon.modalTwoBtn(modalTitle,modalBody,function(){
 		createAudioTag();
 		console.log("yes start music play");
 		document.querySelector('#background-audio').play();

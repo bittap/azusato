@@ -1,19 +1,19 @@
 ModalCommon = function(){
-	const centerdClassName = "modal-dialog-centered";
-	const errorModal = new bootstrap.Modal(document.getElementById('errorBtnModal'), {
+	this.centerdClassName = "modal-dialog-centered";
+	this.errorModal = new bootstrap.Modal(document.getElementById('errorBtnModal'), {
 		  keyboard: false
 	});
-	const confirmModal = new bootstrap.Modal(document.getElementById('confirmBtnModal'), {
+	this.confirmModal = new bootstrap.Modal(document.getElementById('confirmBtnModal'), {
 		  keyboard: false
 	});
 }
 
 ModalCommon.prototype.displayConfirmModal = function(title, body){
-	displayOneBtnModal(title, body,document.getElementById('confirmBtnModal'),this.confirmModal);
+	this.displayOneBtnModal(title, body,document.getElementById('confirmBtnModal'),this.confirmModal);
 }
 
 ModalCommon.prototype.displayErrorModal = function(title, body){
-	displayOneBtnModal(title, body,document.getElementById('errorBtnModal'),this.errorModal);
+	this.displayOneBtnModal(title, body,document.getElementById('errorBtnModal'),this.errorModal);
 }
 /*
  * APIエラーメッセージを表示。もし、title,messageがない場合は、基本メッセージのエラーを表示する。
@@ -22,13 +22,20 @@ ModalCommon.prototype.displayErrorModal = function(title, body){
 ModalCommon.prototype.displayApiErrorModal = function(errorMessage){
 	const title = errorMessage.title != null ? errorMessage.title : DEFAULT_ERROR_TITLE;
 	const body = errorMessage.message != null ? errorMessage.message : DEFAULT_ERROR_BODY;
-	displayOneBtnModal(title, body,document.getElementById('errorBtnModal'),this.errorModal);
+	this.displayOneBtnModal(title, body,document.getElementById('errorBtnModal'),this.errorModal);
 }
 
 ModalCommon.prototype.displayOneBtnModal = function(title, body, targetTag, targetObj){
 	targetTag.querySelector('.modal-title').textContent = title;
-	targetTag.querySelector('.modal-body').textContent = body;
+	targetTag.querySelector('.modal-body').innerHTML = this.convertNToBr(body);
 	targetObj.show();
+}
+
+/*
+ * \nタグを<br/>タグに置き換える。
+ */
+ModalCommon.prototype.convertNToBr = function(str){
+	return str.replaceAll('\n','<br/>');
 }
 
 /*
@@ -38,7 +45,7 @@ ModalCommon.prototype.displayOneBtnModal = function(title, body, targetTag, targ
  * @param {function} yesBtnAction invoked action when the yes button is clicked. this is executed order that is closed modal and then "yesBtnAction". (can't not be 'null')
  * @param {function} noBtnAction invoked action when the no button is clicked. If this is null, close modal. If this is not null, execute it.
  */
-ModalCommon.prototype.ModalTwoBtn = function(title, body , yesBtnAction, noBtnTitle, yesBtnTitle, noBtnAction, centered = false){
+ModalCommon.prototype.modalTwoBtn = function(title, body , yesBtnAction, noBtnTitle, yesBtnTitle, noBtnAction, centered = false){
 	const temp = document.querySelector('#template-twoBtnModal');
 	const clone = temp.content.cloneNode(true);
 	// declare variables
@@ -100,7 +107,7 @@ ModalCommon.prototype.ModalTwoBtn = function(title, body , yesBtnAction, noBtnTi
  * @param {function} yesBtnAction invoked action when the yes button is clicked. this is executed order that is closed modal and then "yesBtnAction". (can't not be 'null')
  * @param {function} noBtnAction invoked action when the no button is clicked. If this is null, close modal. If this is not null, execute it.
  */
-ModalCommon.prototype.ModalThreeBtn = function(title, body , firstBtnTitle,firstBtnAction, secondBtnTitle, secondBtnAction, thirdBtnTitle, thirdBtnAction,centered = false){
+ModalCommon.prototype.modalThreeBtn = function(title, body , firstBtnTitle,firstBtnAction, secondBtnTitle, secondBtnAction, thirdBtnTitle, thirdBtnAction,centered = false){
 	const temp = document.querySelector('#template-threeBtnModal');
 	const clone = temp.content.cloneNode(true);
 	// declare variables
