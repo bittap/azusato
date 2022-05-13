@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +11,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.my.azusato.api.controller.ProfileControllerAPI;
 import com.my.azusato.api.controller.UserControllerAPI;
-import com.my.azusato.api.controller.response.DefaultRandomProfileResponse;
-import com.my.azusato.api.service.response.GetSessionUserServiceAPIResponse;
-import com.my.azusato.exception.AzusatoException;
-import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.view.controller.common.ModelConstant;
 import com.my.azusato.view.controller.common.UrlConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
@@ -69,31 +63,8 @@ public class CelebrationController {
 	@GetMapping(Api.CELEBRATION_WRITE_URL)
 	public ModelAndView write() throws IOException {
 		log.debug("[お祝い投稿ページ] START");
-		
-		ResponseEntity<Object> resSessionUserInfo = userControllerAPI.getSessionUser();
-
-		CelebrationWriteResponse writeResponse = new CelebrationWriteResponse();
-
-		// ユーザ情報取得成功
-		if (resSessionUserInfo.getStatusCode() == HttpStatus.OK) {
-			GetSessionUserServiceAPIResponse resBody = (GetSessionUserServiceAPIResponse) resSessionUserInfo.getBody();
-			writeResponse.setName(resBody.getName());
-			writeResponse.setImageSrc("data:" + resBody.getProfileImageType() + ";base64,"+ resBody.getProfileImageBase64());
-			// セッションなし
-		} else if (resSessionUserInfo.getStatusCode() == HttpStatus.NOT_FOUND) {
-			// random基本イメージを取得
-			DefaultRandomProfileResponse randomImageResponse = profileControllerAPI.getDefaultRandomProfile();
-
-			writeResponse.setImageSrc("data:" + randomImageResponse.getProfileImageType() + ";base64,"+ randomImageResponse.getProfileImageBase64());
-			// エラー
-		} else {
-			ErrorResponse resBody = (ErrorResponse) resSessionUserInfo.getBody();
-			throw new AzusatoException(resSessionUserInfo.getStatusCode(), resBody.getTitle(), resBody.getMessage());
-		}
 
 		ModelAndView mav = new ModelAndView(VIEW_FOLDER_NAME + "write");
-		// set data
-		mav.addObject(ModelConstant.DATA_KEY, writeResponse);
 		// set header
 		addHeaderModel(mav);
 		log.debug("[お祝い投稿ページ] END response : {}",mav);

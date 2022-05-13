@@ -1,15 +1,34 @@
-const centerdClassName = "modal-dialog-centered";
+ModalCommon = function(){
+	const centerdClassName = "modal-dialog-centered";
+	const errorModal = new bootstrap.Modal(document.getElementById('errorBtnModal'), {
+		  keyboard: false
+	});
+	const confirmModal = new bootstrap.Modal(document.getElementById('confirmBtnModal'), {
+		  keyboard: false
+	});
+}
 
-const errorModal = new bootstrap.Modal(document.getElementById('errorBtnModal'), {
-	  keyboard: false
-});
+ModalCommon.prototype.displayConfirmModal = function(title, body){
+	displayOneBtnModal(title, body,document.getElementById('confirmBtnModal'),this.confirmModal);
+}
 
-function displayErrorModal(title, body){
-	const modalTag = document.getElementById('errorBtnModal');
-	modalTag.querySelector('.modal-title').textContent = title;
-	modalTag.querySelector('.modal-body').textContent = body;
-	errorModal.show();
-	
+ModalCommon.prototype.displayErrorModal = function(title, body){
+	displayOneBtnModal(title, body,document.getElementById('errorBtnModal'),this.errorModal);
+}
+/*
+ * APIエラーメッセージを表示。もし、title,messageがない場合は、基本メッセージのエラーを表示する。
+ * @param {object} errorMessage title, messageに構成
+ */
+ModalCommon.prototype.displayApiErrorModal = function(errorMessage){
+	const title = errorMessage.title != null ? errorMessage.title : DEFAULT_ERROR_TITLE;
+	const body = errorMessage.message != null ? errorMessage.message : DEFAULT_ERROR_BODY;
+	displayOneBtnModal(title, body,document.getElementById('errorBtnModal'),this.errorModal);
+}
+
+ModalCommon.prototype.displayOneBtnModal = function(title, body, targetTag, targetObj){
+	targetTag.querySelector('.modal-title').textContent = title;
+	targetTag.querySelector('.modal-body').textContent = body;
+	targetObj.show();
 }
 
 /*
@@ -19,15 +38,17 @@ function displayErrorModal(title, body){
  * @param {function} yesBtnAction invoked action when the yes button is clicked. this is executed order that is closed modal and then "yesBtnAction". (can't not be 'null')
  * @param {function} noBtnAction invoked action when the no button is clicked. If this is null, close modal. If this is not null, execute it.
  */
-function ModalTwoBtn(title, body , yesBtnAction, noBtnTitle, yesBtnTitle, noBtnAction, centered = false){
+ModalCommon.prototype.ModalTwoBtn = function(title, body , yesBtnAction, noBtnTitle, yesBtnTitle, noBtnAction, centered = false){
+	const temp = document.querySelector('#template-twoBtnModal');
+	const clone = temp.content.cloneNode(true);
 	// declare variables
-	this.modalTag = document.getElementById('twoBtnModal');
+	this.modalTag = clone.querySelector('#twoBtnModal');
 	this.modalDialogTag = this.modalTag.querySelector('.modal-dialog');
-	this.noBtnTag = document.getElementById("twoBtnModal-no");
-	this.yesBtnTag = document.getElementById("twoBtnModal-yes");
+	this.noBtnTag = this.modalTag.querySelector('#twoBtnModal-no');
+	this.yesBtnTag = this.modalTag.querySelector('#twoBtnModal-yes');
 	// create modal with bootstrap for using show, hide etc..
 	// Note can't use display, fade etc ... without this
-	this.modalWithBootstrap = new bootstrap.Modal(document.getElementById('twoBtnModal'), {
+	this.modalWithBootstrap = new bootstrap.Modal(this.modalTag, {
 		  keyboard: false
 	});
 	
@@ -61,11 +82,13 @@ function ModalTwoBtn(title, body , yesBtnAction, noBtnTitle, yesBtnTitle, noBtnA
 	
 	// set modal position to vertically center
 	if(centered == true){
-		this.modalDialogTag.classList.add(centerdClassName);
+		this.modalDialogTag.classList.add(this.centerdClassName);
 	}else{
-		this.modalDialogTag.classList.remove(centerdClassName);
+		this.modalDialogTag.classList.remove(this.centerdClassName);
 	}
 	this.yesBtnTag.addEventListener('click',enclosingYesBtnAction(this.modalWithBootstrap));
+	
+	document.body.appendChild(clone);
 	
 	return this.modalWithBootstrap;
 }
@@ -77,7 +100,7 @@ function ModalTwoBtn(title, body , yesBtnAction, noBtnTitle, yesBtnTitle, noBtnA
  * @param {function} yesBtnAction invoked action when the yes button is clicked. this is executed order that is closed modal and then "yesBtnAction". (can't not be 'null')
  * @param {function} noBtnAction invoked action when the no button is clicked. If this is null, close modal. If this is not null, execute it.
  */
-function ModalThreeBtn(title, body , firstBtnTitle,firstBtnAction, secondBtnTitle, secondBtnAction, thirdBtnTitle, thirdBtnAction,centered = false){
+ModalCommon.prototype.ModalThreeBtn = function(title, body , firstBtnTitle,firstBtnAction, secondBtnTitle, secondBtnAction, thirdBtnTitle, thirdBtnAction,centered = false){
 	const temp = document.querySelector('#template-threeBtnModal');
 	const clone = temp.content.cloneNode(true);
 	// declare variables
@@ -134,9 +157,9 @@ function ModalThreeBtn(title, body , firstBtnTitle,firstBtnAction, secondBtnTitl
 	
 	// set modal position to vertically center
 	if(centered == true){
-		this.modalDialogTag.classList.add(centerdClassName);
+		this.modalDialogTag.classList.add(this.centerdClassName);
 	}else{
-		this.modalDialogTag.classList.remove(centerdClassName);
+		this.modalDialogTag.classList.remove(this.centerdClassName);
 	}
 	this.firstBtnTag.addEventListener('click',enclosingFirstBtnAction(this.modalWithBootstrap));
 	this.secondBtnTag.addEventListener('click',enclosingSecondBtnAction(this.modalWithBootstrap));

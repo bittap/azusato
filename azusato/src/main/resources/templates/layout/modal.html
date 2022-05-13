@@ -1,4 +1,4 @@
-<div class="modal fade" id="errorBtnModal" tabindex="-1" aria-labelledby="twoBtnModalLabel" aria-hidden="true">
+<div class="modal fade" id="errorBtnModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -8,6 +8,21 @@
  	  <div class="modal-body"></div>
       <div class="modal-footer">
         <button id="errorBtnModal-yes" type="button" class="btn btn-danger" data-bs-dismiss="modal" th:text="#{twoBtnModal.yes-text}"></button>
+      </div>
+    </div>
+  </div>
+</div>	
+
+<div class="modal fade" id="confirmBtnModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-info"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+ 	  <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button id="confirmBtnModal-yes" type="button" class="btn btn-info" data-bs-dismiss="modal" th:text="#{twoBtnModal.yes-text}"></button>
       </div>
     </div>
   </div>
@@ -35,7 +50,7 @@
 
 <!-- Modal With Three button -->
 <template id="template-threeBtnModal">
-	<div class="modal fade" id="threeBtnModal" tabindex="-1" aria-labelledby="twoBtnModalLabel" aria-hidden="true">
+	<div class="modal fade" id="threeBtnModal" tabindex="-1" aria-labelledby="threeBtnModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header">

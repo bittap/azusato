@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import javax.servlet.http.HttpSession;
 
+import com.my.azusato.dto.LoginUserDto;
 import com.my.azusato.view.controller.common.SessionConstant;
 
 /**
@@ -23,6 +24,20 @@ public class SessionUtil {
 			return false;
 		}else {
 			return true;
+		}
+	}
+	
+	/**
+	 * loginSession情報を返す。
+	 * @param httpSession {@link HttpSession}
+	 * @return loginSession情報。もし、ない場合はnullを返す。
+	 */
+	public static LoginUserDto getLoginSession(HttpSession httpSession) {
+		if(isLoginSession(httpSession)) {
+			LoginUserDto userDto = (LoginUserDto)httpSession.getAttribute(SessionConstant.LOGIN_KEY);
+			return userDto;
+		} else {
+			return null;
 		}
 	}
 }

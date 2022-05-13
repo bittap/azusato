@@ -22,6 +22,8 @@
 					  <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" id="profile-avatar" class="rounded-circle profile-avatar" alt="User avatar">
 					  <div class="form-text" th:text="#{celebration.write.profile.placeholder}">
 					  </div>
+			          <input name="profileImageType" type="text" hidden/>
+					  <input name="profileImageBase64" type="text" hidden/>
 					  <!-- プロフィールモーダルでファイル選択時利用するfileタグ-->
 					  <input id="file-input" type="file" accept="image/jpeg, image/png" hidden/>
 					</div>
@@ -34,7 +36,7 @@
 			          <div class="row"> 
 						<label class="control-label" th:text="#{celebration.write.name}"></label>
 						<div class="name-wrap">
-							<input class="form-control" type="text" th:placeholder="#{celebration.write.name.placeholder}">
+							<input class="form-control" name="name" type="text" th:placeholder="#{celebration.write.name.placeholder}">
 						</div>
 						<!-- remain area -->
 						<div></div>
@@ -42,15 +44,15 @@
 			          <div class="row"> 
 						<label class="control-label" th:text="#{celebration.write.title}"></label>
 						<div class="title-wrap">
-							<input class="form-control" type="text" th:placeholder="#{celebration.write.title.placeholder}">
+							<input class="form-control" name="title" type="text" th:placeholder="#{celebration.write.title.placeholder}">
 						</div>
 						<!-- remain area -->
 						<div></div>
 			          </div>
 					  <div class="summbernote row" id="summernote"></div>
 					  <div class="pt-3 btn-outline-wrap text-end">
-						<button type="button" class="btn btn-primary" th:text="#{celebration.write.button.write}"></button>
-						<button type="button" class="btn btn-secondary" th:text="#{celebration.write.button.cancle}"></button>
+						<button id="writeBtn" type="button" class="btn btn-primary" th:text="#{celebration.write.button.write}"></button>
+						<button type="button" class="btn btn-secondary" th:text="#{celebration.write.button.cancle}" onclick="history.back()"></button>
 					  </div>
 			        </div>
 			      </div>
@@ -71,6 +73,8 @@
 		const profileModalFirstBtnMsg = /*[[#{celebration.write.profile-modal.first-button}]]*/ "プロフィールモーダルの最初のボタンの文字列";
 		const profileModalSecondBtnMsg = /*[[#{celebration.write.profile-modal.second-button}]]*/ "プロフィールモーダルの二番目のボタンの文字列";
 		const badRequestProfileType = /*[[#{celebration.write.bad-request.profile.type}]]*/ "拡張子ミス";
+		const writeModalTitle = /*[[#{celebration.write.modal.title}]]*/ "作成モーダルタイトル";
+		const writeModalBody = /*[[#{celebration.write.modal.body}]]*/ "作成モーダルないよう";
 		
 		const summernote_lang = window.language == "ko" ? "ko-KR" : "ja-JP";
 	</script>

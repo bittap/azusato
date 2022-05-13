@@ -42,6 +42,8 @@ public class UrlConstant {
 
 		public static final String ADD_NONMEMBER_URL = "/add/nonmember";
 		
+		public static final String UPDATE_USER_PROFILE = "/update";
+		
 		public static final String CELEBRATION_WRITE_URL = "/write";
 		
 		public static final String CHECK_EXIST_SESSION_URL = "/login-info";

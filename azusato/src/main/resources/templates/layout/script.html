@@ -4,6 +4,9 @@
 	Declare varables here. This is used /layout/body.html 
 */-->
 <script th:inline="javascript">
+	const modalCommon = new ModalCommon();
 	const language = /*[[${#locale}]]*/ "language";
 	const apiUrl = "/"+/*[[${@environment.getProperty('common.api-url')}]]*/ "commonApiUrl";
+	const DEFAULT_ERROR_TITLE = "E-0002";
+	const DEFAULT_ERROR_BODY = "/"+/*[[${@environment.getProperty('E-0002')}]]*/ "default error body";
 </script>

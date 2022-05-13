@@ -12,7 +12,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 @Builder
-public class AddNonMemberUserAPIRequest {
+public class UpdateUserProfileAPIRequest {
 
 	@NotBlank(message = "{notBlank}")
 	String name;

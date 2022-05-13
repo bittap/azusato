@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -103,7 +102,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
 			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
 
-			assertEquals(new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase(), expectedMessage), result);
+			assertEquals(new ErrorResponse(AzusatoException.I0004, expectedMessage), result);
 		}
 
 		private String getRequestBody() throws Exception {

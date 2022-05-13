@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -68,11 +67,11 @@ public class UserContollerAPITest extends AbstractIntegration {
 		
 		@ParameterizedTest
 		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void givenNotSession_result404(Locale locale) throws Exception {
+		public void givenNotSession_result400(Locale locale) throws Exception {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
 					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET)
 					.locale(locale)
-				).andDo(print()).andExpect(status().isNotFound()).andReturn();
+				).andDo(print()).andExpect(status().isBadRequest()).andReturn();
 		
 			String resultStrBody = mvcResult.getResponse().getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
 			ErrorResponse result = om.readValue(resultStrBody, ErrorResponse.class);
@@ -121,13 +120,17 @@ public class UserContollerAPITest extends AbstractIntegration {
 		@ParameterizedTest
 		@MethodSource("com.my.azusato.common.TestSource#locales")
 		public void semi_abnormal_case(Locale locale) throws Exception {
-
+			AddNonMemberUserAPIRequest req = AddNonMemberUserAPIRequest.builder().name(Entity.createdVarChars[0])
+			.profileImageType("image/png").profileImageBase64(Entity.createdVarChars[2]).build();
+			String requestBody = om.writeValueAsString(req);
+			
 			MvcResult mvcResult = mockMvc
 					.perform(MockMvcRequestBuilders
 							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET
 									+ Api.ADD_NONMEMBER_URL)
 							.locale(locale).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-							.cookie(TestCookie.getNonmemberCookie()))
+							.content(requestBody)
+							.cookie(TestCookie.getNonmemberCookie()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING))
 					.andDo(print()).andExpect(status().isBadRequest()).andReturn();
 
 			String resultBody = mvcResult.getResponse()
@@ -154,7 +157,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
 			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
 
-			assertEquals(new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase(), expectedMessage), result);
+			assertEquals(new ErrorResponse(AzusatoException.I0004, expectedMessage), result);
 		}
 	}
 	
@@ -173,10 +176,10 @@ public class UserContollerAPITest extends AbstractIntegration {
 		return Stream.of(
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddNonMemberUserAPIRequest.builder().profileImageType("image/svg+xml").build(),
-						"プロフィールイメージはpng、jpegのみ可能です。"),
+						"プロフィールイメージはpng、jpegのみ可能です。\nプロフィールイメージ情報は必修項目です。\n名前は必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddNonMemberUserAPIRequest.builder().profileImageType("image/svg+xml").build(),
-						"프로필사진은 png, jpeg만 지원됩니다.")
+						"이름을 입력해주세요.\n프로필사진은 png, jpeg만 지원됩니다.\n프로필이미지정보을 입력해주세요.")
 				);
 	}
 }

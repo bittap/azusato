@@ -66,7 +66,7 @@ public class UserControllerAPI {
 	 * セッションにあるユーザのテーブル情報を返す。
 	 * <ul>
 	 * <li>200 : セッションが存在 かつ ログイン情報取得に成功</li>
-	 * <li>404 : セッションが存在しない</li>
+	 * <li>400 : セッションが存在しない</li>
 	 * <li>500 : セッションにあるユーザ情報により、検索できない場合</li>
 	 * </ul>
 	 * 
@@ -86,7 +86,7 @@ public class UserControllerAPI {
 		} else {
 			ErrorResponse errorResponse = new ErrorResponse(AzusatoException.I0002,
 					messageSource.getMessage(AzusatoException.I0002, null, servletRequest.getLocale()));
-			ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+			ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 			log.debug("[セッション情報が存在しない] END, response : {}",response);
 			return response;
 		}
@@ -96,13 +96,13 @@ public class UserControllerAPI {
 	/**
 	 * if cookie exists throw, not exists add a nonmember by req.
 	 * 
-	 * @param req             requestbody nullAble
+	 * @param req             requestbody
 	 * @param nonmemberCookie if exists throw, not exists add a nonmember.
 	 * @param servletResponse {@link HttpServletResponse}
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value = Api.ADD_NONMEMBER_URL)
-	public void addNonMember(@RequestBody(required = false) @Validated AddNonMemberUserAPIRequest req,
+	public void addNonMember(@RequestBody @Validated AddNonMemberUserAPIRequest req,
 			@CookieValue(value = CookieConstant.NON_MEMBER_KEY, required = false) Cookie nonmemberCookie) {
 		log.debug("{}#addNonMember START, req : {}", UserControllerAPI.class.getName(), req);
 		if (nonmemberCookie != null) {
