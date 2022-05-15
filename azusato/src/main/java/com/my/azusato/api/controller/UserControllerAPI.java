@@ -27,6 +27,7 @@ import com.my.azusato.api.service.response.GetSessionUserServiceAPIResponse;
 import com.my.azusato.dto.LoginUserDto;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
+import com.my.azusato.property.SessionProperty;
 import com.my.azusato.property.UserProperty;
 import com.my.azusato.view.controller.common.CookieConstant;
 import com.my.azusato.view.controller.common.SessionConstant;
@@ -61,6 +62,8 @@ public class UserControllerAPI {
 	private final HttpServletRequest servletRequest;
 
 	private final HttpServletResponse servletResponse;
+	
+	private final SessionProperty sessionProperty;
 
 	/**
 	 * セッションにあるユーザのテーブル情報を返す。
@@ -105,8 +108,6 @@ public class UserControllerAPI {
 	public void addNonMember(@RequestBody @Validated AddNonMemberUserAPIRequest req,
 			@CookieValue(value = CookieConstant.NON_MEMBER_KEY, required = false) Cookie nonmemberCookie) {
 		log.debug("{}#addNonMember START, req : {}", UserControllerAPI.class.getName(), req);
-		log.debug("parameter cookie exist : {}", Objects.nonNull(nonmemberCookie));
-		log.debug("parameter cookie exist : {}", Objects.nonNull(servletRequest.getCookies()));
 		if (nonmemberCookie != null) {
 			log.debug("[既に存在する非会員ユーザ] cookieNo : {}", nonmemberCookie.getValue());
 			throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0003,
@@ -119,11 +120,11 @@ public class UserControllerAPI {
 			long savedNo = userAPIService.addNonMember(serviceReq);
 
 			Cookie nonMemberCookie = createNonmemberCookie(String.valueOf(savedNo));
+			// セッションの有効pathこれを設定しないとこのURL以外には認識されない。
+			nonMemberCookie.setPath("/");
 			servletResponse.addCookie(nonMemberCookie);
 
-			log.debug("{}#addNonMember END, cookie {} : {}", UserControllerAPI.class.getName(),
-					nonMemberCookie.getName(), nonMemberCookie.getValue());
-
+			log.debug("[非会員ユーザcookie追加], cookie {} : {}", nonMemberCookie.getName(), nonMemberCookie.getValue());
 		}
 	}
 

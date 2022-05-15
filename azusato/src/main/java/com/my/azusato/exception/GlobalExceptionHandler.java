@@ -5,6 +5,8 @@ import java.util.Locale;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.http.HttpHeaders;
@@ -19,24 +21,26 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.my.azusato.view.controller.common.HttpConstant;
-import com.my.azusato.view.controller.common.MessageConstant;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice
 @Slf4j
+@RequiredArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-	private final HttpHeaders headers;
+	private final HttpHeaders headers = new HttpHeaders();
 
 	private final MessageSource ms;
+	
+	private final HttpServletRequest httpServletRequest;
 
-	public GlobalExceptionHandler(MessageSource ms) {
-		headers = new HttpHeaders();
-		headers.setContentType(HttpConstant.DEFAULT_CONTENT_TYPE);
-		this.ms = ms;
-	}
+//	public GlobalExceptionHandler(MessageSource ms) {
+//		headers = new HttpHeaders();
+//		headers.setContentType(HttpConstant.DEFAULT_CONTENT_TYPE);
+//		this.ms = ms;
+//	}
 
 	@ExceptionHandler(value = { Exception.class })
 	public ResponseEntity<Object> handleMyException(Exception ex) throws JsonProcessingException {
@@ -54,7 +58,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 					message);
 			return new ResponseEntity<>(responseBody, headers, responseStatusException.getRawStatusCode());
 		} else {
-			return new ResponseEntity<>("", HttpStatus.INTERNAL_SERVER_ERROR);
+			ErrorResponse responseBody = new ErrorResponse(AzusatoException.E0002,
+					ms.getMessage(AzusatoException.E0002, null, httpServletRequest.getLocale()));
+			return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -88,8 +94,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 				} catch (IllegalArgumentException e) {
 					log.error("fail to bounded message. default message : {}, fieldName : {}",
 							fieldError.getDefaultMessage(), fieldName);
-					ErrorResponse responseBody = new ErrorResponse(status.getReasonPhrase(),
-							ms.getMessage(MessageConstant.ERROR500, null, locale));
+					ErrorResponse responseBody = new ErrorResponse(AzusatoException.E0002,
+							ms.getMessage(AzusatoException.E0002, null, locale));
 					return new ResponseEntity<>(responseBody, headers, HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 			} else {

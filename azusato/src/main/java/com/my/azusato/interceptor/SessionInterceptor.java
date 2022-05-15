@@ -41,16 +41,18 @@ public class SessionInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
+		log.debug("[セッションpreHandle]");
 		HttpSession session = request.getSession();
 		if(SessionUtil.isLoginSession(request.getSession())) {
 			log.debug("[既にログインセッションが存在。log更新]");
 			session.setMaxInactiveInterval(sessionProperty.getMaxIntervalSeconds());
 			// セッション情報がない かつ 非ログインの場合はログイン扱いにする。
 		} else {
+			log.debug("[ログインセッションが存在しない。cookie検出]");
 			Cookie[] cookies = request.getCookies();
 			if (Objects.nonNull(cookies)) {
 				Optional<Cookie> opNonmemberCookie = Arrays
-						.stream(cookies).filter((c) -> Objects.nonNull(c.getName())
+						.stream(cookies).peek((e)->log.debug("[cookie] key : {}, value : {}",e.getName(),e.getValue())).filter((c) -> Objects.nonNull(c.getName())
 								&& c.getName().equals(CookieConstant.NON_MEMBER_KEY) && Objects.nonNull(c.getValue()))
 						.findFirst();
 
