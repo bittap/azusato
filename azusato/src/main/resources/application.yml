@@ -69,5 +69,6 @@ rest:
   # RestAPIの基本パス。FullURIがない場合割り当てられる。
   default-uri: http://localhost:8081/
   
-common:
+client:
+  loading-modal-delay: 1000
   api-url: api

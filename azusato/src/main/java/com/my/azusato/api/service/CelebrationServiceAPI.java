@@ -7,10 +7,16 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
+import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
+import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.entity.ProfileEntity;
 import com.my.azusato.entity.UserEntity;
@@ -20,6 +26,7 @@ import com.my.azusato.entity.common.CommonFlagEntity;
 import com.my.azusato.entity.common.CommonUserEntity;
 import com.my.azusato.entity.common.DefaultValueConstant;
 import com.my.azusato.exception.AzusatoException;
+import com.my.azusato.page.MyPageRequest;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.UserRepository;
 
@@ -117,5 +124,13 @@ public class CelebrationServiceAPI {
 		celeRepo.save(insertedEntity);
 
 		log.debug("{}#addCelebartion END");
+	}
+
+	public GetCelebrationsSerivceAPIResponse getCelebrations(GetCelebrationsSerivceAPIRequset req, MyPageRequest pageReq) {
+		Pageable sortedByCratedDatetime = PageRequest.of(pageReq.getCurrentPageNo(), pageReq.getDisplayListCount(),Sort.by("createDatetime",""));
+		Page<CelebrationEntity> celebrationEntitys = celeRepo.findAll(sortedByCratedDatetime);
+		
+		//celebrationEntitys.stream()
+		return null;
 	}
 }

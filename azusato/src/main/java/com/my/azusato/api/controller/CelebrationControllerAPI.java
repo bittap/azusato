@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +16,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.my.azusato.api.controller.request.AddCelebrationAPIReqeust;
+import com.my.azusato.api.controller.request.GetCelebrationsAPIRequset;
 import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
+import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
+import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.dto.LoginUserDto;
 import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.exception.AzusatoException;
@@ -48,6 +52,24 @@ public class CelebrationControllerAPI {
 	private final CelebrationServiceAPI celeAPIService;
 
 	private final HttpServletRequest servletRequest;
+	
+	public final static String LIST_URL = "list";
+	
+	/**
+	 * ログインしていない時のuserNo
+	 */
+	public final static long NO_LOGIN_USER_NO = 0L;
+	
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(LIST_URL)
+	public GetCelebrationsSerivceAPIResponse getCelebrations(@RequestBody GetCelebrationsAPIRequset req) {
+		long userNo = Objects.nonNull(SessionUtil.getLoginSession(httpSession)) ? SessionUtil.getLoginSession(httpSession).getNo() : NO_LOGIN_USER_NO;
+		GetCelebrationsSerivceAPIRequset serviceReq = GetCelebrationsSerivceAPIRequset.builder()
+								.loginUserNo(userNo)
+								.build();
+		
+		return celeAPIService.getCelebrations(serviceReq, req.getPage());
+	}
 
 	/**
 	 * add a celebration. The first, check session. if session exists check user

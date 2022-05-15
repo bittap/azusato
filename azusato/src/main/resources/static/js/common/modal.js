@@ -6,6 +6,21 @@ ModalCommon = function(){
 	this.confirmModal = new bootstrap.Modal(document.getElementById('confirmBtnModal'), {
 		  keyboard: false
 	});
+	this.loadingEle = document.getElementById('loadingModal');
+	this.loadingModal = new bootstrap.Modal(this.loadingEle, {
+		  keyboard: false,
+		  backdrop: "static"
+	});
+}
+
+ModalCommon.prototype.displayLoadingModal = function(){
+	this.loadingModal.show();
+}
+/*
+ * 注意:show()とhide()は非同期のため　show()の次にすぐhide()を呼ぶとモーダルが表示されないままhide()が実行される。
+ */
+ModalCommon.prototype.hideLoadingModal = function(){
+	this.loadingModal.hide();
 }
 
 ModalCommon.prototype.displayConfirmModal = function(title, body){

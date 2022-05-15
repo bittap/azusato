@@ -4,9 +4,16 @@
 	Declare varables here. This is used /layout/body.html 
 */-->
 <script th:inline="javascript">
+	const asyncCommon = new AsyncCommon();
 	const modalCommon = new ModalCommon();
+	
 	const language = /*[[${#locale}]]*/ "language";
-	const apiUrl = "/"+/*[[${@environment.getProperty('common.api-url')}]]*/ "commonApiUrl";
+	const apiUrl = "/"+/*[[${@environment.getProperty('client.api-url')}]]*/ "commonApiUrl";
 	const DEFAULT_ERROR_TITLE = "E-0002";
-	const DEFAULT_ERROR_BODY = "/"+/*[[${@environment.getProperty('E-0002')}]]*/ "default error body";
+	const DEFAULT_ERROR_BODY = /*[[#{E-0002}]]*/ "default error body";
+	const LOADING_MODAL_DELAY = /*[[${@environment.getProperty('client.loading-modal-delay')}]]*/ "ミリ秒";
+	// background音楽に関するメッセージ
+	const BACKGROUND_MUSIC_MODAL_TITLE = /*[[#{background-music.modal.title}]]*/ "";
+	const BACKGROUND_MUSIC_MODAL_BODY = /*[[#{background-music.modal.body}]]*/ "";
+	const BACKGROUND_MUSIC_MODAL_SRC = /*[[#{background-music.modal.src}]]*/ "";
 </script>

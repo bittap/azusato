@@ -40,6 +40,24 @@ html {
     font-size: 20px;
 }
 
+/*
+* Modal
+*/
+#loadingModal .modal-content{
+  width: 48px;
+  border: none;
+  background-color: transparent;
+}
+
+#loadingModal .modal-dialog-centered{
+	justify-content: center; /*中央になるように*/
+}
+
+#loadingModal .spinner-border{
+	width: 7rem;
+	height: 7rem;
+}
+
 @media (min-width: 381px) and (max-width: 767px) {
   html {
     font-size: 16px;

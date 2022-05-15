@@ -16,7 +16,7 @@ import lombok.Data;
 public class AddCelebrationAPIReqeust {
 
 	@NotBlank(message = "{notBlank}")
-	@Size(max = 50, message = "{size.max}")
+	@Size(max = 50, message = "{size-string.max}")
 	String title;
 
 	@NotBlank(message = "{notBlank}")

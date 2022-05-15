@@ -58,8 +58,13 @@ const addnonMember = async function(){
 	}
 }
 
+
+/*
+ * Loding画面を表示し、投稿APIを行う。
+ */
 const addCelebration = async function(){
 	console.log("お祝い投稿API");
+	modalCommon.displayLoadingModal();
 	const res = await fetch(apiUrl+"/celebration/add",{
 		method: 'POST',
 		headers: {
@@ -74,8 +79,11 @@ const addCelebration = async function(){
 			 profileImageBase64: document.querySelector('[name="profileImageBase64"]').value
 		})
 	});
+
 	
 	if(!res.ok) {
+		await asyncCommon.delay(LOADING_MODAL_DELAY);
+		modalCommon.hideLoadingModal();
 		const result = await res.json();
 		return Promise.reject(result);
 	}else{
@@ -134,10 +142,10 @@ const initialize = function(){
 		console.log(`ログイン有無 : ${result}`);
 		// セッションがある。
 		if(Boolean(result) == true){
-			getUser();
+			return getUser();
 		// セッションがない。
 		}else{
-			getRandomImage();
+			return getRandomImage();
 		}
 	}).catch(e =>{
 		modalCommon.displayApiErrorModal(e);
