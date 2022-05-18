@@ -75,13 +75,16 @@ public class TestConstant {
 		public static final String[] updatedVarChars = { "update1", "update2", "update3", "update4", "update5",
 				"update6" };
 		public static final int[] createdInts = { 1, 2, 3, 4, 5, 6 };
+		public static final long[] createdLongs = { 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L };
 		public static final int[] updatedInts = { 1000, 1001, 1002, 1003, 1004 };
 		public static final String[] ImageType = { "png", "jpeg" };
 		public static final boolean CreatedBoolean = true;
 		public static final boolean UpdatedBoolean = false;
 		public static final LocalDateTime createdDatetime = LocalDateTime.of(2022, 1, 2, 3, 4, 5);
+		public static final LocalDateTime[] createdDatetimes = {createdDatetime, LocalDateTime.of(2022, 2, 2, 2, 2, 2)};
 		public static final LocalDateTime updatedDatetimeWhenCreate = LocalDateTime.of(2022, 1, 2, 3, 4, 5);
 		public static final LocalDateTime updatedDatetime = LocalDateTime.of(2022, 6, 7, 8, 9, 10);
+		public static final LocalDateTime[] updatedDatetimes = {updatedDatetime, LocalDateTime.of(2022, 7, 7, 7, 7, 7)};
 
 	}
 

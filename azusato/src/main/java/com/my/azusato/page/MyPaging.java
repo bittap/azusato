@@ -3,6 +3,11 @@ package com.my.azusato.page;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * ページング処理を担当する。
+ * @author Carmel
+ *
+ */
 public interface MyPaging {
 
 	/**

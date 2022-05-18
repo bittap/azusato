@@ -64,6 +64,21 @@ public class MyPagingTest{
 								.currentPageNo(1)
 								.pageOfElement(pageOfElement)
 								.pagesOfpage(pagesOfpage)
+								.totalElements(6)
+								.build(),
+							MyPageResponse.builder()
+								.pages(List.of(1,2))
+								.hasNext(false)
+								.hasPrivious(false)
+								.currentPageNo(1)
+								.totalPage(2)
+								.build()
+					),
+					Arguments.of(
+							MyPageRequest.builder()
+								.currentPageNo(1)
+								.pageOfElement(pageOfElement)
+								.pagesOfpage(pagesOfpage)
 								.totalElements(dataSize)
 								.build(),
 							MyPageResponse.builder()

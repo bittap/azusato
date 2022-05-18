@@ -35,6 +35,7 @@ import com.my.azusato.page.MyPageRequest;
 import com.my.azusato.page.MyPaging;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.UserRepository;
+import com.my.azusato.view.controller.common.ValueConstant;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -134,14 +135,15 @@ public class CelebrationServiceAPI {
 
 	/**
 	 * お祝いリストを返却する。
-	 * お祝い生成タイムの降順、書き込み生成タイムの降順で取得
+	 * お祝いNoの降順、書き込みNoの昇順で取得
 	 * @param req お祝いリストに関するリクエスト
 	 * @return お祝い+お祝い書き込みリスト
 	 */
 	public GetCelebrationsSerivceAPIResponse getCelebrations(GetCelebrationsSerivceAPIRequset req) {
 		// 注意 : 一番最初のパラメータpageは0から始まる。
-		Pageable sortedByCratedDatetime = PageRequest.of(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement(),Sort.by(Direction.DESC,"commonDate.createDatetime","replys.commonDate.createDatetime"));
-		Page<CelebrationEntity> celebrationEntitys = celeRepo.findAll(sortedByCratedDatetime);
+		Pageable sortedByNo = PageRequest.of(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement(),Sort.by(Direction.DESC,"no"));
+		Page<CelebrationEntity> celebrationEntitys = celeRepo
+				.findAllByCommonFlagDeleteFlag(sortedByNo,ValueConstant.DEFAULT_DELETE_FLAG);
 		
 		GetCelebrationsSerivceAPIResponse response = new GetCelebrationsSerivceAPIResponse();
 		
@@ -160,14 +162,21 @@ public class CelebrationServiceAPI {
 					.no(e.getNo())
 					.owner(e.getCommonUser().getCreateUserEntity().getNo() == req.getLoginUserNo() ? true : false)
 					.createdDatetime(e.getCommonDate().getCreateDatetime())
-					.replys(e.getReplys().stream().map((e2)->{
-						CelebrationReply reply = CelebrationReply.builder()
-								.no(e2.getCelebrationNo())
-								.content(e2.getContent())
-								.createdDatetime(e2.getCommonDate().getCreateDatetime())
-								.owner(e2.getCommonUser().getCreateUserEntity().getNo() == req.getLoginUserNo() ? true : false)
-								.build();
-						return reply;
+					.replys(e.getReplys().stream()
+							// deleted == falseだけ
+							.filter((e1)->{
+								return e1.getCommonFlag().getDeleteFlag() == ValueConstant.DEFAULT_DELETE_FLAG;
+							})
+							// No昇順Orderby
+							.sorted((e1,e2)->Long.compare(e1.getNo(), e2.getNo()))
+							.map((e2)->{
+								CelebrationReply reply = CelebrationReply.builder()
+										.no(e2.getNo())
+										.content(e2.getContent())
+										.createdDatetime(e2.getCommonDate().getCreateDatetime())
+										.owner(e2.getCommonUser().getCreateUserEntity().getNo() == req.getLoginUserNo() ? true : false)
+										.build();
+								return reply;
 					}).collect(Collectors.toList()))
 					.build();
 		}).collect(Collectors.toList());

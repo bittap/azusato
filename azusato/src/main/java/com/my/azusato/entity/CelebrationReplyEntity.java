@@ -26,8 +26,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CelebrationReplyEntity {
-
+	
 	@Id
+	private Long no;
+
 	private Long celebrationNo;
 	
 	private String content;
