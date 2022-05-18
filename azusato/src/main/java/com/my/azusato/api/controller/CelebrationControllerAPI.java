@@ -9,6 +9,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.my.azusato.api.controller.request.AddCelebrationAPIReqeust;
-import com.my.azusato.api.controller.request.GetCelebrationsAPIRequset;
 import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
@@ -64,11 +64,16 @@ public class CelebrationControllerAPI {
 	
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(LIST_URL)
-	public GetCelebrationsSerivceAPIResponse getCelebrations(@RequestBody GetCelebrationsAPIRequset req) {
+	public GetCelebrationsSerivceAPIResponse getCelebrations(@ModelAttribute @Validated MyPageControllerRequest page) {
 		long userNo = Objects.nonNull(SessionUtil.getLoginSession(httpSession)) ? SessionUtil.getLoginSession(httpSession).getNo() : NO_LOGIN_USER_NO;
+		// もし、現在ページ番号がないと現在ページ番号は１を設定
+		if(Objects.isNull(page.getCurrentPageNo())) {
+			page.setCurrentPageNo(1);
+		}
+			
 		GetCelebrationsSerivceAPIRequset serviceReq = GetCelebrationsSerivceAPIRequset.builder()
 								.loginUserNo(userNo)
-								.pageReq(req.getPage())
+								.pageReq(page)
 								.build();
 		
 		return celeAPIService.getCelebrations(serviceReq);

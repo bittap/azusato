@@ -20,14 +20,14 @@ public class MyPageControllerRequest {
 	/**
 	 * 表示ページ数
 	 */
-	@Min(value = 1, message = "{size-number.min}")
-	@NotNull(message = "{notBlank}")
+	@Min(value = 1, message = "{min}")
+	@NotNull(message = "{notNull}")
 	private Integer pagesOfpage;
 	
 	/**
-	 * ページのElement表示数
+	 * ページのリスト表示数
 	 */
-	@Min(value = 1, message = "{size-number.min}")
-	@NotNull(message = "{notBlank}")
+	@Min(value = 1, message = "{min}")
+	@NotNull(message = "{notNull}")
 	private Integer pageOfElement;
 }

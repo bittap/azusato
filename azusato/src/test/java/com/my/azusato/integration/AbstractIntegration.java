@@ -13,6 +13,7 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.dbunit.DBUnitComponent;
 import com.my.azusato.repository.CelebrationNoticeRepository;
@@ -58,6 +59,12 @@ public abstract class AbstractIntegration  {
 	
 	@Autowired
 	protected CelebrationNoticeRepository celeNoticeRepo;
+	
+	public AbstractIntegration() {
+		// サポートjavatime
+		om.registerModule(new JavaTimeModule());
+	}
+	
 	
 	/**
 	 * delete all data. commit for deleting all data and then start to commit for avoiding lazy exception. Because session is closed 
