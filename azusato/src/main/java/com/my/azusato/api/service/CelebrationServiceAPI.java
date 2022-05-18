@@ -1,8 +1,10 @@
 package com.my.azusato.api.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -11,12 +13,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
+import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
+import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.CelebrationReply;
 import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.entity.ProfileEntity;
 import com.my.azusato.entity.UserEntity;
@@ -27,6 +32,7 @@ import com.my.azusato.entity.common.CommonUserEntity;
 import com.my.azusato.entity.common.DefaultValueConstant;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.page.MyPageRequest;
+import com.my.azusato.page.MyPaging;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.UserRepository;
 
@@ -126,11 +132,49 @@ public class CelebrationServiceAPI {
 		log.debug("{}#addCelebartion END");
 	}
 
-	public GetCelebrationsSerivceAPIResponse getCelebrations(GetCelebrationsSerivceAPIRequset req, MyPageRequest pageReq) {
-		Pageable sortedByCratedDatetime = PageRequest.of(pageReq.getCurrentPageNo(), pageReq.getDisplayListCount(),Sort.by("createDatetime",""));
+	/**
+	 * お祝いリストを返却する。
+	 * お祝い生成タイムの降順、書き込み生成タイムの降順で取得
+	 * @param req お祝いリストに関するリクエスト
+	 * @return お祝い+お祝い書き込みリスト
+	 */
+	public GetCelebrationsSerivceAPIResponse getCelebrations(GetCelebrationsSerivceAPIRequset req) {
+		// 注意 : 一番最初のパラメータpageは0から始まる。
+		Pageable sortedByCratedDatetime = PageRequest.of(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement(),Sort.by(Direction.DESC,"commonDate.createDatetime","replys.commonDate.createDatetime"));
 		Page<CelebrationEntity> celebrationEntitys = celeRepo.findAll(sortedByCratedDatetime);
 		
-		//celebrationEntitys.stream()
-		return null;
+		GetCelebrationsSerivceAPIResponse response = new GetCelebrationsSerivceAPIResponse();
+		
+		// ページング
+		response.setPage(MyPaging.of(
+					MyPageRequest.of(req.getPageReq(), celebrationEntitys.getTotalElements())
+				));
+		
+		List<Celebration> celebrations = celebrationEntitys.stream().map((e)->{
+			return Celebration.builder()
+					.title(e.getTitle())
+					.content(e.getContent())
+					.name(e.getCommonUser().getCreateUserEntity().getName())
+					.profileImageType(e.getCommonUser().getCreateUserEntity().getProfile().getImageType())
+					.profileImageBase64(e.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
+					.no(e.getNo())
+					.owner(e.getCommonUser().getCreateUserEntity().getNo() == req.getLoginUserNo() ? true : false)
+					.createdDatetime(e.getCommonDate().getCreateDatetime())
+					.replys(e.getReplys().stream().map((e2)->{
+						CelebrationReply reply = CelebrationReply.builder()
+								.no(e2.getCelebrationNo())
+								.content(e2.getContent())
+								.createdDatetime(e2.getCommonDate().getCreateDatetime())
+								.owner(e2.getCommonUser().getCreateUserEntity().getNo() == req.getLoginUserNo() ? true : false)
+								.build();
+						return reply;
+					}).collect(Collectors.toList()))
+					.build();
+		}).collect(Collectors.toList());
+		
+		response.setCelebrations(celebrations);
+		
+		
+		return response;
 	}
 }

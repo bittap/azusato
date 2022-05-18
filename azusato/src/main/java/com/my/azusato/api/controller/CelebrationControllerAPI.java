@@ -55,6 +55,8 @@ public class CelebrationControllerAPI {
 	
 	public final static String LIST_URL = "list";
 	
+	public final static String ADD_URL = "add";
+	
 	/**
 	 * ログインしていない時のuserNo
 	 */
@@ -66,9 +68,10 @@ public class CelebrationControllerAPI {
 		long userNo = Objects.nonNull(SessionUtil.getLoginSession(httpSession)) ? SessionUtil.getLoginSession(httpSession).getNo() : NO_LOGIN_USER_NO;
 		GetCelebrationsSerivceAPIRequset serviceReq = GetCelebrationsSerivceAPIRequset.builder()
 								.loginUserNo(userNo)
+								.pageReq(req.getPage())
 								.build();
 		
-		return celeAPIService.getCelebrations(serviceReq, req.getPage());
+		return celeAPIService.getCelebrations(serviceReq);
 	}
 
 	/**
@@ -81,7 +84,7 @@ public class CelebrationControllerAPI {
 	 * @param servletRequest  for message
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(value = "add")
+	@PostMapping(value = ADD_URL)
 	public void addCelebartion(@RequestBody @Validated AddCelebrationAPIReqeust req) {
 		log.debug("{}#addNonMember START, req : {}, nonmemberCookie : {}", CelebrationControllerAPI.class.getName(),
 				req);

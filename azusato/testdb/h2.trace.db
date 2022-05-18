@@ -1,0 +1,12 @@
+2022-05-10 22:58:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE_TYPE VARCHAR(10)": "'image/svg+xml' (13)"; SQL statement:
+insert into profile (image_base64, image_type, user_no) values (?, ?, ?) [22001-200]
+2022-05-10 22:58:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE_TYPE VARCHAR(10)": "'image/svg+xml' (13)"; SQL statement:
+insert into profile (image_base64, image_type, user_no) values (?, ?, ?) [22001-200]
+2022-05-10 22:59:08 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE_TYPE VARCHAR(10)": "'image/svg+xml' (13)"; SQL statement:
+insert into profile (image_base64, image_type, user_no) values (?, ?, ?) [22001-200]
+2022-05-10 22:59:09 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE_TYPE VARCHAR(10)": "'image/svg+xml' (13)"; SQL statement:
+insert into profile (image_base64, image_type, user_no) values (?, ?, ?) [22001-200]
