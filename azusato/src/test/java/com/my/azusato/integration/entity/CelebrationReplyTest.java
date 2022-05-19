@@ -51,16 +51,16 @@ public class CelebrationReplyTest extends AbstractIntegration {
 			
 			List<CelebrationEntity> results = celeRepo.findAll();
 			CelebrationEntity result = TestUtils.getLastElement(results);
-			
-			Assertions.assertEquals(getExpect(insertedCelebrationNO), result);
+			Assertions.assertEquals(getExpect(insertedCelebrationNO, result.getReplys().get(0).getNo()), result);
 		}
 		
 		private UserEntity expectedUserEntity() {
 			return userRepo.findAll().get(TestConstant.Entity.GET_INDEXS[0]);
 		}
 		
-		private List<CelebrationReplyEntity> getExpectReplys(long celebrationNo){
+		private List<CelebrationReplyEntity> getExpectReplys(long celebrationNo,long celebrationReplyNo){
 			CelebrationReplyEntity celebrationReplyEntity = CelebrationReplyEntity.builder()
+					.no(celebrationReplyNo)
 					.celebrationNo(insertedCelebrationNO)
 					.content(TestConstant.Entity.createdVarChars[0])
 					.commonUser(CommonUserEntity.builder().createUserEntity(expectedUserEntity()).updateUserEntity(expectedUserEntity()).build())
@@ -72,7 +72,7 @@ public class CelebrationReplyTest extends AbstractIntegration {
 			return List.of(celebrationReplyEntity);
 		}
 		
-		private CelebrationEntity getExpect(long celebrationNo) {
+		private CelebrationEntity getExpect(long celebrationNo, long celebrationReplyNo) {
 			return CelebrationEntity.builder()
 					.no(celebrationNo)
 					.title(TestConstant.Entity.createdVarChars[0])
@@ -81,7 +81,7 @@ public class CelebrationReplyTest extends AbstractIntegration {
 					.readCount(TestConstant.Entity.createdInts[0])
 					.commonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetimeWhenCreate).build())
 					.commonFlag(CommonFlagEntity.builder().deleteFlag(true).build())
-					.replys(getExpectReplys(celebrationNo))
+					.replys(getExpectReplys(celebrationNo,celebrationReplyNo))
 					.notices(Set.of())
 					.build();
 		}

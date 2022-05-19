@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -28,6 +29,7 @@ import lombok.NoArgsConstructor;
 public class CelebrationReplyEntity {
 	
 	@Id
+	@GeneratedValue
 	private Long no;
 
 	private Long celebrationNo;

@@ -158,7 +158,7 @@ const initialize = function(){
 const changeProfileByTypeAndBase64 = function(imageType, imageBase64){
 	document.querySelector("[name='profileImageType']").value = imageType;
 	document.querySelector("[name='profileImageBase64']").value = imageBase64;
-	profileAvatarTag.setAttribute("src",`data: ${imageType} ;base64,${imageBase64}`);
+	imageCommon.changeImageSrcBase64(profileAvatarTag,imageType,imageBase64);
 }
 
 profileAvatarTag.addEventListener('click',() =>{
@@ -196,9 +196,6 @@ fileInputTag.addEventListener('change',function(){
 writeBtnTag.addEventListener('click', function(){
 	writeBtnModal.show();
 })
-
-
-
 
 initialize();
 

@@ -175,6 +175,9 @@ public class CelebrationServiceAPI {
 										.content(e2.getContent())
 										.createdDatetime(e2.getCommonDate().getCreateDatetime())
 										.owner(e2.getCommonUser().getCreateUserEntity().getNo() == req.getLoginUserNo() ? true : false)
+										.name(e2.getCommonUser().getCreateUserEntity().getName())
+										.profileImageType(e2.getCommonUser().getCreateUserEntity().getProfile().getImageType())
+										.profileImageBase64(e2.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
 										.build();
 								return reply;
 					}).collect(Collectors.toList()))

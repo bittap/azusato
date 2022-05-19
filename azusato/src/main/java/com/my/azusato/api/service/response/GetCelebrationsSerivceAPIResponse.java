@@ -60,5 +60,11 @@ public class GetCelebrationsSerivceAPIResponse {
 		
 		private Boolean owner;
 		
+		private String name;
+		
+		private String profileImageType;
+		
+		private String profileImageBase64;
+		
 	}
 }

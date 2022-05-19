@@ -1,0 +1,5 @@
+MYSQL
+
+・max_allowed_packet設定変更
+524288000
+参考:https://stackoverflow.com/questions/8062496/how-to-change-max-allowed-packet-size

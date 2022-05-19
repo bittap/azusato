@@ -1,0 +1,15 @@
+1.投稿
+・ボディにデータを大量に入れるとmysql側でエラーを起こす。(●)
+=>Packet for query is too large (4,549,991 > 4,194,304). You can change this value on the server by setting the 'max_allowed_packet' variable.
+=>Server設定変える必要がある。
+・投稿にかなり時間がかかる。 <- サーバ上ではどれくらいかかるかが重要(●)
+=>Loading画面で解決
+・予期せぬエラーメッセージ(●)
+
+・エラーメッセージが韓国語の時日本語で出力される。
+
+・CookieをID暗号化
+
+・Junit Transcion問題
+
+・404エラー時のハンドリング

@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.TypeMismatchException;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,12 +37,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	private final MessageSource ms;
 	
 	private final HttpServletRequest httpServletRequest;
-
-//	public GlobalExceptionHandler(MessageSource ms) {
-//		headers = new HttpHeaders();
-//		headers.setContentType(HttpConstant.DEFAULT_CONTENT_TYPE);
-//		this.ms = ms;
-//	}
 
 	@ExceptionHandler(value = { Exception.class })
 	public ResponseEntity<Object> handleMyException(Exception ex) throws JsonProcessingException {
@@ -66,14 +60,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 	}
 	
-	
-	
-	
 	@Override
-	protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
+	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
 		// TODO Auto-generated method stub
-		return super.handleTypeMismatch(ex, headers, status, request);
+		return super.handleNoHandlerFoundException(ex, headers, status, request);
 	}
 	
 	
