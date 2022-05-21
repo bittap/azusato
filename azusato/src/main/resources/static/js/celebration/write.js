@@ -8,24 +8,30 @@ const writeBtnTag = document.querySelector("#writeBtn");
 const profileModal = modalCommon.modalThreeBtn(profileModalTitle,profileModalBody,profileModalFirstBtnMsg,function(){
 	fileInputTag.click();
 },profileModalSecondBtnMsg,async function(){
-	const res = await fetch(apiUrl+"/profile/randomProfile");
-	const result = await res.json();
-	changeProfileByTypeAndBase64(result.profileImageType,result.profileImageBase64);
+	try{
+		const result = await getRandomImage();
+		changeProfileByTypeAndBase64(result.profileImageType,result.profileImageBase64);
+	}catch(e){
+		console.log(e)
+		modalCommon.displayApiErrorModal(e);
+	}
 });
 
 // initalize modal
-const writeBtnModal = modalCommon.modalTwoBtn(writeModalTitle,writeModalBody,function(){
-	isSessionLoginInfo().then(async (result) => {
+const writeBtnModal = modalCommon.modalTwoBtn(writeModalTitle,writeModalBody,async function(){
+	try{
+		const siginIn = await isSessionLoginInfo();
 		// セッションがない。
-		if(Boolean(result) == false){
+		if(Boolean(siginIn) == false){
 			await addnonMember();
 		}
-		return await addCelebration();
-	}).then(() => {
+		await addCelebration();
+		
 		location.href = `/${language}/celebration`; 
-	}).catch(e =>{
+	}catch(e){
+		console.log(e)
 		modalCommon.displayApiErrorModal(e);
-	});
+	}
 });
 
 // initalize summbernote
@@ -100,14 +106,18 @@ const isSessionLoginInfo = async function(){
 	console.log("ログイン有無確認API");
 	const res = await fetch(apiUrl+"/session/login-info");
 
+	const result = await res.json();
+	
 	if(!res.ok) {
-		const result = res.json();
-		throw new Error(result);
+		return new Error(result);
 	}else{
-		return await res.json();
+		return result;
 	}
 }
 
+/*
+ * ユーザ情報を取得
+ */
 const getUser = async function(){
 	console.log("ユーザ情報取得");
 	const res = await fetch(apiUrl+"/user");
@@ -115,10 +125,9 @@ const getUser = async function(){
 	const result = await res.json();
 	
 	if(!res.ok) {
-		return Promise.reject(result);
+		return new Error(result);
 	}else{
-		document.querySelector("[name='name']").value = result.name;
-		changeProfileByTypeAndBase64(result.profileImageType,result.profileImageBase64);
+		return result;
 	}
 }
 
@@ -129,27 +138,36 @@ const getRandomImage = async function(){
 	const result = await res.json();
 	
 	if(!res.ok) {
-		return Promise.reject(result);
+		return new Error(result);
 	}else{
-		changeProfileByTypeAndBase64(result.profileImageType,result.profileImageBase64);
+		return result;
 	}
 }
 
 
 
-const initialize = function(){
-	isSessionLoginInfo().then(result =>{
-		console.log(`ログイン有無 : ${result}`);
-		// セッションがある。
-		if(Boolean(result) == true){
-			return getUser();
-		// セッションがない。
+const initialize = async function(){
+	console.log("初期画面設定");
+	try{
+		const siginIn = await isSessionLoginInfo();
+		console.log(`ログイン有無 : ${siginIn}`);
+		
+		// セッションがある場合
+		if(Boolean(siginIn) == true){
+			const userInfo = await getUser();
+			document.querySelector("[name='name']").value = userInfo.name;
+			if(userInfo.profileImageType == null || userInfo.profileImageBase64 == null){
+				const randomImage = await getRandomImage();
+				changeProfileByTypeAndBase64(randomImage.profileImageType,randomImage.profileImageBase64);
+			}
 		}else{
-			return getRandomImage();
+			const randomImage = await getRandomImage();
+			changeProfileByTypeAndBase64(randomImage.profileImageType,randomImage.profileImageBase64);
 		}
-	}).catch(e =>{
+	}catch(e){
+		console.log(e)
 		modalCommon.displayApiErrorModal(e);
-	});
+	}
 }
 
 /*
