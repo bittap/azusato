@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * {@link CelebrationController#write()}に対するレスポンス
+ * {@link CelebrationController#modify(Long)}に対するレスポンス
  * 
  * @author kim-t
  *
@@ -17,15 +17,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CelebrationWriteResponse {
+public class CelebrationModifyResponse {
 
 	/**
-	 * ユーザ情報のネーム
+	 * お祝い番号
 	 */
-	private String name;
-
-	/**
-	 * プロフィールimageSrc
-	 */
-	private String imageSrc;
+	private Long celebrationNo;
 }
