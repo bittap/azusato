@@ -30,6 +30,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CelebrationEntity {
 	
+	/**
+	 * message.propertyのテーブルネームのキー
+	 */
+	public static final String TABLE_NAME_KEY = "table.name.celebation";
+	
 	@Id
 	@GeneratedValue
 	private Long no;

@@ -78,8 +78,8 @@ public class UserServiceAPI {
 		UserEntity userEntity = userRepo.findById(no).orElseThrow(() -> {
 			String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
 			log.error("not exist {} table, no : {}", tableName, no);
-			throw new AzusatoException(HttpStatus.INTERNAL_SERVER_ERROR, AzusatoException.E0001,
-					messageSource.getMessage(AzusatoException.E0001, new String[] { tableName }, locale));
+			throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
 		});
 
 		GetSessionUserServiceAPIResponse response = GetSessionUserServiceAPIResponse.builder().id(userEntity.getId())

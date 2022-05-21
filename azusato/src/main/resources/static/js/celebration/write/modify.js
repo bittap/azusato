@@ -1,6 +1,6 @@
 
 // initalize modal
-const writeBtnModal = modalCommon.modalTwoBtn(writeModalTitle,writeModalBody,async function(){
+const writeBtnModal = modalCommon.modalTwoBtn(modifyModalTitle,modifyModalBody,async function(){
 	try{
 		const siginIn = await isSessionLoginInfo();
 		// セッションがない。
@@ -16,38 +16,13 @@ const writeBtnModal = modalCommon.modalTwoBtn(writeModalTitle,writeModalBody,asy
 	}
 });
 
-
-const addnonMember = async function(){
-	console.log("非会員ユーザ作成API");
-	const res = await fetch(apiUrl+"/user/add/nonmember",{
-		method: 'POST',
-		headers: {
-		  'Accept': 'application/json',
-		  'Content-Type': 'application/json'
-		},
-		 body: JSON.stringify({
-			 name: document.querySelector('[name="name"]').value, 
-			 profileImageType: document.querySelector('[name="profileImageType"]').value, 
-			 profileImageBase64: document.querySelector('[name="profileImageBase64"]').value, 
-		})
-	});
-	
-	if(!res.ok) {
-		const result = await res.json();
-		return Promise.reject(result);
-	}else{
-		return Promise.resolve();
-	}
-}
-
-
 /*
  * Loading画面を表示し、投稿APIを行う。
  */
 const addCelebration = async function(){
 	console.log("お祝い投稿API");
 	modalCommon.displayLoadingModal();
-	const res = await fetch(apiUrl+"/celebration",{
+	const res = await fetch(apiUrl+"/celebration/add",{
 		method: 'POST',
 		headers: {
 		  'Accept': 'application/json',
@@ -72,41 +47,6 @@ const addCelebration = async function(){
 		return Promise.resolve();
 	}
 }
-
-/*
- * ログインしているかどうかAPIを実行
- * ログインしている : true, していない : false
- * @return {boolean} true or false
- */
-const isSessionLoginInfo = async function(){
-	console.log("ログイン有無確認API");
-	const res = await fetch(apiUrl+"/session/login-info");
-
-	const result = await res.json();
-	
-	if(!res.ok) {
-		return new Error(result);
-	}else{
-		return result;
-	}
-}
-
-/*
- * ユーザ情報を取得
- */
-const getUser = async function(){
-	console.log("ユーザ情報取得");
-	const res = await fetch(apiUrl+"/user");
-	
-	const result = await res.json();
-	
-	if(!res.ok) {
-		return new Error(result);
-	}else{
-		return result;
-	}
-}
-
 
 const initialize = async function(){
 	console.log("初期画面設定");

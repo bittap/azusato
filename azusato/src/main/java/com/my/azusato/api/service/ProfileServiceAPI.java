@@ -9,7 +9,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.my.azusato.api.service.request.UpdateUserProfileServiceAPIRequest;
+import com.my.azusato.api.service.request.ModifyUserProfileServiceAPIRequest;
 import com.my.azusato.entity.ProfileEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.common.CommonDateEntity;
@@ -45,14 +45,14 @@ public class ProfileServiceAPI {
 	 * @param locale   locale of client. for error message
 	 */
 	@Transactional
-	public void updateUserProfile(UpdateUserProfileServiceAPIRequest req, Locale locale) {
+	public void updateUserProfile(ModifyUserProfileServiceAPIRequest req, Locale locale) {
 		log.debug("req : {}", req);
 		
 		UserEntity updateTargetEntity = userRepo.findById(req.getUserNo()).orElseThrow(()->{
 				String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
 				log.error("not exist {} table, no : {}", tableName, req.getUserNo());
-				throw new AzusatoException(HttpStatus.INTERNAL_SERVER_ERROR, AzusatoException.E0001,
-						messageSource.getMessage(AzusatoException.E0001, new String[] { tableName }, locale));
+				throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+						messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
 		});
 		
 		ProfileEntity profileEntity = updateTargetEntity.getProfile();

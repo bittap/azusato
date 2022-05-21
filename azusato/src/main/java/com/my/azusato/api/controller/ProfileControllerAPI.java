@@ -21,15 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.my.azusato.api.controller.request.UpdateUserProfileAPIRequest;
+import com.my.azusato.api.controller.request.ModifyUserProfileAPIRequest;
 import com.my.azusato.api.controller.response.DefaultRandomProfileResponse;
 import com.my.azusato.api.service.ProfileServiceAPI;
-import com.my.azusato.api.service.request.UpdateUserProfileServiceAPIRequest;
-import com.my.azusato.dto.LoginUserDto;
-import com.my.azusato.exception.AzusatoException;
-import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.property.ProfileProperty;
-import com.my.azusato.util.SessionUtil;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
 import lombok.RequiredArgsConstructor;
@@ -91,24 +86,23 @@ public class ProfileControllerAPI {
 	 *  <li>500 : 更新対象のユーザが存在しない</li>
 	 * </ul>
 	 */
-	@PutMapping(value = Api.UPDATE_USER_PROFILE)
-	public ResponseEntity<Void> updateUserProfile(@RequestBody @Validated UpdateUserProfileAPIRequest req) {
-		
-		if(SessionUtil.isLoginSession(httpSession) == false) {
-			ErrorResponse errorResponse = new ErrorResponse(AzusatoException.I0002,
-					messageSource.getMessage(AzusatoException.I0002, null, servletRequest.getLocale()));
-			ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-			log.debug("[セッション情報が存在しない], response : {}",response);
-		}else {
-			LoginUserDto loginUserDto = SessionUtil.getLoginSession(httpSession);
-			UpdateUserProfileServiceAPIRequest serviceReq = UpdateUserProfileServiceAPIRequest.builder()
-							.name(req.getName())
-							.profileImageBase64(req.getProfileImageBase64()).profileImageType(req.getProfileImageType())
-							.userNo(loginUserDto.getNo())
-							.build();
-			
-			profileServiceAPI.updateUserProfile(serviceReq,servletRequest.getLocale());
-		}
+	@PutMapping
+	public ResponseEntity<Void> updateUserProfile(@RequestBody @Validated ModifyUserProfileAPIRequest req) {
+//		if(SessionUtil.isLoginSession(httpSession) == false) {
+//			ErrorResponse errorResponse = new ErrorResponse(AzusatoException.I0002,
+//					messageSource.getMessage(AzusatoException.I0002, null, servletRequest.getLocale()));
+//			ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+//			log.debug("[セッション情報が存在しない], response : {}",response);
+//		}else {
+//			LoginUserDto loginUserDto = SessionUtil.getLoginSession(httpSession);
+//			ModifyUserProfileServiceAPIRequest serviceReq = ModifyUserProfileServiceAPIRequest.builder()
+//							.name(req.getName())
+//							.profileImageBase64(req.getProfileImageBase64()).profileImageType(req.getProfileImageType())
+//							.userNo(loginUserDto.getNo())
+//							.build();
+//			
+//			profileServiceAPI.updateUserProfile(serviceReq,servletRequest.getLocale());
+//		}
 		
 		return ResponseEntity.ok(null);
 	}

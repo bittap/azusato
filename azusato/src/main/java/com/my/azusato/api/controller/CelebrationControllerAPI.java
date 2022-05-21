@@ -1,6 +1,7 @@
 package com.my.azusato.api.controller;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -10,16 +11,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.my.azusato.api.controller.request.AddCelebrationAPIReqeust;
+import com.my.azusato.api.controller.request.ModifyCelebrationAPIReqeust;
 import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
+import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
+import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.dto.LoginUserDto;
 import com.my.azusato.entity.UserEntity.Type;
@@ -53,19 +59,28 @@ public class CelebrationControllerAPI {
 
 	private final HttpServletRequest servletRequest;
 	
-	public final static String LIST_URL = "list";
-	
-	public final static String ADD_URL = "add";
-	
 	/**
-	 * ログインしていない時のuserNo
+	 * お祝い情報を返却する。
+	 * @param celebationNo お祝い番号
+	 * @return celebationNoより検索されたお祝い情報
+	 * @throws AzusatoException 400　データが存在しない場合
 	 */
-	public final static long NO_LOGIN_USER_NO = 0L;
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/{no}")
+	public GetCelebrationSerivceAPIResponse get(@PathVariable(name = "no", required = true) Long celebationNo) {
+		return celeAPIService.getCelebration(celebationNo,servletRequest.getLocale());
+	}
 	
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping(LIST_URL)
+	@GetMapping
 	public GetCelebrationsSerivceAPIResponse getCelebrations(@ModelAttribute @Validated MyPageControllerRequest page) {
-		long userNo = Objects.nonNull(SessionUtil.getLoginSession(httpSession)) ? SessionUtil.getLoginSession(httpSession).getNo() : NO_LOGIN_USER_NO;
+		// ログインしていない時のuserNo
+		final long NO_LOGIN_USER_NO = 0L;
+		
+		Optional<LoginUserDto> opLoginInfo = SessionUtil.getLoginSession(httpSession);
+		
+		long userNo = opLoginInfo.isPresent() ? opLoginInfo.get().getNo() : NO_LOGIN_USER_NO;
+		
 		// もし、現在ページ番号がないと現在ページ番号は１を設定
 		if(Objects.isNull(page.getCurrentPageNo())) {
 			page.setCurrentPageNo(1);
@@ -89,27 +104,37 @@ public class CelebrationControllerAPI {
 	 * @param servletRequest  for message
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(value = ADD_URL)
-	public void addCelebartion(@RequestBody @Validated AddCelebrationAPIReqeust req) {
-		log.debug("{}#addNonMember START, req : {}, nonmemberCookie : {}", CelebrationControllerAPI.class.getName(),
-				req);
-		
-		Object loginSessionObj = SessionUtil.getLoginSession(httpSession);
-		
-		if(Objects.isNull(loginSessionObj)) {
+	@PostMapping
+	public void add(@RequestBody @Validated AddCelebrationAPIReqeust req) {
+		LoginUserDto loginInfo = SessionUtil.getLoginSession(httpSession).orElseThrow(()->{
 			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
 					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
-		}else {
-			LoginUserDto loginInfo = (LoginUserDto) loginSessionObj;
-			AddCelebrationServiceAPIRequest serviceReq = AddCelebrationServiceAPIRequest.builder()
-					.name(req.getName()).profileImageBase64(req.getProfileImageBase64()).profileImageType(req.getProfileImageType())
-					.title(req.getTitle()).content(req.getContent()).userNo(loginInfo.getNo()).build();
+		});
+		
+		AddCelebrationServiceAPIRequest serviceReq = AddCelebrationServiceAPIRequest.builder()
+				.name(req.getName()).profileImageBase64(req.getProfileImageBase64()).profileImageType(req.getProfileImageType())
+				.title(req.getTitle()).content(req.getContent()).userNo(loginInfo.getNo()).build();
 
-			if (loginInfo.getUserType().equals(Type.admin.toString())) {
-				celeAPIService.addCelebartionAdmin(serviceReq, servletRequest.getLocale());
-			} else {
-				celeAPIService.addCelebartion(serviceReq, servletRequest.getLocale());
-			}
+		if (loginInfo.getUserType().equals(Type.admin.toString())) {
+			celeAPIService.addCelebartionAdmin(serviceReq, servletRequest.getLocale());
+		} else {
+			celeAPIService.addCelebartion(serviceReq, servletRequest.getLocale());
 		}
+		
+	}
+	
+	@ResponseStatus(HttpStatus.OK)
+	@PutMapping
+	public void modify(ModifyCelebrationAPIReqeust req) {
+		LoginUserDto loginInfo = SessionUtil.getLoginSession(httpSession).orElseThrow(()->{
+			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
+					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
+		});
+		
+		ModifyCelebationServiceAPIRequest serviceReq = ModifyCelebationServiceAPIRequest.builder()
+				.name(req.getName()).profileImageBase64(req.getProfileImageBase64()).profileImageType(req.getProfileImageType())
+				.title(req.getTitle()).content(req.getContent()).userNo(loginInfo.getNo()).build();
+		
+		celeAPIService.modifyCelebartion(serviceReq, servletRequest.getLocale());
 	}
 }

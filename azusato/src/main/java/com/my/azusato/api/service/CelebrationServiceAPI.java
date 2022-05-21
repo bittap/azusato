@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
+import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
+import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.CelebrationReply;
@@ -96,10 +98,7 @@ public class CelebrationServiceAPI {
 		log.debug("{}#addCelebartion , req : {}, locale : {}", CelebrationServiceAPI.class.getName(), req, locale);
 
 		UserEntity userEntity = userRepo.findById(req.getUserNo()).orElseThrow(() -> {
-			String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
-			log.error("not exist {} table, no : {}", tableName, req.getUserNo());
-			throw new AzusatoException(HttpStatus.INTERNAL_SERVER_ERROR, AzusatoException.E0001,
-					messageSource.getMessage(AzusatoException.E0001, new String[] { tableName }, locale));
+			throw AzusatoException.createI0005Error(locale, messageSource, UserEntity.TABLE_NAME_KEY);
 		});
 
 		Set<UserEntity> admins = null;
@@ -131,6 +130,63 @@ public class CelebrationServiceAPI {
 		celeRepo.save(insertedEntity);
 
 		log.debug("{}#addCelebartion END");
+	}
+	
+	/**
+	 * お祝い修正。
+	 * お祝い番号より参照後、ない場合はエラーをスローする。
+	 * ある場合は、生成したユーザか比較し、生成したユーザではない場合はエラーをスローする。
+	 * 生成したユーザの場合は更新を行う。
+	 * 
+	 * 
+	 * @param celebationNo 検索条件
+	 * @param locale エラーメッセージ用
+	 * @throws AzusatoException 対象データ存在なし、生成したユーザではない場合
+	 */
+	@Transactional
+	public void modifyCelebartion(ModifyCelebationServiceAPIRequest req , Locale locale) {
+		CelebrationEntity fetchedCelebationEntity = celeRepo.findById(req.getCelebationNo()).orElseThrow(()->{
+			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
+		});
+		
+		// 生成したユーザかユーザをチェックする。
+		long createdUserNo = fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getNo();
+		
+		if(createdUserNo != req.getUserNo()) {
+			String message = messageSource.getMessage(AzusatoException.I0006, null, locale);
+			throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0006, message);
+		}
+		LocalDateTime now = LocalDateTime.now();
+		fetchedCelebationEntity.setTitle(req.getTitle());
+		fetchedCelebationEntity.setContent(req.getContent());
+		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().setName(req.getName());
+		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().setImageType(req.getProfileImageType());
+		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().setImageBase64(req.getProfileImageBase64());
+		fetchedCelebationEntity.getCommonDate().setUpdateDatetime(now);
+		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getCommonDate().setUpdateDatetime(now);
+	
+		celeRepo.save(fetchedCelebationEntity);
+	}
+
+	/**
+	 * 対象のお祝いを返却する。
+	 * @param celebationNo 検索条件
+	 * @param locale エラーメッセージ用
+	 * @return 対象のお祝い情報
+	 * @throws AzusatoException 対象データが存在しない場合
+	 */
+	public GetCelebrationSerivceAPIResponse getCelebration(Long celebationNo , Locale locale) {
+		CelebrationEntity fetchedCelebationEntity = celeRepo.findById(celebationNo).orElseThrow(()->{
+			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
+		});
+		
+		return GetCelebrationSerivceAPIResponse.builder()
+					.title(fetchedCelebationEntity.getTitle())
+					.content(fetchedCelebationEntity.getContent())
+					.name(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getName())
+					.profileImageType(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().getImageType())
+					.profileImageType(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
+					.build();
 	}
 
 	/**

@@ -1,5 +1,8 @@
 package com.my.azusato.exception;
 
+import java.util.Locale;
+
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 
 import lombok.AllArgsConstructor;
@@ -34,7 +37,17 @@ public class AzusatoException extends RuntimeException {
 	/**
 	 * テーブル情報が存在しない場合
 	 */
-	public static final String E0001 = "E-0001";
+	public static final String I0005 = "I-0005";
+	
+	/**
+	 * 生成したユーザと違うユーザが更新等を行った場合
+	 */
+	public static final String I0006 = "I-0006";
+	
+	/**
+	 * 権限がないため、修正等を行えなかった場合
+	 */
+	public static final String I0007 = "I-0007";
 	
 	/**
 	 * 予期せぬエラー
@@ -48,4 +61,10 @@ public class AzusatoException extends RuntimeException {
 	private String title;
 
 	private String message;
+	
+	public static AzusatoException createI0005Error(Locale locale, MessageSource messageSource, String tableNameKey) {
+		String tableName = messageSource.getMessage(tableNameKey, null, locale);
+		return new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+				messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+	}
 }
