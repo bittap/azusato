@@ -1,6 +1,7 @@
 package com.my.azusato.entity.common;
 
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
@@ -18,11 +19,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CommonUserEntity {
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "create_user_no", referencedColumnName = "no")
 	private UserEntity createUserEntity;
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "update_user_no", referencedColumnName = "no")
 	private UserEntity updateUserEntity;
 }
