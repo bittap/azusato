@@ -2,12 +2,7 @@
 // initalize modal
 const writeBtnModal = modalCommon.modalTwoBtn(modifyModalTitle,modifyModalBody,async function(){
 	try{
-		const siginIn = await isSessionLoginInfo();
-		// セッションがない。
-		if(Boolean(siginIn) == false){
-			await addnonMember();
-		}
-		await addCelebration();
+		await modifyCelebration();
 		
 		location.href = `/${language}/celebration`; 
 	}catch(e){
@@ -17,13 +12,13 @@ const writeBtnModal = modalCommon.modalTwoBtn(modifyModalTitle,modifyModalBody,a
 });
 
 /*
- * Loading画面を表示し、投稿APIを行う。
+ * Loading画面を表示し、修正APIを行う。
  */
-const addCelebration = async function(){
-	console.log("お祝い投稿API");
+const modifyCelebration = async function(){
+	console.log("お祝い修正API");
 	modalCommon.displayLoadingModal();
-	const res = await fetch(apiUrl+"/celebration",{
-		method: 'POST',
+	const res = await fetch(apiUrl+"/celebration"+ "/" +CELEBATION_NO,{
+		method: 'PUT',
 		headers: {
 		  'Accept': 'application/json',
 		  'Content-Type': 'application/json'
@@ -48,28 +43,37 @@ const addCelebration = async function(){
 	}
 }
 
+const getCelebation = async function(){
+	console.log("お祝い情報取得");
+	modalCommon.displayLoadingModal();
+	const res = await fetch(apiUrl + "/celebration" + "/" +CELEBATION_NO);
+	
+	const result = await res.json();
+	
+	await asyncCommon.delay(LOADING_MODAL_DELAY);
+	modalCommon.hideLoadingModal();
+	
+	if(!res.ok) {
+		return Promise.reject(result);
+	}else{
+		console.log("お祝い情報",result);
+		return Promise.resolve(result);
+	}
+}
+
 const initialize = async function(){
 	console.log("初期画面設定");
 	try{
-		const siginIn = await isSessionLoginInfo();
-		console.log(`ログイン有無 : ${siginIn}`);
-		
-		// セッションがある場合
-		if(Boolean(siginIn) == true){
-			const userInfo = await getUser();
-			document.querySelector("[name='name']").value = userInfo.name;
-			if(userInfo.profileImageType == null || userInfo.profileImageBase64 == null){
-				const randomImage = await getRandomImage();
-				changeProfileByTypeAndBase64(randomImage.profileImageType,randomImage.profileImageBase64);
-			}else{
-				changeProfileByTypeAndBase64(userInfo.profileImageType,userInfo.profileImageBase64);
-			}
-		}else{
-			const randomImage = await getRandomImage();
-			changeProfileByTypeAndBase64(randomImage.profileImageType,randomImage.profileImageBase64);
-		}
+		const celebation = await getCelebation();
+		document.querySelector("[name='name']").value = celebation.name;
+		document.querySelector("[name='title']").value = celebation.title;
+		// イメージ変更
+		changeProfileByTypeAndBase64(celebation.profileImageType,celebation.profileImageBase64);
+		// 
+		$('#summernote').summernote('code', celebation.content);
 	}catch(e){
-		console.log(e)
+		console.log(e);
+		// TODO 移動
 		modalCommon.displayApiErrorModal(e);
 	}
 }

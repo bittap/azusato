@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS celebration_notice CASCADE;
 create table celebration_notice (
     celebration_no BIGINT not null COMMENT 'celerbrationテーブルのFK',
     user_no BIGINT not null COMMENT 'userテーブルのFK',
+	readed BOOLEAN not null default 0 COMMENT '読んでたら : ture, 読んでなかったら : false',
 	PRIMARY KEY (celebration_no,user_no),
 	FOREIGN KEY (celebration_no)
 		REFERENCES celebration (no)

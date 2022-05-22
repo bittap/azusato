@@ -68,6 +68,8 @@
 	  <script src="/external/summernote/lang/summernote-ja-JP.min.js"></script>
 	</th:block>
 	<script th:inline="javascript">
+		const CELEBATION_NO = /*[[${data?.celebrationNo}]]*/ "お祝い番号";
+		
 		const profileModalTitle = /*[[#{celebration.write.profile-modal.title}]]*/ "プロフィールモーダルのタイトル";
 		const profileModalBody = /*[[#{celebration.write.profile-modal.body}]]*/ "プロフィールモーダルの内容";
 		const profileModalFirstBtnMsg = /*[[#{celebration.write.profile-modal.first-button}]]*/ "プロフィールモーダルの最初のボタンの文字列";
