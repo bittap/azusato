@@ -51,7 +51,7 @@
 			          </div>
 					  <div class="summbernote row" id="summernote"></div>
 					  <div class="pt-3 btn-outline-wrap text-end">
-						<button id="writeBtn" type="button" class="btn btn-primary" th:text="#{celebration.write.button.write}"></button>
+						<button id="writeBtn" type="button" class="btn btn-primary" th:text="${data?.celebrationNo == null} ? #{celebration.write.button.write} : #{celebration.modify.button.write}"></button>
 						<button type="button" class="btn btn-secondary" th:text="#{celebration.write.button.cancle}" onclick="history.back()"></button>
 					  </div>
 			        </div>
@@ -73,12 +73,17 @@
 		const profileModalFirstBtnMsg = /*[[#{celebration.write.profile-modal.first-button}]]*/ "プロフィールモーダルの最初のボタンの文字列";
 		const profileModalSecondBtnMsg = /*[[#{celebration.write.profile-modal.second-button}]]*/ "プロフィールモーダルの二番目のボタンの文字列";
 		const badRequestProfileType = /*[[#{celebration.write.bad-request.profile.type}]]*/ "拡張子ミス";
+		
 		const writeModalTitle = /*[[#{celebration.write.modal.title}]]*/ "作成モーダルタイトル";
 		const writeModalBody = /*[[#{celebration.write.modal.body}]]*/ "作成モーダルないよう";
+		
+		const modifyModalTitle = /*[[#{celebration.modify.modal.title}]]*/ "修正モーダルタイトル";
+		const modifyModalBody = /*[[#{celebration.modify.modal.body}]]*/ "修正モーダルないよう";
 		
 		const summernote_lang = window.language == "ko" ? "ko-KR" : "ja-JP";
 	</script>
 	<script src="/js/celebration/write/common.js"></script>
-	<script src="/js/celebration/write/write.js"></script>
+	<!--/* celebrationNoがあるかどうかにより読み込むjsを異なるようにする*/-->
+	<script th:src="${data?.celebrationNo != null} ? '/js/celebration/write/modify.js' : '/js/celebration/write/write.js'"></script>
 </body>
 </html>
