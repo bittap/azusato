@@ -60,11 +60,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 	}
 	
+	
+	
 	@Override
 	protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
-		ErrorResponse responseBody = new ErrorResponse(AzusatoException.I0004,
-				ms.getMessage("typeMismatch", null, request.getLocale()));
+		ErrorResponse responseBody = new ErrorResponse(AzusatoException.I0008,
+				ms.getMessage(AzusatoException.I0008, null, request.getLocale()));
 
 		return new ResponseEntity<>(responseBody, headers, status);
 	}

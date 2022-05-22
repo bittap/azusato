@@ -28,6 +28,7 @@ import org.springframework.util.MultiValueMap;
 
 import com.my.azusato.api.controller.CelebrationControllerAPI;
 import com.my.azusato.api.controller.request.AddCelebrationAPIReqeust;
+import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.CelebrationReply;
@@ -35,6 +36,7 @@ import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.common.TestCookie;
 import com.my.azusato.common.TestSession;
+import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.integration.AbstractIntegration;
@@ -124,6 +126,80 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1]).build();
 
 			return om.writeValueAsString(req);
+		}
+	}
+	
+	@Nested
+	class GetCelebration {
+
+		final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getCelebration/";
+		
+		final long CELEBRATION_NO = 1L;
+		
+
+		@Test
+		public void givenNormal_result200() throws Exception {
+			String folderName = "1";
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+
+			MvcResult mvcResult = mockMvc.perform(
+					MockMvcRequestBuilders
+						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/"+ String.valueOf(CELEBRATION_NO))
+						.accept(HttpConstant.DEFAULT_CONTENT_TYPE)
+					).andExpect(status().isOk()).andReturn();
+										
+			String strResult = mvcResult.getResponse().getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			GetCelebrationSerivceAPIResponse result = om.readValue(strResult, GetCelebrationSerivceAPIResponse.class);
+			
+			GetCelebrationSerivceAPIResponse expect = GetCelebrationSerivceAPIResponse.builder()
+					.celebrationNo(CELEBRATION_NO)
+					.title(Entity.createdVarChars[0])
+					.content(Entity.createdVarChars[1])
+					.name(Entity.createdVarChars[2])
+					.profileImageType(Entity.ImageType[0])
+					.profileImageBase64(Entity.createdVarChars[0])
+					.build();
+			
+			assertEquals(expect, result);
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenNodata_result400(Locale locale) throws Exception {
+			MvcResult mvcResult = mockMvc.perform(
+					MockMvcRequestBuilders
+						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/1000")
+						.accept(HttpConstant.DEFAULT_CONTENT_TYPE)
+						.locale(locale)
+					).andExpect(status().isBadRequest()).andReturn();
+			
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+			
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			String message = messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale);
+
+			assertEquals(new ErrorResponse(AzusatoException.I0005, message), result);
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenParameterError_result400(Locale locale) throws Exception {
+			MvcResult mvcResult = mockMvc.perform(
+					MockMvcRequestBuilders
+						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/string")
+						.accept(HttpConstant.DEFAULT_CONTENT_TYPE)
+						.locale(locale)
+					).andExpect(status().isBadRequest()).andReturn();
+			
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+
+			String message = messageSource.getMessage(AzusatoException.I0008, new String[] { null }, locale);
+
+			assertEquals(new ErrorResponse(AzusatoException.I0008, message), result);
 		}
 	}
 	
@@ -365,6 +441,113 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 	}
 	
 	@SuppressWarnings("unused")
+	private static Stream<Arguments> modifyCelebration_givenParameterError_result400() {
+		final String NORMAL_IMAGE_TYPE = "image/png";
+		
+		return Stream.of(
+				Arguments.of(TestConstant.LOCALE_JA,
+						AddCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(null).content(Entity.createdVarChars[1])
+						.build(),
+						"タイトルは必修項目です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						AddCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
+						.build(),
+						"タイトルは最大50桁数まで入力可能です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						AddCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[1]).content("")
+						.build(),
+						"内容は必修項目です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						AddCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
+						.build(),
+						"内容は不正な値です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						AddCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType("image/gif")
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"プロフィールイメージはpng、jpegのみ可能です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						AddCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(null)
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"プロフィールイメージタイプは必修項目です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						AddCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64("").profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"プロフィールイメージ情報は必修項目です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						AddCelebrationAPIReqeust.builder()
+						.name("").profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"名前は必修項目です。"),
+				Arguments.of(TestConstant.LOCALE_KO,
+						AddCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(null).content(Entity.createdVarChars[1])
+						.build(),
+						"제목을 입력해주세요."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						AddCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
+						.build(),
+						"글자 수 50을 초과해서 제목을 입력하는 것은 불가능합니다."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						AddCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[1]).content("")
+						.build(),
+						"내용을 입력해주세요."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						AddCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
+						.build(),
+						"내용을 올바르게 입력해주세요."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						AddCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType("image/gif")
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"프로필사진은 png, jpeg만 지원됩니다."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						AddCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(null)
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"프로필이미지타입을 입력해주세요."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						AddCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64("").profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"프로필이미지정보을 입력해주세요."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						AddCelebrationAPIReqeust.builder()
+						.name("").profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"이름을 입력해주세요."),
+				Arguments.of(TestConstant.LOCALE_JA,
+						AddCelebrationAPIReqeust.builder().build(),
+						"タイトルは必修項目です。\nプロフィールイメージタイプは必修項目です。\nプロフィールイメージ情報は必修項目です。\n内容は必修項目です。\n名前は必修項目です。"));
+
+	}
+	
+	@SuppressWarnings("unused")
 	private static Stream<Arguments> getCelebrations_givenParameterError_result400() {
 		final String FILED_NAME_currentPageNo = "currentPageNo";
 		final String FILED_NAME_pagesOfpage = "pagesOfpage";
@@ -457,7 +640,8 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 						new String[] { "user", "celebration", "celebration_notice" }));
 
 	}
-
+	
+	
 	@SuppressWarnings("unused")
 	private static Stream<Arguments> addCelebration_semi_abnormal_case() {
 		final String NORMAL_IMAGE_TYPE = "image/png";

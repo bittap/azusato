@@ -50,6 +50,11 @@ public class AzusatoException extends RuntimeException {
 	public static final String I0007 = "I-0007";
 	
 	/**
+	 * パラメータタイプミスマッチ
+	 */
+	public static final String I0008 = "I-0008";
+	
+	/**
 	 * 予期せぬエラー
 	 */
 	public static final String E0001 = "E-0001";

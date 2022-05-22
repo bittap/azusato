@@ -133,6 +133,15 @@ public class CelebrationControllerAPI {
 		
 	}
 	
+	/**
+	 * お祝い情報を修正する。
+	 * <ul>
+	 * 	<li>200 : お祝い情報修正成功</li>
+	 * 	<li>400 : <br>対象データ存在なし<br>生成したユーザではない場合<br>パラメータがエラー</li>
+	 *  <li>401 : ログインしていない</li>
+	 * </ul>
+	 * @param req お祝い修正パラメータ
+	 */
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping(COMMON_URL)
 	public void modify(ModifyCelebrationAPIReqeust req) {
