@@ -28,6 +28,7 @@ import org.springframework.util.MultiValueMap;
 
 import com.my.azusato.api.controller.CelebrationControllerAPI;
 import com.my.azusato.api.controller.request.AddCelebrationAPIReqeust;
+import com.my.azusato.api.controller.request.ModifyCelebrationAPIReqeust;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
@@ -124,6 +125,141 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			AddCelebrationAPIReqeust req = AddCelebrationAPIReqeust.builder()
 					.name(Entity.updatedVarChars[0]).profileImageBase64(Entity.updatedVarChars[1]).profileImageType(profileProperty.getDefaultImageType())
 					.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1]).build();
+
+			return om.writeValueAsString(req);
+		}
+	}
+	
+	@Nested
+	class ModifyCelebration {
+
+		final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "modifyCelebration/";
+		
+		final String CELEBRATION_NO = "1";
+
+		@Test
+		public void givenNoraml_result200() throws Exception {
+			Path initFilePath = Paths.get(ModifyCelebration.RESOUCE_PATH, "1", TestConstant.INIT_XML_FILE_NAME);
+			Path expectFilePath = Paths.get(ModifyCelebration.RESOUCE_PATH, "1", TestConstant.EXPECT_XML_FILE_NAME);
+			String[] comparedTables = new String[] { "user", "celebration" , "profile" };
+			dbUnitCompo.initalizeTable(initFilePath);
+
+			mockMvc.perform(MockMvcRequestBuilders
+					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
+					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING).session(TestSession.getAdminSession())).andDo(print()).andExpect(status().isOk());
+
+			// compare tables
+			for (String table : comparedTables) {
+				// exclude to compare dateTime columns when celebration table
+				if (table.equals("celebration") || table.equals("user")) {
+					dbUnitCompo.compareTable(expectFilePath, table, TestConstant.DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS);
+				} else {
+					dbUnitCompo.compareTable(expectFilePath, table);
+				}
+			}
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenDifferenceUser_result400(Locale locale) throws Exception {
+			Path initFilePath = Paths.get(ModifyCelebration.RESOUCE_PATH, "2", TestConstant.INIT_XML_FILE_NAME);
+			dbUnitCompo.initalizeTable(initFilePath);
+			
+			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
+					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
+					.session(TestSession.getAdminSession()).locale(locale))
+			.andDo(print()).andExpect(status().is(400)).andReturn();
+
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+			
+			assertEquals(new ErrorResponse(AzusatoException.I0006, messageSource.getMessage(AzusatoException.I0006, null, locale)),
+					result);
+		}
+
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenNodata_result400(Locale locale) throws Exception {
+			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + "1000")
+					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
+					.session(TestSession.getAdminSession())
+					.locale(locale))
+			.andDo(print()).andExpect(status().is(400)).andReturn();
+
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			
+			assertEquals(new ErrorResponse(AzusatoException.I0005, messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale)),
+					result);
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenNoSession_result401(Locale locale) throws Exception {
+			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
+					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING).locale(locale))
+			.andDo(print()).andExpect(status().is(401)).andReturn();
+
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+
+			assertEquals(new ErrorResponse(AzusatoException.I0001, messageSource.getMessage(AzusatoException.I0001, null, locale)),
+					result);
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenPathValueTypeError_result400(Locale locale)
+				throws Exception {
+			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + "string")
+					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
+					.session(TestSession.getAdminSession())
+					.locale(locale))
+			.andDo(print()).andExpect(status().is(400)).andReturn();
+
+
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+			
+			String message = messageSource.getMessage(AzusatoException.I0008, null, locale);
+
+			assertEquals(new ErrorResponse(AzusatoException.I0008, message), result);
+		}
+
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.integration.api.controller.CelebrationContollerAPITest#moidfyCelebration_parameter_error")
+		public void givenParameterError_result400(Locale locale, ModifyCelebrationAPIReqeust req, String expectedMessage)
+				throws Exception {
+			String requestBody = om.writeValueAsString(req);
+			
+			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
+					.content(requestBody).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
+					.session(TestSession.getAdminSession())
+					.locale(locale))
+			.andDo(print()).andExpect(status().is(400)).andReturn();
+
+
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+
+			assertEquals(new ErrorResponse(AzusatoException.I0004, expectedMessage), result);
+		}
+
+		private String getRequestBody() throws Exception {
+			ModifyCelebrationAPIReqeust req = ModifyCelebrationAPIReqeust.builder()
+					.name(Entity.updatedVarChars[0]).profileImageBase64(Entity.updatedVarChars[1]).profileImageType(Entity.ProfileImageType[1])
+					.title(Entity.updatedVarChars[2]).content(Entity.updatedVarChars[3]).build();
 
 			return om.writeValueAsString(req);
 		}
@@ -627,17 +763,124 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 				Arguments.of(TestSession.getAdminSession(), TestCookie.getNonmemberCookie(),
 						Paths.get(AddCelebration.RESOUCE_PATH, "1", TestConstant.INIT_XML_FILE_NAME),
 						Paths.get(AddCelebration.RESOUCE_PATH, "1", TestConstant.EXPECT_XML_FILE_NAME),
-						new String[] { "user", "celebration" }),
+						new String[] { "user", "celebration", "profile" }),
 				// not admin login
 				Arguments.of(TestSession.getKakaoSession(), TestCookie.getNonmemberCookie(),
 						Paths.get(AddCelebration.RESOUCE_PATH, "2", TestConstant.INIT_XML_FILE_NAME),
 						Paths.get(AddCelebration.RESOUCE_PATH, "2", TestConstant.EXPECT_XML_FILE_NAME),
-						new String[] { "user", "celebration", "celebration_notice" }),
+						new String[] { "user", "celebration", "celebration_notice", "profile" }),
 				// nonmember login
 				Arguments.of(new MockHttpSession(), TestCookie.getNonmemberCookie(),
 						Paths.get(AddCelebration.RESOUCE_PATH, "3", TestConstant.INIT_XML_FILE_NAME),
 						Paths.get(AddCelebration.RESOUCE_PATH, "3", TestConstant.EXPECT_XML_FILE_NAME),
-						new String[] { "user", "celebration", "celebration_notice" }));
+						new String[] { "user", "celebration", "celebration_notice", "profile" }));
+
+	}
+	
+	@SuppressWarnings("unused")
+	private static Stream<Arguments> moidfyCelebration_parameter_error() {
+		final String NORMAL_IMAGE_TYPE = "image/png";
+		
+		return Stream.of(
+				Arguments.of(TestConstant.LOCALE_JA,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(null).content(Entity.createdVarChars[1])
+						.build(),
+						"タイトルは必修項目です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
+						.build(),
+						"タイトルは最大50桁数まで入力可能です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[1]).content("")
+						.build(),
+						"内容は必修項目です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
+						.build(),
+						"内容は不正な値です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType("image/gif")
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"プロフィールイメージはpng、jpegのみ可能です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(null)
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"プロフィールイメージタイプは必修項目です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64("").profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"プロフィールイメージ情報は必修項目です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						ModifyCelebrationAPIReqeust.builder()
+						.name("").profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"名前は必修項目です。"),
+				Arguments.of(TestConstant.LOCALE_KO,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(null).content(Entity.createdVarChars[1])
+						.build(),
+						"제목을 입력해주세요."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
+						.build(),
+						"글자 수 50을 초과해서 제목을 입력하는 것은 불가능합니다."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[1]).content("")
+						.build(),
+						"내용을 입력해주세요."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
+						.build(),
+						"내용을 올바르게 입력해주세요."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType("image/gif")
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"프로필사진은 png, jpeg만 지원됩니다."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(null)
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"프로필이미지타입을 입력해주세요."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(Entity.createdVarChars[0]).profileImageBase64("").profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"프로필이미지정보을 입력해주세요."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						ModifyCelebrationAPIReqeust.builder()
+						.name("").profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"이름을 입력해주세요."),
+				Arguments.of(TestConstant.LOCALE_JA,
+						ModifyCelebrationAPIReqeust.builder().build(),
+						"タイトルは必修項目です。\nプロフィールイメージタイプは必修項目です。\nプロフィールイメージ情報は必修項目です。\n内容は必修項目です。\n名前は必修項目です。"));
 
 	}
 	

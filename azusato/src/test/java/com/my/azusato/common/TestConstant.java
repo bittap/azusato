@@ -79,6 +79,7 @@ public class TestConstant {
 		public static final int[] createdInts = { 1, 2, 3, 4, 5, 6 };
 		public static final long[] createdLongs = { 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L };
 		public static final int[] updatedInts = { 1000, 1001, 1002, 1003, 1004 };
+		public static final String[] ProfileImageType = { "image/png", "image/jpeg" };
 		public static final String[] ImageType = { "png", "jpeg" };
 		public static final boolean CreatedBoolean = true;
 		public static final boolean UpdatedBoolean = false;

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <user 
+    	no='2'
+    	id='varchar1' 
+    	password='varchar2' 
+    	name='varchar3' 
+    	user_type='admin' 
+    	create_datetime='2022-01-02 03:04:05' 
+    	update_datetime='2022-01-02 03:04:05' 
+    	delete_flag='false'
+    />
+    <profile
+    	user_no='2'
+    	image_base64='varchar1' 
+    	image_type='png' 
+    />
+    <celebration 
+    	no='1'
+    	title='varchar1' 
+    	content='varchar2'
+    	read_count='0' 
+    	create_user_no='2'
+    	update_user_no='2' 
+    	create_datetime='2022-01-02 03:04:05' 
+    	update_datetime='2022-01-02 03:04:05' 
+    	delete_flag='false' 	
+    />
+</dataset>

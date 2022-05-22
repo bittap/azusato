@@ -13,10 +13,10 @@
     <profile
     	user_no='1'
     	image_base64='update2' 
-    	image_type='jpeg' 
+    	image_type='image/jpeg' 
     />
     <celebration 
-   		no='1'
+       	no='1'
     	title='update3' 
     	content='update4'
     	read_count='0' 

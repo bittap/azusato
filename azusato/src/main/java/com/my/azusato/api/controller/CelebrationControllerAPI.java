@@ -64,6 +64,8 @@ public class CelebrationControllerAPI {
 	
 	public static final String CELEBRATION_URL = COMMON_URL + "/{celebrationNo}";
 	
+	public static final String CELEBRATION_PUT_URL = COMMON_URL + "/{celebrationNo}";
+	
 	public static final String CELEBRATIONS_URL = "celebrations";
 	
 	/**
@@ -140,17 +142,19 @@ public class CelebrationControllerAPI {
 	 * 	<li>400 : <br>対象データ存在なし<br>生成したユーザではない場合<br>パラメータがエラー</li>
 	 *  <li>401 : ログインしていない</li>
 	 * </ul>
+	 * @param celebationNo お祝い番号
 	 * @param req お祝い修正パラメータ
 	 */
 	@ResponseStatus(HttpStatus.OK)
-	@PutMapping(COMMON_URL)
-	public void modify(ModifyCelebrationAPIReqeust req) {
+	@PutMapping(CELEBRATION_PUT_URL)
+	public void modify(@PathVariable(name = "celebrationNo", required = true) Long celebationNo, @RequestBody @Validated ModifyCelebrationAPIReqeust req) {
 		LoginUserDto loginInfo = SessionUtil.getLoginSession(httpSession).orElseThrow(()->{
 			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
 					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
 		});
 		
 		ModifyCelebationServiceAPIRequest serviceReq = ModifyCelebationServiceAPIRequest.builder()
+				.celebationNo(celebationNo)
 				.name(req.getName()).profileImageBase64(req.getProfileImageBase64()).profileImageType(req.getProfileImageType())
 				.title(req.getTitle()).content(req.getContent()).userNo(loginInfo.getNo()).build();
 		

@@ -115,7 +115,7 @@ public class CelebrationContrllerTest extends AbstractIntegration {
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
 			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
 
-			assertEquals(new ErrorResponse(AzusatoException.I0004, expectedMessage), result);
+			assertEquals(new ErrorResponse(AzusatoException.I0008, expectedMessage), result);
 		}
 		
 	}
