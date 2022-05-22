@@ -22,7 +22,7 @@ const writeBtnModal = modalCommon.modalTwoBtn(modifyModalTitle,modifyModalBody,a
 const addCelebration = async function(){
 	console.log("お祝い投稿API");
 	modalCommon.displayLoadingModal();
-	const res = await fetch(apiUrl+"/celebration/add",{
+	const res = await fetch(apiUrl+"/celebration",{
 		method: 'POST',
 		headers: {
 		  'Accept': 'application/json',

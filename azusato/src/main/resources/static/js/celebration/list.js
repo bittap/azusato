@@ -47,6 +47,11 @@ const initialize = function(){
 				DELETE_BTN_TAG.remove();
 			}
 			
+			var myCollapse = document.getElementById('myCollapse')
+			var bsCollapse = new bootstrap.Collapse(myCollapse, {
+			  toggle: false
+			})
+			
 			
 			/*
 			 * 書き込み領域
@@ -100,7 +105,7 @@ const initialize = function(){
 const getCelebrations = async function(){
 	console.log("お祝いリスト取得");
 	const currentPageNo = urlParams.has("currentPageNo") ? urlParams.get("currentPageNo") : 1;
-	const res = await fetch(apiUrl+"/celebration/list?" + new URLSearchParams({
+	const res = await fetch(apiUrl+"/celebrations?" + new URLSearchParams({
 		"currentPageNo": currentPageNo,
 		"pagesOfpage": PAGE_PAGES_OF_PAGE,
 		"pageOfElement": PAGE_PAGES_OF_ELEMENT

@@ -1,6 +1,6 @@
 package com.my.azusato.page;
 
-import com.my.azusato.api.controller.MyPageControllerRequest;
+import com.my.azusato.api.controller.request.MyPageControllerRequest;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

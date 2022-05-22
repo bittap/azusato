@@ -40,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @RestController
-@RequestMapping(value = Api.COMMON_REQUSET + Api.PROFILE_CONTROLLER_REQUSET)
+@RequestMapping(value = Api.COMMON_REQUSET)
 @Slf4j
 @RequiredArgsConstructor
 public class ProfileControllerAPI {
@@ -56,6 +56,10 @@ public class ProfileControllerAPI {
 	private final MessageSource messageSource;
 	
 	private final HttpSession httpSession;
+	
+	public static final String COMMON_URL = "profile";
+	
+	public static final String RANDOM_URL = COMMON_URL + "/random";
 
 	/**
 	 * 既に登録したランダムイメージの情報を取得する。
@@ -65,7 +69,7 @@ public class ProfileControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	@GetMapping(value = Api.RANDOM_PROFILE_URL)
+	@GetMapping(value = RANDOM_URL)
 	public DefaultRandomProfileResponse getDefaultRandomProfile() throws IOException {
 		log.debug("[ランダムイメージ取得] START");
 		DefaultRandomProfileResponse response = new DefaultRandomProfileResponse();

@@ -1,23 +1,23 @@
-.list > .title > img {
+.list .title > img {
 	height: 4rem; 
 	width: 4rem;
 }
 
-.list > .title > p {
+.list .title > p {
 	height: 4rem;
 }
 
-.list > .title > .title-right {
+.list .title > .title-right {
 	width: 100%;
 }
 
 /* reply of celebration area*/
-.list > .content > .reply .list > img{
+.list .reply .list > img{
 	width:2rem;
 	height:2rem;
 }
 
-.list > .content > .reply .list > .reply-title-right{
+.list .reply .list > .reply-title-right{
 	width: 100%;
 }
 
@@ -25,29 +25,29 @@
 	font-size:12px;
 }*/
 
-.list > .content > .reply > .write{
+.list .reply > .write{
 	height:2.5rem;
 }
 
-.list > .content > .reply > .write > button{
+.list .reply > .write > button{
 	width:20%;
 }
 
 
 
 @media (min-width: 768px) {
-	.list > .content > .reply{
+	.list .reply{
 		margin-left:3rem;
 		margin-right: 3rem;
 	}
 	
-	.list > .content > .reply > .write > button{
+	.list .reply > .write > button{
 		width:15%;
 	}
 }
 
 @media (max-width: 767px) {
-	.list > .content > .body img{  /*size of imgs is 100% on mobile */
+	.list  .content > .body img{  /*size of imgs is 100% on mobile */
 		width:100%!important
 	}
 }

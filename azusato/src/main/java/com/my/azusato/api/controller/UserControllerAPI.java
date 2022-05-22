@@ -27,7 +27,6 @@ import com.my.azusato.api.service.response.GetSessionUserServiceAPIResponse;
 import com.my.azusato.dto.LoginUserDto;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
-import com.my.azusato.property.SessionProperty;
 import com.my.azusato.property.UserProperty;
 import com.my.azusato.view.controller.common.CookieConstant;
 import com.my.azusato.view.controller.common.SessionConstant;
@@ -46,7 +45,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @RestController
-@RequestMapping(value = Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET)
+@RequestMapping(value = Api.COMMON_REQUSET)
 @RequiredArgsConstructor
 @Slf4j
 public class UserControllerAPI {
@@ -62,8 +61,11 @@ public class UserControllerAPI {
 	private final HttpServletRequest servletRequest;
 
 	private final HttpServletResponse servletResponse;
+
+	public static final String COMMON_URL = "user";
 	
-	private final SessionProperty sessionProperty;
+	public static final String ADD_NONMEMBER_URL = COMMON_URL + "/nonmember";
+	
 
 	/**
 	 * セッションにあるユーザのテーブル情報を返す。
@@ -75,7 +77,7 @@ public class UserControllerAPI {
 	 * 
 	 * @return ユーザ情報
 	 */
-	@GetMapping
+	@GetMapping(COMMON_URL)
 	public ResponseEntity<Object> getSessionUser() {
 		log.debug("{}#getSessionUser START ", UserControllerAPI.class.getName());
 
@@ -104,7 +106,7 @@ public class UserControllerAPI {
 	 * @param servletResponse {@link HttpServletResponse}
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(value = Api.ADD_NONMEMBER_URL)
+	@PostMapping(ADD_NONMEMBER_URL)
 	public void addNonMember(@RequestBody @Validated AddNonMemberUserAPIRequest req,
 			@CookieValue(value = CookieConstant.NON_MEMBER_KEY, required = false) Cookie nonmemberCookie) {
 		log.debug("{}#addNonMember START, req : {}", UserControllerAPI.class.getName(), req);

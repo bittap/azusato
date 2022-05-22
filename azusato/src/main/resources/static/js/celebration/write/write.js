@@ -19,7 +19,7 @@ const writeBtnModal = modalCommon.modalTwoBtn(writeModalTitle,writeModalBody,asy
 
 const addnonMember = async function(){
 	console.log("非会員ユーザ作成API");
-	const res = await fetch(apiUrl+"/user/add/nonmember",{
+	const res = await fetch(apiUrl+"/user/nonmember",{
 		method: 'POST',
 		headers: {
 		  'Accept': 'application/json',
@@ -80,7 +80,7 @@ const addCelebration = async function(){
  */
 const isSessionLoginInfo = async function(){
 	console.log("ログイン有無確認API");
-	const res = await fetch(apiUrl+"/session/login-info");
+	const res = await fetch(apiUrl+"/session/checked-login-session");
 
 	const result = await res.json();
 	

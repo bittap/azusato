@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.my.azusato.api.controller.request.AddCelebrationAPIReqeust;
 import com.my.azusato.api.controller.request.ModifyCelebrationAPIReqeust;
+import com.my.azusato.api.controller.request.MyPageControllerRequest;
 import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
@@ -46,7 +47,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @RestController
-@RequestMapping(value = Api.COMMON_REQUSET + Api.CELEBRATION_CONTROLLER_REQUSET)
+@RequestMapping(value = Api.COMMON_REQUSET)
 @RequiredArgsConstructor
 @Slf4j
 public class CelebrationControllerAPI {
@@ -59,6 +60,12 @@ public class CelebrationControllerAPI {
 
 	private final HttpServletRequest servletRequest;
 	
+	public static final String COMMON_URL = "celebration";
+	
+	public static final String CELEBRATION_URL = COMMON_URL + "/{celebrationNo}";
+	
+	public static final String CELEBRATIONS_URL = "celebrations";
+	
 	/**
 	 * お祝い情報を返却する。
 	 * @param celebationNo お祝い番号
@@ -66,14 +73,14 @@ public class CelebrationControllerAPI {
 	 * @throws AzusatoException 400　データが存在しない場合
 	 */
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/{no}")
-	public GetCelebrationSerivceAPIResponse get(@PathVariable(name = "no", required = true) Long celebationNo) {
+	@GetMapping(CELEBRATION_URL)
+	public GetCelebrationSerivceAPIResponse celebation(@PathVariable(name = "celebrationNo", required = true) Long celebationNo) {
 		return celeAPIService.getCelebration(celebationNo,servletRequest.getLocale());
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping
-	public GetCelebrationsSerivceAPIResponse getCelebrations(@ModelAttribute @Validated MyPageControllerRequest page) {
+	@GetMapping(CELEBRATIONS_URL)
+	public GetCelebrationsSerivceAPIResponse celebrations(@ModelAttribute @Validated MyPageControllerRequest page) {
 		// ログインしていない時のuserNo
 		final long NO_LOGIN_USER_NO = 0L;
 		
@@ -104,7 +111,7 @@ public class CelebrationControllerAPI {
 	 * @param servletRequest  for message
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping
+	@PostMapping(COMMON_URL)
 	public void add(@RequestBody @Validated AddCelebrationAPIReqeust req) {
 		LoginUserDto loginInfo = SessionUtil.getLoginSession(httpSession).orElseThrow(()->{
 			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
@@ -124,7 +131,7 @@ public class CelebrationControllerAPI {
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
-	@PutMapping
+	@PutMapping(COMMON_URL)
 	public void modify(ModifyCelebrationAPIReqeust req) {
 		LoginUserDto loginInfo = SessionUtil.getLoginSession(httpSession).orElseThrow(()->{
 			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,

@@ -1,4 +1,4 @@
-package com.my.azusato.api.controller;
+package com.my.azusato.api.controller.request;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;

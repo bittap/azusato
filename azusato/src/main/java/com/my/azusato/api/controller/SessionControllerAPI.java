@@ -26,21 +26,25 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @RestController
-@RequestMapping(value = Api.COMMON_REQUSET + Api.SESSION_CONTROLLER_REQUSET)
+@RequestMapping(value = Api.COMMON_REQUSET)
 @RequiredArgsConstructor
 public class SessionControllerAPI {
 
 	private final HttpSession httpSession;
+	
+	public static final String COMMON_URL = "session";
+	
+	public static final String CHECK_URL = COMMON_URL + "checked-login-session";
 	
 	/**
 	 * ログインセッション情報があるかどうかチェック
 	 * 
 	 * @return true : ある , false : ない
 	 */
-	@GetMapping(Api.CHECK_EXIST_SESSION_URL)
+	@GetMapping(CHECK_URL)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public boolean checkExistSession() {
+	public boolean check() {
 		return Objects.nonNull(httpSession.getAttribute(SessionConstant.LOGIN_KEY))? true : false;
 	}
 
