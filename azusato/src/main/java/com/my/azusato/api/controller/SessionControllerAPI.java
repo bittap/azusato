@@ -34,7 +34,7 @@ public class SessionControllerAPI {
 	
 	public static final String COMMON_URL = "session";
 	
-	public static final String CHECK_URL = COMMON_URL + "checked-login-session";
+	public static final String CHECK_URL = COMMON_URL + "/checked-login-session";
 	
 	/**
 	 * ログインセッション情報があるかどうかチェック

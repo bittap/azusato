@@ -56,8 +56,7 @@ public class ProfileControllerAPITest extends AbstractIntegration {
 		@Test
 		public void normal_case() throws Exception {
 			MvcResult mvcResult = mockMvc
-					.perform(MockMvcRequestBuilders.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET
-							+ Api.PROFILE_CONTROLLER_REQUSET + Api.RANDOM_PROFILE_URL))
+					.perform(MockMvcRequestBuilders.get(TestConstant.MAKE_ABSOLUTE_URL +  Api.COMMON_REQUSET +  ProfileControllerAPI.RANDOM_URL))
 					.andDo(print()).andExpect(status().isOk()).andReturn();
 
 			DefaultRandomProfileResponse result = om.readValue(mvcResult.getResponse().getContentAsString(),

@@ -1,5 +1,6 @@
 package com.my.azusato.integration;
 
+import javax.sql.DataSource;
 import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +39,9 @@ public abstract class AbstractIntegration  {
 	protected MockMvc mockMvc;
 	
 	protected ObjectMapper om = new ObjectMapper();
+	
+	@Autowired
+	protected DataSource dataSource;
 	
 	@Autowired
 	protected DBUnitComponent dbUnitCompo;

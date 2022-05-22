@@ -54,8 +54,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 					message);
 			return new ResponseEntity<>(responseBody, headers, responseStatusException.getRawStatusCode());
 		} else {
-			ErrorResponse responseBody = new ErrorResponse(AzusatoException.E0002,
-					ms.getMessage(AzusatoException.E0002, null, httpServletRequest.getLocale()));
+			ErrorResponse responseBody = new ErrorResponse(AzusatoException.E0001,
+					ms.getMessage(AzusatoException.E0001, null, httpServletRequest.getLocale()));
 			return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -115,8 +115,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 					log.error("error", ex);
 					log.error("fail to bounded message. default message : {}, fieldName : {}",
 							fieldError.getDefaultMessage(), fieldName);
-					ErrorResponse responseBody = new ErrorResponse(AzusatoException.E0002,
-							ms.getMessage(AzusatoException.E0002, null, locale));
+					ErrorResponse responseBody = new ErrorResponse(AzusatoException.E0001,
+							ms.getMessage(AzusatoException.E0001, null, locale));
 					return new ResponseEntity<>(responseBody, headers, HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 			} else {

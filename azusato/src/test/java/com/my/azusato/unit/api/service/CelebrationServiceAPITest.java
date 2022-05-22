@@ -13,16 +13,20 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.transaction.TestTransaction;
 
 import com.my.azusato.api.controller.request.MyPageControllerRequest;
 import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
+import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
+import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.CelebrationReply;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
+import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.integration.AbstractIntegration;
@@ -125,8 +129,8 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			req.setUserNo(100000L);
 
 			String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
-			AzusatoException expect = new AzusatoException(HttpStatus.INTERNAL_SERVER_ERROR, AzusatoException.E0001,
-					messageSource.getMessage(AzusatoException.E0001, new String[] { tableName }, locale));
+			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
 
 			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
 				celeServiceAPI.addCelebartion(req, locale);
@@ -141,6 +145,169 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 					.name(Entity.updatedVarChars[0]).profileImageBase64(Entity.updatedVarChars[1]).profileImageType(Entity.updatedVarChars[2])
 					.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1]).userNo(Long.valueOf(Entity.createdInts[0]))
 					.build();
+		}
+	}
+	
+	@Nested
+	class ModifyCelebration {
+
+		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "modifyCelebration/";
+
+		@Test
+		public void givenNormal_resultUpdated() throws Exception {
+			String folderName = "1";
+			String[] COMPARED_TABLE_NAME = { "user", "celebration", "profile" };
+			
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+			ModifyCelebationServiceAPIRequest normalReq = ModifyCelebationServiceAPIRequest.builder()
+			.userNo(Long.valueOf(Entity.createdInts[0]))
+			.celebationNo(Long.valueOf(Entity.createdInts[0]))
+			.name(Entity.updatedVarChars[2]).profileImageBase64(Entity.updatedVarChars[3]).profileImageType(Entity.updatedVarChars[4])
+			.title(Entity.updatedVarChars[0]).content(Entity.updatedVarChars[1])
+			.build();
+			
+			celeServiceAPI.modifyCelebartion(normalReq, TestConstant.LOCALE_JA);
+			
+			// compare tables
+			for (String table : COMPARED_TABLE_NAME) {
+				// exclude to compare dateTime columns when celebration table
+				if (table.equals("celebration")) {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+							TestConstant.DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS);
+				} else if(table.equals("user") || table.equals("profile")) {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+							TestConstant.DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS);
+				} else {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
+				}
+			}
+		}
+
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenDifferenceUser_resultError(Locale locale) throws Exception {
+			String folderName = "2";
+			
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+			ModifyCelebationServiceAPIRequest normalReq = ModifyCelebationServiceAPIRequest.builder()
+			.userNo(1000L)
+			.celebationNo(Long.valueOf(Entity.createdInts[0]))
+			.build();
+			
+			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0006,
+					messageSource.getMessage(AzusatoException.I0006, null, locale));
+
+			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+				celeServiceAPI.modifyCelebartion(normalReq, locale);
+			});
+			
+			TestTransaction.end();
+
+			assertEquals(expect, result);
+			
+			
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenCelebrationDeletedFlag_resultError(Locale locale) throws Exception {
+			String folderName = "3";
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+			
+			ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
+			req.setUserNo(100000L);
+
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+
+			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+				celeServiceAPI.modifyCelebartion(req, locale);
+			});
+
+			assertEquals(expect, result);
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenUserDeletedFlag_resultError(Locale locale) throws Exception {
+			String folderName = "4";
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+			
+			ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
+			req.setUserNo(100000L);
+
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+
+			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+				celeServiceAPI.modifyCelebartion(req, locale);
+			});
+
+			assertEquals(expect, result);
+		}
+		
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenNoCelebrationData_resultError(Locale locale) throws Exception {
+			ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
+			req.setUserNo(100000L);
+
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+
+			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+				celeServiceAPI.modifyCelebartion(req, locale);
+			});
+
+			assertEquals(expect, result);
+
+		}
+	}
+	
+	@Nested
+	class GetCelebration {
+
+		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getCelebration/";
+
+		@Test
+		public void givenNormal_result200() throws Exception {
+			String folderName = "1";
+			long celebationNo = 1L;
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+			
+			GetCelebrationSerivceAPIResponse result = celeServiceAPI.getCelebration(celebationNo, TestConstant.LOCALE_JA);
+			
+			GetCelebrationSerivceAPIResponse expect = GetCelebrationSerivceAPIResponse.builder()
+							.celebrationNo(celebationNo)
+							.title(Entity.createdVarChars[0])
+							.content(Entity.createdVarChars[1])
+							.name(Entity.createdVarChars[2])
+							.profileImageBase64(Entity.createdVarChars[3])
+							.profileImageType(Entity.createdVarChars[4])
+							.build();
+			
+			assertEquals(expect, result);
+
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenNodata_result400(Locale locale) throws Exception {
+			long celebationNo = 100000L;
+			
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+
+			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+				celeServiceAPI.getCelebration(celebationNo, locale);
+			});
+
+			assertEquals(expect, result);
 		}
 	}
 	
@@ -203,11 +370,17 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 											.no(Entity.createdLongs[0])
 											.content(Entity.createdVarChars[0])
 											.createdDatetime(Entity.createdDatetimes[0])
+											.name(Entity.createdVarChars[2])
+											.profileImageType(Entity.ImageType[0])
+											.profileImageBase64(Entity.createdVarChars[0])
 											.owner(true).build(),
 										CelebrationReply.builder()
 											.no(Entity.createdLongs[1])
 											.content(Entity.createdVarChars[1])
 											.createdDatetime(Entity.createdDatetimes[1])
+											.name(Entity.createdVarChars[2])
+											.profileImageType(Entity.ImageType[0])
+											.profileImageBase64(Entity.createdVarChars[0])
 											.owner(true).build()
 										))
 								.createdDatetime(Entity.createdDatetimes[0])
@@ -264,11 +437,17 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 											.no(Entity.createdLongs[0])
 											.content(Entity.createdVarChars[0])
 											.createdDatetime(Entity.createdDatetimes[0])
+											.name(Entity.createdVarChars[2])
+											.profileImageType(Entity.ImageType[0])
+											.profileImageBase64(Entity.createdVarChars[0])
 											.owner(true).build(),
 										CelebrationReply.builder()
 											.no(Entity.createdLongs[1])
 											.content(Entity.createdVarChars[1])
 											.createdDatetime(Entity.createdDatetimes[1])
+											.name(Entity.createdVarChars[2])
+											.profileImageType(Entity.ImageType[0])
+											.profileImageBase64(Entity.createdVarChars[0])
 											.owner(false).build()
 										))
 								.createdDatetime(Entity.createdDatetimes[0])
@@ -310,6 +489,9 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 											.no(Entity.createdLongs[0])
 											.content(Entity.createdVarChars[0])
 											.createdDatetime(Entity.createdDatetimes[0])
+											.name(Entity.createdVarChars[2])
+											.profileImageType(Entity.ImageType[0])
+											.profileImageBase64(Entity.createdVarChars[0])
 											.owner(true).build()
 										))
 								.createdDatetime(Entity.createdDatetimes[0])
@@ -366,11 +548,17 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 											.no(Entity.createdLongs[0])
 											.content(Entity.createdVarChars[0])
 											.createdDatetime(Entity.createdDatetimes[0])
+											.name(Entity.createdVarChars[2])
+											.profileImageType(Entity.ImageType[0])
+											.profileImageBase64(Entity.createdVarChars[0])
 											.owner(true).build(),
 										CelebrationReply.builder()
 											.no(Entity.createdLongs[1])
 											.content(Entity.createdVarChars[1])
 											.createdDatetime(Entity.createdDatetimes[1])
+											.name(Entity.createdVarChars[2])
+											.profileImageType(Entity.ImageType[0])
+											.profileImageBase64(Entity.createdVarChars[0])
 											.owner(true).build()
 										))
 								.createdDatetime(Entity.createdDatetimes[0])

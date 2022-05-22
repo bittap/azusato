@@ -8,7 +8,7 @@
     	user_type='admin' 
     	create_datetime='2022-01-02 03:04:05' 
     	update_datetime='2022-01-02 03:04:05' 
-    	delete_flag='true'
+    	delete_flag='false'
     />
     <profile
     	user_no='1'

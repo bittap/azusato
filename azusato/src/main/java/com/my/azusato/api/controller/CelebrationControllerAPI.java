@@ -68,9 +68,12 @@ public class CelebrationControllerAPI {
 	
 	/**
 	 * お祝い情報を返却する。
+	 * <ul>
+	 * 	<li>200 : お祝い番号によるお祝いデータ</li>
+	 * 	<li>400 : <br>テーブルにお祝いデータが存在しない。<br>パラメータがLong以外</li>
+	 * </ul>
 	 * @param celebationNo お祝い番号
 	 * @return celebationNoより検索されたお祝い情報
-	 * @throws AzusatoException 400　データが存在しない場合
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(CELEBRATION_URL)

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.my.azusato.api.controller.SessionControllerAPI;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestSession;
 import com.my.azusato.integration.AbstractIntegration;
@@ -25,7 +26,7 @@ public class SessionContollerAPITest extends AbstractIntegration {
 		@Test
 		public void givenSession_resultTrue() throws Exception {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.SESSION_CONTROLLER_REQUSET + Api.CHECK_EXIST_SESSION_URL).session(TestSession.getAdminSession())
+						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + SessionControllerAPI.CHECK_URL).session(TestSession.getAdminSession())
 					).andDo(print()).andExpect(status().isOk()).andReturn();
 			
 			String result = mvcResult.getResponse().getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
@@ -36,7 +37,7 @@ public class SessionContollerAPITest extends AbstractIntegration {
 		@Test
 		public void givenNoSession_resultFalse() throws Exception {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.SESSION_CONTROLLER_REQUSET + Api.CHECK_EXIST_SESSION_URL)
+					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + SessionControllerAPI.CHECK_URL)
 					).andDo(print()).andExpect(status().isOk()).andReturn();
 			
 			String result = mvcResult.getResponse().getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));

@@ -62,8 +62,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			dbUnitCompo.initalizeTable(initFilePath);
 
 			mockMvc.perform(MockMvcRequestBuilders
-					.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.CELEBRATION_CONTROLLER_REQUSET
-							+ "add")
+					.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL)
 					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING).session(session)
 					.cookie(cookie)).andDo(print()).andExpect(status().isCreated());
 
@@ -88,8 +87,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 
 			MvcResult mvcResult = mockMvc
 					.perform(MockMvcRequestBuilders
-							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET
-									+ Api.CELEBRATION_CONTROLLER_REQUSET + "add")
+							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL)
 							.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
 							.locale(locale))
 					.andDo(print()).andExpect(status().is(401)).andReturn();
@@ -109,8 +107,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			String requestBody = om.writeValueAsString(req);
 			MvcResult mvcResult = mockMvc
 					.perform(MockMvcRequestBuilders
-							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET
-									+ Api.CELEBRATION_CONTROLLER_REQUSET + "add")
+							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL)
 							.content(requestBody).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING).locale(locale))
 					.andDo(print()).andExpect(status().is(400)).andReturn();
 
@@ -153,8 +150,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			
 			MvcResult mvcResult = mockMvc.perform(
 					MockMvcRequestBuilders
-						.get(TestConstant.MAKE_ABSOLUTE_URL +Api.COMMON_REQUSET + Api.CELEBRATION_CONTROLLER_REQUSET + CelebrationControllerAPI.LIST_URL)
-						.contentType(HttpConstant.DEFAULT_CONTENT_TYPE)
+						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.CELEBRATIONS_URL)
 						.accept(HttpConstant.DEFAULT_CONTENT_TYPE)
 						.params(parameters)
 					).andExpect(status().isOk()).andReturn();
@@ -189,11 +185,17 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 											.no(Entity.createdLongs[0])
 											.content(Entity.createdVarChars[0])
 											.createdDatetime(Entity.createdDatetimes[0])
+											.name(Entity.createdVarChars[2])
+											.profileImageType(Entity.ImageType[0])
+											.profileImageBase64(Entity.createdVarChars[0])
 											.owner(false).build(),
 										CelebrationReply.builder()
 											.no(Entity.createdLongs[1])
 											.content(Entity.createdVarChars[1])
 											.createdDatetime(Entity.createdDatetimes[1])
+											.name(Entity.createdVarChars[2])
+											.profileImageType(Entity.ImageType[0])
+											.profileImageBase64(Entity.createdVarChars[0])
 											.owner(false).build()
 										))
 								.createdDatetime(Entity.createdDatetimes[0])
@@ -216,7 +218,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			
 			MvcResult mvcResult = mockMvc.perform(
 					MockMvcRequestBuilders
-						.get(TestConstant.MAKE_ABSOLUTE_URL +Api.COMMON_REQUSET + Api.CELEBRATION_CONTROLLER_REQUSET + CelebrationControllerAPI.LIST_URL)
+					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.CELEBRATIONS_URL)
 						.contentType(HttpConstant.DEFAULT_CONTENT_TYPE)
 						.accept(HttpConstant.DEFAULT_CONTENT_TYPE)
 						.session(TestSession.getAdminSession())
@@ -252,11 +254,17 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 										CelebrationReply.builder()
 											.no(Entity.createdLongs[0])
 											.content(Entity.createdVarChars[0])
+											.name(Entity.createdVarChars[2])
+											.profileImageType(Entity.ImageType[0])
+											.profileImageBase64(Entity.createdVarChars[0])
 											.createdDatetime(Entity.createdDatetimes[0])
 											.owner(true).build(),
 										CelebrationReply.builder()
 											.no(Entity.createdLongs[1])
 											.content(Entity.createdVarChars[1])
+											.name(Entity.createdVarChars[2])
+											.profileImageType(Entity.ImageType[0])
+											.profileImageBase64(Entity.createdVarChars[0])
 											.createdDatetime(Entity.createdDatetimes[1])
 											.owner(true).build()
 										))
@@ -279,7 +287,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			
 			MvcResult mvcResult = mockMvc.perform(
 					MockMvcRequestBuilders
-						.get(TestConstant.MAKE_ABSOLUTE_URL +Api.COMMON_REQUSET + Api.CELEBRATION_CONTROLLER_REQUSET + CelebrationControllerAPI.LIST_URL)
+					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.CELEBRATIONS_URL)
 						.contentType(HttpConstant.DEFAULT_CONTENT_TYPE)
 						.accept(HttpConstant.DEFAULT_CONTENT_TYPE)
 						.params(parameters)
@@ -314,11 +322,17 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 										CelebrationReply.builder()
 											.no(Entity.createdLongs[0])
 											.content(Entity.createdVarChars[0])
+											.name(Entity.createdVarChars[2])
+											.profileImageType(Entity.ImageType[0])
+											.profileImageBase64(Entity.createdVarChars[0])
 											.createdDatetime(Entity.createdDatetimes[0])
 											.owner(false).build(),
 										CelebrationReply.builder()
 											.no(Entity.createdLongs[1])
 											.content(Entity.createdVarChars[1])
+											.name(Entity.createdVarChars[2])
+											.profileImageType(Entity.ImageType[0])
+											.profileImageBase64(Entity.createdVarChars[0])
 											.createdDatetime(Entity.createdDatetimes[1])
 											.owner(false).build()
 										))
@@ -335,7 +349,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 		public void givenParameterError_result400(Locale locale, MultiValueMap<String,String> parameters, String expect) throws Exception {
 			MvcResult mvcResult = mockMvc.perform(
 					MockMvcRequestBuilders
-						.get(TestConstant.MAKE_ABSOLUTE_URL +Api.COMMON_REQUSET + Api.CELEBRATION_CONTROLLER_REQUSET + CelebrationControllerAPI.LIST_URL)
+					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.CELEBRATIONS_URL)
 						.contentType(HttpConstant.DEFAULT_CONTENT_TYPE)
 						.accept(HttpConstant.DEFAULT_CONTENT_TYPE)
 						.params(parameters)

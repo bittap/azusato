@@ -26,6 +26,7 @@ import com.my.azusato.entity.common.CommonDateEntity;
 import com.my.azusato.entity.common.CommonFlagEntity;
 import com.my.azusato.entity.common.CommonUserEntity;
 import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.view.controller.common.ValueConstant;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,7 +66,7 @@ public class CelebrationNoticeTest extends AbstractIntegration {
 		}
 		
 		private Set<UserEntity> getNotices(){
-			return userRepo.findByUserType(Type.admin.toString());
+			return userRepo.findByUserTypeAndCommonFlagDeleteFlag(Type.admin.toString() , ValueConstant.DEFAULT_DELETE_FLAG);
 		}
 
 		/**

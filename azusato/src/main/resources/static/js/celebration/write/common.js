@@ -30,12 +30,12 @@ $('#summernote').summernote({
 
 const getRandomImage = async function(){
 	console.log("ランダムイメージ取得");
-	const res = await fetch(apiUrl+"/profile/randomProfile");
+	const res = await fetch(apiUrl+"/profile/random");
 	
 	const result = await res.json();
 	
 	if(!res.ok) {
-		return new Error(result);
+		throw new MyError("ランダムイメージ取得ー",result);
 	}else{
 		return result;
 	}

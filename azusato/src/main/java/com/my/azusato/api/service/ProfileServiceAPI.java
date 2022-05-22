@@ -15,6 +15,7 @@ import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.common.CommonDateEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.repository.UserRepository;
+import com.my.azusato.view.controller.common.ValueConstant;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +49,7 @@ public class ProfileServiceAPI {
 	public void updateUserProfile(ModifyUserProfileServiceAPIRequest req, Locale locale) {
 		log.debug("req : {}", req);
 		
-		UserEntity updateTargetEntity = userRepo.findById(req.getUserNo()).orElseThrow(()->{
+		UserEntity updateTargetEntity = userRepo.findByNoAndCommonFlagDeleteFlag(req.getUserNo(),ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
 				String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
 				log.error("not exist {} table, no : {}", tableName, req.getUserNo());
 				throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,

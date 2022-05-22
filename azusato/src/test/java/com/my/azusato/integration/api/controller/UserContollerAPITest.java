@@ -20,6 +20,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.my.azusato.api.controller.UserControllerAPI;
 import com.my.azusato.api.controller.request.AddNonMemberUserAPIRequest;
 import com.my.azusato.api.service.response.GetSessionUserServiceAPIResponse;
 import com.my.azusato.common.TestConstant;
@@ -49,7 +50,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 			dbUnitCompo.initalizeTable(Paths.get(AddCelebration.RESOUCE_PATH, "1", TestConstant.INIT_XML_FILE_NAME));
 			
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET).session(TestSession.getAdminSession())
+						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET+UserControllerAPI.COMMON_URL).session(TestSession.getAdminSession())
 					).andDo(print()).andExpect(status().isOk()).andReturn();
 			
 			String resultStrBody = mvcResult.getResponse().getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
@@ -69,7 +70,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 		@MethodSource("com.my.azusato.common.TestSource#locales")
 		public void givenNotSession_result400(Locale locale) throws Exception {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET)
+					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET+UserControllerAPI.COMMON_URL)
 					.locale(locale)
 				).andDo(print()).andExpect(status().isBadRequest()).andReturn();
 		
@@ -86,15 +87,15 @@ public class UserContollerAPITest extends AbstractIntegration {
 		@MethodSource("com.my.azusato.common.TestSource#locales")
 		public void givenNotExistData_result500(Locale locale) throws Exception {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET).session(TestSession.getAdminSession())
+					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET+UserControllerAPI.COMMON_URL).session(TestSession.getAdminSession())
 					.locale(locale)
-				).andDo(print()).andExpect(status().isInternalServerError()).andReturn();
+				).andDo(print()).andExpect(status().isBadRequest()).andReturn();
 		
 			String resultStrBody = mvcResult.getResponse().getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
 			ErrorResponse result = om.readValue(resultStrBody, ErrorResponse.class);
 			
 			String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
-			ErrorResponse expect = new ErrorResponse(AzusatoException.E0001,messageSource.getMessage(AzusatoException.E0001, new String[] { tableName }, locale));
+			ErrorResponse expect = new ErrorResponse(AzusatoException.I0005,messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
 			
 			Assertions.assertEquals(expect, result);
 		}
@@ -110,8 +111,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 			String requestBody = om.writeValueAsString(req);
 			
 			mockMvc.perform(MockMvcRequestBuilders
-					.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET
-							+ Api.ADD_NONMEMBER_URL)
+					.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + UserControllerAPI.ADD_NONMEMBER_URL)
 					.content(requestBody).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)).andDo(print())
 					.andExpect(status().isCreated())
 					.andExpect(cookie().value(CookieConstant.NON_MEMBER_KEY, notNullValue()));
@@ -126,8 +126,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 			
 			MvcResult mvcResult = mockMvc
 					.perform(MockMvcRequestBuilders
-							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET
-									+ Api.ADD_NONMEMBER_URL)
+							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + UserControllerAPI.ADD_NONMEMBER_URL)
 							.locale(locale).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
 							.content(requestBody)
 							.cookie(TestCookie.getNonmemberCookie()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING))
@@ -148,8 +147,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 			String requestBody = om.writeValueAsString(req);
 			MvcResult mvcResult = mockMvc
 					.perform(MockMvcRequestBuilders
-							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + Api.USER_CONTROLLER_REQUSET
-									+ Api.ADD_NONMEMBER_URL)
+							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + UserControllerAPI.ADD_NONMEMBER_URL)
 							.content(requestBody).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING).locale(locale))
 					.andDo(print()).andExpect(status().is(400)).andReturn();
 
@@ -176,10 +174,10 @@ public class UserContollerAPITest extends AbstractIntegration {
 		return Stream.of(
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddNonMemberUserAPIRequest.builder().profileImageType("image/svg+xml").build(),
-						"プロフィールイメージはpng、jpegのみ可能です。\nプロフィールイメージ情報は必修項目です。\n名前は必修項目です。"),
+						"プロフィールイメージはpng、jpegのみ可能です。\n名前は必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddNonMemberUserAPIRequest.builder().profileImageType("image/svg+xml").build(),
-						"이름을 입력해주세요.\n프로필사진은 png, jpeg만 지원됩니다.\n프로필이미지정보을 입력해주세요.")
+						"이름을 입력해주세요.\n프로필사진은 png, jpeg만 지원됩니다.")
 				);
 	}
 }

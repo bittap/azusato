@@ -66,8 +66,8 @@ public class UserServiceAPITest extends AbstractIntegration {
 			AzusatoException result = Assertions.assertThrows(AzusatoException.class, ()->userServiceAPI.getSessionUser(Long.valueOf(Entity.createdInts[0]), locale));
 
 			String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
-			AzusatoException expect = new AzusatoException(HttpStatus.INTERNAL_SERVER_ERROR, AzusatoException.E0001,
-					messageSource.getMessage(AzusatoException.E0001, new String[] { tableName }, locale));
+			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
 			
 			assertEquals(expect,result);
 		}

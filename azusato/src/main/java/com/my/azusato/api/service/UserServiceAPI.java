@@ -75,7 +75,7 @@ public class UserServiceAPI {
 	 * @throws AzusatoException 該当するユーザ情報がない場合
 	 */
 	public GetSessionUserServiceAPIResponse getSessionUser(Long no, Locale locale) {
-		UserEntity userEntity = userRepo.findById(no).orElseThrow(() -> {
+		UserEntity userEntity = userRepo.findByNoAndCommonFlagDeleteFlag(no,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(() -> {
 			String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
 			log.error("not exist {} table, no : {}", tableName, no);
 			throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,

@@ -85,9 +85,9 @@ const isSessionLoginInfo = async function(){
 	const result = await res.json();
 	
 	if(!res.ok) {
-		return new Error(result);
+		return Promise.reject(result);
 	}else{
-		return result;
+		return Promise.resolve(result);
 	}
 }
 
@@ -101,9 +101,9 @@ const getUser = async function(){
 	const result = await res.json();
 	
 	if(!res.ok) {
-		return new Error(result);
+		return Promise.reject(result);
 	}else{
-		return result;
+		return Promise.resolve(result);
 	}
 }
 

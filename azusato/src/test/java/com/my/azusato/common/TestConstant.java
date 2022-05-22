@@ -57,6 +57,8 @@ public class TestConstant {
 	public final static String[] DEFAULT_EXCLUDE_COLUMNS = { "no", "create_datetime", "update_datetime" };
 
 	public final static String[] DEFAULT_EXCLUDE_DATE_COLUMNS = { "create_datetime", "update_datetime" };
+	
+	public final static String[] DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS = { "update_datetime" };
 
 	/**
 	 * common location for test data

@@ -28,6 +28,7 @@ public class DBUnitComponent {
 	public void initalizeTable(Path dataSourcePath) throws Exception {
 		IDataSet dataSet = new FlatXmlDataSetBuilder().build(dataSourcePath.toFile());
 		databaseTester.setDataSet(dataSet);
+		databaseTester.onTearDown();
 		databaseTester.onSetup();
 	}
 

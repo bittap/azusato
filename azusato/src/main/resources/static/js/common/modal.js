@@ -32,11 +32,20 @@ ModalCommon.prototype.displayErrorModal = function(title, body){
 }
 /*
  * APIエラーメッセージを表示。もし、title,messageがない場合は、基本メッセージのエラーを表示する。
- * @param {object} errorMessage title, messageに構成
+ * @param {object} error title, messageに構成
  */
-ModalCommon.prototype.displayApiErrorModal = function(errorMessage){
-	const title = errorMessage.title != null ? errorMessage.title : DEFAULT_ERROR_TITLE;
-	const body = errorMessage.message != null ? errorMessage.message : DEFAULT_ERROR_BODY;
+ModalCommon.prototype.displayApiErrorModal = function(error){
+	let title;
+	let body;
+	
+	if(error.title == null || error.body == null){
+		title = DEFAULT_ERROR_TITLE;
+		body = DEFAULT_ERROR_BODY;
+	}else{
+		title = error.title;
+		body = error.body;
+	}
+
 	this.displayOneBtnModal(title, body,document.getElementById('errorBtnModal'),this.errorModal);
 }
 

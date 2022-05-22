@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetCelebrationSerivceAPIResponse {
 	
+	private Long celebrationNo;
+	
 	private String title;
 	
 	private String content;

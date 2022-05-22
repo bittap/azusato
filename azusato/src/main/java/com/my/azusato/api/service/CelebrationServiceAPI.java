@@ -97,7 +97,7 @@ public class CelebrationServiceAPI {
 	private void addCelebartion(AddCelebrationServiceAPIRequest req, Locale locale, String userType) {
 		log.debug("{}#addCelebartion , req : {}, locale : {}", CelebrationServiceAPI.class.getName(), req, locale);
 
-		UserEntity userEntity = userRepo.findById(req.getUserNo()).orElseThrow(() -> {
+		UserEntity userEntity = userRepo.findByNoAndCommonFlagDeleteFlag(req.getUserNo(),ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(() -> {
 			throw AzusatoException.createI0005Error(locale, messageSource, UserEntity.TABLE_NAME_KEY);
 		});
 
@@ -106,7 +106,7 @@ public class CelebrationServiceAPI {
 		if (userType.equals("not_admin")) {
 			// for create celebration_notice table
 			// Select that user type is admin.
-			admins = userRepo.findByUserType(Type.admin.toString());
+			admins = userRepo.findByUserTypeAndCommonFlagDeleteFlag(Type.admin.toString(),ValueConstant.DEFAULT_DELETE_FLAG);
 		}
 		
 		LocalDateTime nowLdt = LocalDateTime.now();
@@ -145,9 +145,10 @@ public class CelebrationServiceAPI {
 	 */
 	@Transactional
 	public void modifyCelebartion(ModifyCelebationServiceAPIRequest req , Locale locale) {
-		CelebrationEntity fetchedCelebationEntity = celeRepo.findById(req.getCelebationNo()).orElseThrow(()->{
-			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
-		});
+		CelebrationEntity fetchedCelebationEntity = 
+				celeRepo.findByNoAndCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(req.getCelebationNo(),ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
+						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
+				});
 		
 		// 生成したユーザかユーザをチェックする。
 		long createdUserNo = fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getNo();
@@ -181,11 +182,12 @@ public class CelebrationServiceAPI {
 		});
 		
 		return GetCelebrationSerivceAPIResponse.builder()
+					.celebrationNo(fetchedCelebationEntity.getNo())
 					.title(fetchedCelebationEntity.getTitle())
 					.content(fetchedCelebationEntity.getContent())
 					.name(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getName())
 					.profileImageType(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().getImageType())
-					.profileImageType(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
+					.profileImageBase64(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
 					.build();
 	}
 
@@ -199,7 +201,7 @@ public class CelebrationServiceAPI {
 		// 注意 : 一番最初のパラメータpageは0から始まる。
 		Pageable sortedByNo = PageRequest.of(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement(),Sort.by(Direction.DESC,"no"));
 		Page<CelebrationEntity> celebrationEntitys = celeRepo
-				.findAllByCommonFlagDeleteFlag(sortedByNo,ValueConstant.DEFAULT_DELETE_FLAG);
+				.findAllByCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(sortedByNo,ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG);
 		
 		GetCelebrationsSerivceAPIResponse response = new GetCelebrationsSerivceAPIResponse();
 		
