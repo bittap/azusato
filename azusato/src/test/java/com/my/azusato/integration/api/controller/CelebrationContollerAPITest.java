@@ -830,6 +830,12 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
 						.build(),
 						"名前は必修項目です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(RandomStringUtils.randomAlphabetic(11)).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"名前は最大10桁数まで入力可能です。"),
 				Arguments.of(TestConstant.LOCALE_KO,
 						ModifyCelebrationAPIReqeust.builder()
 						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
@@ -872,6 +878,12 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
 						.build(),
 						"프로필이미지정보을 입력해주세요."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						ModifyCelebrationAPIReqeust.builder()
+						.name(RandomStringUtils.randomAlphabetic(11)).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.build(),
+						"글자 수 10을 초과해서 이름을 입력하는 것은 불가능합니다."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						ModifyCelebrationAPIReqeust.builder()
 						.name("").profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
@@ -938,6 +950,12 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
 						.build(),
 						"名前は必修項目です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
+						AddCelebrationAPIReqeust.builder()
+						.name(RandomStringUtils.randomAlphabetic(11)).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[1]).content(Entity.createdVarChars[1])
+						.build(),
+						"名前は最大10桁数まで入力可能です。"),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddCelebrationAPIReqeust.builder()
 						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
@@ -980,6 +998,12 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
 						.build(),
 						"프로필이미지정보을 입력해주세요."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						AddCelebrationAPIReqeust.builder()
+						.name(RandomStringUtils.randomAlphabetic(11)).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.title(Entity.createdVarChars[1]).content(Entity.createdVarChars[1])
+						.build(),
+						"글자 수 10을 초과해서 이름을 입력하는 것은 불가능합니다."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddCelebrationAPIReqeust.builder()
 						.name("").profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)

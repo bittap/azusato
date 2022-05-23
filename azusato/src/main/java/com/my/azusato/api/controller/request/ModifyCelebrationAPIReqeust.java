@@ -26,6 +26,7 @@ public class ModifyCelebrationAPIReqeust {
 	String content;
 	
 	@NotBlank(message = "{notBlank}")
+	@Size(max = 10, message = "{size-string.max}")
 	String name;
 
 	@Pattern(regexp = RegexConstant.profileImageBase64, message = "{profileImageBase64.regex}")

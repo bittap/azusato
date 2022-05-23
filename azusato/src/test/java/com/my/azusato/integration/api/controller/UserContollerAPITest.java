@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -173,11 +174,17 @@ public class UserContollerAPITest extends AbstractIntegration {
 	private static Stream<Arguments> givenInvaildParameter_result400() {
 		return Stream.of(
 				Arguments.of(TestConstant.LOCALE_JA,
+						AddNonMemberUserAPIRequest.builder().name(RandomStringUtils.randomAlphabetic(11)).profileImageType("image/svg+xml").build(),
+						"プロフィールイメージはpng、jpegのみ可能です。\n名前は最大10桁数まで入力可能です。"),
+				Arguments.of(TestConstant.LOCALE_JA,
 						AddNonMemberUserAPIRequest.builder().profileImageType("image/svg+xml").build(),
 						"プロフィールイメージはpng、jpegのみ可能です。\n名前は必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddNonMemberUserAPIRequest.builder().profileImageType("image/svg+xml").build(),
-						"이름을 입력해주세요.\n프로필사진은 png, jpeg만 지원됩니다.")
+						"이름을 입력해주세요.\n프로필사진은 png, jpeg만 지원됩니다."),
+				Arguments.of(TestConstant.LOCALE_KO,
+						AddNonMemberUserAPIRequest.builder().name(RandomStringUtils.randomAlphabetic(11)).profileImageType("image/svg+xml").build(),
+						"글자 수 10을 초과해서 이름을 입력하는 것은 불가능합니다.\n프로필사진은 png, jpeg만 지원됩니다.")
 				);
 	}
 }
