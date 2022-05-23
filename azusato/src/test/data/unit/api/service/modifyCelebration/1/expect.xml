@@ -4,7 +4,7 @@
     	no='1'
     	id='varchar1' 
     	password='varchar2'
-    	name='update1'
+    	name='update3'
     	user_type='admin' 
     	create_datetime='2022-01-02 03:04:05' 
     	delete_flag='false'
@@ -12,13 +12,13 @@
     />
     <profile
     	user_no='1'
-    	image_base64='update2' 
-    	image_type='jpeg' 
+    	image_base64='update4' 
+    	image_type='update5' 
     />
     <celebration 
    		no='1'
-    	title='update3' 
-    	content='update4'
+    	title='update1' 
+    	content='update2'
     	read_count='0' 
     	create_user_no='1'
     	update_user_no='1' 
