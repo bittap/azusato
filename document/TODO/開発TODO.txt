@@ -1,9 +1,10 @@
-﻿1.celebration_notice, celebration_reply_noticeにreaded追加
+﻿優先度
 
-2.書き込みから詳細設計書作成
+・celebration_notice, celebration_reply_noticeにreaded追加
 
-3.登録APIからUserRepository削除
+・もし、ユーザが非ログインの場合で書き込みを行うとランダムイメージでユーザを登録（完了）
 
-4.もし、ユーザが非ログインの場合で書き込みを行うとランダムイメージでユーザを登録
+・Entityに対するDeleteFlagテストコード追加(下)
 
-5.Entityに対するDeleteFlagテストコード追加
+・修正ページ参照できないやつ直接URLで叩いた時、エラーモーダルクリック時遷移するように(下)
+=> モーダルを設計しなおす。

@@ -51,7 +51,7 @@ public class CelebrationReplyControllerAPI {
 	
 	public static final String POST_URL = COMMON_URL + "/{celebrationNo}";
 
-	public static final String DELETE_URL = COMMON_URL + "/{celebrationNo}";
+	public static final String DELETE_URL = COMMON_URL + "/{celebrationReplyNo}";
 	
 	/**
 	 * 「お祝い書き込み」とお祝いに関わる人に対して「お祝い通知」を登録する。deletedをtrueに変更
@@ -80,16 +80,16 @@ public class CelebrationReplyControllerAPI {
 	 * 	<li>400 : <br>対象データ存在なし<br>生成したユーザではない場合<br>パラメータがエラー</li>
 	 *  <li>401 : ログインしていない</li>
 	 * </ul>
-	 * @param celebationNo お祝い番号
+	 * @param celebrationReplyNo お祝い書き込み番号
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping(DELETE_URL)
-	public void delete(@PathVariable(name = "celebrationNo", required = true) Long celebationNo) {
+	public void delete(@PathVariable(name = "celebrationReplyNo", required = true) Long celebrationReplyNo) {
 		LoginUserDto loginInfo = SessionUtil.getLoginSession(httpSession).orElseThrow(()->{
 			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
 					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
 		});
 
-		celeReplyAPIService.deleteCelebartionReply(celebationNo, loginInfo.getNo(),servletRequest.getLocale());
+		celeReplyAPIService.deleteCelebartionReply(celebrationReplyNo, loginInfo.getNo(),servletRequest.getLocale());
 	}
 }
