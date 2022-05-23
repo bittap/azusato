@@ -27,6 +27,7 @@ import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
+import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.dto.LoginUserDto;
@@ -65,6 +66,8 @@ public class CelebrationControllerAPI {
 	
 	public static final String CELEBRATION_URL = COMMON_URL + "/{celebrationNo}";
 	
+	public static final String CELEBRATION_CONTENT_URL = COMMON_URL + "content" + "/{celebrationNo}";
+	
 	public static final String PUT_URL = COMMON_URL + "/{celebrationNo}";
 	
 	public static final String DELETE_URL = COMMON_URL + "/{celebrationNo}";
@@ -88,9 +91,18 @@ public class CelebrationControllerAPI {
 		return celeAPIService.getCelebration(celebationNo,servletRequest.getLocale());
 	}
 	
+	/**
+	 * お祝い情報と書き込み情報を返却する。
+	 * <ul>
+	 * 	<li>200 : 成功</li>
+	 * 	<li>400 : <br>テーブルにお祝いデータが存在しない。<br>パラメータがLong以外</li>
+	 * </ul>
+	 * @param celebationNo お祝い番号
+	 * @return celebationNoより検索されたお祝い情報
+	 */
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping(CELEBRATIONS_URL)
-	public GetCelebrationsSerivceAPIResponse celebrations(@ModelAttribute @Validated MyPageControllerRequest page) {
+	@GetMapping(CELEBRATION_CONTENT_URL)
+	public GetCelebrationContentSerivceAPIResponse celebationContent(@PathVariable(name = "celebrationNo", required = true) Long celebationNo) {
 		// ログインしていない時のuserNo
 		final long NO_LOGIN_USER_NO = 0L;
 		
@@ -98,13 +110,19 @@ public class CelebrationControllerAPI {
 		
 		long userNo = opLoginInfo.isPresent() ? opLoginInfo.get().getNo() : NO_LOGIN_USER_NO;
 		
+		return celeAPIService.getCelebrationContent(celebationNo,userNo,servletRequest.getLocale());
+	}
+	
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(CELEBRATIONS_URL)
+	public GetCelebrationsSerivceAPIResponse celebrations(@ModelAttribute @Validated MyPageControllerRequest page) {
+
 		// もし、現在ページ番号がないと現在ページ番号は１を設定
 		if(Objects.isNull(page.getCurrentPageNo())) {
 			page.setCurrentPageNo(1);
 		}
 			
 		GetCelebrationsSerivceAPIRequset serviceReq = GetCelebrationsSerivceAPIRequset.builder()
-								.loginUserNo(userNo)
 								.pageReq(page)
 								.build();
 		

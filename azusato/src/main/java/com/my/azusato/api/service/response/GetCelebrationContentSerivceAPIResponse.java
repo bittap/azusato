@@ -3,8 +3,6 @@ package com.my.azusato.api.service.response;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.my.azusato.page.MyPageResponse;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,23 +12,28 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class GetCelebrationsSerivceAPIResponse {
+public class GetCelebrationContentSerivceAPIResponse {
 	
-	private List<Celebration> celebrations;
+	private Long no;
 	
-	/**
-	 * ページ情報
-	 */
-	private MyPageResponse page;
+	private Boolean owner;
+	
+	private String content;
+	
+	private List<CelebrationReply> replys;
 	
 	@Data
 	@AllArgsConstructor
 	@Builder
 	@NoArgsConstructor
-	public static class Celebration{
-		private String title;
+	public static class CelebrationReply{
+		private Long no;
 		
 		private String content;
+		
+		private LocalDateTime createdDatetime;
+		
+		private Boolean owner;
 		
 		private String name;
 		
@@ -38,10 +41,5 @@ public class GetCelebrationsSerivceAPIResponse {
 		
 		private String profileImageBase64;
 		
-		private Long no;
-		
-		private Boolean owner;
-		
-		private LocalDateTime createdDatetime;
 	}
 }

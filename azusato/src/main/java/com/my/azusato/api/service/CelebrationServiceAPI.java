@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
+import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse;
+import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse.CelebrationReply;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
@@ -257,6 +259,46 @@ public class CelebrationServiceAPI {
 					.profileImageBase64(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
 					.build();
 	}
+	
+	/**
+	 * 対象のお祝いを返却する。
+	 * @param celebationNo 検索条件
+	 * @param locale エラーメッセージ用
+	 * @return 対象のお祝い情報
+	 * @throws AzusatoException テーブルにお祝いデータが存在しない。
+	 */
+	public GetCelebrationContentSerivceAPIResponse getCelebrationContent(Long celebationNo , Long userNo, Locale locale) {
+		CelebrationContentEntity fetchedCelebationEntity = celeContentRepo.findById(celebationNo).orElseThrow(()->{
+			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationContentEntity.TABLE_NAME_KEY);
+		});
+		
+		return GetCelebrationContentSerivceAPIResponse.builder()
+			.content(fetchedCelebationEntity.getContent())
+			.no(fetchedCelebationEntity.getNo())
+			.owner(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getNo() == userNo ? true : false)
+			.replys(fetchedCelebationEntity.getReplys().stream()
+					// deleted == falseだけ
+					.filter((e1)->{
+						return e1.getCommonFlag().getDeleteFlag() == ValueConstant.DEFAULT_DELETE_FLAG;
+					})
+					// No昇順Orderby
+					.sorted((e1,e2)->Long.compare(e1.getNo(), e2.getNo()))
+					.map((e2)->{
+						CelebrationReply reply = CelebrationReply.builder()
+								.no(e2.getNo())
+								.content(e2.getContent())
+								.createdDatetime(e2.getCommonDate().getCreateDatetime())
+								.owner(e2.getCommonUser().getCreateUserEntity().getNo() == userNo ? true : false)
+								.name(e2.getCommonUser().getCreateUserEntity().getName())
+								.profileImageType(e2.getCommonUser().getCreateUserEntity().getProfile().getImageType())
+								.profileImageBase64(e2.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
+								.build();
+						return reply;
+					})
+					.collect(Collectors.toList())
+			)
+			.build();
+	}
 
 	/**
 	 * お祝いリストを返却する。
@@ -280,32 +322,11 @@ public class CelebrationServiceAPI {
 		List<Celebration> celebrations = celebrationEntitys.stream().map((e)->{
 			return Celebration.builder()
 					.title(e.getTitle())
-					//.content(e.getContent())
 					.name(e.getCommonUser().getCreateUserEntity().getName())
 					.profileImageType(e.getCommonUser().getCreateUserEntity().getProfile().getImageType())
 					.profileImageBase64(e.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
 					.no(e.getNo())
-					.owner(e.getCommonUser().getCreateUserEntity().getNo() == req.getLoginUserNo() ? true : false)
 					.createdDatetime(e.getCommonDate().getCreateDatetime())
-//					.replys(e.getReplys().stream()
-//							// deleted == falseだけ
-//							.filter((e1)->{
-//								return e1.getCommonFlag().getDeleteFlag() == ValueConstant.DEFAULT_DELETE_FLAG;
-//							})
-//							// No昇順Orderby
-//							.sorted((e1,e2)->Long.compare(e1.getNo(), e2.getNo()))
-//							.map((e2)->{
-//								CelebrationReply reply = CelebrationReply.builder()
-//										.no(e2.getNo())
-//										.content(e2.getContent())
-//										.createdDatetime(e2.getCommonDate().getCreateDatetime())
-//										.owner(e2.getCommonUser().getCreateUserEntity().getNo() == req.getLoginUserNo() ? true : false)
-//										.name(e2.getCommonUser().getCreateUserEntity().getName())
-//										.profileImageType(e2.getCommonUser().getCreateUserEntity().getProfile().getImageType())
-//										.profileImageBase64(e2.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
-//										.build();
-//								return reply;
-//					}).collect(Collectors.toList()))
 					.build();
 		}).collect(Collectors.toList());
 		

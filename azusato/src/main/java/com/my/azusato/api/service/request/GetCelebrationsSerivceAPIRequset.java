@@ -13,7 +13,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetCelebrationsSerivceAPIRequset {
 
-	Long loginUserNo;
-	
 	MyPageControllerRequest pageReq;
 }
