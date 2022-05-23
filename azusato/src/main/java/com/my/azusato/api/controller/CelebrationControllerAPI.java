@@ -117,8 +117,6 @@ public class CelebrationControllerAPI {
 	 * 
 	 * 
 	 * @param req             requestbody, Validated
-	 * @param nonmemberCookie nonmember cookie
-	 * @param servletRequest  for message
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(COMMON_URL)
@@ -197,6 +195,6 @@ public class CelebrationControllerAPI {
 					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
 		});
 
-		celeAPIService.deleteCelebartion(celebationNo, servletRequest.getLocale());
+		celeAPIService.deleteCelebartion(celebationNo, loginInfo.getNo(),servletRequest.getLocale());
 	}
 }

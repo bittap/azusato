@@ -177,11 +177,12 @@ public class CelebrationServiceAPI {
 	 * 
 	 * 
 	 * @param celebationNo 削除対象のお祝い番号
+	 * @param userNo セッションのユーザ番号
 	 * @param locale エラーメッセージ用
 	 * @throws AzusatoException 対象データ存在なし、生成したユーザではない場合
 	 */
 	@Transactional
-	public void deleteCelebartion(Long celebationNo, Locale locale) {
+	public void deleteCelebartion(Long celebationNo, Long userNo,Locale locale) {
 		CelebrationEntity fetchedCelebationEntity = 
 				celeRepo.findByNoAndCommonFlagDeleteFlag(celebationNo,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
 						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
@@ -190,7 +191,7 @@ public class CelebrationServiceAPI {
 		// 生成したユーザかユーザをチェックする。
 		long createdUserNo = fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getNo();
 		
-		if(createdUserNo != celebationNo) {
+		if(createdUserNo != userNo) {
 			String message = messageSource.getMessage(AzusatoException.I0006, null, locale);
 			throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0006, message);
 		}
