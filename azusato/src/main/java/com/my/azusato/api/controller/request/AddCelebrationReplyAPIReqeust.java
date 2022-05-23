@@ -11,12 +11,12 @@ import lombok.Data;
 @Data
 @Builder
 public class AddCelebrationReplyAPIReqeust {
-
-	@NotBlank(message = "{notBlank}")
-	@Size(max = 500, message = "{size-string.max}")
-	String content;
 	
 	@NotBlank(message = "{notBlank}")
 	@Size(max = 10, message = "{size-string.max}")
 	String name;
+
+	@NotBlank(message = "{notBlank}")
+	@Size(max = 500, message = "{size-string.max}")
+	String content;
 }

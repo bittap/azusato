@@ -57,13 +57,13 @@ public class CelebrationReplyControllerAPI {
 	 * 「お祝い書き込み」とお祝いに関わる人に対して「お祝い通知」を登録する。deletedをtrueに変更
 	 * <ul>
 	 * 	<li>200 : お祝い書き込み成功</li>
-	 * 	<li>400 : <br>ユーザ情報が存在しない<br>パラメータがエラー</li>
+	 * 	<li>400 : <br>ユーザ情報、お祝い情報が存在しない。<br>パラメータがエラー</li>
 	 *  <li>401 : ログインしていない</li>
 	 * </ul>
 	 * @param req パラメータ
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(COMMON_URL)
+	@PostMapping(POST_URL)
 	public void add(@RequestBody @Validated AddCelebrationReplyAPIReqeust req, @PathVariable(name = "celebrationNo", required = true) Long celebationNo) {
 		LoginUserDto loginInfo = SessionUtil.getLoginSession(httpSession).orElseThrow(()->{
 			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,

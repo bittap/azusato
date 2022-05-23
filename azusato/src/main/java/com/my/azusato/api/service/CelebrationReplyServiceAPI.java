@@ -79,7 +79,7 @@ public class CelebrationReplyServiceAPI {
 	 * @param celebationNo お祝い番号
 	 * @param loginUserNo ログインしたユーザの番号
 	 * @param locale エラーメッセージ用
-	 * @throws ユーザ情報が存在しない。
+	 * @throws ユーザ情報、お祝い情報が存在しない。
 	 */
 	@Transactional
 	public void addCelebartionReply(AddCelebrationReplyAPIReqeust req, Long celebationNo , Long loginUserNo , Locale locale) {
@@ -89,7 +89,7 @@ public class CelebrationReplyServiceAPI {
 		
 		CelebrationEntity fetchedCelebrationEntity = 
 				celeRepo.findByNoAndCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(celebationNo,ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
-						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationReplyEntity.TABLE_NAME_KEY);
+						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
 				});
 		
 		List<CelebrationReplyEntity> fetchedReplys = fetchedCelebrationEntity.getReplys();
