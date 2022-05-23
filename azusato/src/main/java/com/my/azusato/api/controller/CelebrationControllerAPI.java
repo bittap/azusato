@@ -71,6 +71,8 @@ public class CelebrationControllerAPI {
 	
 	public static final String CELEBRATIONS_URL = "celebrations";
 	
+	public static final String READCOUNTUP_URL = COMMON_URL + "/read-count-up" + "/{celebrationNo}";
+	
 	/**
 	 * お祝い情報を返却する。
 	 * <ul>
@@ -162,6 +164,20 @@ public class CelebrationControllerAPI {
 				.title(req.getTitle()).content(req.getContent()).userNo(loginInfo.getNo()).build();
 		
 		celeAPIService.modifyCelebartion(serviceReq, servletRequest.getLocale());
+	}
+	
+	/**
+	 * 「お祝い」の参照回数
+	 * <ul>
+	 * 	<li>200 : 参照回数更新成功</li>
+	 * 	<li>400 : <br>対象データ存在なし</li>
+	 * </ul>
+	 * @param celebationNo お祝い番号
+	 */
+	@ResponseStatus(HttpStatus.OK)
+	@PutMapping(READCOUNTUP_URL)
+	public void readCountUp(@PathVariable(name = "celebrationNo", required = true) Long celebationNo) {
+		celeAPIService.readCountUp(celebationNo, servletRequest.getLocale());
 	}
 	
 	/**

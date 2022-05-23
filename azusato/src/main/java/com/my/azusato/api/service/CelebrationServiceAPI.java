@@ -203,6 +203,29 @@ public class CelebrationServiceAPI {
 	
 		celeRepo.save(fetchedCelebationEntity);
 	}
+	
+
+	/**
+	 * 「お祝い」の参照回数をアップする。
+	 * お祝い番号より参照後、ない場合はエラーをスローする。
+	 * 
+	 * @param celebationNo 削除対象のお祝い番号
+	 * @param locale エラーメッセージ用
+	 * @throws AzusatoException 対象データ存在なし
+	 */
+	@Transactional
+	public void readCountUp(Long celebationNo, Locale locale) {
+		CelebrationEntity fetchedCelebationEntity = 
+				// note：ユーザが開いた状態でのコンテンツはクリック可能にするため、deletedは使わない。
+				celeRepo.findById(celebationNo).orElseThrow(()->{
+						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
+				});
+		
+		int upedReadCount = fetchedCelebationEntity.getReadCount() + 1;
+		fetchedCelebationEntity.setReadCount(upedReadCount);
+	
+		celeRepo.save(fetchedCelebationEntity);
+	}
 
 	/**
 	 * 対象のお祝いを返却する。
