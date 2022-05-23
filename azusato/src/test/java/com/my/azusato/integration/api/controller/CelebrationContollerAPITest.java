@@ -266,6 +266,112 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 	}
 	
 	@Nested
+	class DeleteCelebration {
+
+		final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "deleteCelebration/";
+		
+		final String CELEBRATION_NO = "1";
+
+		@Test
+		public void givenNoraml_result200() throws Exception {
+			String folderName = "1";
+			Path initFilePath = Paths.get(DeleteCelebration.RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME);
+			Path expectFilePath = Paths.get(DeleteCelebration.RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME);
+			String[] COMPARED_TABLE_NAME = { "user", "celebration", "profile" , "celebration_reply"};
+			
+			dbUnitCompo.initalizeTable(initFilePath);
+
+			mockMvc.perform(MockMvcRequestBuilders
+					.delete(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
+					.session(TestSession.getAdminSession())).andDo(print()).andExpect(status().isOk());
+
+			// compare tables
+			for (String table : COMPARED_TABLE_NAME) {
+				// exclude to compare dateTime columns when celebration table
+				if(table.equals("user")) {
+					dbUnitCompo.compareTable(expectFilePath, table);
+				} else {
+					dbUnitCompo.compareTable(expectFilePath, table,
+							TestConstant.DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS);
+				}
+			}
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenDifferenceUser_result400(Locale locale) throws Exception {
+			Path initFilePath = Paths.get(DeleteCelebration.RESOUCE_PATH, "2", TestConstant.INIT_XML_FILE_NAME);
+			dbUnitCompo.initalizeTable(initFilePath);
+			
+			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+					.delete(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
+					.session(TestSession.getAdminSession()).locale(locale))
+			.andDo(print()).andExpect(status().is(400)).andReturn();
+
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+			
+			assertEquals(new ErrorResponse(AzusatoException.I0006, messageSource.getMessage(AzusatoException.I0006, null, locale)),
+					result);
+		}
+
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenNodata_result400(Locale locale) throws Exception {
+			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+					.delete(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + "1000")
+					.session(TestSession.getAdminSession())
+					.locale(locale))
+			.andDo(print()).andExpect(status().is(400)).andReturn();
+
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			
+			assertEquals(new ErrorResponse(AzusatoException.I0005, messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale)),
+					result);
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenNoSession_result401(Locale locale) throws Exception {
+			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+					.delete(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
+					.locale(locale))
+			.andDo(print()).andExpect(status().is(401)).andReturn();
+
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+
+			assertEquals(new ErrorResponse(AzusatoException.I0001, messageSource.getMessage(AzusatoException.I0001, null, locale)),
+					result);
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenPathValueTypeError_result400(Locale locale)
+				throws Exception {
+			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+					.delete(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + "string")
+					.session(TestSession.getAdminSession())
+					.locale(locale))
+			.andDo(print()).andExpect(status().is(400)).andReturn();
+
+
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+			
+			String message = messageSource.getMessage(AzusatoException.I0008, null, locale);
+
+			assertEquals(new ErrorResponse(AzusatoException.I0008, message), result);
+		}
+	}
+	
+	@Nested
 	class GetCelebration {
 
 		final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getCelebration/";
