@@ -372,6 +372,66 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 	}
 	
 	@Nested
+	class ReadCountupCelebration {
+
+		final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "readCountUp/";
+		
+		final String CELEBRATION_NO = "1";
+
+		@Test
+		public void givenNoraml_result200() throws Exception {
+			String folderName = "1";
+			Path initFilePath = Paths.get(ReadCountupCelebration.RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME);
+			Path expectFilePath = Paths.get(ReadCountupCelebration.RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME);
+			dbUnitCompo.initalizeTable(initFilePath);
+
+			mockMvc.perform(MockMvcRequestBuilders
+					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/read-count-up" + "/" + CELEBRATION_NO)
+					.session(TestSession.getAdminSession())).andDo(print()).andExpect(status().isOk());
+
+			dbUnitCompo.compareTable(expectFilePath);
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenNodata_result400(Locale locale) throws Exception {
+			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/read-count-up" + "/" + CELEBRATION_NO)
+					.session(TestSession.getAdminSession())
+					.locale(locale))
+			.andDo(print()).andExpect(status().is(400)).andReturn();
+
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			
+			assertEquals(new ErrorResponse(AzusatoException.I0005, messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale)),
+					result);
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenPathValueTypeError_result400(Locale locale)
+				throws Exception {
+			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/read-count-up" + "/" + "string")
+					.session(TestSession.getAdminSession())
+					.locale(locale))
+			.andDo(print()).andExpect(status().is(400)).andReturn();
+
+
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+			
+			String message = messageSource.getMessage(AzusatoException.I0008, null, locale);
+
+			assertEquals(new ErrorResponse(AzusatoException.I0008, message), result);
+		}
+	}
+	
+	@Nested
 	class GetCelebration {
 
 		final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getCelebration/";
