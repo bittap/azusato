@@ -52,8 +52,29 @@ public class CelebrationReplyServiceAPI {
 	private final CelebrationReplyRepository celeReplyRepo;
 
 	/**
-	 * お祝い書き込みを登録する。
-	 * お祝い番号に関わる書き込みを作成したユーザ(自分除外)を重複なしで検索し、お祝い書き込み通知に登録する。
+	 * 「お祝い書き込み」と「お祝い書き込み通知」を登録する。
+	 * 通知追加処理
+	 * (既存の書き込み者 + お祝い作成者)　- 書き込み作成者
+			作成者、書き込み作成者、既存の書き込み者
+			
+			・作成者：A、書き込み作成者：A、既存の書き込み者：X
+			A
+			 A
+			結果 : 0
+			・作成者：A、書き込み作成者：A、既存の書き込み者：ある
+			A
+			 B
+			 A
+			結果 : B
+			・作成者：A、書き込み作成者：B、既存の書き込み者：X
+			A
+			 B
+			結果 : A
+			・作成者：A、書き込み作成者：B、既存の書き込み者：ある
+			A
+			 C
+			 B
+			結果 : A、C
 	 * @param req パラメータ
 	 * @param celebationNo お祝い番号
 	 * @param loginUserNo ログインしたユーザの番号
@@ -62,17 +83,20 @@ public class CelebrationReplyServiceAPI {
 	 */
 	@Transactional
 	public void addCelebartionReply(AddCelebrationReplyAPIReqeust req, Long celebationNo , Long loginUserNo , Locale locale) {
-		UserEntity userEntity = userRepo.findByNoAndCommonFlagDeleteFlag(loginUserNo,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(() -> {
+		UserEntity loginUserEntity = userRepo.findByNoAndCommonFlagDeleteFlag(loginUserNo,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(() -> {
 			throw AzusatoException.createI0005Error(locale, messageSource, UserEntity.TABLE_NAME_KEY);
 		});
 		
-		CelebrationEntity fetchedCelebationEntity = 
+		CelebrationEntity fetchedCelebrationEntity = 
 				celeRepo.findByNoAndCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(celebationNo,ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
 						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationReplyEntity.TABLE_NAME_KEY);
 				});
 		
-		List<CelebrationReplyEntity> fetchedReplys = fetchedCelebationEntity.getReplys();
-		Set<UserEntity> replyNoticeUsers = fetchedReplys.stream()
+		List<CelebrationReplyEntity> fetchedReplys = fetchedCelebrationEntity.getReplys();
+		// (既存の書き込み者 + お祝い作成者)　- 書き込み作成者
+		Set<UserEntity> replyNoticeUsers = null;
+		// 既存の書き込み者
+		replyNoticeUsers = fetchedReplys.stream()
 				.map((e)->{
 					return e.getCommonUser().getCreateUserEntity();
 				})
@@ -80,17 +104,22 @@ public class CelebrationReplyServiceAPI {
 				.filter((e)->{
 					return e.getNo() != loginUserNo;
 				}).collect(Collectors.toSet());
+		// お祝い作成者
+		replyNoticeUsers.add(fetchedCelebrationEntity.getCommonUser().getCreateUserEntity());
+		// - 書き込み作成者
+		replyNoticeUsers.remove(loginUserEntity);
 
 		LocalDateTime nowLdt = LocalDateTime.now();
 
-		CommonDateEntity commonDateEntity = userEntity.getCommonDate();
+		CommonDateEntity commonDateEntity = loginUserEntity.getCommonDate();
 		commonDateEntity.setUpdateDatetime(nowLdt);
 		
-		userEntity.setName(req.getName());
+		loginUserEntity.setName(req.getName());
 
 		CelebrationReplyEntity insertedEntity = CelebrationReplyEntity.builder().content(req.getContent())
+				.celebrationNo(celebationNo)
 				.commonUser(
-						CommonUserEntity.builder().createUserEntity(userEntity).updateUserEntity(userEntity).build())
+						CommonUserEntity.builder().createUserEntity(loginUserEntity).updateUserEntity(loginUserEntity).build())
 				.replyNotices(replyNoticeUsers)
 				.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
 				.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();

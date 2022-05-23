@@ -18,6 +18,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.dbunit.DBUnitComponent;
 import com.my.azusato.repository.CelebrationNoticeRepository;
+import com.my.azusato.repository.CelebrationReplyNoticeRepository;
 import com.my.azusato.repository.CelebrationReplyRepository;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.ProfileRepository;
@@ -63,6 +64,9 @@ public abstract class AbstractIntegration  {
 	
 	@Autowired
 	protected CelebrationNoticeRepository celeNoticeRepo;
+	
+	@Autowired
+	protected CelebrationReplyNoticeRepository celeReplyNoticeRepo;
 	
 	public AbstractIntegration() {
 		// サポートjavatime

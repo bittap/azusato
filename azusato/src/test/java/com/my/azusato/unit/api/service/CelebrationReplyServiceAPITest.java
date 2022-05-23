@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.transaction.TestTransaction;
 
+import com.my.azusato.api.controller.request.AddCelebrationReplyAPIReqeust;
 import com.my.azusato.api.service.CelebrationReplyServiceAPI;
-import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.entity.CelebrationReplyEntity;
@@ -27,113 +27,151 @@ public class CelebrationReplyServiceAPITest extends AbstractIntegration {
 
 	@Autowired
 	CelebrationReplyServiceAPI celeReplyServiceAPI;
+	
+
 
 	final String RESOUCE_BASIC_PATH = "src/test/data/unit/api/service/";
 
 	@Nested
 	class AddCelebration {
 
-		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "addCelebration/";
+		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "addCelebration-reply/";
+		
+		final long CELEBRATION_NO = 1L;
+		final long LOGIN_USER_NO = 1L;
 
+		/**
+		 * 書き込み作成者が本人で書き込みがない場合は、結果書き込み「一つ」と「通知」はゼロ
+		 * @throws Exception
+		 */
 		@Test
-		public void admin_normal_case() throws Exception {
+		public void givenWriteSelfAndNoReply_resultReply1AndNoticeZero() throws Exception {
 			String folderName = "1";
-			String[] COMPARED_TABLE_NAME = { "user", "celebration" };
+			String[] COMPARED_TABLE_NAME = { "user", "profile","celebration", "celebration_reply" };
 
 			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			celeReplyServiceAPI.addCelebartionAdmin(getNormalReq(), TestConstant.LOCALE_JA);
+			celeReplyServiceAPI.addCelebartionReply(getNormalReq(),CELEBRATION_NO,LOGIN_USER_NO,TestConstant.LOCALE_JA);
 
 			// compare tables
 			for (String table : COMPARED_TABLE_NAME) {
 				// exclude to compare dateTime columns when celebration table
-				if (table.equals("celebration")) {
+				if (table.equals("celebration_reply")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 							TestConstant.DEFAULT_EXCLUDE_COLUMNS);
-				} else if(table.equals("user") || table.equals("profile")) {
+				} else if(table.equals("user")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
 				} else {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
 				}
 			}
-
+			
+			assertEquals(0, celeReplyNoticeRepo.findAll().size());
 		}
-
-		@Test
-		public void normal_case() throws Exception {
-			String folderName = "2";
-			String[] COMPARED_TABLE_NAME = { "user", "celebration", "celebration_notice" };
-
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			celeReplyServiceAPI.addCelebartion(getNormalReq(), TestConstant.LOCALE_JA);
-
-			// compare tables
-			for (String table : COMPARED_TABLE_NAME) {
-				// exclude to compare dateTime columns when celebration table
-				if (table.equals("celebration")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_EXCLUDE_COLUMNS);
-				} else if (table.equals("celebration_notice")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							new String[] { "celebration_no" });
-				} else if(table.equals("user") || table.equals("profile")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
-				} else {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
-				}
-			}
-
-		}
-
-		@Test
-		public void notExistAdmin_normal_case() throws Exception {
-			String folderName = "3";
-			String[] COMPARED_TABLE_NAME = { "user", "celebration" };
-
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			celeReplyServiceAPI.addCelebartion(getNormalReq(), TestConstant.LOCALE_JA);
-
-			// compare tables
-			for (String table : COMPARED_TABLE_NAME) {
-				// exclude to compare dateTime columns when celebration table
-				if (table.equals("celebration")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_EXCLUDE_COLUMNS);
-				} else if(table.equals("user") || table.equals("profile")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
-				} else {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
-				}
-			}
-
-			Assertions.assertEquals(0, celeNoticeRepo.count());
-
-		}
-
+		
 		@ParameterizedTest
 		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void notExistUser_abnormal_case(Locale locale) throws Exception {
-			AddCelebrationServiceAPIRequest req = new AddCelebrationServiceAPIRequest();
-			req.setUserNo(100000L);
+		public void notExistReply_abnormal_case(Locale locale) throws Exception {
+			String folderName = "2";
 
-			String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+			
+			String tableName = messageSource.getMessage(CelebrationReplyEntity.TABLE_NAME_KEY, null, locale);
 			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
 					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
 
 			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-				celeReplyServiceAPI.addCelebartion(req, locale);
+				celeReplyServiceAPI.addCelebartionReply(null, 100000L, LOGIN_USER_NO ,locale);
 			});
 
 			assertEquals(expect, result);
 
 		}
+		
+		/**
+		 * 書き込み作成者が本人で書き込みがある場合は、結果「書き込み」と「通知」が正常
+		 * @throws Exception
+		 */
+		@Test
+		public void givenWriteSelfAndExistReply_result200() throws Exception {
+			String folderName = "3";
+			String[] COMPARED_TABLE_NAME = { "user", "profile","celebration", "celebration_reply" , "celebration_reply_notice" };
 
-		private AddCelebrationServiceAPIRequest getNormalReq() {
-			return AddCelebrationServiceAPIRequest.builder()
-					.name(Entity.updatedVarChars[0]).profileImageBase64(Entity.updatedVarChars[1]).profileImageType(Entity.updatedVarChars[2])
-					.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1]).userNo(Long.valueOf(Entity.createdInts[0]))
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+			celeReplyServiceAPI.addCelebartionReply(getNormalReq(),CELEBRATION_NO,LOGIN_USER_NO,TestConstant.LOCALE_JA);
+
+			// compare tables
+			for (String table : COMPARED_TABLE_NAME) {
+				// exclude to compare dateTime columns when celebration table
+				if (table.equals("celebration_reply")) {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+							TestConstant.DEFAULT_EXCLUDE_COLUMNS);
+				} else if (table.equals("celebration_reply_notice")) {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+							new String[] { "celebration_reply_no" });
+				} else if(table.equals("user")) {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
+				} else {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
+				}
+			}
+			
+			assertEquals(2, celeReplyNoticeRepo.findAll().size());
+		}
+		
+		/**
+		 * 書き込み作成者が非本人で書き込みがある場合は、結果「書き込み」と「通知」が正常
+		 * @throws Exception
+		 */
+		@Test
+		public void givenWriteAndExistReply_result200() throws Exception {
+			String folderName = "4";
+			String[] COMPARED_TABLE_NAME = { "user", "profile","celebration", "celebration_reply" , "celebration_reply_notice" };
+
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+			celeReplyServiceAPI.addCelebartionReply(getNormalReq(),CELEBRATION_NO,LOGIN_USER_NO,TestConstant.LOCALE_JA);
+
+			// compare tables
+			for (String table : COMPARED_TABLE_NAME) {
+				// exclude to compare dateTime columns when celebration table
+				if (table.equals("celebration_reply")) {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+							TestConstant.DEFAULT_EXCLUDE_COLUMNS);
+				} else if (table.equals("celebration_reply_notice")) {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+							new String[] { "celebration_reply_no" });
+				} else if(table.equals("user")) {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
+				} else {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
+				}
+			}
+			
+			assertEquals(2, celeReplyNoticeRepo.findAll().size());
+		}
+
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void notExistUser_abnormal_case(Locale locale) throws Exception {
+			String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
+			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+
+			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+				celeReplyServiceAPI.addCelebartionReply(null, CELEBRATION_NO, 100000L ,locale);
+			});
+
+			assertEquals(expect, result);
+
+		}
+		
+		
+
+		private AddCelebrationReplyAPIReqeust getNormalReq() {
+			return AddCelebrationReplyAPIReqeust.builder()
+					.name(Entity.updatedVarChars[0]).content(Entity.createdVarChars[1])
 					.build();
 		}
 	}

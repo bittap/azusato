@@ -7,7 +7,7 @@ create table celebration_reply_notice (
 	--readed BOOLEAN not null default 0 COMMENT '読んでたら : ture, 読んでなかったら : false',
 	PRIMARY KEY (celebration_reply_no,user_no),
 	FOREIGN KEY (celebration_reply_no)
-		REFERENCES celebration_reply (celebration_no)
+		REFERENCES celebration_reply (no)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE,
 	FOREIGN KEY (user_no)
