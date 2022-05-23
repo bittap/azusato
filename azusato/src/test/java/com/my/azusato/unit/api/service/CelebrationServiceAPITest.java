@@ -20,12 +20,15 @@ import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
+import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse;
+import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse.CelebrationReply;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.entity.CelebrationContentEntity;
+import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.integration.AbstractIntegration;
@@ -408,6 +411,138 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			});
 
 			assertEquals(expect, result);
+		}
+	}
+	
+	@Nested
+	class GetCelebrationContent {
+		
+		@Autowired
+		ProfileProperty profileProperty;
+		
+		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getCelebrationContent/";
+		final long CELEBRATION_NO = 1L;
+		final long LOGIN_USER_NO = 1L;
+		
+		final int pageOfElement = 5;
+		final int pagesOfpage = 3;
+		final int currentPageNo = 1;
+		
+		/**
+		 * お祝い書き込みリストのorderbyテスト
+		 * @throws Exception
+		 */
+		@Test
+		public void When2data_givenNoDesc_resultOrderdbyNoAsc() throws Exception {
+			String folderName = "1";
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+					
+			GetCelebrationContentSerivceAPIResponse response  = celeServiceAPI.getCelebrationContent(CELEBRATION_NO,LOGIN_USER_NO,TestConstant.LOCALE_JA);
+			
+			
+			GetCelebrationContentSerivceAPIResponse expect = GetCelebrationContentSerivceAPIResponse.builder()
+					.content(Entity.createdVarChars[1])
+					.no(Entity.createdLongs[0])
+					.owner(true)
+					.replys(List.of(
+							CelebrationReply.builder()
+								.no(Entity.createdLongs[0])
+								.content(Entity.createdVarChars[0])
+								.createdDatetime(Entity.createdDatetimes[0])
+								.name(Entity.createdVarChars[2])
+								.profileImageType(Entity.ImageType[0])
+								.profileImageBase64(Entity.createdVarChars[0])
+								.owner(true).build(),
+							CelebrationReply.builder()
+								.no(Entity.createdLongs[1])
+								.content(Entity.createdVarChars[1])
+								.createdDatetime(Entity.createdDatetimes[1])
+								.name(Entity.createdVarChars[2])
+								.profileImageType(Entity.ImageType[0])
+								.profileImageBase64(Entity.createdVarChars[0])
+								.owner(true).build()
+							))
+					.build();
+			
+			assertEquals(expect, response);
+		}
+		
+		@Test
+		public void givenNotOwner_resultOwnerFalse() throws Exception {
+			String folderName = "2";
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+					
+			GetCelebrationContentSerivceAPIResponse response  = celeServiceAPI.getCelebrationContent(CELEBRATION_NO,LOGIN_USER_NO,TestConstant.LOCALE_JA);
+			
+			
+			GetCelebrationContentSerivceAPIResponse expect = GetCelebrationContentSerivceAPIResponse.builder()
+					.content(Entity.createdVarChars[1])
+					.no(Entity.createdLongs[0])
+					.owner(false)
+					.replys(List.of(
+							CelebrationReply.builder()
+								.no(Entity.createdLongs[0])
+								.content(Entity.createdVarChars[0])
+								.createdDatetime(Entity.createdDatetimes[0])
+								.name(Entity.createdVarChars[2])
+								.profileImageType(Entity.ImageType[0])
+								.profileImageBase64(Entity.createdVarChars[0])
+								.owner(false).build(),
+							CelebrationReply.builder()
+								.no(Entity.createdLongs[1])
+								.content(Entity.createdVarChars[1])
+								.createdDatetime(Entity.createdDatetimes[1])
+								.name(Entity.createdVarChars[2])
+								.profileImageType(Entity.ImageType[0])
+								.profileImageBase64(Entity.createdVarChars[0])
+								.owner(true).build()
+							))
+					.build();
+			
+			assertEquals(expect, response);
+		}
+		
+		@Test
+		public void when2data_givenDeleted1data_result1Data() throws Exception {
+			String folderName = "3";
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+					
+			GetCelebrationContentSerivceAPIResponse response  = celeServiceAPI.getCelebrationContent(CELEBRATION_NO,LOGIN_USER_NO,TestConstant.LOCALE_JA);
+			
+			
+			GetCelebrationContentSerivceAPIResponse expect = GetCelebrationContentSerivceAPIResponse.builder()
+					.content(Entity.createdVarChars[1])
+					.no(Entity.createdLongs[0])
+					.owner(true)
+					.replys(List.of(
+							CelebrationReply.builder()
+								.no(Entity.createdLongs[1])
+								.content(Entity.createdVarChars[1])
+								.createdDatetime(Entity.createdDatetimes[1])
+								.name(Entity.createdVarChars[2])
+								.profileImageType(Entity.ImageType[0])
+								.profileImageBase64(Entity.createdVarChars[0])
+								.owner(true).build()
+							))
+					.build();
+			
+			assertEquals(expect, response);
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenNoCelebrationData_resultError(Locale locale) throws Exception {
+			
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+
+			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+				celeServiceAPI.getCelebrationContent(100000L,LOGIN_USER_NO,locale);
+			});
+
+			assertEquals(expect, result);
+
 		}
 	}
 	
