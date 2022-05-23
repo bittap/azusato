@@ -263,6 +263,7 @@ public class CelebrationServiceAPI {
 	/**
 	 * 対象のお祝いを返却する。
 	 * @param celebationNo 検索条件
+	 * @param userNo ログインしたユーザ番号。修正、削除権限があるかどうかチェックするため
 	 * @param locale エラーメッセージ用
 	 * @return 対象のお祝い情報
 	 * @throws AzusatoException テーブルにお祝いデータが存在しない。

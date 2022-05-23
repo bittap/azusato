@@ -26,26 +26,6 @@
     	update_user_no='1' 
     	delete_flag='false' 	
     />
-    <celebration_reply
-    	no='1'
-   		celebration_no='1'
-    	content='varchar1'
-    	create_datetime='2022-01-02 03:04:05' 
-    	update_datetime='2022-01-02 03:04:05'
-    	create_user_no='1'
-    	update_user_no='1' 
-    	delete_flag='false' 	
-    />
-   <celebration_reply
-   		no='2'
-   		celebration_no='1'
-    	content='varchar2'
-    	create_datetime='2022-02-02 02:02:02' 
-    	update_datetime='2022-07-07 07:07:07'
-    	create_user_no='1'
-    	update_user_no='1' 
-    	delete_flag='false' 	
-    />
     <celebration 
    		no='2'
     	title='varchar3' 
