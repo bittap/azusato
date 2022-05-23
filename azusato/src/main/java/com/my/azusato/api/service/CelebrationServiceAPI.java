@@ -184,6 +184,7 @@ public class CelebrationServiceAPI {
 	@Transactional
 	public void deleteCelebartion(Long celebationNo, Long userNo,Locale locale) {
 		CelebrationEntity fetchedCelebationEntity = 
+				// ユーザが削除されたとしても、削除処理は行われるように
 				celeRepo.findByNoAndCommonFlagDeleteFlag(celebationNo,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
 						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
 				});
@@ -198,9 +199,13 @@ public class CelebrationServiceAPI {
 		
 		LocalDateTime now = LocalDateTime.now();
 		fetchedCelebationEntity.getCommonFlag().setDeleteFlag(!ValueConstant.DEFAULT_DELETE_FLAG);
-		fetchedCelebationEntity.getReplys().parallelStream().forEach((e)->e.getCommonFlag().setDeleteFlag(!ValueConstant.DEFAULT_DELETE_FLAG));
 		fetchedCelebationEntity.getCommonDate().setUpdateDatetime(now);
-		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getCommonDate().setUpdateDatetime(now);
+		
+		// 書き込み論理削除
+		fetchedCelebationEntity.getReplys().parallelStream().forEach((e)->{
+			e.getCommonDate().setUpdateDatetime(now);
+			e.getCommonFlag().setDeleteFlag(!ValueConstant.DEFAULT_DELETE_FLAG);	
+		});
 	
 		celeRepo.save(fetchedCelebationEntity);
 	}
