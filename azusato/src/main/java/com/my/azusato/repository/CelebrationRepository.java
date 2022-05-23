@@ -19,6 +19,14 @@ public interface CelebrationRepository extends PagingAndSortingRepository<Celebr
 	public List<CelebrationEntity> findAllByNoIn(List<Long> nos);
 	
 	/**
+	 * where no = "celebationNo" and delete_flag = "deleted"
+	 * @param celebraionNo お祝い番号
+	 * @param deleted 削除フラグ。基本falseで検索
+	 * @return お祝い
+	 */
+	public Optional<CelebrationEntity> findByNoAndCommonFlagDeleteFlag(Long celebraionNo, boolean deleted);
+	
+	/**
 	 * where no = "celebationNo" and delete_flag = "deleted" and create_user.delete_flag = "deleted"
 	 * @param celebraionNo お祝い番号
 	 * @param deleted 削除フラグ。基本falseで検索

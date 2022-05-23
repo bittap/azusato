@@ -139,7 +139,7 @@ public class CelebrationServiceAPI {
 	 * 生成したユーザの場合は更新を行う。
 	 * 
 	 * 
-	 * @param celebationNo 検索条件
+	 * @param ModifyCelebationServiceAPIRequest 検索条件
 	 * @param locale エラーメッセージ用
 	 * @throws AzusatoException 対象データ存在なし、生成したユーザではない場合
 	 */
@@ -163,6 +163,41 @@ public class CelebrationServiceAPI {
 		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().setName(req.getName());
 		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().setImageType(req.getProfileImageType());
 		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().setImageBase64(req.getProfileImageBase64());
+		fetchedCelebationEntity.getCommonDate().setUpdateDatetime(now);
+		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getCommonDate().setUpdateDatetime(now);
+	
+		celeRepo.save(fetchedCelebationEntity);
+	}
+	
+	/**
+	 * 「お祝い」と「お祝い書き込み」論理削除。
+	 * お祝い番号より参照後、ない場合はエラーをスローする。
+	 * ある場合は、生成したユーザか比較し、生成したユーザではない場合はエラーをスローする。
+	 * 生成したユーザの場合は削除を行う。
+	 * 
+	 * 
+	 * @param celebationNo 削除対象のお祝い番号
+	 * @param locale エラーメッセージ用
+	 * @throws AzusatoException 対象データ存在なし、生成したユーザではない場合
+	 */
+	@Transactional
+	public void deleteCelebartion(Long celebationNo, Locale locale) {
+		CelebrationEntity fetchedCelebationEntity = 
+				celeRepo.findByNoAndCommonFlagDeleteFlag(celebationNo,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
+						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
+				});
+		
+		// 生成したユーザかユーザをチェックする。
+		long createdUserNo = fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getNo();
+		
+		if(createdUserNo != celebationNo) {
+			String message = messageSource.getMessage(AzusatoException.I0006, null, locale);
+			throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0006, message);
+		}
+		
+		LocalDateTime now = LocalDateTime.now();
+		fetchedCelebationEntity.getCommonFlag().setDeleteFlag(!ValueConstant.DEFAULT_DELETE_FLAG);
+		fetchedCelebationEntity.getReplys().parallelStream().forEach((e)->e.getCommonFlag().setDeleteFlag(!ValueConstant.DEFAULT_DELETE_FLAG));
 		fetchedCelebationEntity.getCommonDate().setUpdateDatetime(now);
 		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getCommonDate().setUpdateDatetime(now);
 	

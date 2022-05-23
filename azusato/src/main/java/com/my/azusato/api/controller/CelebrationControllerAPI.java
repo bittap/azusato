@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,7 +65,9 @@ public class CelebrationControllerAPI {
 	
 	public static final String CELEBRATION_URL = COMMON_URL + "/{celebrationNo}";
 	
-	public static final String CELEBRATION_PUT_URL = COMMON_URL + "/{celebrationNo}";
+	public static final String PUT_URL = COMMON_URL + "/{celebrationNo}";
+	
+	public static final String DELETE_URL = COMMON_URL + "/{celebrationNo}";
 	
 	public static final String CELEBRATIONS_URL = "celebrations";
 	
@@ -146,7 +149,7 @@ public class CelebrationControllerAPI {
 	 * @param req お祝い修正パラメータ
 	 */
 	@ResponseStatus(HttpStatus.OK)
-	@PutMapping(CELEBRATION_PUT_URL)
+	@PutMapping(PUT_URL)
 	public void modify(@PathVariable(name = "celebrationNo", required = true) Long celebationNo, @RequestBody @Validated ModifyCelebrationAPIReqeust req) {
 		LoginUserDto loginInfo = SessionUtil.getLoginSession(httpSession).orElseThrow(()->{
 			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
@@ -159,5 +162,25 @@ public class CelebrationControllerAPI {
 				.title(req.getTitle()).content(req.getContent()).userNo(loginInfo.getNo()).build();
 		
 		celeAPIService.modifyCelebartion(serviceReq, servletRequest.getLocale());
+	}
+	
+	/**
+	 * 「お祝い」と「お祝い書き込み」を論理削除する。deletedをtrueに変更
+	 * <ul>
+	 * 	<li>200 : 論理削除成功</li>
+	 * 	<li>400 : <br>対象データ存在なし<br>生成したユーザではない場合<br>パラメータがエラー</li>
+	 *  <li>401 : ログインしていない</li>
+	 * </ul>
+	 * @param celebationNo お祝い番号
+	 */
+	@ResponseStatus(HttpStatus.OK)
+	@DeleteMapping(DELETE_URL)
+	public void delete(@PathVariable(name = "celebrationNo", required = true) Long celebationNo) {
+		LoginUserDto loginInfo = SessionUtil.getLoginSession(httpSession).orElseThrow(()->{
+			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
+					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
+		});
+
+		celeAPIService.deleteCelebartion(celebationNo, servletRequest.getLocale());
 	}
 }
