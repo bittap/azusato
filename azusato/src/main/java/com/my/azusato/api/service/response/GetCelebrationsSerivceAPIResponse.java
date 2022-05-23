@@ -30,8 +30,6 @@ public class GetCelebrationsSerivceAPIResponse {
 	public static class Celebration{
 		private String title;
 		
-		private String content;
-		
 		private String name;
 		
 		private String profileImageType;
@@ -39,8 +37,6 @@ public class GetCelebrationsSerivceAPIResponse {
 		private String profileImageBase64;
 		
 		private Long no;
-		
-		private Boolean owner;
 		
 		private LocalDateTime createdDatetime;
 	}
