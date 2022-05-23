@@ -23,8 +23,8 @@ import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
-import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.CelebrationReply;
-import com.my.azusato.entity.CelebrationEntity;
+import com.my.azusato.entity.CelebrationContentEntity;
+import com.my.azusato.entity.CelebrationSummaryEntity;
 import com.my.azusato.entity.ProfileEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.UserEntity.Type;
@@ -35,7 +35,8 @@ import com.my.azusato.entity.common.DefaultValueConstant;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.page.MyPageRequest;
 import com.my.azusato.page.MyPaging;
-import com.my.azusato.repository.CelebrationRepository;
+import com.my.azusato.repository.CelebrationContentRepository;
+import com.my.azusato.repository.CelebrationSummaryRepository;
 import com.my.azusato.repository.UserRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
 
@@ -60,7 +61,9 @@ public class CelebrationServiceAPI {
 
 	private final MessageSource messageSource;
 
-	private final CelebrationRepository celeRepo;
+	private final CelebrationSummaryRepository celeSummaryRepo;
+	
+	private final CelebrationContentRepository celeContentRepo;
 
 	/**
 	 * delegate
@@ -119,15 +122,15 @@ public class CelebrationServiceAPI {
 		commonDateEntity.setUpdateDatetime(nowLdt);
 		
 		userEntity.setName(req.getName());
-
-		CelebrationEntity insertedEntity = CelebrationEntity.builder().title(req.getTitle()).content(req.getContent())
+		
+		CelebrationContentEntity insertedEntity = CelebrationContentEntity.builder().title(req.getTitle()).content(req.getContent())
 				.commonUser(
 						CommonUserEntity.builder().createUserEntity(userEntity).updateUserEntity(userEntity).build())
 				.notices(admins).readCount(DefaultValueConstant.READ_COUNT)
 				.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
 				.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
 
-		celeRepo.save(insertedEntity);
+		celeContentRepo.save(insertedEntity);
 
 		log.debug("{}#addCelebartion END");
 	}
@@ -145,9 +148,9 @@ public class CelebrationServiceAPI {
 	 */
 	@Transactional
 	public void modifyCelebartion(ModifyCelebationServiceAPIRequest req , Locale locale) {
-		CelebrationEntity fetchedCelebationEntity = 
-				celeRepo.findByNoAndCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(req.getCelebationNo(),ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
-						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
+		CelebrationContentEntity fetchedCelebationEntity = 
+				celeContentRepo.findByNoAndCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(req.getCelebationNo(),ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
+						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationContentEntity.TABLE_NAME_KEY);
 				});
 		
 		// 生成したユーザかユーザをチェックする。
@@ -166,7 +169,7 @@ public class CelebrationServiceAPI {
 		fetchedCelebationEntity.getCommonDate().setUpdateDatetime(now);
 		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getCommonDate().setUpdateDatetime(now);
 	
-		celeRepo.save(fetchedCelebationEntity);
+		celeContentRepo.save(fetchedCelebationEntity);
 	}
 	
 	/**
@@ -183,10 +186,10 @@ public class CelebrationServiceAPI {
 	 */
 	@Transactional
 	public void deleteCelebartion(Long celebationNo, Long userNo,Locale locale) {
-		CelebrationEntity fetchedCelebationEntity = 
+		CelebrationSummaryEntity fetchedCelebationEntity = 
 				// ユーザが削除されたとしても、削除処理は行われるように
-				celeRepo.findByNoAndCommonFlagDeleteFlag(celebationNo,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
-						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
+				celeSummaryRepo.findByNoAndCommonFlagDeleteFlag(celebationNo,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
+						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationContentEntity.TABLE_NAME_KEY);
 				});
 		
 		// 生成したユーザかユーザをチェックする。
@@ -207,7 +210,7 @@ public class CelebrationServiceAPI {
 			e.getCommonFlag().setDeleteFlag(!ValueConstant.DEFAULT_DELETE_FLAG);	
 		});
 	
-		celeRepo.save(fetchedCelebationEntity);
+		celeSummaryRepo.save(fetchedCelebationEntity);
 	}
 	
 
@@ -221,16 +224,16 @@ public class CelebrationServiceAPI {
 	 */
 	@Transactional
 	public void readCountUp(Long celebationNo, Locale locale) {
-		CelebrationEntity fetchedCelebationEntity = 
+		CelebrationSummaryEntity fetchedCelebationEntity = 
 				// note：ユーザが開いた状態でのコンテンツはクリック可能にするため、deletedは使わない。
-				celeRepo.findById(celebationNo).orElseThrow(()->{
-						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
+				celeSummaryRepo.findById(celebationNo).orElseThrow(()->{
+						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationContentEntity.TABLE_NAME_KEY);
 				});
 		
 		int upedReadCount = fetchedCelebationEntity.getReadCount() + 1;
 		fetchedCelebationEntity.setReadCount(upedReadCount);
 	
-		celeRepo.save(fetchedCelebationEntity);
+		celeSummaryRepo.save(fetchedCelebationEntity);
 	}
 
 	/**
@@ -241,8 +244,8 @@ public class CelebrationServiceAPI {
 	 * @throws AzusatoException 対象データが存在しない場合
 	 */
 	public GetCelebrationSerivceAPIResponse getCelebration(Long celebationNo , Locale locale) {
-		CelebrationEntity fetchedCelebationEntity = celeRepo.findById(celebationNo).orElseThrow(()->{
-			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
+		CelebrationContentEntity fetchedCelebationEntity = celeContentRepo.findById(celebationNo).orElseThrow(()->{
+			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationContentEntity.TABLE_NAME_KEY);
 		});
 		
 		return GetCelebrationSerivceAPIResponse.builder()
@@ -264,7 +267,7 @@ public class CelebrationServiceAPI {
 	public GetCelebrationsSerivceAPIResponse getCelebrations(GetCelebrationsSerivceAPIRequset req) {
 		// 注意 : 一番最初のパラメータpageは0から始まる。
 		Pageable sortedByNo = PageRequest.of(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement(),Sort.by(Direction.DESC,"no"));
-		Page<CelebrationEntity> celebrationEntitys = celeRepo
+		Page<CelebrationSummaryEntity> celebrationEntitys = celeSummaryRepo
 				.findAllByCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(sortedByNo,ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG);
 		
 		GetCelebrationsSerivceAPIResponse response = new GetCelebrationsSerivceAPIResponse();
@@ -277,32 +280,32 @@ public class CelebrationServiceAPI {
 		List<Celebration> celebrations = celebrationEntitys.stream().map((e)->{
 			return Celebration.builder()
 					.title(e.getTitle())
-					.content(e.getContent())
+					//.content(e.getContent())
 					.name(e.getCommonUser().getCreateUserEntity().getName())
 					.profileImageType(e.getCommonUser().getCreateUserEntity().getProfile().getImageType())
 					.profileImageBase64(e.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
 					.no(e.getNo())
 					.owner(e.getCommonUser().getCreateUserEntity().getNo() == req.getLoginUserNo() ? true : false)
 					.createdDatetime(e.getCommonDate().getCreateDatetime())
-					.replys(e.getReplys().stream()
-							// deleted == falseだけ
-							.filter((e1)->{
-								return e1.getCommonFlag().getDeleteFlag() == ValueConstant.DEFAULT_DELETE_FLAG;
-							})
-							// No昇順Orderby
-							.sorted((e1,e2)->Long.compare(e1.getNo(), e2.getNo()))
-							.map((e2)->{
-								CelebrationReply reply = CelebrationReply.builder()
-										.no(e2.getNo())
-										.content(e2.getContent())
-										.createdDatetime(e2.getCommonDate().getCreateDatetime())
-										.owner(e2.getCommonUser().getCreateUserEntity().getNo() == req.getLoginUserNo() ? true : false)
-										.name(e2.getCommonUser().getCreateUserEntity().getName())
-										.profileImageType(e2.getCommonUser().getCreateUserEntity().getProfile().getImageType())
-										.profileImageBase64(e2.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
-										.build();
-								return reply;
-					}).collect(Collectors.toList()))
+//					.replys(e.getReplys().stream()
+//							// deleted == falseだけ
+//							.filter((e1)->{
+//								return e1.getCommonFlag().getDeleteFlag() == ValueConstant.DEFAULT_DELETE_FLAG;
+//							})
+//							// No昇順Orderby
+//							.sorted((e1,e2)->Long.compare(e1.getNo(), e2.getNo()))
+//							.map((e2)->{
+//								CelebrationReply reply = CelebrationReply.builder()
+//										.no(e2.getNo())
+//										.content(e2.getContent())
+//										.createdDatetime(e2.getCommonDate().getCreateDatetime())
+//										.owner(e2.getCommonUser().getCreateUserEntity().getNo() == req.getLoginUserNo() ? true : false)
+//										.name(e2.getCommonUser().getCreateUserEntity().getName())
+//										.profileImageType(e2.getCommonUser().getCreateUserEntity().getProfile().getImageType())
+//										.profileImageBase64(e2.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
+//										.build();
+//								return reply;
+//					}).collect(Collectors.toList()))
 					.build();
 		}).collect(Collectors.toList());
 		

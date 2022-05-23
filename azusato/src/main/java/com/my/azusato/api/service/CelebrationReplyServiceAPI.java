@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.my.azusato.api.controller.request.AddCelebrationReplyAPIReqeust;
-import com.my.azusato.entity.CelebrationEntity;
+import com.my.azusato.entity.CelebrationContentEntity;
 import com.my.azusato.entity.CelebrationReplyEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.common.CommonDateEntity;
@@ -22,7 +22,7 @@ import com.my.azusato.entity.common.CommonUserEntity;
 import com.my.azusato.entity.common.DefaultValueConstant;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.repository.CelebrationReplyRepository;
-import com.my.azusato.repository.CelebrationRepository;
+import com.my.azusato.repository.CelebrationContentRepository;
 import com.my.azusato.repository.UserRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
 
@@ -47,7 +47,7 @@ public class CelebrationReplyServiceAPI {
 
 	private final MessageSource messageSource;
 	
-	private final CelebrationRepository celeRepo;
+	private final CelebrationContentRepository celeRepo;
 
 	private final CelebrationReplyRepository celeReplyRepo;
 
@@ -87,9 +87,9 @@ public class CelebrationReplyServiceAPI {
 			throw AzusatoException.createI0005Error(locale, messageSource, UserEntity.TABLE_NAME_KEY);
 		});
 		
-		CelebrationEntity fetchedCelebrationEntity = 
+		CelebrationContentEntity fetchedCelebrationEntity = 
 				celeRepo.findByNoAndCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(celebationNo,ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
-						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
+						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationContentEntity.TABLE_NAME_KEY);
 				});
 		
 		List<CelebrationReplyEntity> fetchedReplys = fetchedCelebrationEntity.getReplys();

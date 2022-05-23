@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestUtils;
-import com.my.azusato.entity.CelebrationEntity;
+import com.my.azusato.entity.CelebrationContentEntity;
 import com.my.azusato.entity.CelebrationReplyEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.common.CommonDateEntity;
@@ -49,8 +49,8 @@ public class CelebrationReplyTest extends AbstractIntegration {
 			
 			celeReplyRepo.saveAndFlush(celebrationReplyEntity);
 			
-			List<CelebrationEntity> results = celeRepo.findAll();
-			CelebrationEntity result = TestUtils.getLastElement(results);
+			List<CelebrationContentEntity> results = celeRepo.findAll();
+			CelebrationContentEntity result = TestUtils.getLastElement(results);
 			Assertions.assertEquals(getExpect(insertedCelebrationNO, result.getReplys().get(0).getNo()), result);
 		}
 		
@@ -72,8 +72,8 @@ public class CelebrationReplyTest extends AbstractIntegration {
 			return List.of(celebrationReplyEntity);
 		}
 		
-		private CelebrationEntity getExpect(long celebrationNo, long celebrationReplyNo) {
-			return CelebrationEntity.builder()
+		private CelebrationContentEntity getExpect(long celebrationNo, long celebrationReplyNo) {
+			return CelebrationContentEntity.builder()
 					.no(celebrationNo)
 					.title(TestConstant.Entity.createdVarChars[0])
 					.content(TestConstant.Entity.createdVarChars[1])

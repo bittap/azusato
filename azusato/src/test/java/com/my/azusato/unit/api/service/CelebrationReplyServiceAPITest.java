@@ -18,7 +18,7 @@ import com.my.azusato.api.controller.request.AddCelebrationReplyAPIReqeust;
 import com.my.azusato.api.service.CelebrationReplyServiceAPI;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
-import com.my.azusato.entity.CelebrationEntity;
+import com.my.azusato.entity.CelebrationContentEntity;
 import com.my.azusato.entity.CelebrationReplyEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.exception.AzusatoException;
@@ -77,7 +77,7 @@ public class CelebrationReplyServiceAPITest extends AbstractIntegration {
 
 			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
 			
-			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			String tableName = messageSource.getMessage(CelebrationContentEntity.TABLE_NAME_KEY, null, locale);
 			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
 					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
 

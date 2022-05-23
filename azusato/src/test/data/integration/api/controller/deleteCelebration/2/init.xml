@@ -22,7 +22,7 @@
     	content='varchar2'
     	read_count='0' 
     	create_user_no='2'
-    	update_user_no='1' 
+    	update_user_no='2' 
     	delete_flag='false' 	
     />
 </dataset>

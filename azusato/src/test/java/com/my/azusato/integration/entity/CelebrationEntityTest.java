@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestUtils;
-import com.my.azusato.entity.CelebrationEntity;
+import com.my.azusato.entity.CelebrationContentEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.common.CommonDateEntity;
 import com.my.azusato.entity.common.CommonFlagEntity;
@@ -36,10 +36,10 @@ public class CelebrationEntityTest extends AbstractIntegration {
 		public void normal_case() throws Exception { 
 			celeRepo.save(insertedData_normal_case());
 			
-			List<CelebrationEntity> results = celeRepo.findAll();
+			List<CelebrationContentEntity> results = celeRepo.findAll();
 			
-			CelebrationEntity result = TestUtils.getLastElement(results);
-			CelebrationEntity expect = CelebrationEntity.builder()
+			CelebrationContentEntity result = TestUtils.getLastElement(results);
+			CelebrationContentEntity expect = CelebrationContentEntity.builder()
 										.no(result.getNo())
 										.title(TestConstant.Entity.createdVarChars[0])
 										.content(getContent())
@@ -62,8 +62,8 @@ public class CelebrationEntityTest extends AbstractIntegration {
 		public void normal_case() throws Exception {
 			celeRepo.save(insertedData_normal_case());
 					
-			List<CelebrationEntity> results = celeRepo.findAll();
-			CelebrationEntity savedData = TestUtils.getLastElement(results);
+			List<CelebrationContentEntity> results = celeRepo.findAll();
+			CelebrationContentEntity savedData = TestUtils.getLastElement(results);
 			
 			savedData.setTitle(TestConstant.Entity.updatedVarChars[0]);
 			savedData.setContent(TestConstant.Entity.updatedVarChars[1]);
@@ -71,13 +71,13 @@ public class CelebrationEntityTest extends AbstractIntegration {
 			savedData.setCommonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.updatedDatetime).updateDatetime(updatedNowForTest).build());
 			savedData.setCommonFlag(new CommonFlagEntity(TestConstant.Entity.UpdatedBoolean));
 			
-			CelebrationEntity result = celeRepo.save(savedData);
+			CelebrationContentEntity result = celeRepo.save(savedData);
 			
 			Assertions.assertEquals(getExpect(savedData.getNo(),savedData.getCommonUser()), result);
 		}
 		
-		private CelebrationEntity getExpect(long celebrationNo, CommonUserEntity commonUserEntity) {
-			CelebrationEntity expectedData = new CelebrationEntity();
+		private CelebrationContentEntity getExpect(long celebrationNo, CommonUserEntity commonUserEntity) {
+			CelebrationContentEntity expectedData = new CelebrationContentEntity();
 			expectedData.setNo(celebrationNo);
 			expectedData.setTitle(TestConstant.Entity.updatedVarChars[0]);
 			expectedData.setContent(TestConstant.Entity.updatedVarChars[1]);
@@ -93,8 +93,8 @@ public class CelebrationEntityTest extends AbstractIntegration {
 	/**
 	 * return inserted entity which is normal case.
 	 */
-	private CelebrationEntity insertedData_normal_case() throws Exception {
-		return CelebrationEntity.builder()
+	private CelebrationContentEntity insertedData_normal_case() throws Exception {
+		return CelebrationContentEntity.builder()
 				.title(TestConstant.Entity.createdVarChars[0])
 				.content(getContent())
 				.readCount(TestConstant.Entity.createdInts[0])

@@ -20,7 +20,7 @@ import com.my.azusato.dbunit.DBUnitComponent;
 import com.my.azusato.repository.CelebrationNoticeRepository;
 import com.my.azusato.repository.CelebrationReplyNoticeRepository;
 import com.my.azusato.repository.CelebrationReplyRepository;
-import com.my.azusato.repository.CelebrationRepository;
+import com.my.azusato.repository.CelebrationContentRepository;
 import com.my.azusato.repository.ProfileRepository;
 import com.my.azusato.repository.UserRepository;
 
@@ -57,7 +57,7 @@ public abstract class AbstractIntegration  {
 	protected UserRepository userRepo;
 	
 	@Autowired
-	protected CelebrationRepository celeRepo;
+	protected CelebrationContentRepository celeRepo;
 	
 	@Autowired
 	protected CelebrationReplyRepository celeReplyRepo;

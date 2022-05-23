@@ -9,7 +9,8 @@ spring:
     password: password
     driverClassName: org.h2.Driver
     hikari:
-      maximum-pool-size: 50
+      maximum-pool-size: 200
+      max-lifetime: 10000
   flyway:
     user: sa
     password: password

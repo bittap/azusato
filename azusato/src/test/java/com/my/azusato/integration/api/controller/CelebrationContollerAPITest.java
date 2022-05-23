@@ -37,7 +37,7 @@ import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.common.TestCookie;
 import com.my.azusato.common.TestSession;
-import com.my.azusato.entity.CelebrationEntity;
+import com.my.azusato.entity.CelebrationContentEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.integration.AbstractIntegration;
@@ -192,7 +192,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			String resultBody = mvcResult.getResponse()
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
 			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
-			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			String tableName = messageSource.getMessage(CelebrationContentEntity.TABLE_NAME_KEY, null, locale);
 			
 			assertEquals(new ErrorResponse(AzusatoException.I0005, messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale)),
 					result);
@@ -328,7 +328,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			String resultBody = mvcResult.getResponse()
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
 			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
-			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			String tableName = messageSource.getMessage(CelebrationContentEntity.TABLE_NAME_KEY, null, locale);
 			
 			assertEquals(new ErrorResponse(AzusatoException.I0005, messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale)),
 					result);
@@ -404,7 +404,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			String resultBody = mvcResult.getResponse()
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
 			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
-			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			String tableName = messageSource.getMessage(CelebrationContentEntity.TABLE_NAME_KEY, null, locale);
 			
 			assertEquals(new ErrorResponse(AzusatoException.I0005, messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale)),
 					result);
@@ -479,7 +479,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
 			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
 			
-			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			String tableName = messageSource.getMessage(CelebrationContentEntity.TABLE_NAME_KEY, null, locale);
 			String message = messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale);
 
 			assertEquals(new ErrorResponse(AzusatoException.I0005, message), result);

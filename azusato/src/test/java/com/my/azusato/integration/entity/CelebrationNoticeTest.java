@@ -18,7 +18,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestUtils;
-import com.my.azusato.entity.CelebrationEntity;
+import com.my.azusato.entity.CelebrationContentEntity;
 import com.my.azusato.entity.CelebrationNoticeEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.UserEntity.Type;
@@ -47,11 +47,11 @@ public class CelebrationNoticeTest extends AbstractIntegration {
 		public void normal_case() throws Exception {
 			celeRepo.save(insertedData_normal_case());
 
-			List<CelebrationEntity> results = celeRepo.findAll();
+			List<CelebrationContentEntity> results = celeRepo.findAll();
 			
-			CelebrationEntity result = TestUtils.getLastElement(results);
+			CelebrationContentEntity result = TestUtils.getLastElement(results);
 			
-			CelebrationEntity expect = CelebrationEntity.builder()
+			CelebrationContentEntity expect = CelebrationContentEntity.builder()
 										.no(result.getNo())
 										.title(TestConstant.Entity.createdVarChars[0])
 										.content(getContent())
@@ -72,8 +72,8 @@ public class CelebrationNoticeTest extends AbstractIntegration {
 		/**
 		 * return inserted entity which is normal case.
 		 */
-		private CelebrationEntity insertedData_normal_case() throws Exception {
-			return CelebrationEntity.builder()
+		private CelebrationContentEntity insertedData_normal_case() throws Exception {
+			return CelebrationContentEntity.builder()
 					.title(TestConstant.Entity.createdVarChars[0])
 					.content(getContent())
 					.readCount(TestConstant.Entity.createdInts[0])
@@ -134,7 +134,7 @@ public class CelebrationNoticeTest extends AbstractIntegration {
 
 			List<Long> celebrationNos = notices.stream().map(CelebrationNoticeEntity::getCelebrationNo).collect(Collectors.toList());
 			
-			List<CelebrationEntity> sizeByUser = celeRepo.findAllByNoIn(celebrationNos);
+			List<CelebrationContentEntity> sizeByUser = celeRepo.findAllByNoIn(celebrationNos);
 			Assertions.assertEquals(expectdSize, sizeByUser.size());
 		}
 		
