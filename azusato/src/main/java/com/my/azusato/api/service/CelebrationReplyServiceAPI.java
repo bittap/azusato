@@ -68,7 +68,7 @@ public class CelebrationReplyServiceAPI {
 		
 		CelebrationEntity fetchedCelebationEntity = 
 				celeRepo.findByNoAndCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(celebationNo,ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
-						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
+						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationReplyEntity.TABLE_NAME_KEY);
 				});
 		
 		List<CelebrationReplyEntity> fetchedReplys = fetchedCelebationEntity.getReplys();
@@ -114,7 +114,7 @@ public class CelebrationReplyServiceAPI {
 	public void deleteCelebartionReply(Long celebationReplyNo, Long userNo,Locale locale) {
 		CelebrationReplyEntity fetchedCelebationReplyEntity = 
 				celeReplyRepo.findByNoAndCommonFlagDeleteFlag(celebationReplyNo,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
-						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
+						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationReplyEntity.TABLE_NAME_KEY);
 				});
 		
 		// 生成したユーザかユーザをチェックする。
