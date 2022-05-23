@@ -32,7 +32,6 @@ import com.my.azusato.api.controller.request.ModifyCelebrationAPIReqeust;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
-import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.CelebrationReply;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.common.TestCookie;
@@ -517,7 +516,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 		final String currentPageNo = "1";
 		
 		@Test
-		public void givenNosession_resultOwnerFalse() throws Exception {
+		public void givenNormalData_result200() throws Exception {
 			String folderName = "1";
 			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
 
@@ -541,41 +540,18 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					.celebrations(List.of(
 							Celebration.builder()
 							.title(Entity.createdVarChars[2])
-							.content(Entity.createdVarChars[3])
 							.name(Entity.createdVarChars[2])
 							.profileImageType(Entity.ImageType[0])
 							.profileImageBase64(Entity.createdVarChars[0])
 							.no(Entity.createdLongs[1])
-							.owner(false)
-							.replys(List.of())
 							.createdDatetime(Entity.createdDatetimes[1])
 							.build(),
 							Celebration.builder()
 								.title(Entity.createdVarChars[0])
-								.content(Entity.createdVarChars[1])
 								.name(Entity.createdVarChars[2])
 								.profileImageType(Entity.ImageType[0])
 								.profileImageBase64(Entity.createdVarChars[0])
 								.no(Entity.createdLongs[0])
-								.owner(false)
-								.replys(List.of(
-										CelebrationReply.builder()
-											.no(Entity.createdLongs[0])
-											.content(Entity.createdVarChars[0])
-											.createdDatetime(Entity.createdDatetimes[0])
-											.name(Entity.createdVarChars[2])
-											.profileImageType(Entity.ImageType[0])
-											.profileImageBase64(Entity.createdVarChars[0])
-											.owner(false).build(),
-										CelebrationReply.builder()
-											.no(Entity.createdLongs[1])
-											.content(Entity.createdVarChars[1])
-											.createdDatetime(Entity.createdDatetimes[1])
-											.name(Entity.createdVarChars[2])
-											.profileImageType(Entity.ImageType[0])
-											.profileImageBase64(Entity.createdVarChars[0])
-											.owner(false).build()
-										))
 								.createdDatetime(Entity.createdDatetimes[0])
 								.build()
 							))		
@@ -583,77 +559,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			
 			assertEquals(expect, result);
 		}
-		
-		@Test
-		public void givensession_resultOwnerTrue() throws Exception{
-			String folderName = "2";
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-
-			MultiValueMap<String,String> parameters = new LinkedMultiValueMap<>();
-			parameters.add("currentPageNo", currentPageNo);
-			parameters.add("pagesOfpage", pagesOfpage);
-			parameters.add("pageOfElement", pageOfElement);
-			
-			MvcResult mvcResult = mockMvc.perform(
-					MockMvcRequestBuilders
-					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.CELEBRATIONS_URL)
-						.contentType(HttpConstant.DEFAULT_CONTENT_TYPE)
-						.accept(HttpConstant.DEFAULT_CONTENT_TYPE)
-						.session(TestSession.getAdminSession())
-						.params(parameters)
-					).andExpect(status().isOk()).andReturn();
-										
-			String strResult = mvcResult.getResponse().getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
-			GetCelebrationsSerivceAPIResponse result = om.readValue(strResult, GetCelebrationsSerivceAPIResponse.class);
-			
-			GetCelebrationsSerivceAPIResponse expect = GetCelebrationsSerivceAPIResponse.builder()
-					.page(MyPageResponse.builder().currentPageNo(1).pages(List.of(1)).hasPrivious(false).hasNext(false).totalPage(1).build())
-					.celebrations(List.of(
-							Celebration.builder()
-							.title(Entity.createdVarChars[2])
-							.content(Entity.createdVarChars[3])
-							.name(Entity.createdVarChars[2])
-							.profileImageType(Entity.ImageType[0])
-							.profileImageBase64(Entity.createdVarChars[0])
-							.no(Entity.createdLongs[1])
-							.owner(true)
-							.replys(List.of())
-							.createdDatetime(Entity.createdDatetimes[1])
-							.build(),
-							Celebration.builder()
-								.title(Entity.createdVarChars[0])
-								.content(Entity.createdVarChars[1])
-								.name(Entity.createdVarChars[2])
-								.profileImageType(Entity.ImageType[0])
-								.profileImageBase64(Entity.createdVarChars[0])
-								.no(Entity.createdLongs[0])
-								.owner(true)
-								.replys(List.of(
-										CelebrationReply.builder()
-											.no(Entity.createdLongs[0])
-											.content(Entity.createdVarChars[0])
-											.name(Entity.createdVarChars[2])
-											.profileImageType(Entity.ImageType[0])
-											.profileImageBase64(Entity.createdVarChars[0])
-											.createdDatetime(Entity.createdDatetimes[0])
-											.owner(true).build(),
-										CelebrationReply.builder()
-											.no(Entity.createdLongs[1])
-											.content(Entity.createdVarChars[1])
-											.name(Entity.createdVarChars[2])
-											.profileImageType(Entity.ImageType[0])
-											.profileImageBase64(Entity.createdVarChars[0])
-											.createdDatetime(Entity.createdDatetimes[1])
-											.owner(true).build()
-										))
-								.createdDatetime(Entity.createdDatetimes[0])
-								.build()
-							))		
-					.build();
-			
-			assertEquals(expect, result);
-		}
-		
+	
 		@Test
 		public void givenNoCurrentPageNo_result1PageResult() throws Exception {
 			String folderName = "3";
@@ -679,41 +585,18 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					.celebrations(List.of(
 							Celebration.builder()
 							.title(Entity.createdVarChars[2])
-							.content(Entity.createdVarChars[3])
 							.name(Entity.createdVarChars[2])
 							.profileImageType(Entity.ImageType[0])
 							.profileImageBase64(Entity.createdVarChars[0])
 							.no(Entity.createdLongs[1])
-							.owner(false)
-							.replys(List.of())
 							.createdDatetime(Entity.createdDatetimes[1])
 							.build(),
 							Celebration.builder()
 								.title(Entity.createdVarChars[0])
-								.content(Entity.createdVarChars[1])
 								.name(Entity.createdVarChars[2])
 								.profileImageType(Entity.ImageType[0])
 								.profileImageBase64(Entity.createdVarChars[0])
 								.no(Entity.createdLongs[0])
-								.owner(false)
-								.replys(List.of(
-										CelebrationReply.builder()
-											.no(Entity.createdLongs[0])
-											.content(Entity.createdVarChars[0])
-											.name(Entity.createdVarChars[2])
-											.profileImageType(Entity.ImageType[0])
-											.profileImageBase64(Entity.createdVarChars[0])
-											.createdDatetime(Entity.createdDatetimes[0])
-											.owner(false).build(),
-										CelebrationReply.builder()
-											.no(Entity.createdLongs[1])
-											.content(Entity.createdVarChars[1])
-											.name(Entity.createdVarChars[2])
-											.profileImageType(Entity.ImageType[0])
-											.profileImageBase64(Entity.createdVarChars[0])
-											.createdDatetime(Entity.createdDatetimes[1])
-											.owner(false).build()
-										))
 								.createdDatetime(Entity.createdDatetimes[0])
 								.build()
 							))		
