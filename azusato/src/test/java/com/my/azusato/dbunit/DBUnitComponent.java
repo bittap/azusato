@@ -53,13 +53,13 @@ public class DBUnitComponent {
 	 * @throws Exception
 	 */
 	public void compareTable(Path dataSourcePath) throws Exception {
-		//TestTransaction.end();
+		TestTransaction.end();
 		IDataSet dataSet = new FlatXmlDataSetBuilder().build(dataSourcePath.toFile());
 		String[] tables = dataSet.getTableNames();
 		for (String table : tables) {
 			compare(table, dataSet);
 		}
-		//TestTransaction.start();
+		TestTransaction.start();
 	}
 
 	private void compare(String tableName, IDataSet dataSet) throws Exception {

@@ -149,6 +149,40 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 	}
 	
 	@Nested
+	class ReadCountUp {
+
+		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "readCountUp/";
+		
+		final long CELEBRATION_NO = 1L;
+
+		@Test
+		public void givenNormal_result200() throws Exception {
+			String folderName = "1";
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+			
+			celeServiceAPI.readCountUp(CELEBRATION_NO, TestConstant.LOCALE_JA);
+			
+			dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME));
+		}
+
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenNoCelebrationData_resultError(Locale locale) throws Exception {
+			
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+
+			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+				celeServiceAPI.readCountUp(100000L, locale);
+			});
+
+			assertEquals(expect, result);
+
+		}
+	}
+	
+	@Nested
 	class DeleteCelebation {
 
 		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "deleteCelebration/";
