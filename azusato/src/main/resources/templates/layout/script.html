@@ -4,11 +4,6 @@
 	Declare varables here. This is used /layout/body.html 
 */-->
 <script th:inline="javascript">
-	const asyncCommon = new AsyncCommon();
-	const modalCommon = new ModalCommon();
-	const urlCommon = new UrlCommon();
-	const imageCommon = new ImageCommon();
-	
 	const language = /*[[${#locale}]]*/ "language";
 	const apiUrl = "/"+/*[[${@environment.getProperty('client.api-url')}]]*/ "commonApiUrl";
 	const DEFAULT_ERROR_TITLE = "E-0001";
@@ -23,4 +18,9 @@
 	const PAGE_PAGES_OF_ELEMENT =  /*[[${@environment.getProperty('client.page-pageOfElement')}]]*/ "";
 	// 日時関する定数
 	const DATETIME_FORMAT = /*[[${@environment.getProperty('client.datetime-format')}]]*/ "";
+	
+	const asyncCommon = new AsyncCommon();
+	const modalCommon = new ModalCommon();
+	const urlCommon = new UrlCommon();
+	const imageCommon = new ImageCommon();
 </script>

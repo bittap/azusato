@@ -1,7 +1,7 @@
 <script th:inline="javascript">
 	// モーダルに関する定数
-	const MODAL_YES_TEXT =  /*[[${@environment.getProperty('modal.yes-text')}]]*/ "";
-	const MODAL_NO_TEXT =  /*[[${@environment.getProperty('modal.no-text')}]]*/ "";
+	const MODAL_YES_TEXT =  /*[[#{modal.yes-text}]]*/ "";
+	const MODAL_NO_TEXT =  /*[[#{modal.no-text}]]*/ "";
 </script>
 
 <div class="modal fade" id="loadingModal" tabindex="-1" aria-labelledby="loadingModal" aria-hidden="true">

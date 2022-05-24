@@ -72,9 +72,6 @@ ModalCommon.prototype.displayErrorModal = function(title, body, okBtnAction, okB
 	if(title == null || body == null){
 		title = DEFAULT_ERROR_TITLE;
 		body = DEFAULT_ERROR_BODY;
-	}else{
-		title = error.title;
-		body = error.message;
 	}
 	
 	this.displayModal(title,body,BTN_COUNT,this.errorModalEle,this.errorModal,
@@ -190,7 +187,7 @@ ModalCommon.prototype.displayThreeBtnModal = function(title , body,  firstBtnTit
  * @param {function} thirdBtnAutoClosed 一番左の三番目のボタンをクリックした時の挙動。nullの場合はクローズだけを行う。
  * @param {string} thridBtnTitle 一番左の三番目のボタンのテキスト。
  */
-ModalCommon.prototype.displayModal = function(title,body,btnCount, targetEle , targetObj , 
+ModalCommon.prototype.displayModal = function(title,body,btnCount,targetEle ,targetObj , 
 		firstBtnAction, firstBtnAutoClosed, secondBtnAction, secondBtnAutoClosed, 
 		firstBtnTitle, secondBtnTitle, displayCloseBtn , centered, 
 		thridBtnAction, thirdBtnAutoClosed,thridBtnTitle){
@@ -238,7 +235,7 @@ ModalCommon.prototype.displayModal = function(title,body,btnCount, targetEle , t
 	}
 	
 	// 表示する。
-	targetEle.show();
+	targetObj.show();
 }
 
 /*
@@ -249,21 +246,23 @@ ModalCommon.prototype.displayModal = function(title,body,btnCount, targetEle , t
  * @param {boolean} autoClosed true : action実行後自動クローズ。 false : action実行後自動クローズを行わないモーダルを閉じたい場合は手動でfirstBtnActionに宣言する必要がある。
  */
 ModalCommon.prototype.injectBtnAction = function(targetBtnEle, targetObj, action , autoClosed){
-	// 既存のEvent削除
-	targetBtnEle.removeAttribute('onclick');
+	// offメソッド使うため、dom -> jqueryに変更
+	// javascriptでEvent削除は少し手間がかかる
+	let targetBtnEleJquery = $(targetBtnEle);
+	// 既存のクリックEvent削除
+	targetBtnEleJquery.off("click");
+	
 	if(action != null){
 		if(autoClosed == true){
-			console.log("firstBtnAutoClosed : true");
-			targetBtnEle.addEventListener('click',function(){
-				firstBtnAction();
+			targetBtnEleJquery.on('click',function(){
+				action();
 				targetObj.hide();
 			})
 		}else{
-			console.log("firstBtnAutoClosed : false");
-			targetBtnEle.addEventListener('click',action);
+			targetBtnEleJquery.on('click',action);
 		}
 	} else{
-		targetBtnEle.addEventListener('click',function(){
+		targetBtnEleJquery.on('click',function(){
 			targetObj.hide();
 		})
 	}
