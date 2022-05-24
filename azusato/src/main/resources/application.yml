@@ -79,4 +79,4 @@ client:
   page-pagesOfpage: 3
   # ページのリスト表示数
   page-pageOfElement: 5
-  datetime-format: yyyy-hh-mm
+  datetime-format: YYYY-MM-DD
