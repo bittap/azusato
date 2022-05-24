@@ -7,20 +7,6 @@ const fileInputTag = document.querySelector("#file-input");
 const FR = new FileReader();
 const writeBtnTag = document.querySelector("#writeBtn");
 
-
-// initalize modal
-const profileModal = modalCommon.modalThreeBtn(profileModalTitle,profileModalBody,profileModalFirstBtnMsg,function(){
-	fileInputTag.click();
-},profileModalSecondBtnMsg,async function(){
-	try{
-		const result = await getRandomImage();
-		changeProfileByTypeAndBase64(result.profileImageType,result.profileImageBase64);
-	}catch(e){
-		console.log(e)
-		modalCommon.displayApiErrorModal(e);
-	}
-});
-
 //initalize summbernote
 $('#summernote').summernote({
     tabsize: 2,
@@ -51,8 +37,18 @@ const changeProfileByTypeAndBase64 = function(imageType, imageBase64){
 }
 
 profileAvatarTag.addEventListener('click',() =>{
-	// open confirm modal
-	profileModal.show();
+	modalCommon.displayThreeBtnModal(profileModalTitle,profileModalBody,profileModalFirstBtnMsg,profileModalSecondBtnMsg,
+	function(){
+		fileInputTag.click();
+	},async function(){
+		try{
+			const result = await getRandomImage();
+			changeProfileByTypeAndBase64(result.profileImageType,result.profileImageBase64);
+		}catch(e){
+			console.log(e)
+			modalCommon.displayErrorModal(e.title,e.message);
+		}
+	});
 });
 
 let fileType;

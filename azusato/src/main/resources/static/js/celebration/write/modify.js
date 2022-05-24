@@ -1,15 +1,7 @@
+/*
+ * お祝い修正
+ */
 
-// initalize modal
-const writeBtnModal = modalCommon.modalTwoBtn(modifyModalTitle,modifyModalBody,async function(){
-	try{
-		await modifyCelebration();
-		
-		location.href = `/${language}/celebration`; 
-	}catch(e){
-		console.log(e)
-		modalCommon.displayApiErrorModal(e);
-	}
-});
 
 /*
  * Loading画面を表示し、修正APIを行う。
@@ -73,15 +65,26 @@ const initialize = async function(){
 		$('#summernote').summernote('code', celebation.content);
 	}catch(e){
 		console.log(e);
-		// TODO 移動
-		modalCommon.displayApiErrorModal(e);
+		// 以前ページに移動
+		modalCommon.displayErrorModal(e.title,e.message,function(){
+			history.back();
+		});
 	}
 }
 
 
 
 writeBtnTag.addEventListener('click', function(){
-	writeBtnModal.show();
+	modalCommon.displayTwoBtnModal(modifyModalTitle,modifyModalBody,async function(){
+		try{
+			await modifyCelebration();
+			
+			location.href = `/${language}/celebration`; 
+		}catch(e){
+			console.log(e)
+			modalCommon.displayErrorModal(e.title,e.message);
+		}
+	});
 })
 
 initialize();

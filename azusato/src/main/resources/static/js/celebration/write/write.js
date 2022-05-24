@@ -1,22 +1,4 @@
 
-// initalize modal
-const writeBtnModal = modalCommon.modalTwoBtn(writeModalTitle,writeModalBody,async function(){
-	try{
-		const siginIn = await isSessionLoginInfo();
-		// セッションがない。
-		if(Boolean(siginIn) == false){
-			await addnonMember();
-		}
-		await addCelebration();
-		
-		location.href = `/${language}/celebration`; 
-	}catch(e){
-		console.log(e)
-		modalCommon.displayApiErrorModal(e);
-	}
-});
-
-
 const addnonMember = async function(){
 	console.log("非会員ユーザ作成API");
 	const res = await fetch(apiUrl+"/user/nonmember",{
@@ -130,14 +112,28 @@ const initialize = async function(){
 		}
 	}catch(e){
 		console.log(e)
-		modalCommon.displayApiErrorModal(e);
+		modalCommon.displayErrorModal(e.title,e.message);
 	}
 }
 
 
 
 writeBtnTag.addEventListener('click', function(){
-	writeBtnModal.show();
+	modalCommon.displayTwoBtnModal(writeModalTitle,writeModalBody,async function(){
+		try{
+			const siginIn = await isSessionLoginInfo();
+			// セッションがない。
+			if(Boolean(siginIn) == false){
+				await addnonMember();
+			}
+			await addCelebration();
+			
+			location.href = `/${language}/celebration`; 
+		}catch(e){
+			console.log(e)
+			modalCommon.displayErrorModal(e.title,e.message);
+		}
+	});
 })
 
 initialize();
