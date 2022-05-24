@@ -15,6 +15,21 @@
     	image_base64='varchar1' 
     	image_type='png' 
     />
+    <user 
+    	no='2'
+    	id='varchar2' 
+    	name='varchar3'
+    	password='varchar2' 
+    	user_type='admin' 
+    	create_datetime='2022-01-02 03:04:05' 
+    	update_datetime='2022-01-02 03:04:05' 
+    	delete_flag='false'
+    />
+    <profile
+    	user_no='2'
+    	image_base64='varchar1' 
+    	image_type='png' 
+    />
     <celebration 
    		no='1'
     	title='varchar1' 
@@ -36,25 +51,14 @@
     	update_user_no='1' 
     	delete_flag='false' 	
     />
-   <celebration_reply
+    <celebration_reply
    		no='2'
    		celebration_no='1'
     	content='varchar2'
     	create_datetime='2022-02-02 02:02:02' 
     	update_datetime='2022-07-07 07:07:07'
-    	create_user_no='1'
-    	update_user_no='1' 
-    	delete_flag='false' 	
-    />
-    <celebration 
-   		no='2'
-    	title='varchar3' 
-    	content='varchar4'
-    	read_count='1' 
-    	create_datetime='2022-02-02 02:02:02' 
-    	update_datetime='2022-07-07 07:07:07'
-    	create_user_no='1'
-    	update_user_no='1' 
+    	create_user_no='2'
+    	update_user_no='2' 
     	delete_flag='false' 	
     />
 </dataset>

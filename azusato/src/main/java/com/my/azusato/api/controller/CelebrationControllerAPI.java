@@ -66,7 +66,7 @@ public class CelebrationControllerAPI {
 	
 	public static final String CELEBRATION_URL = COMMON_URL + "/{celebrationNo}";
 	
-	public static final String CELEBRATION_CONTENT_URL = COMMON_URL + "content" + "/{celebrationNo}";
+	public static final String CELEBRATION_CONTENT_URL = COMMON_URL + "/content" + "/{celebrationNo}";
 	
 	public static final String PUT_URL = COMMON_URL + "/{celebrationNo}";
 	

@@ -29,6 +29,8 @@ import org.springframework.util.MultiValueMap;
 import com.my.azusato.api.controller.CelebrationControllerAPI;
 import com.my.azusato.api.controller.request.AddCelebrationAPIReqeust;
 import com.my.azusato.api.controller.request.ModifyCelebrationAPIReqeust;
+import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse;
+import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse.CelebrationReply;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
@@ -490,6 +492,96 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			MvcResult mvcResult = mockMvc.perform(
 					MockMvcRequestBuilders
 						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/string")
+						.accept(HttpConstant.DEFAULT_CONTENT_TYPE)
+						.locale(locale)
+					).andExpect(status().isBadRequest()).andReturn();
+			
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+
+			String message = messageSource.getMessage(AzusatoException.I0008, new String[] { null }, locale);
+
+			assertEquals(new ErrorResponse(AzusatoException.I0008, message), result);
+		}
+	}
+	
+	@Nested
+	class GetCelebrationContent {
+
+		final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getCelebrationContent/";
+		
+		final long CELEBRATION_NO = 1L;
+		
+
+		@Test
+		public void givenNormal_result200() throws Exception {
+			String folderName = "1";
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+
+			MvcResult mvcResult = mockMvc.perform(
+					MockMvcRequestBuilders
+						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/content/"+ String.valueOf(CELEBRATION_NO))
+						.accept(HttpConstant.DEFAULT_CONTENT_TYPE)
+						.session(TestSession.getAdminSession())
+					).andExpect(status().isOk()).andReturn();
+										
+			String strResult = mvcResult.getResponse().getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			GetCelebrationContentSerivceAPIResponse result = om.readValue(strResult, GetCelebrationContentSerivceAPIResponse.class);
+			
+			GetCelebrationContentSerivceAPIResponse expect = GetCelebrationContentSerivceAPIResponse.builder()
+					.content(Entity.createdVarChars[1])
+					.no(Entity.createdLongs[0])
+					.owner(true)
+					.replys(List.of(
+							CelebrationReply.builder()
+								.no(Entity.createdLongs[0])
+								.content(Entity.createdVarChars[0])
+								.createdDatetime(Entity.createdDatetimes[0])
+								.name(Entity.createdVarChars[2])
+								.profileImageType(Entity.ImageType[0])
+								.profileImageBase64(Entity.createdVarChars[0])
+								.owner(true).build(),
+							CelebrationReply.builder()
+								.no(Entity.createdLongs[1])
+								.content(Entity.createdVarChars[1])
+								.createdDatetime(Entity.createdDatetimes[1])
+								.name(Entity.createdVarChars[2])
+								.profileImageType(Entity.ImageType[0])
+								.profileImageBase64(Entity.createdVarChars[0])
+								.owner(false).build()
+							))
+					.build();
+			
+			assertEquals(expect, result);
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenNodata_result400(Locale locale) throws Exception {
+			MvcResult mvcResult = mockMvc.perform(
+					MockMvcRequestBuilders
+					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/content/"+ "1000")
+						.accept(HttpConstant.DEFAULT_CONTENT_TYPE)
+						.locale(locale)
+					).andExpect(status().isBadRequest()).andReturn();
+			
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+			
+			String tableName = messageSource.getMessage(CelebrationContentEntity.TABLE_NAME_KEY, null, locale);
+			String message = messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale);
+
+			assertEquals(new ErrorResponse(AzusatoException.I0005, message), result);
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenParameterError_result400(Locale locale) throws Exception {
+			MvcResult mvcResult = mockMvc.perform(
+					MockMvcRequestBuilders
+					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/content/"+ "string")
 						.accept(HttpConstant.DEFAULT_CONTENT_TYPE)
 						.locale(locale)
 					).andExpect(status().isBadRequest()).andReturn();
