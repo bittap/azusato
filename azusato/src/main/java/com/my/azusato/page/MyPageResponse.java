@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class MyPageResponse {
 
 	/**
-	 * ページ表示番号リスト。Ex) 5,4,3
+	 * ページ表示番号リスト。Ex) 1 , 2, 3
 	 */
 	private List<Integer> pages;
 	

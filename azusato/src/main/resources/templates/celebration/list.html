@@ -74,18 +74,28 @@
 						-->
 						<nav aria-label="Page navigation example">
 							<ul class="pagination">
-								<li class="page-item disabled">
-									<a class="page-link" href="#" aria-label="Previous" tabindex="-1">
+								<li class="page-item disabled page-pre_wrap">
+									<a class="page-link page-pre" href="#" aria-label="Previous">
 						        		<span aria-hidden="true">&laquo;</span>
 						      		</a>
+									<!--/*
+									<a class="page-link page-pre" href="#" aria-label="Previous" tabindex="-1">
+						        		<span aria-hidden="true">&laquo;</span>
+						      		</a>
+									*/-->
 						    	</li>
-						    	<li class="page-item active"><a class="page-link" href="#">1</a></li>
-						    	<li class="page-item"><a class="page-link" href="#">2</a></li>
-						    	<li class="page-item"><a class="page-link" href="#">3</a></li>
-						    	<li class="page-item">
-						      	<a class="page-link" href="#" aria-label="Next">
-						        	<span aria-hidden="true">&raquo;</span>
-						     	</a>
+								<div class="page-item_wrap">
+									<template id="template-page-item">
+										<li class="page-item"><a class="page-link">1</a></li>
+									</template>
+							    	<!--/*<li class="page-item active"><a class="page-link" href="#">1</a></li>
+							    	<li class="page-item"><a class="page-link" href="#">2</a></li>
+							    	<li class="page-item"><a class="page-link" href="#">3</a></li>*/-->
+								</div>
+						    	<li class="page-item page-next_wrap">
+							      	<a class="page-link page-next" href="#" aria-label="Next">
+							        	<span aria-hidden="true">&raquo;</span>
+							     	</a>
 						    	</li>
 								<a th:href="@{'/'+${#locale}+'/celebration/write'}" class="btn btn-primary ms-auto me-0" th:text="#{celebration.list.write}"></a>
 						  	</ul>
