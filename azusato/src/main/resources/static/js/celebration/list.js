@@ -191,7 +191,9 @@ const initContentArea = async function(contents , toggledTag ){
 	});
 	
 	const nameInput = toggledTag.querySelector('input[name="name"]');
-	nameInput.value = userRes.name;
+	if(userRes?.name != null){
+		nameInput.value = userRes.name;
+	}
 	// 属性追加
 	REPLY_WRITE_BTN_TAG.setAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME, contents.no);
 	REPLY_WRITE_BTN_TAG.addEventListener('click',async function(){
