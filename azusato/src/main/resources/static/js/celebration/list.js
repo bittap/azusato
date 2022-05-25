@@ -84,7 +84,7 @@ const initialize = function(){
 		// ページング
 		paging(result.page);
 		// ユーザ情報を取得しておく
-		userInfo();
+		getUser();
 	}).catch(e =>{
 		console.log(e);
 		modalCommon.displayErrorModal(e.title,e.message);
@@ -92,10 +92,10 @@ const initialize = function(){
 }
 
 /*
- * ユーザ情報を取得する。
+ * ログイン有無確認
  * 現在はログインした場合、書き込みに名前を入れておくために使う。
  */
-const userInfo = async function(){
+const isSession = async function(){
 	console.log("ログイン有無確認API");
 	const res = await fetch(apiUrl+"/session/checked-login-session");
 
@@ -104,10 +104,7 @@ const userInfo = async function(){
 	if(!res.ok) {
 		return Promise.reject(result);
 	}else{
-		// セッションがある場合
-		if(Boolean(result) == true){
-			userRes = await getUser();
-		}
+		return Promise.resolve(result);
 	}
 }
 
@@ -116,14 +113,17 @@ const userInfo = async function(){
  */
 const getUser = async function(){
 	console.log("ユーザ情報取得");
-	const res = await fetch(apiUrl+"/user");
-	
-	const result = await res.json();
-	
-	if(!res.ok) {
-		return Promise.reject(result);
-	}else{
-		return Promise.resolve(result);
+	const sigiIn = await isSession();
+	if(Boolean(sigiIn) == true){
+		const res = await fetch(apiUrl+"/user");
+		
+		const result = await res.json();
+		
+		if(!res.ok) {
+			return Promise.reject(result);
+		}else{
+			userRes = result;
+		}
 	}
 }
 /*
@@ -146,8 +146,14 @@ const initContentArea = async function(contents , toggledTag ){
 		
 		DELETE_BTN_TAG.setAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME, contents.no);
 		DELETE_BTN_TAG.addEventListener('click',function(){
-			modalCommon.displayTwoBtnModal(DELETE_MODAL_TITLE,DELETE_MODAL_BODY,function(){
-				deleteCelebration(DELETE_BTN_TAG);
+			modalCommon.displayTwoBtnModal(DELETE_MODAL_TITLE,DELETE_MODAL_BODY,async function(){
+				try{
+					await deleteCelebration(DELETE_BTN_TAG);
+				}catch(e){
+					console.log(e);
+					modalCommon.displayErrorModal(e.title,e.message);
+					
+				}
 			});
 		});
 	}else{
@@ -179,8 +185,13 @@ const initContentArea = async function(contents , toggledTag ){
 		if(reply.owner){
 			REPLY_DELETE_BTN_TAG.setAttribute(CELBRATION_REPLY_NO_DATA_ATTRIBUTE_NAME, reply.no);
 			REPLY_DELETE_BTN_TAG.addEventListener('click',function(){
-				modalCommon.displayTwoBtnModal(DELETE_MODAL_TITLE,DELETE_MODAL_BODY,function(){
-					deleteCelebrationReply(REPLY_DELETE_BTN_TAG);
+				modalCommon.displayTwoBtnModal(DELETE_MODAL_TITLE,DELETE_MODAL_BODY,async function(){
+					try{
+						await deleteCelebrationReply(REPLY_DELETE_BTN_TAG);
+					}catch(e){
+						console.log(e);
+						modalCommon.displayErrorModal(e.title,e.message);
+					}	
 				});
 			});
 		}else{
@@ -198,6 +209,12 @@ const initContentArea = async function(contents , toggledTag ){
 	REPLY_WRITE_BTN_TAG.setAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME, contents.no);
 	REPLY_WRITE_BTN_TAG.addEventListener('click',async function(){
 		try{
+			// 非ログインしはユーザを登録しておく。
+			const siginIn = await isSession();
+			if(Boolean(siginIn) == false){
+				const randomImage = await getRandomImage();
+				await addnonMember(REPLY_WRITE_BTN_TAG, randomImage);
+			}
 			await addCelebrationReply(REPLY_WRITE_BTN_TAG);
 		}catch(e){
 			console.log(e);
@@ -209,6 +226,19 @@ const initContentArea = async function(contents , toggledTag ){
 	// 書き込みエリアに挿入
 	toggledTag.querySelector("#reply-container").appendChild(REPLY_FRAGMENT);
 	
+}
+
+const getRandomImage = async function(){
+	console.log("ランダムイメージ取得");
+	const res = await fetch(apiUrl+"/profile/random");
+	
+	const result = await res.json();
+	
+	if(!res.ok) {
+		return Promise.reject(result);
+	}else{
+		return result;
+	}
 }
 
 /*
@@ -246,6 +276,29 @@ const addCelebrationReply = async function(clickedEle){
 	}
 }
 
+const addnonMember = async function(clickedEle, randomImage){
+	console.log("非会員ユーザ作成API");
+	const res = await fetch(apiUrl+"/user/nonmember",{
+		method: 'POST',
+		headers: {
+		  'Accept': 'application/json',
+		  'Content-Type': 'application/json'
+		},
+		 body: JSON.stringify({
+			 name: clickedEle.parentNode.querySelector('[name="name"]').value,
+			 profileImageType: randomImage.profileImageType, 
+			 profileImageBase64: randomImage.profileImageBase64, 
+		})
+	});
+	
+	if(!res.ok) {
+		const result = await res.json();
+		return Promise.reject(result);
+	}else{
+		return Promise.resolve();
+	}
+}
+
 /*
  * 修正ボタンを押下した場合の関数
  * 修正ページに移動させる。
@@ -274,28 +327,22 @@ const deleteCelebration = async function(clickedDeleteEle){
 		consoel.log(`この削除ボタンに「${CELBRATION_NO_DATA_ATTRIBUTE_NAME}」属性の値が存在しません。`);
 		modalCommon.displayErrorModal();
 	}else{
-		try{
-			const celebrationNo = clickedDeleteEle.getAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME);
-			
-			const res = await fetch(apiUrl+"/celebration/" + celebrationNo,{
-				method: 'DELETE',
-				headers: {
-				  'Accept': 'application/json',
-				  'Content-Type': 'application/json'
-				}
-			});
-			
-			if(!res.ok) {
-				const result = await res.json();
-				throw Error(result);
-			}else{
-				location.href = createNowPageUrl(getCurrentPageno());
-			}
-		}catch(e){
-			console.log(e);
-			modalCommon.displayErrorModal(e.title,e.message);
-		}
+		const celebrationNo = clickedDeleteEle.getAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME);
 		
+		const res = await fetch(apiUrl+"/celebration/" + celebrationNo,{
+			method: 'DELETE',
+			headers: {
+			  'Accept': 'application/json',
+			  'Content-Type': 'application/json'
+			}
+		});
+		
+		if(!res.ok) {
+			const result = await res.json();
+			return Promise.reject(result);
+		}else{
+			location.href = createNowPageUrl(getCurrentPageno());
+		}
 	}
 }
 
@@ -308,28 +355,22 @@ const deleteCelebrationReply = async function(clickedEle){
 		consoel.log(`この書き込み削除ボタンに「${CELBRATION_REPLY_NO_DATA_ATTRIBUTE_NAME}」属性の値が存在しません。`);
 		modalCommon.displayErrorModal();
 	}else{
-		try{
-			const celebrationNo = clickedEle.getAttribute(CELBRATION_REPLY_NO_DATA_ATTRIBUTE_NAME);
-			
-			const res = await fetch(apiUrl+"/celebration-reply/" + celebrationNo,{
-				method: 'DELETE',
-				headers: {
-				  'Accept': 'application/json',
-				  'Content-Type': 'application/json'
-				}
-			});
-			
-			if(!res.ok) {
-				const result = await res.json();
-				throw Error(result);
-			}else{
-				location.href = createNowPageUrl(getCurrentPageno());
-			}
-		}catch(e){
-			console.log(e);
-			modalCommon.displayErrorModal(e.title,e.message);
-		}
+		const celebrationNo = clickedEle.getAttribute(CELBRATION_REPLY_NO_DATA_ATTRIBUTE_NAME);
 		
+		const res = await fetch(apiUrl+"/celebration-reply/" + celebrationNo,{
+			method: 'DELETE',
+			headers: {
+			  'Accept': 'application/json',
+			  'Content-Type': 'application/json'
+			}
+		});
+		
+		if(!res.ok) {
+			const result = await res.json();
+			return Promise.reject(result);
+		}else{
+			location.href = createNowPageUrl(getCurrentPageno());
+		}
 	}
 }
 

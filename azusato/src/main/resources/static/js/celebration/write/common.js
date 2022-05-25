@@ -21,7 +21,7 @@ const getRandomImage = async function(){
 	const result = await res.json();
 	
 	if(!res.ok) {
-		throw new MyError("ランダムイメージ取得ー",result);
+		return Promise.reject(result);
 	}else{
 		return result;
 	}
