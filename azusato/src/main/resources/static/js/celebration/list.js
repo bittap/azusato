@@ -7,14 +7,14 @@ const CELEBRATION_LIST_URL = "/" + language + "/" + "celebration";
 const urlParams = urlCommon.urlParams;
 // お祝いの参照番号に対する属性名
 const CELBRATION_NO_DATA_ATTRIBUTE_NAME = "data-celebration-no";
+// ログインしたユーザの情報
+let userRes;
 
 const initialize = function(){
 	getCelebrations().then(result =>{
 		console.log("お祝いリスト結果",result);
 		// コンテンツのtemplate
 		const tempContent = document.querySelector('#template-list');
-		// ページング
-		paging(result.page);
 		// リスト
 		result.celebrations.forEach((celebation) => {
 			const celebrationClone = tempContent.content.cloneNode(true);
@@ -79,10 +79,50 @@ const initialize = function(){
 			// お祝いfragmentに追加
 			document.querySelector('#list-container').appendChild(celebrationClone);
 		});
+		// ページング
+		paging(result.page);
+		// ユーザ情報を取得しておく
+		userInfo();
 	}).catch(e =>{
 		console.log(e);
 		modalCommon.displayErrorModal(e.title,e.message);
 	});
+}
+
+/*
+ * ユーザ情報を取得する。
+ * 現在はログインした場合、書き込みに名前を入れておくために使う。
+ */
+const userInfo = async function(){
+	console.log("ログイン有無確認API");
+	const res = await fetch(apiUrl+"/session/checked-login-session");
+
+	const result = await res.json();
+	
+	if(!res.ok) {
+		return Promise.reject(result);
+	}else{
+		// セッションがある場合
+		if(Boolean(result) == true){
+			userRes = await getUser();
+		}
+	}
+}
+
+/*
+ * ユーザ情報を取得
+ */
+const getUser = async function(){
+	console.log("ユーザ情報取得");
+	const res = await fetch(apiUrl+"/user");
+	
+	const result = await res.json();
+	
+	if(!res.ok) {
+		return Promise.reject(result);
+	}else{
+		return Promise.resolve(result);
+	}
 }
 /*
  * コンテンツエリアを表示する。
@@ -145,6 +185,8 @@ const initContentArea = async function(contents , toggledTag ){
 		REPLY_FRAGMENT.appendChild(celebrationReplyClone);
 	});
 	
+	const nameInput = toggledTag.querySelector('input[name="name"]');
+	nameInput.value = userRes.name;
 	REPLY_WRITE_BTN_TAG.addEventListener('click',function(){
 		console.log("content reply area write click");
 	});
