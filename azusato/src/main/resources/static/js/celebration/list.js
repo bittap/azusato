@@ -187,13 +187,56 @@ const initContentArea = async function(contents , toggledTag ){
 	
 	const nameInput = toggledTag.querySelector('input[name="name"]');
 	nameInput.value = userRes.name;
-	REPLY_WRITE_BTN_TAG.addEventListener('click',function(){
-		console.log("content reply area write click");
+	// 属性追加
+	REPLY_WRITE_BTN_TAG.setAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME, contents.no);
+	REPLY_WRITE_BTN_TAG.addEventListener('click',async function(){
+		try{
+			await addCelebrationReply(REPLY_WRITE_BTN_TAG);
+		}catch(e){
+			console.log(e);
+			modalCommon.displayErrorModal(e.title,e.message);
+			
+		}
 	});
 	
 	// 書き込みエリアに挿入
 	toggledTag.querySelector("#reply-container").appendChild(REPLY_FRAGMENT);
 	
+}
+
+/*
+ * 書き込みを追加する。 
+ */
+const addCelebrationReply = async function(clickedEle){
+	console.log("書き込み追加API");
+	
+	if(clickedEle.getAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME) == null){
+		consoel.log(`この書き込み追加ボタンに「${CELBRATION_NO_DATA_ATTRIBUTE_NAME}」属性の値が存在しません。`);
+		modalCommon.displayErrorModal();
+	}else{
+		const celebrationNo = clickedEle.getAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME);
+		
+		const res = await fetch(apiUrl+"/celebration-reply/"+celebrationNo,{
+			method: 'POST',
+			headers: {
+			  'Accept': 'application/json',
+			  'Content-Type': 'application/json'
+			},
+			 body: JSON.stringify({
+				 name: clickedEle.parentNode.querySelector('[name="name"]').value,
+				 content:  clickedEle.parentNode.querySelector('[name="content"]').value
+			})
+		});
+
+		
+		if(!res.ok) {
+			const result = await res.json();
+			return Promise.reject(result);
+		}else{
+			location.href = createNowPageUrl(getCurrentPageno());
+		}
+		
+	}
 }
 
 /*
@@ -206,7 +249,8 @@ const moveModify = function(){
 	const clickedModifyEle = this;
 	
 	if(clickedModifyEle.getAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME) == null){
-		throw Error(`この修正ボタンに「${CELBRATION_NO_DATA_ATTRIBUTE_NAME}」属性の値が存在しません。`);
+		consoel.log(`この修正ボタンに「${CELBRATION_NO_DATA_ATTRIBUTE_NAME}」属性の値が存在しません。`);
+		modalCommon.displayErrorModal();
 	}else{
 		const celebrationNo = clickedModifyEle.getAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME);
 		
@@ -220,7 +264,8 @@ const moveModify = function(){
  */
 const deleteCelebration = async function(clickedDeleteEle){
 	if(clickedDeleteEle.getAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME) == null){
-		throw Error(`この修正ボタンに「${CELBRATION_NO_DATA_ATTRIBUTE_NAME}」属性の値が存在しません。`);
+		consoel.log(`この修正ボタンに「${CELBRATION_NO_DATA_ATTRIBUTE_NAME}」属性の値が存在しません。`);
+		modalCommon.displayErrorModal();
 	}else{
 		try{
 			const celebrationNo = clickedDeleteEle.getAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME);
