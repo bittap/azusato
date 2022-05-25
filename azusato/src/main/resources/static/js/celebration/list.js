@@ -196,11 +196,7 @@ const paging = function(page){
 		if(e == getCurrentPageno()){
 			liEle.classList.add('active');
 		}
-		
-		//TEMP_PAGE_ITEM.after(CLONED_PAGE_ITEM);
-		
-		//PAGE_ITEM_WRAP.parentNode.appendChild(CLONED_PAGE_ITEM);
-		
+
 		PAGE_ITEM_WRAP.appendChild(CLONED_PAGE_ITEM);
 	})
 	
