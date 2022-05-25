@@ -33,6 +33,10 @@
 	width:20%;
 }
 
+.page-item_wrap {
+	display: flex;
+}
+
 
 
 @media (min-width: 768px) {

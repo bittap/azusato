@@ -1,31 +1,16 @@
 // リストページのURL(クエリパラメータなし)
 // 遷移のため使う
 const CELEBRATION_LIST_URL = "/" + language + "/" + "celebration";
-// コンテンツのtemplate
-const tempContent = document.querySelector('#template-list');
-// お祝いtemplateが挿入される位置
-const listContainer = document.querySelector('#list-container');
 //　お祝い書き込みtemplateが挿入される位置
 //const replyContainer = document.querySelector('.reply');
 // URLSearchParamsを取得
 const urlParams = urlCommon.urlParams;
-// 一回contentAPIが実行されたら、これをクラスに追加し二回呼び出さないようにする。
-const INVOKED_COTENT_CLASS_NAME = "invoked_content";
-/*
- * ページングに関するDomElement
- */
-const PRE_PAGE_WRAP_ELE = document.querySelector('.page-pre_wrap');
-const NEXT_PAGE_WRAP_ELE = document.querySelector('.page-next_wrap');
-const PRE_PAGE_ELE = document.querySelector('.page-pre');
-const NEXT_PAGE_ELE = document.querySelector('.page-next');
-const PAGE_ITEM_WRAP = document.querySelector('.page-item_wrap');
-const TEMP_PAGE_ITEM = document.querySelector('#template-page-item');
 
 const initialize = function(){
 	getCelebrations().then(result =>{
 		console.log("お祝いリスト結果",result);
-		// リストが全部レンダリング後、使われる。
-		const FRAGMENT = document.createDocumentFragment();
+		// コンテンツのtemplate
+		const tempContent = document.querySelector('#template-list');
 		// ページング
 		paging(result.page);
 		// リスト
@@ -68,6 +53,9 @@ const initialize = function(){
 					 * toggleされると表示されるとコンテンツを表示する。
 					 */
 					try{
+						// 一回contentAPIが実行されたら、これをクラスに追加し二回呼び出さないようにする。
+						const INVOKED_COTENT_CLASS_NAME = "invoked_content";
+						
 						// 一回コンテンツ取得APIを実行していない場合のみ、実行
 						if(!bsCollapse._element.classList.contains(INVOKED_COTENT_CLASS_NAME)){
 							const contents = await getCelebrationContent(celebation.no);
@@ -82,17 +70,13 @@ const initialize = function(){
 				}
 			});
 			
+			// コンテンツbodyをクリックするとコンテンツ領域を非表示にする
 			toggleContentWrap_tag.addEventListener('click',function(){
 				bsCollapse.hide();
 			});
-			
-			
-			
 			// お祝いfragmentに追加
-			FRAGMENT.appendChild(celebrationClone);
+			document.querySelector('#list-container').appendChild(celebrationClone);
 		});
-		
-		listContainer.appendChild(FRAGMENT);
 	}).catch(e =>{
 		console.log(e);
 		modalCommon.displayErrorModal(e.title,e.message);
@@ -170,6 +154,16 @@ const initContentArea = async function(contents , toggledTag ){
  * @param {object} page お祝いリスト取得によるページング情報
  */
 const paging = function(page){
+	/*
+	 * ページングに関するDomElement
+	 */
+	const PRE_PAGE_WRAP_ELE = document.querySelector('.page-pre_wrap');
+	const NEXT_PAGE_WRAP_ELE = document.querySelector('.page-next_wrap');
+	const PRE_PAGE_ELE = document.querySelector('.page-pre');
+	const NEXT_PAGE_ELE = document.querySelector('.page-next');
+	const PAGE_ITEM_WRAP = document.querySelector('.page-item_wrap');
+	const TEMP_PAGE_ITEM = document.querySelector('#template-page-item');
+	
 	if(page.hasPrivious == false){
 		PRE_PAGE_WRAP_ELE.classList.add('disabled');
 		PRE_PAGE_ELE.setAttribute("tabindex","-1");
@@ -187,7 +181,7 @@ const paging = function(page){
 	}else{
 		// 次ページのページの番号
 		// 一番右のリストから+1
-		const NEXT_PAGE_NO = page.slice(-1)[0] + 1;
+		const NEXT_PAGE_NO = page.pages.slice(-1)[0] + 1;
 		// URL設定
 		NEXT_PAGE_ELE.href = createNowPageUrl(NEXT_PAGE_NO);
 	}
@@ -198,9 +192,14 @@ const paging = function(page){
 		const aEle = liEle.querySelector('a');
 		
 		aEle.href = createNowPageUrl(e);
+		aEle.textContent = e;
 		if(e == getCurrentPageno()){
 			liEle.classList.add('active');
 		}
+		
+		//TEMP_PAGE_ITEM.after(CLONED_PAGE_ITEM);
+		
+		//PAGE_ITEM_WRAP.parentNode.appendChild(CLONED_PAGE_ITEM);
 		
 		PAGE_ITEM_WRAP.appendChild(CLONED_PAGE_ITEM);
 	})
