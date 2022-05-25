@@ -7,6 +7,8 @@ const CELEBRATION_LIST_URL = "/" + language + "/" + "celebration";
 const urlParams = urlCommon.urlParams;
 // お祝いの参照番号に対する属性名
 const CELBRATION_NO_DATA_ATTRIBUTE_NAME = "data-celebration-no";
+// お祝いの書き込み参照番号に対する属性名
+const CELBRATION_REPLY_NO_DATA_ATTRIBUTE_NAME = "data-celebration-reply-no";
 // ログインしたユーザの情報
 let userRes;
 
@@ -175,8 +177,11 @@ const initContentArea = async function(contents , toggledTag ){
 		REPLY_CONTENT_TAG.textContent = reply.content;
 		
 		if(reply.owner){
+			REPLY_DELETE_BTN_TAG.setAttribute(CELBRATION_REPLY_NO_DATA_ATTRIBUTE_NAME, reply.no);
 			REPLY_DELETE_BTN_TAG.addEventListener('click',function(){
-				console.log("content reply area 削除 click");
+				modalCommon.displayTwoBtnModal(DELETE_MODAL_TITLE,DELETE_MODAL_BODY,function(){
+					deleteCelebrationReply(REPLY_DELETE_BTN_TAG);
+				});
 			});
 		}else{
 			REPLY_DELETE_BTN_TAG.remove();
@@ -264,13 +269,47 @@ const moveModify = function(){
  */
 const deleteCelebration = async function(clickedDeleteEle){
 	if(clickedDeleteEle.getAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME) == null){
-		consoel.log(`この修正ボタンに「${CELBRATION_NO_DATA_ATTRIBUTE_NAME}」属性の値が存在しません。`);
+		consoel.log(`この削除ボタンに「${CELBRATION_NO_DATA_ATTRIBUTE_NAME}」属性の値が存在しません。`);
 		modalCommon.displayErrorModal();
 	}else{
 		try{
 			const celebrationNo = clickedDeleteEle.getAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME);
 			
 			const res = await fetch(apiUrl+"/celebration/" + celebrationNo,{
+				method: 'DELETE',
+				headers: {
+				  'Accept': 'application/json',
+				  'Content-Type': 'application/json'
+				}
+			});
+			
+			if(!res.ok) {
+				const result = await res.json();
+				throw Error(result);
+			}else{
+				location.href = createNowPageUrl(getCurrentPageno());
+			}
+		}catch(e){
+			console.log(e);
+			modalCommon.displayErrorModal(e.title,e.message);
+		}
+		
+	}
+}
+
+/*
+ * お祝い書き込みデータを削除する。
+ * 削除が成功すると現在ページを持つリストページに遷移させる。
+ */
+const deleteCelebrationReply = async function(clickedEle){
+	if(clickedEle.getAttribute(CELBRATION_REPLY_NO_DATA_ATTRIBUTE_NAME) == null){
+		consoel.log(`この書き込み削除ボタンに「${CELBRATION_REPLY_NO_DATA_ATTRIBUTE_NAME}」属性の値が存在しません。`);
+		modalCommon.displayErrorModal();
+	}else{
+		try{
+			const celebrationNo = clickedEle.getAttribute(CELBRATION_REPLY_NO_DATA_ATTRIBUTE_NAME);
+			
+			const res = await fetch(apiUrl+"/celebration-reply/" + celebrationNo,{
 				method: 'DELETE',
 				headers: {
 				  'Accept': 'application/json',
