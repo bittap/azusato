@@ -9,6 +9,8 @@ const listContainer = document.querySelector('#list-container');
 //const replyContainer = document.querySelector('.reply');
 // URLSearchParamsを取得
 const urlParams = urlCommon.urlParams;
+// 一回contentAPIが実行されたら、これをクラスに追加し二回呼び出さないようにする。
+const INVOKED_COTENT_CLASS_NAME = "invoked_content";
 /*
  * ページングに関するDomElement
  */
@@ -53,23 +55,31 @@ const initialize = function(){
 			
 			toggleWrap_tag.addEventListener('click',async function(){
 				if(bsCollapse._element.classList.contains("show")){
-					console.log("toggle close");
+					//console.log("toggle close");
+					bsCollapse.toggle();
 				}else{
-					console.log("toggle open");
+					//console.log("toggle open");
+					
+					// 参照数アップ
+					// これはエラーが起きてもコンテンツ表示に影響はないように。
+					readCountUp(celebation.no);
 					
 					/*
 					 * toggleされると表示されるとコンテンツを表示する。
 					 */
 					try{
-						// TODO 参照数アップ
-						const contents = await getCelebrationContent(celebation.no);
-						initContentArea(contents,bsCollapse._element);
+						// 一回コンテンツ取得APIを実行していない場合のみ、実行
+						if(!bsCollapse._element.classList.contains(INVOKED_COTENT_CLASS_NAME)){
+							const contents = await getCelebrationContent(celebation.no);
+							initContentArea(contents,bsCollapse._element);
+							bsCollapse._element.classList.add(INVOKED_COTENT_CLASS_NAME);
+						}
+						bsCollapse.toggle();
 					}catch(e){
 						console.log(e)
 						modalCommon.displayErrorModal(e.title,e.message);
 					}
 				}
-				bsCollapse.toggle();
 			});
 			
 			toggleContentWrap_tag.addEventListener('click',function(){
@@ -88,7 +98,11 @@ const initialize = function(){
 		modalCommon.displayErrorModal(e.title,e.message);
 	});
 }
-
+/*
+ * コンテンツエリアを表示する。
+ * @param {object} contents contentAPIによる戻り値
+ * @param {document} toggledTag クリックEventによる表示されるコンテンツ領域のdocument
+ */
 const initContentArea = async function(contents , toggledTag ){
 	const BODY_TAG = toggledTag.querySelector(".-body");
 	const MODIFY_BTN_TAG = toggledTag.querySelector(".-modify");
@@ -210,6 +224,21 @@ const createNowPageUrl = function(currentPageNo){
  */
 const getCurrentPageno = function(){
 	return urlParams.has("currentPageNo") ? urlParams.get("currentPageNo") : 1 ;
+}
+
+/*
+ * 参照数アップ
+ */
+const readCountUp = function(celebrationNo){
+	console.log("お祝い参照数アップ");
+	
+	fetch(apiUrl+"/celebration/read-count-up/" + celebrationNo,{
+		method: 'PUT',
+		headers: {
+		  'Accept': 'application/json',
+		  'Content-Type': 'application/json'
+		}
+	});
 }
 
 const getCelebrationContent = async function(celebrationNo){
