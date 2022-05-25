@@ -105,7 +105,10 @@
 			</div>	<!-- End Container-->
 		</th:block>
 	</th:block>
-	
+	<script th:inline="javascript">
+		const DELETE_MODAL_TITLE = /*[[#{celebration.delete.modal.title}]]*/ "削除モーダルタイトル";
+		const DELETE_MODAL_BODY = /*[[#{celebration.delete.modal.body}]]*/ "削除モーダル内容";
+	</script>
 	<script src="/js/celebration/list.js"></script>
 			
 </body>

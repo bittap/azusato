@@ -5,6 +5,8 @@ const CELEBRATION_LIST_URL = "/" + language + "/" + "celebration";
 //const replyContainer = document.querySelector('.reply');
 // URLSearchParamsを取得
 const urlParams = urlCommon.urlParams;
+// お祝いの参照番号に対する属性名
+const CELBRATION_NO_DATA_ATTRIBUTE_NAME = "data-celebration-no";
 
 const initialize = function(){
 	getCelebrations().then(result =>{
@@ -96,12 +98,15 @@ const initContentArea = async function(contents , toggledTag ){
 	BODY_TAG.innerHTML = contents.content;
 	
 	if(contents.owner){
-		MODIFY_BTN_TAG.addEventListener('click',function(){
-			console.log("content area modify click");
-		});
+		// 属性追加
+		MODIFY_BTN_TAG.setAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME, contents.no);
+		MODIFY_BTN_TAG.addEventListener('click',moveModify);
 		
+		DELETE_BTN_TAG.setAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME, contents.no);
 		DELETE_BTN_TAG.addEventListener('click',function(){
-			console.log("content area delete click");
+			modalCommon.displayTwoBtnModal(DELETE_MODAL_TITLE,DELETE_MODAL_BODY,function(){
+				deleteCelebration(DELETE_BTN_TAG);
+			});
 		});
 	}else{
 		MODIFY_BTN_TAG.remove();
@@ -147,6 +152,57 @@ const initContentArea = async function(contents , toggledTag ){
 	// 書き込みエリアに挿入
 	toggledTag.querySelector("#reply-container").appendChild(REPLY_FRAGMENT);
 	
+}
+
+/*
+ * 修正ボタンを押下した場合の関数
+ * 修正ページに移動させる。
+ * 
+ * @throw 指定の属性にcelebrationNoが存在しない。
+ */
+const moveModify = function(){
+	const clickedModifyEle = this;
+	
+	if(clickedModifyEle.getAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME) == null){
+		throw Error(`この修正ボタンに「${CELBRATION_NO_DATA_ATTRIBUTE_NAME}」属性の値が存在しません。`);
+	}else{
+		const celebrationNo = clickedModifyEle.getAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME);
+		
+		location.href = `/${language}/celebration/write/${celebrationNo}`; 
+	}
+}
+
+/*
+ * お祝いデータを削除する。
+ * 削除が成功すると現在ページを持つリストページに遷移させる。
+ */
+const deleteCelebration = async function(clickedDeleteEle){
+	if(clickedDeleteEle.getAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME) == null){
+		throw Error(`この修正ボタンに「${CELBRATION_NO_DATA_ATTRIBUTE_NAME}」属性の値が存在しません。`);
+	}else{
+		try{
+			const celebrationNo = clickedDeleteEle.getAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME);
+			
+			const res = await fetch(apiUrl+"/celebration/" + celebrationNo,{
+				method: 'DELETE',
+				headers: {
+				  'Accept': 'application/json',
+				  'Content-Type': 'application/json'
+				}
+			});
+			
+			if(!res.ok) {
+				const result = await res.json();
+				throw Error(result);
+			}else{
+				location.href = createNowPageUrl(getCurrentPageno());
+			}
+		}catch(e){
+			console.log(e);
+			modalCommon.displayErrorModal(e.title,e.message);
+		}
+		
+	}
 }
 
 /*
