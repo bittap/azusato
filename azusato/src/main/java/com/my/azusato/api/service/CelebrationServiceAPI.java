@@ -268,6 +268,7 @@ public class CelebrationServiceAPI {
 	 * @return 対象のお祝い情報
 	 * @throws AzusatoException テーブルにお祝いデータが存在しない。
 	 */
+	@Transactional
 	public GetCelebrationContentSerivceAPIResponse getCelebrationContent(Long celebationNo , Long userNo, Locale locale) {
 		CelebrationContentEntity fetchedCelebationEntity = celeContentRepo.findById(celebationNo).orElseThrow(()->{
 			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationContentEntity.TABLE_NAME_KEY);

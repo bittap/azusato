@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Embedded;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -52,7 +53,7 @@ public class CelebrationEntity {
 	)
 	private Set<UserEntity> notices;
 	
-	@OneToMany(mappedBy = "celebrationNo")
+	@OneToMany(mappedBy = "celebrationNo", fetch = FetchType.LAZY)
 	private List<CelebrationReplyEntity> replys;
 	
 	@Embedded
