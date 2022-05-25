@@ -37,74 +37,47 @@ const initialize = function(){
 			const REG_TAG = celebrationClone.querySelector(".-regdate");
 			const NAME_TAG = celebrationClone.querySelector(".-name");
 			const TITLE_TAG = celebrationClone.querySelector(".-title");
-			//const BODY_TAG = celebrationClone.querySelector(".-body");
-//			const MODIFY_BTN_TAG = celebrationClone.querySelector(".-modify");
-//			const DELETE_BTN_TAG = celebrationClone.querySelector(".-delete");
-			
+			const toggleWrap_tag = celebrationClone.querySelector(".toggle_wrap");
+			const toggleContentWrap_tag = celebrationClone.querySelector(".toggl_content_wrap");
+
 			imageCommon.changeImageSrcBase64(PROFILE_TAG,celebation.profileImageType,celebation.profileImageBase64);
 			NO_TAG.textContent = "No."+celebation.no;
 			REG_TAG.textContent = moment(new Date(celebation.createdDatetime)).format(DATETIME_FORMAT);
 			NAME_TAG.textContent = "@"+celebation.name;
 			TITLE_TAG.textContent = celebation.title;
-			//BODY_TAG.innerHTML = celebation.content;
 			
-//			if(celebation.owner){
-//				MODIFY_BTN_TAG.addEventListener('click',function(){
-//					console.log("content area modify click");
-//				});
-//				
-//				DELETE_BTN_TAG.addEventListener('click',function(){
-//					console.log("content area delete click");
-//				});
-//			}else{
-//				MODIFY_BTN_TAG.remove();
-//				DELETE_BTN_TAG.remove();
-//			}
+			const toglledCollapse = celebrationClone.querySelector(".content_wrap");
+			const bsCollapse = new bootstrap.Collapse(toglledCollapse, {
+			  toggle: false // 呼び出す時Toggleされるかどうか。toggleは自分がするので、false
+			})
 			
-//			var myCollapse = document.getElementById('myCollapse')
-//			var bsCollapse = new bootstrap.Collapse(myCollapse, {
-//			  toggle: false
-//			})
+			toggleWrap_tag.addEventListener('click',async function(){
+				if(bsCollapse._element.classList.contains("show")){
+					console.log("toggle close");
+				}else{
+					console.log("toggle open");
+					
+					/*
+					 * toggleされると表示されるとコンテンツを表示する。
+					 */
+					try{
+						// TODO 参照数アップ
+						const contents = await getCelebrationContent(celebation.no);
+						initContentArea(contents,bsCollapse._element);
+					}catch(e){
+						console.log(e)
+						modalCommon.displayErrorModal(e.title,e.message);
+					}
+				}
+				bsCollapse.toggle();
+			});
+			
+			toggleContentWrap_tag.addEventListener('click',function(){
+				bsCollapse.hide();
+			});
 			
 			
-//			/*
-//			 * 書き込み領域
-//			 */
-//			// 書き込みのtemplate
-//			const tempReply = celebrationClone.querySelector('#template-reply-list');
-//			const REPLY_FRAGMENT = document.createDocumentFragment();
-//			const REPLY_WRITE_BTN_TAG = celebrationClone.querySelector(".-reply_write");
-//			
-//			celebation.replys.forEach(reply=>{
-//				const celebrationReplyClone = tempReply.content.cloneNode(true);
-//				const REPLY_PROFILE_TAG = celebrationReplyClone.querySelector(".-reply_profile");
-//				const REPLY_NAME_TAG = celebrationReplyClone.querySelector(".-reply_name");
-//				const REPLY_RAG_TAG = celebrationReplyClone.querySelector(".-reply_rag");
-//				const REPLY_CONTENT_TAG = celebrationReplyClone.querySelector(".-reply_content");
-//				const REPLY_DELETE_BTN_TAG = celebrationReplyClone.querySelector(".-reply_delete");
-//				
-//				imageCommon.changeImageSrcBase64(REPLY_PROFILE_TAG,reply.profileImageType,reply.profileImageBase64);
-//				REPLY_NAME_TAG.textContent = reply.name;
-//				REPLY_RAG_TAG.textContent = moment(new Date(reply.createdDatetime)).format(DATETIME_FORMAT);
-//				REPLY_CONTENT_TAG.textContent = reply.content;
-//				
-//				if(reply.owner){
-//					REPLY_DELETE_BTN_TAG.addEventListener('click',function(){
-//						console.log("content reply area 削除 click");
-//					});
-//				}else{
-//					REPLY_DELETE_BTN_TAG.remove();
-//				}
-//
-//				REPLY_FRAGMENT.appendChild(celebrationReplyClone);
-//			});
-//			
-//			REPLY_WRITE_BTN_TAG.addEventListener('click',function(){
-//				console.log("content reply area write click");
-//			});
-//			
-//			// 書き込みエリアに挿入
-//			celebrationClone.querySelector("#reply-container").appendChild(REPLY_FRAGMENT);
+			
 			// お祝いfragmentに追加
 			FRAGMENT.appendChild(celebrationClone);
 		});
@@ -114,6 +87,68 @@ const initialize = function(){
 		console.log(e);
 		modalCommon.displayErrorModal(e.title,e.message);
 	});
+}
+
+const initContentArea = async function(contents , toggledTag ){
+	const BODY_TAG = toggledTag.querySelector(".-body");
+	const MODIFY_BTN_TAG = toggledTag.querySelector(".-modify");
+	const DELETE_BTN_TAG = toggledTag.querySelector(".-delete");
+	
+	
+	BODY_TAG.innerHTML = contents.content;
+	
+	if(contents.owner){
+		MODIFY_BTN_TAG.addEventListener('click',function(){
+			console.log("content area modify click");
+		});
+		
+		DELETE_BTN_TAG.addEventListener('click',function(){
+			console.log("content area delete click");
+		});
+	}else{
+		MODIFY_BTN_TAG.remove();
+		DELETE_BTN_TAG.remove();
+	}
+	
+	/*
+	 * 書き込み領域
+	 */
+	// 書き込みのtemplate
+	const tempReply = toggledTag.querySelector('#template-reply-list');
+	const REPLY_FRAGMENT = document.createDocumentFragment();
+	const REPLY_WRITE_BTN_TAG = toggledTag.querySelector(".-reply_write");
+	
+	contents.replys.forEach(reply=>{
+		const celebrationReplyClone = tempReply.content.cloneNode(true);
+		const REPLY_PROFILE_TAG = celebrationReplyClone.querySelector(".-reply_profile");
+		const REPLY_NAME_TAG = celebrationReplyClone.querySelector(".-reply_name");
+		const REPLY_RAG_TAG = celebrationReplyClone.querySelector(".-reply_rag");
+		const REPLY_CONTENT_TAG = celebrationReplyClone.querySelector(".-reply_content");
+		const REPLY_DELETE_BTN_TAG = celebrationReplyClone.querySelector(".-reply_delete");
+		
+		imageCommon.changeImageSrcBase64(REPLY_PROFILE_TAG,reply.profileImageType,reply.profileImageBase64);
+		REPLY_NAME_TAG.textContent = reply.name;
+		REPLY_RAG_TAG.textContent = moment(new Date(reply.createdDatetime)).format(DATETIME_FORMAT);
+		REPLY_CONTENT_TAG.textContent = reply.content;
+		
+		if(reply.owner){
+			REPLY_DELETE_BTN_TAG.addEventListener('click',function(){
+				console.log("content reply area 削除 click");
+			});
+		}else{
+			REPLY_DELETE_BTN_TAG.remove();
+		}
+
+		REPLY_FRAGMENT.appendChild(celebrationReplyClone);
+	});
+	
+	REPLY_WRITE_BTN_TAG.addEventListener('click',function(){
+		console.log("content reply area write click");
+	});
+	
+	// 書き込みエリアに挿入
+	toggledTag.querySelector("#reply-container").appendChild(REPLY_FRAGMENT);
+	
 }
 
 /*
@@ -175,6 +210,24 @@ const createNowPageUrl = function(currentPageNo){
  */
 const getCurrentPageno = function(){
 	return urlParams.has("currentPageNo") ? urlParams.get("currentPageNo") : 1 ;
+}
+
+const getCelebrationContent = async function(celebrationNo){
+	console.log("お祝いコンテンツ取得");
+	modalCommon.displayLoadingModal();
+	const res = await fetch(apiUrl+"/celebration/content/" + celebrationNo);
+	
+	const result = await res.json();
+	
+	await asyncCommon.delay(LOADING_MODAL_DELAY);
+	modalCommon.hideLoadingModal();
+	
+	if(!res.ok) {
+		return Promise.reject(result);
+	}else{
+		console.log("お祝いコンテンツ取得 成功",result);
+		return result;
+	}
 }
 
 const getCelebrations = async function(){
