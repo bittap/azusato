@@ -199,7 +199,7 @@ const initContentArea = async function(contents , toggledTag ){
 		if(reply.owner){
 			REPLY_DELETE_BTN_TAG.setAttribute(CELBRATION_REPLY_NO_DATA_ATTRIBUTE_NAME, reply.no);
 			REPLY_DELETE_BTN_TAG.addEventListener('click',function(){
-				modalCommon.displayTwoBtnModal(DELETE_MODAL_TITLE,DELETE_MODAL_BODY,async function(){
+				modalCommon.displayTwoBtnModal(DELETE_REPLY_MODAL_TITLE,DELETE_REPLY_MODAL_BODY,async function(){
 					try{
 						await deleteCelebrationReply(REPLY_DELETE_BTN_TAG);
 					}catch(e){
