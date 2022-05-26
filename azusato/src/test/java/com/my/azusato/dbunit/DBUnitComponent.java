@@ -11,7 +11,6 @@ import org.dbunit.dataset.filter.DefaultColumnFilter;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.test.context.transaction.TestTransaction;
 
 @Component
 public class DBUnitComponent {
@@ -33,17 +32,17 @@ public class DBUnitComponent {
 	}
 
 	public void compareTable(Path dataSourcePath, String tableName) throws Exception {
-		TestTransaction.end();
+		//TestTransaction.end();
 		IDataSet dataSet = new FlatXmlDataSetBuilder().build(dataSourcePath.toFile());
 		compare(tableName, dataSet);
-		TestTransaction.start();
+		//TestTransaction.start();
 	}
 
 	public void compareTable(Path dataSourcePath, String tableName, String[] excludedColumns) throws Exception {
-		TestTransaction.end();
+		//TestTransaction.end();
 		IDataSet dataSet = new FlatXmlDataSetBuilder().build(dataSourcePath.toFile());
 		compare(tableName, dataSet, excludedColumns);
-		TestTransaction.start();
+		//TestTransaction.start();
 	}
 
 	/**
@@ -53,13 +52,13 @@ public class DBUnitComponent {
 	 * @throws Exception
 	 */
 	public void compareTable(Path dataSourcePath) throws Exception {
-		TestTransaction.end();
+		//TestTransaction.end();
 		IDataSet dataSet = new FlatXmlDataSetBuilder().build(dataSourcePath.toFile());
 		String[] tables = dataSet.getTableNames();
 		for (String table : tables) {
 			compare(table, dataSet);
 		}
-		TestTransaction.start();
+		//TestTransaction.start();
 	}
 
 	private void compare(String tableName, IDataSet dataSet) throws Exception {

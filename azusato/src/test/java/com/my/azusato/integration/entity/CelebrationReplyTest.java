@@ -4,6 +4,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -37,6 +39,7 @@ public class CelebrationReplyTest extends AbstractIntegration {
 		}
 		
 		@Test
+		@Transactional // replysを取得する時lazyエラーが起きるため
 		public void normal_case() throws Exception {	
 			CelebrationReplyEntity celebrationReplyEntity = CelebrationReplyEntity.builder()
 									.celebrationNo(insertedCelebrationNO)

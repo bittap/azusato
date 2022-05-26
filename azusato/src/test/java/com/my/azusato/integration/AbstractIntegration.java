@@ -1,7 +1,6 @@
 package com.my.azusato.integration;
 
 import javax.sql.DataSource;
-import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +16,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.dbunit.DBUnitComponent;
+import com.my.azusato.repository.CelebrationContentRepository;
 import com.my.azusato.repository.CelebrationNoticeRepository;
 import com.my.azusato.repository.CelebrationReplyNoticeRepository;
 import com.my.azusato.repository.CelebrationReplyRepository;
-import com.my.azusato.repository.CelebrationContentRepository;
 import com.my.azusato.repository.ProfileRepository;
 import com.my.azusato.repository.UserRepository;
 
@@ -32,8 +31,6 @@ import com.my.azusato.repository.UserRepository;
 @SpringBootTest
 @ActiveProfiles(TestConstant.PROFILES)
 @AutoConfigureMockMvc
-@Transactional
-@Commit
 public abstract class AbstractIntegration  {
 	
 	@Autowired
@@ -79,13 +76,14 @@ public abstract class AbstractIntegration  {
 	 * Reference this <a href="https://stackoverflow.com/questions/11746499/how-to-solve-the-failed-to-lazily-initialize-a-collection-of-role-hibernate-ex.">lazily-initialize</a>  
 	 */
 	@BeforeEach
+	@Commit
 	public void allDataDelete() {
 		profileRepo.deleteAll();
 		celeReplyRepo.deleteAll();
 		celeRepo.deleteAll();
 		userRepo.deleteAll();
 		
-		commitAndStart();
+		//commitAndStart();
 	}
 	
 	protected void commitAndStart() {

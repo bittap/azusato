@@ -12,7 +12,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.transaction.TestTransaction;
 
 import com.my.azusato.api.controller.request.AddCelebrationReplyAPIReqeust;
 import com.my.azusato.api.service.CelebrationReplyServiceAPI;
@@ -218,11 +217,9 @@ public class CelebrationReplyServiceAPITest extends AbstractIntegration {
 					messageSource.getMessage(AzusatoException.I0006, null, locale));
 
 			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-				celeReplyServiceAPI.deleteCelebartionReply(CELEBRATION_NO, 1000L, TestConstant.LOCALE_JA);
+				celeReplyServiceAPI.deleteCelebartionReply(CELEBRATION_NO, 1000L, locale);
 			});
 			
-			TestTransaction.end();
-
 			assertEquals(expect, result);
 			
 			

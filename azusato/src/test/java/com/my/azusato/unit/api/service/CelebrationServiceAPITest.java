@@ -13,7 +13,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.transaction.TestTransaction;
 
 import com.my.azusato.api.controller.request.MyPageControllerRequest;
 import com.my.azusato.api.service.CelebrationServiceAPI;
@@ -224,11 +223,9 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 					messageSource.getMessage(AzusatoException.I0006, null, locale));
 
 			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-				celeServiceAPI.deleteCelebartion(CELEBRATION_NO, 1000L, TestConstant.LOCALE_JA);
+				celeServiceAPI.deleteCelebartion(CELEBRATION_NO, 1000L, locale);
 			});
 			
-			TestTransaction.end();
-
 			assertEquals(expect, result);
 			
 			
@@ -303,8 +300,6 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
 				celeServiceAPI.modifyCelebartion(normalReq, locale);
 			});
-			
-			TestTransaction.end();
 
 			assertEquals(expect, result);
 			
