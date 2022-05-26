@@ -16,7 +16,14 @@ $('#summernote').summernote({
 
 const getRandomImage = async function(){
 	console.log("ランダムイメージ取得");
-	const res = await fetch(apiUrl+"/profile/random");
+	const res = await fetch(apiUrl+"/profile/random",{
+		method: 'GET',
+		headers: {
+		  'Accept': 'application/json',
+		  'Content-Type': 'application/json',
+		  'Accept-Language': language
+		}
+	});
 	
 	const result = await res.json();
 	
@@ -63,7 +70,7 @@ fileInputTag.addEventListener('change',function(){
 	fileType = this.files[0].type;
 	
 	if(fileType !=  "image/jpeg" && fileType != "image/png"){
-		displayErrorModal("I-0004",badRequestProfileType);
+		modalCommon.displayErrorModal("I-0004",badRequestProfileType);
 		return;
 	}
 	

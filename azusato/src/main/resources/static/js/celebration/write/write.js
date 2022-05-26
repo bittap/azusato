@@ -33,7 +33,8 @@ const addCelebration = async function(){
 		method: 'POST',
 		headers: {
 		  'Accept': 'application/json',
-		  'Content-Type': 'application/json'
+		  'Content-Type': 'application/json',
+		  'Accept-Language': language
 		},
 		 body: JSON.stringify({
 			 title: document.querySelector('[name="title"]').value, 

@@ -13,7 +13,8 @@ const modifyCelebration = async function(){
 		method: 'PUT',
 		headers: {
 		  'Accept': 'application/json',
-		  'Content-Type': 'application/json'
+		  'Content-Type': 'application/json',
+		  'Accept-Language': language  
 		},
 		 body: JSON.stringify({
 			 title: document.querySelector('[name="title"]').value, 
@@ -38,7 +39,14 @@ const modifyCelebration = async function(){
 const getCelebation = async function(){
 	console.log("お祝い情報取得");
 	modalCommon.displayLoadingModal();
-	const res = await fetch(apiUrl + "/celebration" + "/" +CELEBATION_NO);
+	const res = await fetch(apiUrl + "/celebration" + "/" +CELEBATION_NO,{
+		method: 'GET',
+		headers: {
+		  'Accept': 'application/json',
+		  'Content-Type': 'application/json',
+		  'Accept-Language': language
+		}
+	});
 	
 	const result = await res.json();
 	

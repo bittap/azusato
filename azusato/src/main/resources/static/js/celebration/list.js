@@ -97,7 +97,14 @@ const initialize = function(){
  */
 const isSession = async function(){
 	console.log("ログイン有無確認API");
-	const res = await fetch(apiUrl+"/session/checked-login-session");
+	const res = await fetch(apiUrl+"/session/checked-login-session",{
+		method: 'GET',
+		headers: {
+		  'Accept': 'application/json',
+		  'Content-Type': 'application/json',
+		  'Accept-Language': language
+		}
+	});
 
 	const result = await res.json();
 	
@@ -115,7 +122,14 @@ const getUser = async function(){
 	console.log("ユーザ情報取得");
 	const sigiIn = await isSession();
 	if(Boolean(sigiIn) == true){
-		const res = await fetch(apiUrl+"/user");
+		const res = await fetch(apiUrl+"/user",{
+			method: 'GET',
+			headers: {
+			  'Accept': 'application/json',
+			  'Content-Type': 'application/json',
+			  'Accept-Language': language
+			}
+		});
 		
 		const result = await res.json();
 		
@@ -230,7 +244,14 @@ const initContentArea = async function(contents , toggledTag ){
 
 const getRandomImage = async function(){
 	console.log("ランダムイメージ取得");
-	const res = await fetch(apiUrl+"/profile/random");
+	const res = await fetch(apiUrl+"/profile/random",{
+		method: 'GET',
+		headers: {
+		  'Accept': 'application/json',
+		  'Content-Type': 'application/json',
+		  'Accept-Language': language
+		}
+	});
 	
 	const result = await res.json();
 	
@@ -257,7 +278,8 @@ const addCelebrationReply = async function(clickedEle){
 			method: 'POST',
 			headers: {
 			  'Accept': 'application/json',
-			  'Content-Type': 'application/json'
+			  'Content-Type': 'application/json',
+			  'Accept-Language': language
 			},
 			 body: JSON.stringify({
 				 name: clickedEle.parentNode.querySelector('[name="name"]').value,
@@ -282,7 +304,8 @@ const addnonMember = async function(clickedEle, randomImage){
 		method: 'POST',
 		headers: {
 		  'Accept': 'application/json',
-		  'Content-Type': 'application/json'
+		  'Content-Type': 'application/json',
+		  'Accept-Language': language
 		},
 		 body: JSON.stringify({
 			 name: clickedEle.parentNode.querySelector('[name="name"]').value,
@@ -333,7 +356,8 @@ const deleteCelebration = async function(clickedDeleteEle){
 			method: 'DELETE',
 			headers: {
 			  'Accept': 'application/json',
-			  'Content-Type': 'application/json'
+			  'Content-Type': 'application/json',
+			  'Accept-Language': language
 			}
 		});
 		
@@ -361,7 +385,8 @@ const deleteCelebrationReply = async function(clickedEle){
 			method: 'DELETE',
 			headers: {
 			  'Accept': 'application/json',
-			  'Content-Type': 'application/json'
+			  'Content-Type': 'application/json',
+			  'Accept-Language': language
 			}
 		});
 		
@@ -456,7 +481,8 @@ const readCountUp = function(celebrationNo){
 		method: 'PUT',
 		headers: {
 		  'Accept': 'application/json',
-		  'Content-Type': 'application/json'
+		  'Content-Type': 'application/json',
+		  'Accept-Language': language
 		}
 	});
 }
