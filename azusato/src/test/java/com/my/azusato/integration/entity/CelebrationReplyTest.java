@@ -7,9 +7,9 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.transaction.TestTransaction;
 
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestUtils;
@@ -33,14 +33,14 @@ public class CelebrationReplyTest extends AbstractIntegration {
 		
 		private long insertedCelebrationNO = 1L;
 		
-		@BeforeEach
-		public void beforeEach() throws Exception {
-			dbUnitCompo.initalizeTable(Paths.get(CURRENT_FOLDER,"init","save.xml"));
-		}
-		
 		@Test
 		@Transactional // replysを取得する時lazyエラーが起きるため
-		public void normal_case() throws Exception {	
+		public void normal_case() throws Exception {
+			// @Transactionalをしないとreplysを取得する時lazyエラーが起きる
+			// @Transactionalを投与すると、データ削除と挿入が上手く行かない。
+			// そのため、手動でデータ削除と挿入を反映する。
+			dbUnitCompo.initalizeTable(Paths.get(CURRENT_FOLDER,"init","save.xml"));
+			commitAndStart();
 			CelebrationReplyEntity celebrationReplyEntity = CelebrationReplyEntity.builder()
 									.celebrationNo(insertedCelebrationNO)
 									.content(TestConstant.Entity.createdVarChars[0])
@@ -50,11 +50,12 @@ public class CelebrationReplyTest extends AbstractIntegration {
 									.replyNotices(Set.of())
 									.build();
 			
-			celeReplyRepo.saveAndFlush(celebrationReplyEntity);
+			celeReplyRepo.save(celebrationReplyEntity);
 			
 			List<CelebrationContentEntity> results = celeRepo.findAll();
 			CelebrationContentEntity result = TestUtils.getLastElement(results);
 			Assertions.assertEquals(getExpect(insertedCelebrationNO, result.getReplys().get(0).getNo()), result);
+			TestTransaction.end();
 		}
 		
 		private UserEntity expectedUserEntity() {

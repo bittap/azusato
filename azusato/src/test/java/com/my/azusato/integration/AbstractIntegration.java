@@ -82,8 +82,6 @@ public abstract class AbstractIntegration  {
 		celeReplyRepo.deleteAll();
 		celeRepo.deleteAll();
 		userRepo.deleteAll();
-		
-		//commitAndStart();
 	}
 	
 	protected void commitAndStart() {
