@@ -125,9 +125,13 @@ public class CelebrationServiceAPI {
 		
 		userEntity.setName(req.getName());
 		
+		// mappedSuperClassに変更した後、なぜかUserEntityについて更新ができないため、一応UserEntityはupdateしておく。
+		// 小さいプロジェクトでは同じ条件でできたので、JPAのバグの可能性がある。
+		UserEntity savedUserEntity = userRepo.save(userEntity);
+		
 		CelebrationContentEntity insertedEntity = CelebrationContentEntity.builder().title(req.getTitle()).content(req.getContent())
 				.commonUser(
-						CommonUserEntity.builder().createUserEntity(userEntity).updateUserEntity(userEntity).build())
+						CommonUserEntity.builder().createUserEntity(savedUserEntity).updateUserEntity(savedUserEntity).build())
 				.notices(admins).readCount(DefaultValueConstant.READ_COUNT)
 				.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
 				.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
