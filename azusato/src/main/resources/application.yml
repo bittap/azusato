@@ -11,13 +11,13 @@ spring:
     console.path: /h2-console
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${database-url}
-    username: ${database-username}
-    password: ${database-password}
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
   flyway:
-    user: ${database-username}
-    password: ${database-password}
-    url: ${database-url}
+    user: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    url: ${DATABASE_URL}
     # to make schema history table
     baseline-on-migrate: true
     # ignore order
