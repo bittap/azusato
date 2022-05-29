@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30">
-	<property name="LOGS_ABSOLUTE_PATH" value="./logs" /> 
+	<property name="LOGS_ABSOLUTE_PATH" value="/logs" /> 
 	<property name="LOGS_FILE_NAME" value="log" />
 	<springProperty scope="context" name="logLevel" source="logging.level.root" />
 	
@@ -18,7 +18,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <target>System.out</target>
         <encoder>
-            <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{100}.%M - %msg%n</pattern>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{100}.%M - %.-512msg%n</pattern>
         </encoder>
     </appender>
 
@@ -35,7 +35,7 @@
         
         出力メッセージ
         <encoder>
-            <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{100}.%M - %msg%n</pattern>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{100}.%M - %.-512msg%n</pattern>
         </encoder>
     </appender> -->
     
