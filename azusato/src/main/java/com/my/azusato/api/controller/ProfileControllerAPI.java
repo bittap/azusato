@@ -1,8 +1,8 @@
 package com.my.azusato.api.controller;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Random;
 
@@ -113,7 +113,7 @@ public class ProfileControllerAPI {
 
 	/**
 	 * 既に登録した基本イメージのbase64ファイルを読み込んで、取得する。
-	 * 基本イメージのURIはsrc/main/resources/default/profile/base64/avatar(Random数字).txt
+	 * 基本イメージのURIはclasspath:default/profile/base64/avatar(Random数字).txt
 	 * 
 	 * @return 既に登録した基本イメージのbase64
 	 * @throws IOException ファイルが存在しない場合
@@ -122,8 +122,10 @@ public class ProfileControllerAPI {
 		// 例) profileProperty.getDefaultMaxNumber()が3の場合
 		// 1~3まで取得
 		int generatedNumber = random.nextInt(profileProperty.getDefaultMaxNumber()) + 1;
-		Path path = Paths.get("src/main/resources/default/profile/base64", "avatar" + generatedNumber + ".txt");
-		return Files.readString(path);
-
+		String path = Paths.get( "default/profile/base64", "avatar" + generatedNumber + ".txt").toString();
+		log.debug("absolutePath : {}",Paths.get( "default/profile/base64", "avatar" + generatedNumber + ".txt").toAbsolutePath().toString());
+		try(InputStream is = this.getClass().getClassLoader().getResourceAsStream(path); BufferedInputStream bi = new BufferedInputStream(is)){
+			return new String(bi.readAllBytes()); 
+		}
 	}
 }
