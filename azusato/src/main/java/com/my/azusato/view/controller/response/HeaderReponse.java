@@ -19,4 +19,10 @@ public class HeaderReponse {
 	 * true : celebration view, false : not celebration
 	 */
 	boolean celebration;
+	
+	
+	/**
+	 * true : user view, false : not user
+	 */
+	boolean user;
 }

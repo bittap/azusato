@@ -33,6 +33,7 @@ body.modal-open { /* prevent body from scrolling when a modal is opend */
 	padding-bottom:2rem;
 	font-family: 'Mochiy Pop One', 'Single Day',sans-serif;
 	border-bottom:1px dotted #ccc;
+	color: #9161a8;
 }
 
 

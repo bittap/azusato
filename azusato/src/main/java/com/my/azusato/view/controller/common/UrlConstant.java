@@ -1,6 +1,7 @@
 package com.my.azusato.view.controller.common;
 
 import com.my.azusato.view.controller.CelebrationController;
+import com.my.azusato.view.controller.UserController;
 
 /**
  * constant of URL
@@ -26,6 +27,11 @@ public class UrlConstant {
 	 * mapping url for {@link CelebrationController}
 	 */
 	public static final String CELEBRATION_CONTROLLER_REQUSET = "/celebration";
+	
+	/**
+	 * mapping url for {@link UserController}
+	 */
+	public static final String USER_CONTROLLER_REQUSET = "/user";
 
 	public static class Api {
 		public static final String COMMON_REQUSET = "api/";

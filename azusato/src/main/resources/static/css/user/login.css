@@ -1,0 +1,37 @@
+.wrapper{ /*main background-color*/
+	background-color: transparent !important;
+}
+
+body{
+	background-image: url(/image/login_background.jpg);
+	background-position:center;
+	background-size:cover;
+}
+
+.form-group{
+	margin-bottom: 1rem;
+}
+
+.form-control[name="id"]::placeholder { 
+    color: red;
+    opacity: 1; 
+}
+
+.checkbox-wrap{
+	font-family: 'Rampart One', 'Nanum Brush Script',cursive;
+	color: #9161a8;
+	font-size: 1.3rem;
+	margin-right: 5px;
+}
+
+.social div{
+	width: 48%;
+}
+
+.social img{
+	width: 100%;
+	cursor: pointer;
+}
+
+
+
