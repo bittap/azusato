@@ -20,5 +20,13 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	 * @return ユーザ情報
 	 */
 	public Optional<UserEntity> findByNoAndCommonFlagDeleteFlag(long userNo,boolean deleted);
+	
+	/**
+	 * where id = "userId" and delete_flag = "deleted"
+	 * @param userId ユーザID
+	 * @param deleted 削除フラグ。基本falseで検索
+	 * @return ユーザ情報
+	 */
+	public Optional<UserEntity> findByIdAndCommonFlagDeleteFlag(String userId,boolean deleted);
 
 }

@@ -55,6 +55,16 @@ public class AzusatoException extends RuntimeException {
 	public static final String I0008 = "I-0008";
 	
 	/**
+	 * 存在しないユーザID
+	 */
+	public static final String I0009 = "I-0009";
+	
+	/**
+	 * 存在しないユーザタイプ
+	 */
+	public static final String W0001 = "W-0001";
+	
+	/**
 	 * 予期せぬエラー
 	 */
 	public static final String E0001 = "E-0001";

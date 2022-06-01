@@ -32,6 +32,8 @@ public class UrlConstant {
 	 * mapping url for {@link UserController}
 	 */
 	public static final String USER_CONTROLLER_REQUSET = "/user";
+	
+	public static final String COMMON_ADMIN_CONTROLLER_REQUSET = "/admin";
 
 	public static class Api {
 		public static final String COMMON_REQUSET = "api/";

@@ -1,0 +1,85 @@
+<html>
+<head th:include = "layout/header :: header(~{::link})">
+	<link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+	<!-- nav -->
+	<th:block th:replace = "layout/nav"></th:block>
+	<th:block th:replace = "layout/body :: body_withTop(
+			~{::th:block#top_body_contents},
+			~{::th:block#body_contents},
+			#{index.title})">
+		<!-- main  content -->
+		<th:block id="top_body_contents">
+			<!-- jumbotron -->
+			<div class="container">
+				<div id="jumbotron" class="carousel slide jumbotron" data-bs-ride="carousel">
+				  <div class="carousel-inner">
+				    <div class="carousel-item active" data-bs-interval="3000">
+				      <img src="/image/jumbotron1.jpg" class="d-block w-100 img-fluid rounded" alt="jumbotron1">
+				    </div>
+				    <div class="carousel-item" data-bs-interval="3000">
+				      <img src="/image/jumbotron2.jpg" class="d-block w-100 img-fluid rounded" alt="jumbotron2">
+				    </div>
+				    <div class="carousel-item" data-bs-interval="3000">
+				      <img src="/image/jumbotron3.jpg" class="d-block w-100 img-fluid rounded" alt="jumbotron3">
+				    </div>
+				  </div>
+				  <button class="carousel-control-prev" type="button" data-bs-target="#jumbotron" data-bs-slide="prev">
+				    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				    <span class="visually-hidden">Previous</span>
+				  </button>
+				  <button class="carousel-control-next" type="button" data-bs-target="#jumbotron" data-bs-slide="next">
+				    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+				    <span class="visually-hidden">Next</span>
+				  </button>
+				</div>
+			</div> <!-- End container-->
+		</th:block>
+		<th:block id="body_contents">
+			<div class="container">
+				<div class="main-letter mb-5">
+					<div class="row letter-content-wrapper">
+						<div class="letter-left px-0 tmp">
+							<img src="/image/letter1.jpg" class="img-fluid img-thumbnail" alt="letter-image1">
+							<img src="/image/letter2.jpg" class="img-fluid img-thumbnail" alt="letter-image2">
+							<img src="/image/letter3.jpg" class="img-fluid img-thumbnail" alt="letter-image3">
+							<img src="/image/letter4.jpg" class="img-fluid img-thumbnail" alt="letter-image4">
+							<img src="/image/letter5.jpg" class="img-fluid img-thumbnail" alt="letter-image5">
+						</div>
+						<div class="letter-right">
+							<div>
+								<ul class="py-1">
+									<li class="py-1 d-flex align-items-center mt-2">
+										<svg xmlns="http://www.w3.org/2000/svg"  fill="pink" class="bi bi-heart-fill" viewBox="0 0 16 16">
+									  		<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+										</svg>
+										<span class="ps-4"　th:text="#{main.letter-name1}"></span>
+									</li>
+									<li class="py-1 d-flex align-items-center mt-2">
+										<svg xmlns="http://www.w3.org/2000/svg" fill="pink" class="bi bi-heart-fill" viewBox="0 0 16 16">
+									  		<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+										</svg>
+										<span class="ps-4" th:text="#{main.letter-name2}"></span>
+									</li>
+								</ul>
+							</div>
+							<h3 class="text-white-50 pb-2" th:utext="#{main-letter-content}"></h3>
+						</div> <!-- End letter-content-wrapper-->
+					</div> <!-- End main-letter-->
+				</div> <!-- End main letter-->
+				<div class="main-video py-5">  
+					<div class="ratio ratio-16x9">
+						<video controls="controls">  
+						  <source src="/video/main.mp4" type="video/mp4">
+						</video>
+						<!--<iframe class="embed-responsive-item" src="/video/main.mp4" allowfullscreen></iframe>-->
+					</div>
+				</div>
+			</div>	<!-- End Container-->
+		</th:block>
+	</th:block>
+	<script src="/js/backgroundMusic.js"></script>
+	<script src="/js/video.js"></script>		
+</body>
+</html>
