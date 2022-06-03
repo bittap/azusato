@@ -1,4 +1,4 @@
-package com.my.azusato.api.service;
+package com.my.azusato.login;
 
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.interceptor.LocaleInterceptor;
-import com.my.azusato.login.LoginUser;
 import com.my.azusato.repository.UserRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
 
