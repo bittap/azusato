@@ -85,6 +85,23 @@ public class UserDetailServiceImplTest extends AbstractIntegration {
 		
 		@ParameterizedTest
 		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void thenDeletedUser_resultError(Locale locale) throws Exception {
+			String folderName = "5";
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+			
+			LocaleInterceptor.resovledLocaleWhenPreHandle = locale;
+			UsernameNotFoundException result = Assertions.assertThrows(UsernameNotFoundException.class, 
+					()->userDetailServiceImpl.loadUserByUsername("NotExistUser")
+			);
+
+			UsernameNotFoundException expect = new UsernameNotFoundException(ms.getMessage(AzusatoException.I0009, null, locale));
+			
+			assertEquals(expect.getMessage(),result.getMessage());
+			
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
 		public void givenNotExistData_resultUsernameNotFoundException(Locale locale) throws Exception {
 			LocaleInterceptor.resovledLocaleWhenPreHandle = locale;
 			UsernameNotFoundException result = Assertions.assertThrows(UsernameNotFoundException.class, 
