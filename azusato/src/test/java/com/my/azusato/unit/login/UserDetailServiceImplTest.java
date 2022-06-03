@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
@@ -12,8 +13,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
@@ -22,7 +25,9 @@ import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.entity.common.CommonDateEntity;
 import com.my.azusato.entity.common.CommonFlagEntity;
+import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.interceptor.LocaleInterceptor;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.login.UserDetailServiceImpl;
 import com.my.azusato.view.controller.common.ValueConstant;
@@ -34,6 +39,9 @@ public class UserDetailServiceImplTest extends AbstractIntegration {
 
 	@Autowired
 	UserDetailServiceImpl userDetailServiceImpl;
+	
+	@Autowired
+	MessageSource ms;
 
 	final String RESOUCE_BASIC_PATH = "src/test/data/unit/login/userDetailServiceImpl/";
 
@@ -73,6 +81,19 @@ public class UserDetailServiceImplTest extends AbstractIntegration {
 					.commonFlag(CommonFlagEntity.builder().deleteFlag(ValueConstant.DEFAULT_DELETE_FLAG).build())
 					.profile(ProfileEntity.builder().userNo(userNo).ImageBase64(Entity.createdVarChars[0]).ImageType(Entity.ImageType[0]).build())
 					.build();
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenNotExistData_resultUsernameNotFoundException(Locale locale) throws Exception {
+			LocaleInterceptor.resovledLocaleWhenPreHandle = locale;
+			UsernameNotFoundException result = Assertions.assertThrows(UsernameNotFoundException.class, 
+					()->userDetailServiceImpl.loadUserByUsername("NotExistUser")
+			);
+
+			UsernameNotFoundException expect = new UsernameNotFoundException(ms.getMessage(AzusatoException.I0009, null, locale));
+			
+			assertEquals(expect.getMessage(),result.getMessage());
 		}
 	}
 	
