@@ -2,6 +2,7 @@ package com.my.azusato.integration.api.controller;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,6 +53,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 			
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
 						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET+UserControllerAPI.COMMON_URL).session(TestSession.getAdminSession())
+						.with(csrf())
 					).andDo(print()).andExpect(status().isOk()).andReturn();
 			
 			String resultStrBody = mvcResult.getResponse().getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
@@ -72,6 +74,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 		public void givenNotSession_result400(Locale locale) throws Exception {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
 					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET+UserControllerAPI.COMMON_URL)
+					.with(csrf())
 					.locale(locale)
 				).andDo(print()).andExpect(status().isBadRequest()).andReturn();
 		
@@ -89,6 +92,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 		public void givenNotExistData_result500(Locale locale) throws Exception {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
 					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET+UserControllerAPI.COMMON_URL).session(TestSession.getAdminSession())
+					.with(csrf())
 					.locale(locale)
 				).andDo(print()).andExpect(status().isBadRequest()).andReturn();
 		
@@ -113,6 +117,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 			
 			mockMvc.perform(MockMvcRequestBuilders
 					.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + UserControllerAPI.ADD_NONMEMBER_URL)
+					.with(csrf())
 					.content(requestBody).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)).andDo(print())
 					.andExpect(status().isCreated())
 					.andExpect(cookie().value(CookieConstant.NON_MEMBER_KEY, notNullValue()));
@@ -128,6 +133,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 			MvcResult mvcResult = mockMvc
 					.perform(MockMvcRequestBuilders
 							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + UserControllerAPI.ADD_NONMEMBER_URL)
+							.with(csrf())
 							.locale(locale).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
 							.content(requestBody)
 							.cookie(TestCookie.getNonmemberCookie()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING))
@@ -149,6 +155,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 			MvcResult mvcResult = mockMvc
 					.perform(MockMvcRequestBuilders
 							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + UserControllerAPI.ADD_NONMEMBER_URL)
+							.with(csrf())
 							.content(requestBody).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING).locale(locale))
 					.andDo(print()).andExpect(status().is(400)).andReturn();
 

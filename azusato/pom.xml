@@ -51,6 +51,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Csrf https://stackoverflow.com/questions/25605373/unit-testing-controllers-with-csrf-protection-enabled-in-spring-security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest-all -->
 		<dependency>
 			<groupId>org.hamcrest</groupId>
