@@ -7,8 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import com.my.azusato.locale.LocalePathAndHeaderResolver;
+import org.springframework.web.servlet.LocaleResolver;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,7 +26,7 @@ public class LocaleInterceptor implements HandlerInterceptor {
 	 */
 	public static Locale resovledLocaleWhenPreHandle;
 	
-	private final LocalePathAndHeaderResolver localeResolver;
+	private final LocaleResolver localeResolver;
 	
 	/**
 	 *　 Localeを解決する。
