@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -102,11 +103,38 @@ public class LoginControllerAPITest extends AbstractIntegration {
 					result);
 		}
 
-//		private String getBody() throws Exception {
-//			LoginBody bodyPOJO = LoginBody.builder().id(Entity.createdVarChars[0]).password(Entity.createdVarChars[1])
-//					.build();
-//			return om.writeValueAsString(bodyPOJO);
-//		}
+	}
+	
+	@Nested
+	class Logout {
+
+		final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "logout/";
+
+		@Test
+		public void thenLogout_resultOk() throws Exception {
+			String userName = Entity.createdVarChars[0];
+			String folderName = "1";
+			
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+
+			// login
+			mockMvc
+					.perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
+							.param(SecurityConfig.USERNAME_PARAMETER, userName)
+							.param(SecurityConfig.PASSWORD_PARAMETER, Entity.createdVarChars[1])
+							.with(csrf()))
+					.andDo(print())
+					.andExpect(status().isOk()).andReturn();
+			
+			// logout
+			mockMvc
+			.perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGOUT_URL)
+					.with(csrf())
+					)
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andReturn();
+		}
 	}
 	
 	public static Stream<Arguments> thenRealtiveUser_resultOk(){

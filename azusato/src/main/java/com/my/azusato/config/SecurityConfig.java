@@ -28,6 +28,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.my.azusato.common.AzusatoConstant;
@@ -78,6 +79,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	 * 　　その以外には誰でも入れる。
 	 * </pre>
 	 */
+	/**
+	 *
+	 */
 	protected void configure(HttpSecurity http) throws Exception {
 		List<String> onlyAdminUrls = new ArrayList<>();
 		onlyAdminUrls.add(UrlConstant.COMMON_ADMIN_CONTROLLER_REQUSET + "/**");
@@ -112,7 +116,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					
 					/**
 					 *　<ul>
-					 *	<li>400 : IDが存在しない</li>
+					 *	<li>400 : IDが存在しない、パスワードが一致しない</li>
+					 *	<li>500 : その他</li>
 					 * </ul>
 					 */
 					@Override
@@ -146,6 +151,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll()
 				.and()
 			.logout()
+				.logoutSuccessHandler(new LogoutSuccessHandler() {
+					
+					/**
+					 * ログアウト成功すると200を返す。
+					 */
+					@Override
+					public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+							throws IOException, ServletException {
+						response.setStatus(HttpStatus.OK.value());
+					}
+				})
 				.logoutUrl(API_LOGOUT_URL);
 	};
 	
