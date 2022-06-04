@@ -13,6 +13,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -26,6 +27,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -36,6 +39,7 @@ import com.my.azusato.entity.UserEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.locale.LocaleConstant;
+import com.my.azusato.view.controller.UserController;
 import com.my.azusato.view.controller.common.UrlConstant;
 
 import lombok.RequiredArgsConstructor;
@@ -93,8 +97,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http
 			.authorizeRequests()
-					.mvcMatchers("/**").permitAll()
 					.mvcMatchers(onlyAdminUrls.toArray(String[]::new)).hasRole(UserEntity.Type.admin.toString())
+					.mvcMatchers("/**").permitAll()
 				.and()
 			.formLogin()
 				.loginProcessingUrl(API_LOGIN_URL)
@@ -162,9 +166,52 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						response.setStatus(HttpStatus.OK.value());
 					}
 				})
-				.logoutUrl(API_LOGOUT_URL);
+				.logoutUrl(API_LOGOUT_URL)
+				.and()
+			.exceptionHandling()
+				// 未認証のユーザーが認証の必要なAPIにアクセスしたとき
+				.authenticationEntryPoint(new AuthenticationEntryPoint() {
+					
+					/**
+					 * ログイン画面に遷移させる。
+					 */
+					@Override
+					public void commence(HttpServletRequest request, HttpServletResponse response,
+							AuthenticationException authException) throws IOException, ServletException {
+						String redirctedUrl;
+						if(request.getLocale() == Locale.KOREA) {
+							redirctedUrl = UrlConstant.KOREAN_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET + UserController.USER_LOGIN_URL;
+						}else {
+							redirctedUrl = UrlConstant.JAPANESE_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET + UserController.USER_LOGIN_URL;
+						}
+						response.sendRedirect(redirctedUrl);
+					}
+				})
+				// ユーザーは認証済みだが未認可のリソースへアクセスしたときの処理
+				.accessDeniedHandler(new AccessDeniedHandler() {
+					
+					/**
+					 * ログイン画面に遷移させる。
+					 */
+					@Override
+					public void handle(HttpServletRequest request, HttpServletResponse response,
+							AccessDeniedException accessDeniedException) throws IOException, ServletException {
+						String redirctedUrl;
+						if(request.getLocale() == Locale.KOREA) {
+							redirctedUrl = UrlConstant.KOREAN_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET + UserController.USER_LOGIN_URL;
+						}else {
+							redirctedUrl = UrlConstant.JAPANESE_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET + UserController.USER_LOGIN_URL;
+						}
+						response.sendRedirect(redirctedUrl);
+						
+					}
+				});
 	};
 	
+	/**
+	 * 基本のbcrypt使用する。
+	 * @return
+	 */
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 	    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
