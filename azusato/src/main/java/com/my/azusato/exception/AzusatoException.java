@@ -60,6 +60,11 @@ public class AzusatoException extends RuntimeException {
 	public static final String I0009 = "I-0009";
 	
 	/**
+	 * パスワードが一致しない。
+	 */
+	public static final String I0010 = "I-0010";
+	
+	/**
 	 * 存在しないユーザタイプ
 	 */
 	public static final String W0001 = "W-0001";

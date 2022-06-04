@@ -2,6 +2,8 @@ package com.my.azusato.login;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,7 +13,6 @@ import org.springframework.security.core.userdetails.User;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.exception.AzusatoException;
-import com.my.azusato.interceptor.LocaleInterceptor;
 import com.my.azusato.provider.ApplicationContextProvider;
 
 import lombok.Data;
@@ -28,15 +29,18 @@ public class LoginUser extends User {
 	 */
 	private static final boolean NOT_USED_FIELD = true;
 
+	private static HttpServletRequest httpServletRequest;
+	
 	private static MessageSource ms;
 	
 	private UserEntity user;
 
 	public LoginUser(UserEntity user) {
-		super(user.getId(), user.getPassword(), user.getCommonFlag().getDeleteFlag(), 
+		super(user.getId(), user.getPassword(), !user.getCommonFlag().getDeleteFlag(), 
 				NOT_USED_FIELD, NOT_USED_FIELD, NOT_USED_FIELD, resolveRoles(Type.valueOf(user.getUserType())));
 			
 		this.user = user;
+		httpServletRequest = ApplicationContextProvider.getCurrentHttpRequest();
 		ms = ApplicationContextProvider.getApplicationContext().getBean(MessageSource.class);
 	}
 	
@@ -67,7 +71,7 @@ public class LoginUser extends User {
 			return NONMEMBER_ROLES;
 		default:
 			throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.W0001,
-					ms.getMessage(AzusatoException.I0005, new String[] {}, LocaleInterceptor.resovledLocaleWhenPreHandle));
+					ms.getMessage(AzusatoException.I0005, new String[] {}, httpServletRequest.getLocale()));
 		}
     }
 }

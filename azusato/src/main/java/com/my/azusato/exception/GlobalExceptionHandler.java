@@ -22,8 +22,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,7 +37,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	private final HttpServletRequest httpServletRequest;
 
 	@ExceptionHandler(value = { Exception.class })
-	public ResponseEntity<Object> handleMyException(Exception ex) throws JsonProcessingException {
+	public ResponseEntity<Object> handleMyException(Exception ex) {
 		log.error("error", ex);
 
 		if (ex instanceof AzusatoException) {

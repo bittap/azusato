@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -25,9 +26,7 @@ import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.entity.common.CommonDateEntity;
 import com.my.azusato.entity.common.CommonFlagEntity;
-import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.integration.AbstractIntegration;
-import com.my.azusato.interceptor.LocaleInterceptor;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.login.UserDetailServiceImpl;
 import com.my.azusato.view.controller.common.ValueConstant;
@@ -89,28 +88,17 @@ public class UserDetailServiceImplTest extends AbstractIntegration {
 			String folderName = "5";
 			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
 			
-			LocaleInterceptor.resovledLocaleWhenPreHandle = locale;
-			UsernameNotFoundException result = Assertions.assertThrows(UsernameNotFoundException.class, 
+			Assertions.assertThrows(UsernameNotFoundException.class, 
 					()->userDetailServiceImpl.loadUserByUsername("NotExistUser")
 			);
-
-			UsernameNotFoundException expect = new UsernameNotFoundException(ms.getMessage(AzusatoException.I0009, null, locale));
-			
-			assertEquals(expect.getMessage(),result.getMessage());
 			
 		}
 		
-		@ParameterizedTest
-		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void givenNotExistData_resultUsernameNotFoundException(Locale locale) throws Exception {
-			LocaleInterceptor.resovledLocaleWhenPreHandle = locale;
-			UsernameNotFoundException result = Assertions.assertThrows(UsernameNotFoundException.class, 
+		@Test
+		public void givenNotExistData_resultUsernameNotFoundException() throws Exception {
+			Assertions.assertThrows(UsernameNotFoundException.class, 
 					()->userDetailServiceImpl.loadUserByUsername("NotExistUser")
 			);
-
-			UsernameNotFoundException expect = new UsernameNotFoundException(ms.getMessage(AzusatoException.I0009, null, locale));
-			
-			assertEquals(expect.getMessage(),result.getMessage());
 		}
 	}
 	

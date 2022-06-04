@@ -11,14 +11,14 @@ import com.my.azusato.view.controller.response.HeaderReponse;
 
 import lombok.extern.slf4j.Slf4j;
 
-@RequestMapping(value = { UrlConstant.COMMON_ADMIN_CONTROLLER_REQUSET + UrlConstant.INDEX_CONTROLLER_REQUSET, 
-		 UrlConstant.COMMON_ADMIN_CONTROLLER_REQUSET +UrlConstant.JAPANESE_CONTROLLER_REQUEST,
-		 UrlConstant.COMMON_ADMIN_CONTROLLER_REQUSET +UrlConstant.KOREAN_CONTROLLER_REQUEST, })
+@RequestMapping(value = { UrlConstant.COMMON_ADMIN_CONTROLLER_REQUSET , 
+		 UrlConstant.JAPANESE_CONTROLLER_REQUEST + UrlConstant.COMMON_ADMIN_CONTROLLER_REQUSET,
+		 UrlConstant.KOREAN_CONTROLLER_REQUEST + UrlConstant.COMMON_ADMIN_CONTROLLER_REQUSET, })
 @Controller
 @Slf4j
 public class AdminIndexController {
 	
-	public static final String FOLDER_NAME = "admin";
+	public static final String FOLDER_NAME = "admin"; 
 
 	@GetMapping
 	public ModelAndView initalize() {
@@ -26,7 +26,7 @@ public class AdminIndexController {
 
 		ModelAndView mav = new ModelAndView();
 
-		mav.setViewName(FOLDER_NAME + "index");
+		mav.setViewName(FOLDER_NAME + "/index");
 		// make home icon active
 		HeaderReponse hr = new HeaderReponse();
 		hr.setHome(true);
