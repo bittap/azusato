@@ -92,32 +92,12 @@ const initialize = function(){
 }
 
 /*
- * ログイン有無確認
- * 現在はログインした場合、書き込みに名前を入れておくために使う。
- */
-const isSession = async function(){
-	console.log("ログイン有無確認API");
-	const res = await fetch(apiUrl+"/session/checked-login-session",{
-		method: 'GET',
-		headers: apiCommon.header
-	});
-
-	const result = await res.json();
-	
-	if(!res.ok) {
-		return Promise.reject(result);
-	}else{
-		return Promise.resolve(result);
-	}
-}
-
-/*
  * ユーザ情報を取得
  */
 const getUser = async function(){
 	console.log("ユーザ情報取得");
-	const sigiIn = await isSession();
-	if(Boolean(sigiIn) == true){
+	
+	if(Boolean(AUTHENTICATIONED) == true){
 		const res = await fetch(apiUrl+"/user",{
 			method: 'GET',
 			headers: apiCommon.header
@@ -216,8 +196,7 @@ const initContentArea = async function(contents , toggledTag ){
 	REPLY_WRITE_BTN_TAG.addEventListener('click',async function(){
 		try{
 			// 非ログインしはユーザを登録しておく。
-			const siginIn = await isSession();
-			if(Boolean(siginIn) == false){
+			if(Boolean(AUTHENTICATIONED) == false){
 				const randomImage = await getRandomImage();
 				await addnonMember(REPLY_WRITE_BTN_TAG, randomImage);
 			}

@@ -43,7 +43,8 @@ This fragment include basically common css of the body, footer, js file of the b
 	<script src="/js/common/modal.js"></script>
 	<script src="/js/common/url.js"></script>
 	<script src="/js/common/image.js"></script>
-	<script src="/js/common/logout.js"></script>
 	<!-- for environment variable beacuse thymeleaf doesn't recognize js file only recognize html file -->
 	<th:block th:replace = "layout/script"></th:block>
+	<!-- モーダルメッセージのため"layout/script"の後ろに配置-->
+	<script src="/js/common/logout.js"></script>
 </div>

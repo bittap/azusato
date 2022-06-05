@@ -4,6 +4,8 @@
 	Declare varables here. This is used /layout/body.html 
 */-->
 <script th:inline="javascript">
+	const AUTHENTICATION = /*[[${#authentication}]]*/ "ログインしたユーザID";
+	console.log(AUTHENTICATION);
 	const AUTHENTICATION_NAME = /*[[${#authentication.name}]]*/ "ログインしたユーザID";
 	// ログイン有無
 	// 注意:anonymousUserのIDがある場合は、障害が起きる可能性がある。
@@ -22,7 +24,10 @@
 	const PAGE_PAGES_OF_ELEMENT =  /*[[${@environment.getProperty('client.page-pageOfElement')}]]*/ "";
 	// 日時関する定数
 	const DATETIME_FORMAT = /*[[${@environment.getProperty('client.datetime-format')}]]*/ "";
-	
+	// ログアウト関連
+	const LOGOUT_MODAL_TITLE = /*[[#{logout.modal.title}]]*/ "";
+	const LOGOUT_MODAL_BODY = /*[[#{logout.modal.body}]]*/ "";
+		
 	const apiCommon = new ApiCommon();
 	const asyncCommon = new AsyncCommon();
 	const modalCommon = new ModalCommon();
