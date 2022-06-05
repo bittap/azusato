@@ -202,7 +202,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	 * @return ログイン画面URL
 	 */
 	private String getLoginUrl(HttpServletRequest request) {
-		return request.getLocale() == Locale.KOREA ? 
+		return request.getLocale() == Locale.KOREAN ? 
 				UrlConstant.KOREAN_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET + UserController.USER_LOGIN_URL 
 				: UrlConstant.JAPANESE_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET + UserController.USER_LOGIN_URL;
 	}

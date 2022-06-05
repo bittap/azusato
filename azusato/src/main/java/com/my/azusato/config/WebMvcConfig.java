@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.my.azusato.interceptor.LocaleInterceptor;
 import com.my.azusato.interceptor.LogInterceptor;
 import com.my.azusato.interceptor.SessionInterceptor;
 
@@ -23,7 +24,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	
 	private final LogInterceptor logInterceptor;
 	
-	//private final LocaleInterceptor localeInterceptor;
+	private final LocaleInterceptor localeInterceptor;
 	
 	private final static String[] EXCLUDE_PATTERNS = {"/css/**", "/external/**", "/favicon/**", "/js/**", "/image/**", "/music/**", "/video/**","/favicon.ico"};
 
@@ -34,6 +35,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(sessionInterceptor).addPathPatterns("/**").excludePathPatterns(EXCLUDE_PATTERNS);
 		registry.addInterceptor(logInterceptor).addPathPatterns("/**").excludePathPatterns(EXCLUDE_PATTERNS);
-		//registry.addInterceptor(localeInterceptor).addPathPatterns("/**").excludePathPatterns(EXCLUDE_PATTERNS);
+		registry.addInterceptor(localeInterceptor).addPathPatterns("/**").excludePathPatterns(EXCLUDE_PATTERNS);
 	}
 }

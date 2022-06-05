@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.dbunit.DBUnitComponent;
+import com.my.azusato.login.Grant;
 import com.my.azusato.repository.CelebrationContentRepository;
 import com.my.azusato.repository.CelebrationNoticeRepository;
 import com.my.azusato.repository.CelebrationReplyNoticeRepository;
@@ -35,6 +36,9 @@ public abstract class AbstractIntegration  {
 	
 	@Autowired
 	protected MockMvc mockMvc;
+	
+	@Autowired
+	protected Grant grant;
 	
 	protected ObjectMapper om = new ObjectMapper();
 	
