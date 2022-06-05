@@ -178,13 +178,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					@Override
 					public void commence(HttpServletRequest request, HttpServletResponse response,
 							AuthenticationException authException) throws IOException, ServletException {
-						String redirctedUrl;
-						if(request.getLocale() == Locale.KOREA) {
-							redirctedUrl = UrlConstant.KOREAN_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET + UserController.USER_LOGIN_URL;
-						}else {
-							redirctedUrl = UrlConstant.JAPANESE_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET + UserController.USER_LOGIN_URL;
-						}
-						response.sendRedirect(redirctedUrl);
+						response.sendRedirect(getLoginUrl(request));
 					}
 				})
 				// ユーザーは認証済みだが未認可のリソースへアクセスしたときの処理
@@ -196,17 +190,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					@Override
 					public void handle(HttpServletRequest request, HttpServletResponse response,
 							AccessDeniedException accessDeniedException) throws IOException, ServletException {
-						String redirctedUrl;
-						if(request.getLocale() == Locale.KOREA) {
-							redirctedUrl = UrlConstant.KOREAN_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET + UserController.USER_LOGIN_URL;
-						}else {
-							redirctedUrl = UrlConstant.JAPANESE_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET + UserController.USER_LOGIN_URL;
-						}
-						response.sendRedirect(redirctedUrl);
+						response.sendRedirect(getLoginUrl(request));
 						
 					}
 				});
 	};
+	
+	/**
+	 * ロケールによるログイン画面URL取得
+	 * @param request
+	 * @return ログイン画面URL
+	 */
+	private String getLoginUrl(HttpServletRequest request) {
+		return request.getLocale() == Locale.KOREA ? 
+				UrlConstant.KOREAN_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET + UserController.USER_LOGIN_URL 
+				: UrlConstant.JAPANESE_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET + UserController.USER_LOGIN_URL;
+	}
 	
 	/**
 	 * 基本のbcrypt使用する。
