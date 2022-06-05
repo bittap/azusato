@@ -70,6 +70,11 @@ public class AzusatoException extends RuntimeException {
 	public static final String W0001 = "W-0001";
 	
 	/**
+	 * CSRFトークンが存在しない
+	 */
+	public static final String W0002 = "W-0002";
+	
+	/**
 	 * 予期せぬエラー
 	 */
 	public static final String E0001 = "E-0001";

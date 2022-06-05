@@ -33,6 +33,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.csrf.InvalidCsrfTokenException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.my.azusato.common.AzusatoConstant;
@@ -156,7 +157,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						}
 						
 						response.getWriter().write(om.writeValueAsString(errorResponse));
-						response.sendError(statusCode);
+						response.setStatus(statusCode);
 					}
 				})
 				.permitAll()
@@ -184,7 +185,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					 */
 					@Override
 					public void commence(HttpServletRequest request, HttpServletResponse response,
-							AuthenticationException authException) throws IOException, ServletException {
+							AuthenticationException ex) throws IOException, ServletException {
+						log.warn("未認証のユーザーが認証の必要なAPIにアクセス",ex);
 						response.sendRedirect(getLoginUrl(request));
 					}
 				})
@@ -192,12 +194,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.accessDeniedHandler(new AccessDeniedHandler() {
 					
 					/**
-					 * ログイン画面に遷移させる。
+					 * CSRF Tokenエラーの場合はエラーレスポンスを返す。画面の場合はログイン画面に遷移させる。
 					 */
 					@Override
 					public void handle(HttpServletRequest request, HttpServletResponse response,
-							AccessDeniedException accessDeniedException) throws IOException, ServletException {
-						response.sendRedirect(getLoginUrl(request));
+							AccessDeniedException ex) throws IOException, ServletException {
+						log.warn("ユーザーは認証済みだが未認可のリソースへアクセス",ex);
+						
+						int statusCode;
+						ErrorResponse errorResponse = new ErrorResponse();
+						
+						if(ex instanceof InvalidCsrfTokenException) {
+							errorResponse.setTitle(AzusatoException.W0002);
+							errorResponse.setMessage(ms.getMessage(AzusatoException.W0002, null, request.getLocale()));
+							statusCode = HttpStatus.FORBIDDEN.value();
+							// UTF-8
+							response.setCharacterEncoding(AzusatoConstant.DEFAULT_CHARSET);
+							response.getWriter().write(om.writeValueAsString(errorResponse));
+							response.setStatus(statusCode);
+						}else {
+							response.sendRedirect(getLoginUrl(request));
+						}
+						
+
+
 						
 					}
 				});

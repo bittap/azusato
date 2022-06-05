@@ -17,26 +17,24 @@
 					<div class="row justify-content-center">
 						<div class="col-md-6 col-lg-4">
 							<div class="login-wrap p-0">
-								<form action="#" class="signin-form">
-									<div class="form-group">
-										<input name="id" type="text" class="form-control" th:placeholder="#{login.input.id.placeholder}">
+								<div class="form-group">
+									<input name="id" type="text" class="form-control" th:placeholder="#{login.input.id.placeholder}">
+								</div>
+								<div class="form-group">
+									<input name="password" id="password-field" type="password" class="form-control" th:placeholder="#{login.input.password.placeholder}">
+									<span toggle="#password-field"
+										class="fa fa-fw fa-eye field-icon toggle-password"></span>
+								</div>
+								<div class="form-group">
+									<button id="login_btn" type="button" class="form-control btn btn-primary submit px-3" th:text="#{login.button.login}"></button>
+								</div>
+								<div class="form-group">
+									<div class="d-flex align-items-center">
+										<label class="checkbox-wrap checkbox-primary fw-bold" th:text="#{login.button.checkbox.label}">
+										</label>
+										<input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
 									</div>
-									<div class="form-group">
-										<input id="password-field" type="password" class="form-control" th:placeholder="#{login.input.password.placeholder}">
-										<span toggle="#password-field"
-											class="fa fa-fw fa-eye field-icon toggle-password"></span>
-									</div>
-									<div class="form-group">
-										<button type="submit" class="form-control btn btn-primary submit px-3" th:text="#{login.button.login}"></button>
-									</div>
-									<div class="form-group">
-										<div class="d-flex align-items-center">
-											<label class="checkbox-wrap checkbox-primary fw-bold" th:text="#{login.button.checkbox.label}">
-											</label>
-											<input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
-										</div>
-									</div>
-								</form>
+								</div>
 								<div class="social d-flex justify-content-between">
 									<div>
 										<img src="/image/kakao_login_medium_narrow.png"/>
@@ -52,6 +50,7 @@
 			</section>
 		</th:block>
 	</th:block>
+	<script src="/js/user/login.js"></script>
 </body>
 
 </html>
