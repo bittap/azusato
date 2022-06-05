@@ -5,7 +5,6 @@ import java.util.Objects;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.context.MessageSource;
@@ -51,8 +50,6 @@ import lombok.extern.slf4j.Slf4j;
 public class UserControllerAPI {
 
 	private final MessageSource messageSource;
-
-	private final HttpSession httpSession;
 
 	private final UserProperty userProperty;
 

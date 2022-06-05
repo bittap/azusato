@@ -1,7 +1,6 @@
 package com.my.azusato.api.controller;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -30,10 +29,8 @@ import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
 import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
-import com.my.azusato.dto.LoginUserDto;
 import com.my.azusato.login.Grant;
 import com.my.azusato.login.LoginUser;
-import com.my.azusato.util.SessionUtil;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
 import lombok.RequiredArgsConstructor;
@@ -96,17 +93,17 @@ public class CelebrationControllerAPI {
 	 * 	<li>400 : <br>テーブルにお祝いデータが存在しない。<br>パラメータがLong以外</li>
 	 * </ul>
 	 * @param celebationNo お祝い番号
+	 * @param loginUser ログインしたユーザ情報
 	 * @return celebationNoより検索されたお祝い情報
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(CELEBRATION_CONTENT_URL)
-	public GetCelebrationContentSerivceAPIResponse celebationContent(@PathVariable(name = "celebrationNo", required = true) Long celebationNo) {
+	public GetCelebrationContentSerivceAPIResponse celebationContent(@PathVariable(name = "celebrationNo", required = true) Long celebationNo,
+			@AuthenticationPrincipal(errorOnInvalidType = true) LoginUser loginUser) {
 		// ログインしていない時のuserNo
 		final long NO_LOGIN_USER_NO = 0L;
 		
-		Optional<LoginUserDto> opLoginInfo = SessionUtil.getLoginSession(httpSession);
-		
-		long userNo = opLoginInfo.isPresent() ? opLoginInfo.get().getNo() : NO_LOGIN_USER_NO;
+		long userNo = Objects.nonNull(loginUser) ? loginUser.getUSER_NO() : NO_LOGIN_USER_NO;
 		
 		return celeAPIService.getCelebrationContent(celebationNo,userNo,servletRequest.getLocale());
 	}
