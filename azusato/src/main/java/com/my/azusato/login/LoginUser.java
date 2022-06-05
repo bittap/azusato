@@ -19,9 +19,9 @@ public class LoginUser extends User {
 	 */
 	private static final boolean NOT_USED_FIELD = true;
 
-	public LoginUser(UserEntity user,Grant grant) {
+	public LoginUser(UserEntity user) {
 		super(user.getId(), user.getPassword(), !user.getCommonFlag().getDeleteFlag(), 
-				NOT_USED_FIELD, NOT_USED_FIELD, NOT_USED_FIELD, grant.resolveRoles(Type.valueOf(user.getUserType())));
+				NOT_USED_FIELD, NOT_USED_FIELD, NOT_USED_FIELD, Grant.resolveRoles(Type.valueOf(user.getUserType())));
 	}
 	
 	

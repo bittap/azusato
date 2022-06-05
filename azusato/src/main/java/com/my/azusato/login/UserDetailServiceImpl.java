@@ -16,8 +16,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
 	private final UserRepository userRepo;
 	
-	private final Grant Grant;
-	
 	/**
 	 * ユーザネームが存在しないとエラーを出す。
 	 * 存在する場合はそのユーザ情報をSecurityContextに保持する。
@@ -27,9 +25,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		return userRepo
 				.findByIdAndCommonFlagDeleteFlag(username, ValueConstant.DEFAULT_DELETE_FLAG)
-					.map((e)->{
-						return new LoginUser(e, Grant);
-					})
+					.map(LoginUser::new)
 					.orElseThrow(()->{
 						throw new UsernameNotFoundException(String.format("username : 「%s」は存在しない、もしくは削除フラグがtrue", username));
 					});

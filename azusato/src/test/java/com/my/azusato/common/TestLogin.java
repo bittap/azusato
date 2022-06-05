@@ -4,26 +4,25 @@ import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.entity.common.CommonFlagEntity;
-import com.my.azusato.login.Grant;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.view.controller.common.ValueConstant;
 
 public class TestLogin {
 
-	public static LoginUser adminLoginUser(Grant grant) {
-		return new LoginUser(getUserEntity(Type.admin), grant);
+	public static LoginUser adminLoginUser() {
+		return new LoginUser(getUserEntity(Type.admin));
 	}
 	
-	public static LoginUser kakaoLoginUser(Grant grant) {
-		return new LoginUser(getUserEntity(Type.kakao), grant);
+	public static LoginUser kakaoLoginUser() {
+		return new LoginUser(getUserEntity(Type.kakao));
 	}
 	
-	public static LoginUser lineLoginUser(Grant grant) {
-		return new LoginUser(getUserEntity(Type.line), grant);
+	public static LoginUser lineLoginUser() {
+		return new LoginUser(getUserEntity(Type.line));
 	}
 	
-	public static LoginUser nonmemberLoginUser(Grant grant) {
-		return new LoginUser(getUserEntity(Type.nonmember), grant);
+	public static LoginUser nonmemberLoginUser() {
+		return new LoginUser(getUserEntity(Type.nonmember));
 	}
 	
 	private static UserEntity getUserEntity(Type type) {

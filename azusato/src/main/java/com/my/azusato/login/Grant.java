@@ -3,29 +3,15 @@ package com.my.azusato.login;
 import java.util.Collection;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
 
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.UserEntity.Type;
-import com.my.azusato.exception.AzusatoException;
 
-import lombok.RequiredArgsConstructor;
-
-@Component
-@RequiredArgsConstructor
 public class Grant {
-	
-	private final HttpServletRequest httpServletRequest;
-	
-	private final MessageSource ms;
-	
+
 	/**
 	 * SpringはROLE_から始まらないとエラーになる。
 	 */
@@ -47,7 +33,7 @@ public class Grant {
 	 * @param targetGrant ターゲットロール
 	 * @return targetGrantがあると true , ないと false
 	 */
-	public boolean containGrantedAuthority(Collection<GrantedAuthority> grants, String targetGrant) {
+	public static boolean containGrantedAuthority(Collection<GrantedAuthority> grants, String targetGrant) {
 		return grants.contains(new SimpleGrantedAuthority(targetGrant));
 	}
 	
@@ -55,9 +41,9 @@ public class Grant {
 	 * ロールを解決する。
 	 * @param userType ユーザのロール
 	 * @return userTypeによる権限
-	 * @throws AzusatoException パラメータが存在しないユーザタイプ
+	 * @throws UnsupportedOperationException サポートしないユーザタイプ
 	 */
-	public List<GrantedAuthority> resolveRoles(Type userType) {
+	public static List<GrantedAuthority> resolveRoles(Type userType) {
 		switch (userType) {
 		case admin:
 			return ADMIN_ROLES;
@@ -68,8 +54,7 @@ public class Grant {
 		case nonmember:
 			return NONMEMBER_ROLES;
 		default:
-			throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.W0001,
-					ms.getMessage(AzusatoException.I0005, new String[] {}, httpServletRequest.getLocale()));
+			throw new UnsupportedOperationException(String.format("%sはサポートしません。", userType.toString()));
 		}
     }
 	

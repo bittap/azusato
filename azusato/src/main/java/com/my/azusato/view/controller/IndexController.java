@@ -30,9 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class IndexController {
 	
-	private final Grant grant;
-	
-
 	@GetMapping
 	public ModelAndView initalize(HttpServletRequest request, HttpServletResponse response,@AuthenticationPrincipal LoginUser loginUser) throws IOException {
 		log.debug("index Controller");
@@ -42,7 +39,7 @@ public class IndexController {
 		String redirectOrView;
 		
 		// 管理者の場合は、管理者のindexに遷移させる。
-		if(Objects.nonNull(loginUser) && grant.containGrantedAuthority(loginUser.getAuthorities(), Grant.ADMIN_ROLE)) {
+		if(Objects.nonNull(loginUser) && Grant.containGrantedAuthority(loginUser.getAuthorities(), Grant.ADMIN_ROLE)) {
 			redirectOrView = LocaleInterceptor.getLocale(request) == Locale.KOREAN ? 
 					"redirect:" + UrlConstant.KOREAN_CONTROLLER_REQUEST + UrlConstant.COMMON_ADMIN_CONTROLLER_REQUSET
 					: "redirect:" + UrlConstant.JAPANESE_CONTROLLER_REQUEST + UrlConstant.COMMON_ADMIN_CONTROLLER_REQUSET;

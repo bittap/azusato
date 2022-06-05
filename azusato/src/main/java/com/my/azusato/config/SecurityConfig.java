@@ -19,6 +19,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
@@ -38,6 +39,7 @@ import com.my.azusato.common.AzusatoConstant;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
+import com.my.azusato.interceptor.LocaleInterceptor;
 import com.my.azusato.locale.LocaleConstant;
 import com.my.azusato.view.controller.UserController;
 import com.my.azusato.view.controller.common.UrlConstant;
@@ -69,6 +71,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final ObjectMapper om = new ObjectMapper();
 	
 	private final MessageSource ms;
+	
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().mvcMatchers(WebMvcConfig.EXCLUDE_PATTERNS);
+	}
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -202,7 +209,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	 * @return ログイン画面URL
 	 */
 	private String getLoginUrl(HttpServletRequest request) {
-		return request.getLocale() == Locale.KOREAN ? 
+		return LocaleInterceptor.getLocale(request) == Locale.KOREAN ? 
 				UrlConstant.KOREAN_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET + UserController.USER_LOGIN_URL 
 				: UrlConstant.JAPANESE_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET + UserController.USER_LOGIN_URL;
 	}

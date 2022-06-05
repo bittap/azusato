@@ -26,7 +26,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	
 	private final LocaleInterceptor localeInterceptor;
 	
-	private final static String[] EXCLUDE_PATTERNS = {"/css/**", "/external/**", "/favicon/**", "/js/**", "/image/**", "/music/**", "/video/**","/favicon.ico"};
+	public final static String[] EXCLUDE_PATTERNS = {"/css/**", "/external/**", "/favicon/**", "/js/**", "/image/**", "/music/**", "/video/**","/favicon.ico"};
 
 	/**
 	 * interceptorを登録する。

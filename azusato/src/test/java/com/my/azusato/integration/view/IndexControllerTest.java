@@ -4,14 +4,12 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -71,45 +69,41 @@ public class IndexControllerTest extends AbstractIntegration {
 								MockMvcRequestBuilders
 									.get(UrlConstant.INDEX_CONTROLLER_REQUSET)
 									.locale(locale)
-									.with(user(TestLogin.adminLoginUser(grant)))
+									.with(user(TestLogin.adminLoginUser()))
 								)
 						.andExpect(status().isFound())
 						.andExpect(redirectedUrl(expectedRedirectUrl))
 					.andReturn();
 		}
 		
-		// @ParameterizedTestはGrantがstaticでは取得できないため@Testに変更。
-		@Test
-		public void givenNotAdminLogin_resultNotRedicrt() throws Exception {
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#notAdminLogin")
+		public void givenNotAdminLogin_resultNotRedicrt(LoginUser loginUser) throws Exception {
 			
-			List<LoginUser> loginUsers = List.of(TestLogin.lineLoginUser(grant),TestLogin.kakaoLoginUser(grant),TestLogin.nonmemberLoginUser(grant));
-			
-			for (LoginUser loginUser : loginUsers) {
-				MvcResult resultOfMvc = mockMvc
-						.perform(
-								MockMvcRequestBuilders
-									.get(UrlConstant.INDEX_CONTROLLER_REQUSET)
-									.with(user(loginUser))
-								)
-						.andExpect(status().is(200))
-						.andReturn();
+			MvcResult resultOfMvc = mockMvc
+					.perform(
+							MockMvcRequestBuilders
+								.get(UrlConstant.INDEX_CONTROLLER_REQUSET)
+								.with(user(loginUser))
+							)
+					.andExpect(status().is(200))
+					.andReturn();
 
-				ModelAndView mavOfResult = resultOfMvc.getModelAndView();
+			ModelAndView mavOfResult = resultOfMvc.getModelAndView();
 
-				Map<String, Object> mapsOfResult = mavOfResult.getModel();
-				mapsOfResult.forEach((k, v) -> {
-					System.out.printf("key : %s, value : %s\n", k, v);
-				});
+			Map<String, Object> mapsOfResult = mavOfResult.getModel();
+			mapsOfResult.forEach((k, v) -> {
+				System.out.printf("key : %s, value : %s\n", k, v);
+			});
 
-				Assertions.assertEquals(MODEL_SIZE, mapsOfResult.size());
+			Assertions.assertEquals(MODEL_SIZE, mapsOfResult.size());
 
-				HeaderReponse headerOfResult = (HeaderReponse) mapsOfResult.get(ModelConstant.HEADER_KEY);
+			HeaderReponse headerOfResult = (HeaderReponse) mapsOfResult.get(ModelConstant.HEADER_KEY);
 
-				HeaderReponse expect = new HeaderReponse();
-				expect.setHome(true);
+			HeaderReponse expect = new HeaderReponse();
+			expect.setHome(true);
 
-				Assertions.assertEquals(expect, headerOfResult);
-			}
+			Assertions.assertEquals(expect, headerOfResult);
 		}
 	}
 	

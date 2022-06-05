@@ -11,7 +11,7 @@ import com.my.azusato.view.controller.response.HeaderReponse;
 
 import lombok.extern.slf4j.Slf4j;
 
-@RequestMapping(value = { UrlConstant.CELEBRATION_CONTROLLER_REQUSET,
+@RequestMapping(value = { UrlConstant.USER_CONTROLLER_REQUSET,
 		UrlConstant.JAPANESE_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET,
 		UrlConstant.KOREAN_CONTROLLER_REQUEST + UrlConstant.USER_CONTROLLER_REQUSET, })
 @Controller
