@@ -1,5 +1,6 @@
 package com.my.azusato.login;
 
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.security.core.userdetails.User;
 
 import com.my.azusato.entity.UserEntity;
@@ -18,10 +19,16 @@ public class LoginUser extends User {
 	 * accountNonExpired,credentialsNonExpired等使用しないのは"true"
 	 */
 	private static final boolean NOT_USED_FIELD = true;
+	
+	private final Long USER_NO;
+	
+	private static final String NOT_USE_PASSWORD = "NonMemberはパスワードを使用しない。";
 
 	public LoginUser(UserEntity user) {
-		super(user.getId(), user.getPassword(), !user.getCommonFlag().getDeleteFlag(), 
+		super(user.getId(), Strings.isEmpty(user.getPassword()) ? NOT_USE_PASSWORD : user.getPassword(), !user.getCommonFlag().getDeleteFlag(), 
 				NOT_USED_FIELD, NOT_USED_FIELD, NOT_USED_FIELD, Grant.resolveRoles(Type.valueOf(user.getUserType())));
+		
+		this.USER_NO = user.getNo();
 	}
 	
 	

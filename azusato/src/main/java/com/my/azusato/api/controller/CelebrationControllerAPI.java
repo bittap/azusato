@@ -6,8 +6,8 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,8 +31,8 @@ import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIRespon
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.dto.LoginUserDto;
-import com.my.azusato.entity.UserEntity.Type;
-import com.my.azusato.exception.AzusatoException;
+import com.my.azusato.login.Grant;
+import com.my.azusato.login.LoginUser;
 import com.my.azusato.util.SessionUtil;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
@@ -53,8 +53,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class CelebrationControllerAPI {
-
-	private final MessageSource messageSource;
 
 	private final HttpSession httpSession;
 
@@ -135,20 +133,17 @@ public class CelebrationControllerAPI {
 	 * 
 	 * 
 	 * @param req             requestbody, Validated
+	 * @param loginUser ログインしたユーザ情報
+	 * @throws ClassCastException loginUserのタイプがLoginUserではない場合
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(COMMON_URL)
-	public void add(@RequestBody @Validated AddCelebrationAPIReqeust req) {
-		LoginUserDto loginInfo = SessionUtil.getLoginSession(httpSession).orElseThrow(()->{
-			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
-					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
-		});
-		
+	public void add(@RequestBody @Validated AddCelebrationAPIReqeust req, @AuthenticationPrincipal(errorOnInvalidType = true) LoginUser loginUser ) {
 		AddCelebrationServiceAPIRequest serviceReq = AddCelebrationServiceAPIRequest.builder()
 				.name(req.getName()).profileImageBase64(req.getProfileImageBase64()).profileImageType(req.getProfileImageType())
-				.title(req.getTitle()).content(req.getContent()).userNo(loginInfo.getNo()).build();
+				.title(req.getTitle()).content(req.getContent()).userNo(loginUser.getUSER_NO()).build();
 
-		if (loginInfo.getUserType().equals(Type.admin.toString())) {
+		if (Grant.containGrantedAuthority(loginUser.getAuthorities(), Grant.ADMIN_ROLE)) {
 			celeAPIService.addCelebartionAdmin(serviceReq, servletRequest.getLocale());
 		} else {
 			celeAPIService.addCelebartion(serviceReq, servletRequest.getLocale());
@@ -165,19 +160,17 @@ public class CelebrationControllerAPI {
 	 * </ul>
 	 * @param celebationNo お祝い番号
 	 * @param req お祝い修正パラメータ
+	 * @param loginUser ログインしたユーザ情報
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping(PUT_URL)
-	public void modify(@PathVariable(name = "celebrationNo", required = true) Long celebationNo, @RequestBody @Validated ModifyCelebrationAPIReqeust req) {
-		LoginUserDto loginInfo = SessionUtil.getLoginSession(httpSession).orElseThrow(()->{
-			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
-					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
-		});
+	public void modify(@PathVariable(name = "celebrationNo", required = true) Long celebationNo, @RequestBody @Validated ModifyCelebrationAPIReqeust req,
+			@AuthenticationPrincipal(errorOnInvalidType = true) LoginUser loginUser) {
 		
 		ModifyCelebationServiceAPIRequest serviceReq = ModifyCelebationServiceAPIRequest.builder()
 				.celebationNo(celebationNo)
 				.name(req.getName()).profileImageBase64(req.getProfileImageBase64()).profileImageType(req.getProfileImageType())
-				.title(req.getTitle()).content(req.getContent()).userNo(loginInfo.getNo()).build();
+				.title(req.getTitle()).content(req.getContent()).userNo(loginUser.getUSER_NO()).build();
 		
 		celeAPIService.modifyCelebartion(serviceReq, servletRequest.getLocale());
 	}
@@ -204,15 +197,12 @@ public class CelebrationControllerAPI {
 	 *  <li>401 : ログインしていない</li>
 	 * </ul>
 	 * @param celebationNo お祝い番号
+	 * @param loginUser ログインしたユーザ情報
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping(DELETE_URL)
-	public void delete(@PathVariable(name = "celebrationNo", required = true) Long celebationNo) {
-		LoginUserDto loginInfo = SessionUtil.getLoginSession(httpSession).orElseThrow(()->{
-			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
-					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
-		});
-
-		celeAPIService.deleteCelebartion(celebationNo, loginInfo.getNo(),servletRequest.getLocale());
+	public void delete(@PathVariable(name = "celebrationNo", required = true) Long celebationNo,
+			@AuthenticationPrincipal(errorOnInvalidType = true) LoginUser loginUser) {
+		celeAPIService.deleteCelebartion(celebationNo, loginUser.getUSER_NO(),servletRequest.getLocale());
 	}
 }

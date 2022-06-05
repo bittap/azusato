@@ -11,6 +11,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +25,11 @@ import com.my.azusato.api.controller.request.AddNonMemberUserAPIRequest;
 import com.my.azusato.api.service.UserServiceAPI;
 import com.my.azusato.api.service.request.AddNonMemberUserServiceAPIRequest;
 import com.my.azusato.api.service.response.GetSessionUserServiceAPIResponse;
-import com.my.azusato.dto.LoginUserDto;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
+import com.my.azusato.login.LoginUser;
 import com.my.azusato.property.UserProperty;
 import com.my.azusato.view.controller.common.CookieConstant;
-import com.my.azusato.view.controller.common.SessionConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
 import lombok.RequiredArgsConstructor;
@@ -68,34 +68,32 @@ public class UserControllerAPI {
 	
 
 	/**
-	 * セッションにあるユーザのテーブル情報を返す。
+	 * ログインしたユーザのテーブル情報を返す。
 	 * <ul>
-	 * <li>200 : セッションが存在 かつ ログイン情報取得に成功</li>
-	 * <li>400 : セッションが存在しない</li>
-	 * <li>500 : セッションにあるユーザ情報により、検索できない場合</li>
+	 * <li>200 : ログイン情報取得に成功</li>
+	 * <li>400 : ログインしていない</li>
 	 * </ul>
 	 * 
+	 * @param loginUser ログインしたユーザ情報
 	 * @return ユーザ情報
 	 */
 	@GetMapping(COMMON_URL)
-	public ResponseEntity<Object> getSessionUser() {
+	public ResponseEntity<Object> getSessionUser(@AuthenticationPrincipal LoginUser loginUser) {
 		log.debug("{}#getSessionUser START ", UserControllerAPI.class.getName());
-
-		if (Objects.nonNull(httpSession.getAttribute(SessionConstant.LOGIN_KEY))) {
-			LoginUserDto userDto = (LoginUserDto) httpSession.getAttribute(SessionConstant.LOGIN_KEY);
-			GetSessionUserServiceAPIResponse responseBody = userAPIService.getSessionUser(userDto.getNo(),
+		
+		if(Objects.nonNull(loginUser)) {
+			GetSessionUserServiceAPIResponse responseBody = userAPIService.getSessionUser(loginUser.getUSER_NO(),
 					servletRequest.getLocale());
 			ResponseEntity<Object> response = ResponseEntity.ok(responseBody);
 			log.debug("[セッション情報が存在する] END, response : {}",response);
 			return response;
-		} else {
+		}else {
 			ErrorResponse errorResponse = new ErrorResponse(AzusatoException.I0002,
 					messageSource.getMessage(AzusatoException.I0002, null, servletRequest.getLocale()));
 			ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 			log.debug("[セッション情報が存在しない] END, response : {}",response);
 			return response;
 		}
-
 	}
 
 	/**
@@ -119,9 +117,9 @@ public class UserControllerAPI {
 			AddNonMemberUserServiceAPIRequest serviceReq = AddNonMemberUserServiceAPIRequest.builder()
 					.name(req.getName()).profileImageBase64(req.getProfileImageBase64())
 					.profileImageType(req.getProfileImageType()).id(id).build();
-			long savedNo = userAPIService.addNonMember(serviceReq);
+			String savedUsername = userAPIService.addNonMember(serviceReq);
 
-			Cookie nonMemberCookie = createNonmemberCookie(String.valueOf(savedNo));
+			Cookie nonMemberCookie = createNonmemberCookie(String.valueOf(savedUsername));
 			// セッションの有効pathこれを設定しないとこのURL以外には認識されない。
 			nonMemberCookie.setPath("/");
 			servletResponse.addCookie(nonMemberCookie);

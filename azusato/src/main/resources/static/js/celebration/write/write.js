@@ -50,24 +50,6 @@ const addCelebration = async function(){
 }
 
 /*
- * ログインしているかどうかAPIを実行
- * ログインしている : true, していない : false
- * @return {boolean} true or false
- */
-const isSessionLoginInfo = async function(){
-	console.log("ログイン有無確認API");
-	const res = await fetch(apiUrl+"/session/checked-login-session");
-
-	const result = await res.json();
-	
-	if(!res.ok) {
-		return Promise.reject(result);
-	}else{
-		return Promise.resolve(result);
-	}
-}
-
-/*
  * ユーザ情報を取得
  */
 const getUser = async function(){
@@ -87,11 +69,10 @@ const getUser = async function(){
 const initialize = async function(){
 	console.log("初期画面設定");
 	try{
-		const siginIn = await isSessionLoginInfo();
-		console.log(`ログイン有無 : ${siginIn}`);
+		console.log(`ログイン有無 : ${AUTHENTICATIONED}`);
 		
 		// セッションがある場合
-		if(Boolean(siginIn) == true){
+		if(Boolean(AUTHENTICATIONED) == true){
 			const userInfo = await getUser();
 			document.querySelector("[name='name']").value = userInfo.name;
 			if(userInfo.profileImageType == null || userInfo.profileImageBase64 == null){
@@ -115,9 +96,8 @@ const initialize = async function(){
 writeBtnTag.addEventListener('click', function(){
 	modalCommon.displayTwoBtnModal(writeModalTitle,writeModalBody,async function(){
 		try{
-			const siginIn = await isSessionLoginInfo();
-			// セッションがない。
-			if(Boolean(siginIn) == false){
+			// ログインしていない。
+			if(Boolean(AUTHENTICATIONED) == false){
 				await addnonMember();
 			}
 			await addCelebration();

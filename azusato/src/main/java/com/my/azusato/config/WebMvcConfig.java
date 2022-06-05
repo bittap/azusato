@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.my.azusato.interceptor.LocaleInterceptor;
 import com.my.azusato.interceptor.LogInterceptor;
-import com.my.azusato.interceptor.SessionInterceptor;
+import com.my.azusato.interceptor.LoginInterceptor;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
 
-	private final SessionInterceptor sessionInterceptor;
+	private final LoginInterceptor sessionInterceptor;
 	
 	private final LogInterceptor logInterceptor;
 	

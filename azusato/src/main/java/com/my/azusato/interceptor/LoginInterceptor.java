@@ -9,15 +9,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.my.azusato.dto.LoginUserDto;
-import com.my.azusato.entity.UserEntity.Type;
+import com.my.azusato.entity.UserEntity;
+import com.my.azusato.login.Grant;
+import com.my.azusato.login.LoginUser;
 import com.my.azusato.property.SessionProperty;
+import com.my.azusato.repository.UserRepository;
 import com.my.azusato.util.SessionUtil;
 import com.my.azusato.view.controller.common.CookieConstant;
-import com.my.azusato.view.controller.common.SessionConstant;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +36,11 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class SessionInterceptor implements HandlerInterceptor {
+public class LoginInterceptor implements HandlerInterceptor {
 
 	private final SessionProperty sessionProperty;
+	
+	private final UserRepository userRepo;
 
 	/**
 	 * セッションがあると維持する。ない場合、非ログイン会員情報があるとそれを基にセッションを登録する。
@@ -58,12 +65,15 @@ public class SessionInterceptor implements HandlerInterceptor {
 
 				// 非ログイン会員扱いにする。
 				if (opNonmemberCookie.isPresent()) {
-					String userNo = opNonmemberCookie.get().getValue();
-					log.debug("[非ログイン会員扱いログイン] userNo : {}", userNo);
-					LoginUserDto loginDto = LoginUserDto.builder().no(Long.valueOf(userNo))
-							.userType(Type.nonmember.toString()).build();
-					session.setAttribute(SessionConstant.LOGIN_KEY, loginDto);
-					session.setMaxInactiveInterval(sessionProperty.getMaxIntervalSeconds());
+					String userName = opNonmemberCookie.get().getValue();
+					UserEntity userEntityByCookie = userRepo.findByIdAndCommonFlagDeleteFlag(userName, false).orElseThrow(()->{
+						throw new NullPointerException(String.format("保持したCookieのIDにより参照したユーザテーブル情報が存在しません。 userName : %s",userName));
+					});
+					log.debug("[非ログイン会員扱いログイン] userName : {}", userName);
+					Authentication authentication = new UsernamePasswordAuthenticationToken(new LoginUser(userEntityByCookie), null,
+							AuthorityUtils.createAuthorityList(Grant.NONMEMBER_ROLE));
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+					
 					return true;
 				}
 			}
