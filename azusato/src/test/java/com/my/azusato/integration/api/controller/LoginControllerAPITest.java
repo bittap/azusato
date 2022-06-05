@@ -29,7 +29,7 @@ import com.my.azusato.entity.UserEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.integration.AbstractIntegration;
-import com.my.azusato.login.LoginUser;
+import com.my.azusato.login.Grant;
 
 public class LoginControllerAPITest extends AbstractIntegration {
 
@@ -139,10 +139,10 @@ public class LoginControllerAPITest extends AbstractIntegration {
 	
 	public static Stream<Arguments> thenRealtiveUser_resultOk(){
 		return Stream.of(
-					Arguments.of("1",AuthorityUtils.createAuthorityList(LoginUser.ROLE_PRIFIX+UserEntity.Type.admin.toString())),
-					Arguments.of("2",AuthorityUtils.createAuthorityList(LoginUser.ROLE_PRIFIX+UserEntity.Type.kakao.toString())),
-					Arguments.of("3",AuthorityUtils.createAuthorityList(LoginUser.ROLE_PRIFIX+UserEntity.Type.line.toString())),
-					Arguments.of("4",AuthorityUtils.createAuthorityList(LoginUser.ROLE_PRIFIX+UserEntity.Type.nonmember.toString()))
+					Arguments.of("1",AuthorityUtils.createAuthorityList(Grant.ROLE_PRIFIX+UserEntity.Type.admin.toString())),
+					Arguments.of("2",AuthorityUtils.createAuthorityList(Grant.ROLE_PRIFIX+UserEntity.Type.kakao.toString())),
+					Arguments.of("3",AuthorityUtils.createAuthorityList(Grant.ROLE_PRIFIX+UserEntity.Type.line.toString())),
+					Arguments.of("4",AuthorityUtils.createAuthorityList(Grant.ROLE_PRIFIX+UserEntity.Type.nonmember.toString()))
 				);
 	}
 }

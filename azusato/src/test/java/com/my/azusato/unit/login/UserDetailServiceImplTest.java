@@ -21,15 +21,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
-import com.my.azusato.entity.ProfileEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.UserEntity.Type;
-import com.my.azusato.entity.common.CommonDateEntity;
-import com.my.azusato.entity.common.CommonFlagEntity;
 import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.login.Grant;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.login.UserDetailServiceImpl;
-import com.my.azusato.view.controller.common.ValueConstant;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,20 +63,6 @@ public class UserDetailServiceImplTest extends AbstractIntegration {
 			for (GrantedAuthority results : loginUser.getAuthorities()) {
 				Assertions.assertTrue(expectedRoles.contains(results));
 			}
-			assertEquals(expectedUserEntity(loginUser.getUser().getNo(), expectedType), loginUser.getUser());
-		}
-
-		private UserEntity expectedUserEntity(long userNo, Type type) {
-			return UserEntity.builder()
-					.no(userNo)
-					.id(USER_NAME)
-					.password(Entity.createdVarChars[1])
-					.name(Entity.createdVarChars[2])
-					.userType(type.toString())
-					.commonDate(CommonDateEntity.builder().createDatetime(Entity.createdDatetime).updateDatetime(Entity.updatedDatetime).build())
-					.commonFlag(CommonFlagEntity.builder().deleteFlag(ValueConstant.DEFAULT_DELETE_FLAG).build())
-					.profile(ProfileEntity.builder().userNo(userNo).ImageBase64(Entity.createdVarChars[0]).ImageType(Entity.ImageType[0]).build())
-					.build();
 		}
 		
 		@ParameterizedTest
@@ -104,10 +87,10 @@ public class UserDetailServiceImplTest extends AbstractIntegration {
 	
 	public static Stream<Arguments> thenRealtiveUser_resultOk(){
 		return Stream.of(
-					Arguments.of("1",Type.admin,AuthorityUtils.createAuthorityList(LoginUser.ROLE_PRIFIX+UserEntity.Type.admin.toString())),
-					Arguments.of("2",Type.kakao,AuthorityUtils.createAuthorityList(LoginUser.ROLE_PRIFIX+UserEntity.Type.kakao.toString())),
-					Arguments.of("3",Type.line,AuthorityUtils.createAuthorityList(LoginUser.ROLE_PRIFIX+UserEntity.Type.line.toString())),
-					Arguments.of("4",Type.nonmember,AuthorityUtils.createAuthorityList(LoginUser.ROLE_PRIFIX+UserEntity.Type.nonmember.toString()))
+					Arguments.of("1",Type.admin,AuthorityUtils.createAuthorityList(Grant.ROLE_PRIFIX+UserEntity.Type.admin.toString())),
+					Arguments.of("2",Type.kakao,AuthorityUtils.createAuthorityList(Grant.ROLE_PRIFIX+UserEntity.Type.kakao.toString())),
+					Arguments.of("3",Type.line,AuthorityUtils.createAuthorityList(Grant.ROLE_PRIFIX+UserEntity.Type.line.toString())),
+					Arguments.of("4",Type.nonmember,AuthorityUtils.createAuthorityList(Grant.ROLE_PRIFIX+UserEntity.Type.nonmember.toString()))
 				);
 	}
 }
