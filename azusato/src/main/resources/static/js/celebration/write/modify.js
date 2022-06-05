@@ -11,12 +11,8 @@ const modifyCelebration = async function(){
 	modalCommon.displayLoadingModal();
 	const res = await fetch(apiUrl+"/celebration"+ "/" +CELEBATION_NO,{
 		method: 'PUT',
-		headers: {
-		  'Accept': 'application/json',
-		  'Content-Type': 'application/json',
-		  'Accept-Language': language  
-		},
-		 body: JSON.stringify({
+		headers: apiCommon.header,
+		body: JSON.stringify({
 			 title: document.querySelector('[name="title"]').value, 
 			 content: $('#summernote').summernote('code'),
 			 name: document.querySelector('[name="name"]').value, 
@@ -41,11 +37,7 @@ const getCelebation = async function(){
 	modalCommon.displayLoadingModal();
 	const res = await fetch(apiUrl + "/celebration" + "/" +CELEBATION_NO,{
 		method: 'GET',
-		headers: {
-		  'Accept': 'application/json',
-		  'Content-Type': 'application/json',
-		  'Accept-Language': language
-		}
+		headers: apiCommon.header
 	});
 	
 	const result = await res.json();

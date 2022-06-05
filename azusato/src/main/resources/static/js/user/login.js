@@ -10,12 +10,7 @@ const login = async function(){
 			"password": document.querySelector('[name="password"]').value
 		}),{
 		method: 'POST',
-		headers: {
-		  'Accept': 'application/json',
-		  'Content-Type': 'application/json',
-		  'Accept-Language': language,
-		  'X-CSRF-TOKEN': document.querySelector('[name="_csrf"]').getAttribute('content')
-		}
+		headers: apiCommon.header
 	});
 
 	if(!res.ok) {

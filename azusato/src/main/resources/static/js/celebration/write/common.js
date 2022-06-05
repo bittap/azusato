@@ -18,11 +18,7 @@ const getRandomImage = async function(){
 	console.log("ランダムイメージ取得");
 	const res = await fetch(apiUrl+"/profile/random",{
 		method: 'GET',
-		headers: {
-		  'Accept': 'application/json',
-		  'Content-Type': 'application/json',
-		  'Accept-Language': language
-		}
+		headers: apiCommon.header
 	});
 	
 	const result = await res.json();

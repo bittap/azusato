@@ -99,11 +99,7 @@ const isSession = async function(){
 	console.log("ログイン有無確認API");
 	const res = await fetch(apiUrl+"/session/checked-login-session",{
 		method: 'GET',
-		headers: {
-		  'Accept': 'application/json',
-		  'Content-Type': 'application/json',
-		  'Accept-Language': language
-		}
+		headers: apiCommon.header
 	});
 
 	const result = await res.json();
@@ -124,11 +120,7 @@ const getUser = async function(){
 	if(Boolean(sigiIn) == true){
 		const res = await fetch(apiUrl+"/user",{
 			method: 'GET',
-			headers: {
-			  'Accept': 'application/json',
-			  'Content-Type': 'application/json',
-			  'Accept-Language': language
-			}
+			headers: apiCommon.header
 		});
 		
 		const result = await res.json();
@@ -246,11 +238,7 @@ const getRandomImage = async function(){
 	console.log("ランダムイメージ取得");
 	const res = await fetch(apiUrl+"/profile/random",{
 		method: 'GET',
-		headers: {
-		  'Accept': 'application/json',
-		  'Content-Type': 'application/json',
-		  'Accept-Language': language
-		}
+		headers: apiCommon.header
 	});
 	
 	const result = await res.json();
@@ -276,12 +264,8 @@ const addCelebrationReply = async function(clickedEle){
 		
 		const res = await fetch(apiUrl+"/celebration-reply/"+celebrationNo,{
 			method: 'POST',
-			headers: {
-			  'Accept': 'application/json',
-			  'Content-Type': 'application/json',
-			  'Accept-Language': language
-			},
-			 body: JSON.stringify({
+			headers: apiCommon.header,
+			body: JSON.stringify({
 				 name: clickedEle.parentNode.querySelector('[name="name"]').value,
 				 content:  clickedEle.parentNode.querySelector('[name="content"]').value
 			})
@@ -302,12 +286,8 @@ const addnonMember = async function(clickedEle, randomImage){
 	console.log("非会員ユーザ作成API");
 	const res = await fetch(apiUrl+"/user/nonmember",{
 		method: 'POST',
-		headers: {
-		  'Accept': 'application/json',
-		  'Content-Type': 'application/json',
-		  'Accept-Language': language
-		},
-		 body: JSON.stringify({
+		headers: apiCommon.header,
+		body: JSON.stringify({
 			 name: clickedEle.parentNode.querySelector('[name="name"]').value,
 			 profileImageType: randomImage.profileImageType, 
 			 profileImageBase64: randomImage.profileImageBase64, 
@@ -354,11 +334,7 @@ const deleteCelebration = async function(clickedDeleteEle){
 		
 		const res = await fetch(apiUrl+"/celebration/" + celebrationNo,{
 			method: 'DELETE',
-			headers: {
-			  'Accept': 'application/json',
-			  'Content-Type': 'application/json',
-			  'Accept-Language': language
-			}
+			headers: apiCommon.header
 		});
 		
 		if(!res.ok) {
@@ -383,11 +359,7 @@ const deleteCelebrationReply = async function(clickedEle){
 		
 		const res = await fetch(apiUrl+"/celebration-reply/" + celebrationNo,{
 			method: 'DELETE',
-			headers: {
-			  'Accept': 'application/json',
-			  'Content-Type': 'application/json',
-			  'Accept-Language': language
-			}
+			headers: apiCommon.header
 		});
 		
 		if(!res.ok) {
@@ -479,11 +451,7 @@ const readCountUp = function(celebrationNo){
 	
 	fetch(apiUrl+"/celebration/read-count-up/" + celebrationNo,{
 		method: 'PUT',
-		headers: {
-		  'Accept': 'application/json',
-		  'Content-Type': 'application/json',
-		  'Accept-Language': language
-		}
+		headers: apiCommon.header
 	});
 }
 

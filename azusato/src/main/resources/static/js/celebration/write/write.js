@@ -3,11 +3,8 @@ const addnonMember = async function(){
 	console.log("非会員ユーザ作成API");
 	const res = await fetch(apiUrl+"/user/nonmember",{
 		method: 'POST',
-		headers: {
-		  'Accept': 'application/json',
-		  'Content-Type': 'application/json'
-		},
-		 body: JSON.stringify({
+		headers: apiCommon.header,
+		body: JSON.stringify({
 			 name: document.querySelector('[name="name"]').value, 
 			 profileImageType: document.querySelector('[name="profileImageType"]').value, 
 			 profileImageBase64: document.querySelector('[name="profileImageBase64"]').value, 
@@ -31,12 +28,8 @@ const addCelebration = async function(){
 	modalCommon.displayLoadingModal();
 	const res = await fetch(apiUrl+"/celebration",{
 		method: 'POST',
-		headers: {
-		  'Accept': 'application/json',
-		  'Content-Type': 'application/json',
-		  'Accept-Language': language
-		},
-		 body: JSON.stringify({
+		headers: apiCommon.header,
+		body: JSON.stringify({
 			 title: document.querySelector('[name="title"]').value, 
 			 content: $('#summernote').summernote('code'),
 			 name: document.querySelector('[name="name"]').value, 
