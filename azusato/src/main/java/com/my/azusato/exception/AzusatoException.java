@@ -20,7 +20,7 @@ public class AzusatoException extends RuntimeException {
 	public static final String I0001 = "I-0001";
 
 	/**
-	 * セッションにログイン情報がない場合
+	 * ログイン情報がない場合
 	 */
 	public static final String I0002 = "I-0002";
 

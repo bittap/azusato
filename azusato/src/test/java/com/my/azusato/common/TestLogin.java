@@ -27,6 +27,7 @@ public class TestLogin {
 	
 	private static UserEntity getUserEntity(Type type) {
 		UserEntity userEntity = new UserEntity();
+		userEntity.setNo(Entity.createdLongs[0]);
 		userEntity.setId(Entity.createdVarChars[0]);
 		userEntity.setPassword(Entity.createdVarChars[1]);
 		userEntity.setUserType(type.toString());

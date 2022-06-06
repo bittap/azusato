@@ -75,20 +75,19 @@ public class UserControllerAPI {
 	 * @return ユーザ情報
 	 */
 	@GetMapping(COMMON_URL)
-	public ResponseEntity<Object> getSessionUser(@AuthenticationPrincipal LoginUser loginUser) {
-		log.debug("{}#getSessionUser START ", UserControllerAPI.class.getName());
+	public ResponseEntity<Object> getLoginUser(@AuthenticationPrincipal LoginUser loginUser) {
 		
 		if(Objects.nonNull(loginUser)) {
 			GetSessionUserServiceAPIResponse responseBody = userAPIService.getSessionUser(loginUser.getUSER_NO(),
 					servletRequest.getLocale());
 			ResponseEntity<Object> response = ResponseEntity.ok(responseBody);
-			log.debug("[セッション情報が存在する] END, response : {}",response);
+			log.debug("[ログイン情報が存在する] END, response : {}",response);
 			return response;
 		}else {
 			ErrorResponse errorResponse = new ErrorResponse(AzusatoException.I0002,
 					messageSource.getMessage(AzusatoException.I0002, null, servletRequest.getLocale()));
 			ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-			log.debug("[セッション情報が存在しない] END, response : {}",response);
+			log.debug("[ログイン情報が存在しない] END, response : {}",response);
 			return response;
 		}
 	}

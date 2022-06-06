@@ -2,6 +2,7 @@ package com.my.azusato.integration.api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -21,7 +22,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.LinkedMultiValueMap;
@@ -38,7 +39,7 @@ import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Cel
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.common.TestCookie;
-import com.my.azusato.common.TestSession;
+import com.my.azusato.common.TestLogin;
 import com.my.azusato.entity.CelebrationContentEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
@@ -62,14 +63,14 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 
 		@ParameterizedTest
 		@MethodSource("com.my.azusato.integration.api.controller.CelebrationContollerAPITest#addCelebration_normal_case")
-		public void normal_case_admin(MockHttpSession session, Cookie cookie, Path initFilePath, Path expectFilePath,
+		public void normal_case_admin(UserDetails loginUser, Cookie cookie, Path initFilePath, Path expectFilePath,
 				String[] comparedTables) throws Exception {
 			dbUnitCompo.initalizeTable(initFilePath);
 
 			mockMvc.perform(MockMvcRequestBuilders
 					.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL)
 					.with(csrf())
-					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING).session(session)
+					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING).with(user(loginUser))
 					.cookie(cookie)).andDo(print()).andExpect(status().isCreated());
 
 			// compare tables
@@ -152,7 +153,8 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			mockMvc.perform(MockMvcRequestBuilders
 					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
 					.with(csrf())
-					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING).session(TestSession.getAdminSession())).andDo(print()).andExpect(status().isOk());
+					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
+					.with(user(TestLogin.adminLoginUser()))).andDo(print()).andExpect(status().isOk());
 
 			// compare tables
 			for (String table : comparedTables) {
@@ -175,7 +177,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
 					.with(csrf())
 					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-					.session(TestSession.getAdminSession()).locale(locale))
+										.with(user(TestLogin.adminLoginUser())).locale(locale))
 			.andDo(print()).andExpect(status().is(400)).andReturn();
 
 			String resultBody = mvcResult.getResponse()
@@ -193,7 +195,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + "1000")
 					.with(csrf())
 					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-					.session(TestSession.getAdminSession())
+										.with(user(TestLogin.adminLoginUser()))
 					.locale(locale))
 			.andDo(print()).andExpect(status().is(400)).andReturn();
 
@@ -231,7 +233,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + "string")
 					.with(csrf())
 					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-					.session(TestSession.getAdminSession())
+										.with(user(TestLogin.adminLoginUser()))
 					.locale(locale))
 			.andDo(print()).andExpect(status().is(400)).andReturn();
 
@@ -255,7 +257,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
 					.with(csrf())
 					.content(requestBody).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-					.session(TestSession.getAdminSession())
+										.with(user(TestLogin.adminLoginUser()))
 					.locale(locale))
 			.andDo(print()).andExpect(status().is(400)).andReturn();
 
@@ -295,7 +297,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			mockMvc.perform(MockMvcRequestBuilders
 					.delete(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
 					.with(csrf())
-					.session(TestSession.getAdminSession())).andDo(print()).andExpect(status().isOk());
+										.with(user(TestLogin.adminLoginUser()))).andDo(print()).andExpect(status().isOk());
 
 			// compare tables
 			for (String table : COMPARED_TABLE_NAME) {
@@ -318,7 +320,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
 					.delete(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
 					.with(csrf())
-					.session(TestSession.getAdminSession()).locale(locale))
+										.with(user(TestLogin.adminLoginUser())).locale(locale))
 			.andDo(print()).andExpect(status().is(400)).andReturn();
 
 			String resultBody = mvcResult.getResponse()
@@ -335,7 +337,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
 					.delete(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + "1000")
 					.with(csrf())
-					.session(TestSession.getAdminSession())
+										.with(user(TestLogin.adminLoginUser()))
 					.locale(locale))
 			.andDo(print()).andExpect(status().is(400)).andReturn();
 
@@ -372,7 +374,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
 					.delete(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + "string")
 					.with(csrf())
-					.session(TestSession.getAdminSession())
+										.with(user(TestLogin.adminLoginUser()))
 					.locale(locale))
 			.andDo(print()).andExpect(status().is(400)).andReturn();
 
@@ -404,7 +406,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			mockMvc.perform(MockMvcRequestBuilders
 					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/read-count-up" + "/" + CELEBRATION_NO)
 					.with(csrf())
-					.session(TestSession.getAdminSession())).andDo(print()).andExpect(status().isOk());
+										.with(user(TestLogin.adminLoginUser()))).andDo(print()).andExpect(status().isOk());
 
 			dbUnitCompo.compareTable(expectFilePath);
 		}
@@ -415,7 +417,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
 					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/read-count-up" + "/" + CELEBRATION_NO)
 					.with(csrf())
-					.session(TestSession.getAdminSession())
+										.with(user(TestLogin.adminLoginUser()))
 					.locale(locale))
 			.andDo(print()).andExpect(status().is(400)).andReturn();
 
@@ -435,7 +437,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
 					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/read-count-up" + "/" + "string")
 					.with(csrf())
-					.session(TestSession.getAdminSession())
+										.with(user(TestLogin.adminLoginUser()))
 					.locale(locale))
 			.andDo(print()).andExpect(status().is(400)).andReturn();
 
@@ -541,7 +543,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					MockMvcRequestBuilders
 						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/content/"+ String.valueOf(CELEBRATION_NO))
 						.accept(HttpConstant.DEFAULT_CONTENT_TYPE)
-						.session(TestSession.getAdminSession())
+											.with(user(TestLogin.adminLoginUser()))
 					).andExpect(status().isOk()).andReturn();
 										
 			String strResult = mvcResult.getResponse().getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
@@ -919,17 +921,17 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 	private static Stream<Arguments> addCelebration_normal_case() {
 		return Stream.of(
 				// admin login
-				Arguments.of(TestSession.getAdminSession(), TestCookie.getNonmemberCookie(),
+				Arguments.of(TestLogin.adminLoginUser(), TestCookie.getNonmemberCookie(),
 						Paths.get(AddCelebration.RESOUCE_PATH, "1", TestConstant.INIT_XML_FILE_NAME),
 						Paths.get(AddCelebration.RESOUCE_PATH, "1", TestConstant.EXPECT_XML_FILE_NAME),
 						new String[] { "user", "celebration", "profile" }),
 				// not admin login
-				Arguments.of(TestSession.getKakaoSession(), TestCookie.getNonmemberCookie(),
+				Arguments.of(TestLogin.kakaoLoginUser(), TestCookie.getNonmemberCookie(),
 						Paths.get(AddCelebration.RESOUCE_PATH, "2", TestConstant.INIT_XML_FILE_NAME),
 						Paths.get(AddCelebration.RESOUCE_PATH, "2", TestConstant.EXPECT_XML_FILE_NAME),
 						new String[] { "user", "celebration", "celebration_notice", "profile" }),
 				// nonmember login
-				Arguments.of(new MockHttpSession(), TestCookie.getNonmemberCookie(),
+				Arguments.of(TestLogin.nonmemberLoginUser(), TestCookie.getNonmemberCookie(),
 						Paths.get(AddCelebration.RESOUCE_PATH, "3", TestConstant.INIT_XML_FILE_NAME),
 						Paths.get(AddCelebration.RESOUCE_PATH, "3", TestConstant.EXPECT_XML_FILE_NAME),
 						new String[] { "user", "celebration", "celebration_notice", "profile" }));

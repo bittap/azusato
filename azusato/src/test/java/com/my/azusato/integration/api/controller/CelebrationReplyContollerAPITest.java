@@ -2,6 +2,7 @@ package com.my.azusato.integration.api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,7 +25,7 @@ import com.my.azusato.api.controller.CelebrationReplyControllerAPI;
 import com.my.azusato.api.controller.request.AddCelebrationReplyAPIReqeust;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
-import com.my.azusato.common.TestSession;
+import com.my.azusato.common.TestLogin;
 import com.my.azusato.entity.CelebrationContentEntity;
 import com.my.azusato.entity.CelebrationReplyEntity;
 import com.my.azusato.entity.UserEntity;
@@ -55,7 +56,9 @@ public class CelebrationReplyContollerAPITest extends AbstractIntegration {
 			mockMvc.perform(MockMvcRequestBuilders
 					.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationReplyControllerAPI.COMMON_URL + "/" + CELEBRATION_REPLY_NO)
 					.with(csrf())
-					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING).session(TestSession.getAdminSession()))
+					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
+					.with(user(TestLogin.adminLoginUser()))
+					)
 				.andDo(print()).andExpect(status().isCreated());
 
 			// compare tables
@@ -81,7 +84,7 @@ public class CelebrationReplyContollerAPITest extends AbstractIntegration {
 					.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationReplyControllerAPI.COMMON_URL + "/" + "1000")
 					.with(csrf())
 					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-					.session(TestSession.getAdminSession())
+					.with(user(TestLogin.adminLoginUser()))
 					.locale(locale))
 			.andDo(print()).andExpect(status().is(400)).andReturn();
 
@@ -101,7 +104,7 @@ public class CelebrationReplyContollerAPITest extends AbstractIntegration {
 					.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationReplyControllerAPI.COMMON_URL + "/" + "1000")
 					.with(csrf())
 					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-					.session(TestSession.getAdminSession())
+					.with(user(TestLogin.adminLoginUser()))
 					.locale(locale))
 			.andDo(print()).andExpect(status().is(400)).andReturn();
 
@@ -139,7 +142,7 @@ public class CelebrationReplyContollerAPITest extends AbstractIntegration {
 					.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationReplyControllerAPI.COMMON_URL + "/" + "string")
 					.with(csrf())
 					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-					.session(TestSession.getAdminSession())
+					.with(user(TestLogin.adminLoginUser()))
 					.locale(locale))
 			.andDo(print()).andExpect(status().is(400)).andReturn();
 
@@ -163,7 +166,7 @@ public class CelebrationReplyContollerAPITest extends AbstractIntegration {
 					.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationReplyControllerAPI.COMMON_URL + "/" + CELEBRATION_REPLY_NO)
 					.with(csrf())
 					.content(requestBody).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-					.session(TestSession.getAdminSession())
+					.with(user(TestLogin.adminLoginUser()))
 					.locale(locale))
 			.andDo(print()).andExpect(status().is(400)).andReturn();
 
@@ -203,7 +206,7 @@ public class CelebrationReplyContollerAPITest extends AbstractIntegration {
 			mockMvc.perform(MockMvcRequestBuilders
 					.delete(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationReplyControllerAPI.COMMON_URL + "/" + CELEBRATION_REPLY_NO)
 					.with(csrf())
-					.session(TestSession.getAdminSession())).andDo(print()).andExpect(status().isOk());
+					.with(user(TestLogin.adminLoginUser()))).andDo(print()).andExpect(status().isOk());
 
 			// compare tables
 			for (String table : COMPARED_TABLE_NAME) {
@@ -227,7 +230,7 @@ public class CelebrationReplyContollerAPITest extends AbstractIntegration {
 					.delete(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationReplyControllerAPI.COMMON_URL + "/" + CELEBRATION_REPLY_NO)
 					.with(csrf())
 					.locale(locale)
-					.session(TestSession.getAdminSession())).andDo(print()).andExpect(status().isBadRequest()).andReturn();
+					.with(user(TestLogin.adminLoginUser()))).andDo(print()).andExpect(status().isBadRequest()).andReturn();
 			
 			String resultBody = mvcResult.getResponse()
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
@@ -244,7 +247,7 @@ public class CelebrationReplyContollerAPITest extends AbstractIntegration {
 					.delete(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationReplyControllerAPI.COMMON_URL + "/" + "1000")
 					.with(csrf())
 					.locale(locale)
-					.session(TestSession.getAdminSession())).andDo(print()).andExpect(status().isBadRequest()).andReturn();
+					.with(user(TestLogin.adminLoginUser()))).andDo(print()).andExpect(status().isBadRequest()).andReturn();
 
 			String resultBody = mvcResult.getResponse()
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
@@ -279,7 +282,7 @@ public class CelebrationReplyContollerAPITest extends AbstractIntegration {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
 					.delete(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationReplyControllerAPI.COMMON_URL + "/" + "string")
 					.with(csrf())
-					.session(TestSession.getAdminSession())
+					.with(user(TestLogin.adminLoginUser()))
 					.locale(locale))
 			.andDo(print()).andExpect(status().is(400)).andReturn();
 

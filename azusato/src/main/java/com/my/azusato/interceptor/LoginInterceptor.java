@@ -17,11 +17,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.my.azusato.entity.UserEntity;
+import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.login.Grant;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.property.SessionProperty;
 import com.my.azusato.repository.UserRepository;
-import com.my.azusato.util.SessionUtil;
 import com.my.azusato.view.controller.common.CookieConstant;
 
 import lombok.RequiredArgsConstructor;
@@ -43,19 +43,19 @@ public class LoginInterceptor implements HandlerInterceptor {
 	private final UserRepository userRepo;
 
 	/**
-	 * セッションがあると維持する。ない場合、非ログイン会員情報があるとそれを基にセッションを登録する。
+	 * ログイン情報があると維持する。ない場合、非ログイン会員情報があるとそれを基にログイン情報を登録する。
 	 */
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		log.debug("[セッションpreHandle]");
 		HttpSession session = request.getSession();
-		if(SessionUtil.isLoginSession(request.getSession())) {
-			log.debug("[既にログインセッションが存在。log更新]");
+		if(Objects.nonNull(request.getUserPrincipal())) {
+			log.debug("[既にログイン情報が存在。log更新]");
 			session.setMaxInactiveInterval(sessionProperty.getMaxIntervalSeconds());
-			// セッション情報がない かつ 非ログインの場合はログイン扱いにする。
+			// ログイン情報がない かつ 非ログインの場合はログイン扱いにする。
 		} else {
-			log.debug("[ログインセッションが存在しない。cookie検出]");
+			log.debug("[ログイン情報が存在しない。cookie検出]");
 			Cookie[] cookies = request.getCookies();
 			if (Objects.nonNull(cookies)) {
 				Optional<Cookie> opNonmemberCookie = Arrays
@@ -66,8 +66,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 				// 非ログイン会員扱いにする。
 				if (opNonmemberCookie.isPresent()) {
 					String userName = opNonmemberCookie.get().getValue();
-					UserEntity userEntityByCookie = userRepo.findByIdAndCommonFlagDeleteFlag(userName, false).orElseThrow(()->{
-						throw new NullPointerException(String.format("保持したCookieのIDにより参照したユーザテーブル情報が存在しません。 userName : %s",userName));
+					UserEntity userEntityByCookie = userRepo.findByIdAndUserTypeAndCommonFlagDeleteFlag(userName, Type.nonmember.toString() , false ).orElseThrow(()->{
+						throw new NullPointerException(String.format("保持したCookieのIDにより参照したユーザテーブル情報が存在しません。 userName : %s , type : %s",userName , Type.nonmember.toString()));
 					});
 					log.debug("[非ログイン会員扱いログイン] userName : {}", userName);
 					Authentication authentication = new UsernamePasswordAuthenticationToken(new LoginUser(userEntityByCookie), null,
@@ -78,7 +78,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 				}
 			}
 				
-			log.debug("[ログインセッションが存在しません。]");
+			log.debug("[ログイン情報が存在しません。]");
 
 		}
 

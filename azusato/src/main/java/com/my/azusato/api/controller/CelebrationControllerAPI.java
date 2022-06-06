@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +30,7 @@ import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
 import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
+import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.login.Grant;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
@@ -52,6 +54,8 @@ import lombok.extern.slf4j.Slf4j;
 public class CelebrationControllerAPI {
 
 	private final HttpSession httpSession;
+	
+	private final MessageSource messageSource;
 
 	private final CelebrationServiceAPI celeAPIService;
 
@@ -99,7 +103,7 @@ public class CelebrationControllerAPI {
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(CELEBRATION_CONTENT_URL)
 	public GetCelebrationContentSerivceAPIResponse celebationContent(@PathVariable(name = "celebrationNo", required = true) Long celebationNo,
-			@AuthenticationPrincipal(errorOnInvalidType = true) LoginUser loginUser) {
+			@AuthenticationPrincipal LoginUser loginUser) {
 		// ログインしていない時のuserNo
 		final long NO_LOGIN_USER_NO = 0L;
 		
@@ -131,11 +135,15 @@ public class CelebrationControllerAPI {
 	 * 
 	 * @param req             requestbody, Validated
 	 * @param loginUser ログインしたユーザ情報
-	 * @throws ClassCastException loginUserのタイプがLoginUserではない場合
+	 * @throws AzusatoException ログインしていない状態
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(COMMON_URL)
-	public void add(@RequestBody @Validated AddCelebrationAPIReqeust req, @AuthenticationPrincipal(errorOnInvalidType = true) LoginUser loginUser ) {
+	public void add(@RequestBody @Validated AddCelebrationAPIReqeust req, @AuthenticationPrincipal LoginUser loginUser ) {
+		if(Objects.isNull(loginUser)) {
+			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
+					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
+		}
 		AddCelebrationServiceAPIRequest serviceReq = AddCelebrationServiceAPIRequest.builder()
 				.name(req.getName()).profileImageBase64(req.getProfileImageBase64()).profileImageType(req.getProfileImageType())
 				.title(req.getTitle()).content(req.getContent()).userNo(loginUser.getUSER_NO()).build();
@@ -162,7 +170,11 @@ public class CelebrationControllerAPI {
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping(PUT_URL)
 	public void modify(@PathVariable(name = "celebrationNo", required = true) Long celebationNo, @RequestBody @Validated ModifyCelebrationAPIReqeust req,
-			@AuthenticationPrincipal(errorOnInvalidType = true) LoginUser loginUser) {
+			@AuthenticationPrincipal LoginUser loginUser) {
+		if(Objects.isNull(loginUser)) {
+			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
+					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
+		}
 		
 		ModifyCelebationServiceAPIRequest serviceReq = ModifyCelebationServiceAPIRequest.builder()
 				.celebationNo(celebationNo)
@@ -199,7 +211,12 @@ public class CelebrationControllerAPI {
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping(DELETE_URL)
 	public void delete(@PathVariable(name = "celebrationNo", required = true) Long celebationNo,
-			@AuthenticationPrincipal(errorOnInvalidType = true) LoginUser loginUser) {
+			@AuthenticationPrincipal LoginUser loginUser) {
+		if(Objects.isNull(loginUser)) {
+			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
+					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
+		}
+		
 		celeAPIService.deleteCelebartion(celebationNo, loginUser.getUSER_NO(),servletRequest.getLocale());
 	}
 }

@@ -1,7 +1,10 @@
 package com.my.azusato.api.controller;
 
+import java.util.Objects;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.my.azusato.api.controller.request.AddCelebrationReplyAPIReqeust;
 import com.my.azusato.api.service.CelebrationReplyServiceAPI;
+import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
@@ -40,6 +44,8 @@ public class CelebrationReplyControllerAPI {
 
 	private final HttpServletRequest servletRequest;
 	
+	private final MessageSource messageSource;
+	
 	public static final String COMMON_URL = "celebration-reply";
 	
 	public static final String POST_URL = COMMON_URL + "/{celebrationNo}";
@@ -59,7 +65,11 @@ public class CelebrationReplyControllerAPI {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(POST_URL)
 	public void add(@RequestBody @Validated AddCelebrationReplyAPIReqeust req, @PathVariable(name = "celebrationNo", required = true) Long celebationNo,
-			@AuthenticationPrincipal(errorOnInvalidType = true) LoginUser loginUser) {
+			@AuthenticationPrincipal LoginUser loginUser) {
+		if(Objects.isNull(loginUser)) {
+			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
+					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
+		}
 		celeReplyAPIService.addCelebartionReply(req, celebationNo , loginUser.getUSER_NO(), servletRequest.getLocale());
 	}
 	
@@ -76,7 +86,11 @@ public class CelebrationReplyControllerAPI {
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping(DELETE_URL)
 	public void delete(@PathVariable(name = "celebrationReplyNo", required = true) Long celebrationReplyNo,
-			@AuthenticationPrincipal(errorOnInvalidType = true) LoginUser loginUser) {
+			@AuthenticationPrincipal LoginUser loginUser) {
+		if(Objects.isNull(loginUser)) {
+			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
+					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
+		}
 		celeReplyAPIService.deleteCelebartionReply(celebrationReplyNo, loginUser.getUSER_NO(),servletRequest.getLocale());
 	}
 }

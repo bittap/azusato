@@ -3,6 +3,7 @@ package com.my.azusato.integration.api.controller;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,7 +29,7 @@ import com.my.azusato.api.service.response.GetSessionUserServiceAPIResponse;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.common.TestCookie;
-import com.my.azusato.common.TestSession;
+import com.my.azusato.common.TestLogin;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
@@ -52,7 +53,8 @@ public class UserContollerAPITest extends AbstractIntegration {
 			dbUnitCompo.initalizeTable(Paths.get(AddCelebration.RESOUCE_PATH, "1", TestConstant.INIT_XML_FILE_NAME));
 			
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET+UserControllerAPI.COMMON_URL).session(TestSession.getAdminSession())
+						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET+UserControllerAPI.COMMON_URL)
+						.with(user(TestLogin.adminLoginUser()))
 						.with(csrf())
 					).andDo(print()).andExpect(status().isOk()).andReturn();
 			
@@ -71,7 +73,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 		
 		@ParameterizedTest
 		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void givenNotSession_result400(Locale locale) throws Exception {
+		public void givenNoLogin_result400(Locale locale) throws Exception {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
 					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET+UserControllerAPI.COMMON_URL)
 					.with(csrf())
@@ -91,7 +93,8 @@ public class UserContollerAPITest extends AbstractIntegration {
 		@MethodSource("com.my.azusato.common.TestSource#locales")
 		public void givenNotExistData_result500(Locale locale) throws Exception {
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET+UserControllerAPI.COMMON_URL).session(TestSession.getAdminSession())
+					.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET+UserControllerAPI.COMMON_URL)
+					.with(user(TestLogin.adminLoginUser()))
 					.with(csrf())
 					.locale(locale)
 				).andDo(print()).andExpect(status().isBadRequest()).andReturn();
@@ -109,6 +112,8 @@ public class UserContollerAPITest extends AbstractIntegration {
 
 	@Nested
 	class AddNonMember {
+		
+		final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "addNonmember/";
 
 		@ParameterizedTest
 		@MethodSource("com.my.azusato.integration.api.controller.UserContollerAPITest#givenVaildParameter_resultOk")
@@ -125,7 +130,9 @@ public class UserContollerAPITest extends AbstractIntegration {
 
 		@ParameterizedTest
 		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void semi_abnormal_case(Locale locale) throws Exception {
+		public void givenAlreadyCookie_result400(Locale locale) throws Exception {
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, "1", TestConstant.INIT_XML_FILE_NAME));
+			
 			AddNonMemberUserAPIRequest req = AddNonMemberUserAPIRequest.builder().name(Entity.createdVarChars[0])
 			.profileImageType("image/png").profileImageBase64(Entity.createdVarChars[2]).build();
 			String requestBody = om.writeValueAsString(req);
