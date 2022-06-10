@@ -1,6 +1,6 @@
 <html>
 <head th:include = "layout/header :: header(~{::link})">
-	<link rel="stylesheet" href="/css/index.css">
+	<link rel="stylesheet" href="/css/admin/index.css">
 </head>
 <body>
 	<!-- nav -->
@@ -8,7 +8,7 @@
 	<th:block th:replace = "layout/body :: body_withTop(
 			~{::th:block#top_body_contents},
 			~{::th:block#body_contents},
-			#{index.title})">
+			#{admin.index.title})">
 		<!-- main  content -->
 		<th:block id="top_body_contents">
 			<!-- jumbotron -->
@@ -46,6 +46,7 @@
 							<img src="/image/admin_letter3.jpg" class="img-fluid img-thumbnail" alt="letter-image3">
 							<img src="/image/admin_letter4.jpg" class="img-fluid img-thumbnail" alt="letter-image4">
 							<img src="/image/admin_letter5.jpg" class="img-fluid img-thumbnail" alt="letter-image5">
+							<img src="/image/admin_letter6.jpg" class="img-fluid img-thumbnail" alt="letter-image6">
 						</div>
 						<div class="letter-right">
 							<div>
@@ -64,7 +65,7 @@
 									</li>
 								</ul>
 							</div>
-							<h3 class="text-white-50 pb-2" th:utext="#{main-letter-content}"></h3>
+							<h3 class="text-white-50 pb-2" th:utext="#{admin.index.letter-content}"></h3>
 						</div> <!-- End letter-content-wrapper-->
 					</div> <!-- End main-letter-->
 				</div> <!-- End main letter-->

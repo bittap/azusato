@@ -1,0 +1,69 @@
+.jumbotron .carousel-inner {
+	max-height: 700px;
+}
+
+.main-video{
+	border-top:1px dotted #ccc;
+}
+.main-letter .letter-content-wrapper{
+	background-color: gray;
+}
+
+.letter-left{
+	width:40%;
+}
+.letter-right{
+	width:60%;
+	font-size: 9vw;
+}
+
+@media (min-width: 1281px) {
+	.letter-right{
+		font-size: 5vw;
+	}
+}
+
+@media (min-width: 1224px) {
+	.letter-left{
+		width:25%;
+	}
+	.letter-left img:nth-child(4){
+		display : none;
+	}
+	.letter-right{
+		width:75%;
+	}
+}
+
+.letter-right ul li svg{
+	width : 1em;
+	height : 1em;
+}
+
+.letter-right ul li span {
+	font-family: 'Mochiy Pop One', sans-serif;
+	color: white;
+	display: inline-block;
+	font-size: 0.8em;
+}
+
+@media (min-width: 1281px) {
+	.letter-right ul li svg{
+		width : 0.55em;
+		height : 0.55em;
+	}
+	
+	.letter-right ul li span {
+		font-size: 0.45em;
+	}
+}
+.letter-right h3{
+	font-family: 'Noto Sans JP','Yeon Sung', sans-serif;
+	line-height : 1.2em;
+	word-spacing : 0.1em;
+}
+
+.main-video video{
+	width: 100%;
+	height: 100%;
+}

@@ -1,5 +1,6 @@
 
-document.querySelector('#logout_a').addEventListener('click',function(){
+if(document.querySelector('#logout_a') != null){
+	document.querySelector('#logout_a').addEventListener('click',function(){
 		modalCommon.displayTwoBtnModal(LOGOUT_MODAL_TITLE,LOGOUT_MODAL_BODY,async function(){
 			
 			try{
@@ -10,6 +11,8 @@ document.querySelector('#logout_a').addEventListener('click',function(){
 			}
 		});
 });
+}
+
 
 /*
  * logoutAPIを実行する。
