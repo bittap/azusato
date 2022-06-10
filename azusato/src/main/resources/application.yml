@@ -32,6 +32,8 @@ spring:
 # DATABASE Log
 # ===============================
 logging:
+  absolute-path: ${LOGGING_ABSOLUTE_PATH:/project/azsuato/logs}
+  file-name: ${LOGGING_FILE_NAME:log}
   level:
     root: DEBUG
     org:
@@ -50,7 +52,7 @@ logging:
     # HikariPool ステータス出力はDEBUGなのでINFOにして出ないように
     com:
       zaxxer:
-        hikari: INFO
+        hikari: DEBUG
 user:
   # length of id for nonmember
   non-member-id-length: 30

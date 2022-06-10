@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30">
-	<property name="LOGS_ABSOLUTE_PATH" value="/logs" /> 
-	<property name="LOGS_FILE_NAME" value="log" />
+	<springProperty scope="context" name="ABSOLUTE_PATH" source="logging.absolute-path" />
+	<springProperty scope="context" name="FILE_NAME" source="logging.file-name" />
 	<springProperty scope="context" name="logLevel" source="logging.level.root" />
 	
-	<springProfile name="dev">
-		<!-- dev環境の場合基本ログ出力レベルはdebug -->
-		<property name="LOG_LEVEL" value="debug" />
-	</springProfile>
-	
-	<springProfile name="prod">
-			<!-- prod環境の場合基本ログ出力レベルはdebug -->
-			<property name="LOG_LEVEL" value="info" />
+	<!-- ローカル環境とテスト環境以外にはファイルに書き込む機能を利用する。-->
+	<springProfile name="!(local|test)">
+		<property name="USE_ROLLING_FILE" value="true" />
 	</springProfile>	
 
     <!--出力ルール～コンソール～ -->
@@ -22,8 +17,8 @@
         </encoder>
     </appender>
 
-    <!-- <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    	<file>${LOGS_ABSOLUTE_PATH}/${LOGS_FILE_NAME}.log</file>
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<file>${ABSOLUTE_PATH}/${FILE_NAME}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
         	日ずつファイル作成
             <fileNamePattern>${LOGS_ABSOLUTE_PATH}/%d{yyyyMM}/${LOGS_FILE_NAME}.%d{yyyyMMdd}.%i.log</fileNamePattern>
@@ -37,24 +32,33 @@
         <encoder>
             <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{100}.%M - %.-512msg%n</pattern>
         </encoder>
-    </appender> -->
+    </appender>
+    
     
     <!-- Thymeleafに関するものの設定 -->
     <logger name="org.thymeleaf.TemplateEngine" level="INFO">
     	<appender-ref ref="STDOUT"/>
-    	<!-- <appender-ref ref="FILE" /> -->
+    	<if condition='property("USE_ROLLING_FILE").contains("true")'>
+    		<then>
+    			<appender-ref ref="FILE" />
+    		</then>
+    	</if>
     </logger>
     
-    <!-- バインドされるEntity内容見えないように。 -->
+ <!--    バインドされるEntity内容見えないように。 
     <logger name="org.hibernate.engine.internal.TwoPhaseLoad" level="INFO">
     	<appender-ref ref="STDOUT"/>
-    	<!-- <appender-ref ref="FILE" /> -->
-    </logger>
+    	<appender-ref ref="FILE" />
+    </logger> -->
     
     <!-- 基本ログ出力レベル設定 -->
     <root level="${logLevel}">
       <appender-ref ref="STDOUT"/>
-      <!-- <appender-ref ref="FILE" /> -->
+    	<if condition='property("USE_ROLLING_FILE").contains("true")'>
+    		<then>
+    			<appender-ref ref="FILE" />
+    		</then>
+    	</if>
     </root>
 
     
