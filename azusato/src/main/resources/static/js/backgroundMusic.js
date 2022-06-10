@@ -1,3 +1,5 @@
+const MUSIC_PATH = document.currentScript.getAttribute('music-path');
+
 /*
  * relate to play background music
  */
@@ -14,7 +16,7 @@ $(document).ready(function(){
 		audioTag.setAttribute("id","background-audio");
 		
 		const sourceTag = document.createElement('source');
-		sourceTag.setAttribute("src",BACKGROUND_MUSIC_MODAL_SRC);
+		sourceTag.setAttribute("src",MUSIC_PATH + BACKGROUND_MUSIC_MODAL_FILENAME);
 		sourceTag.setAttribute("type","audio/mpeg");
 		
 		audioTag.appendChild(sourceTag);
