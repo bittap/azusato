@@ -1,10 +1,12 @@
 package com.my.azusato.api.controller;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -46,16 +48,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ProfileControllerAPI {
 
 	private final Random random = new Random();
-
-	private final ProfileProperty profileProperty;
-	
-	private final HttpServletRequest servletRequest;
-	
-	private final ProfileServiceAPI profileServiceAPI;
-	
-	private final MessageSource messageSource;
-	
-	private final HttpSession httpSession;
 	
 	public static final String COMMON_URL = "profile";
 	
@@ -65,17 +57,16 @@ public class ProfileControllerAPI {
 	 * 既に登録したランダムイメージの情報を取得する。
 	 * 
 	 * @return {@link DefaultRandomProfileResponse}
-	 * @throws IOException 既に登録した基本イメージが指定した位置に存在しない場合。
+	 * @throws URISyntaxException ラスパスよりURLを生成する時、不正なURLの場合
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	@GetMapping(value = RANDOM_URL)
-	public DefaultRandomProfileResponse getDefaultRandomProfile() throws IOException {
+	public DefaultRandomProfileResponse getDefaultRandomProfile() throws URISyntaxException {
 		log.debug("[ランダムイメージ取得] START");
 		DefaultRandomProfileResponse response = new DefaultRandomProfileResponse();
 
-		response.setProfileImageType(profileProperty.getDefaultImageType());
-		response.setProfileImageBase64(getDefaultProfileBase64());
+		response.setProfileImagePath(getDefaultProfilePath());
 
 		log.debug("[ランダムイメージ取得] END response : {}", response);
 		return response;
@@ -112,20 +103,24 @@ public class ProfileControllerAPI {
 	}
 
 	/**
-	 * 既に登録した基本イメージのbase64ファイルを読み込んで、取得する。
-	 * 基本イメージのURIはclasspath:default/profile/base64/avatar(Random数字).txt
-	 * 
-	 * @return 既に登録した基本イメージのbase64
-	 * @throws IOException ファイルが存在しない場合
+	 * 既に登録した基本イメージファイルパスを返す。 
+	 * 基本イメージがあるクラスパスの中にあるファイルを全部取得し、その中でランダムでファイルのイメージパスを取得する。
+	 * @return html側からアクセスするpath
+	 * @throws URISyntaxException クラスパスよりURLを生成する時、不正なURLの場合
 	 */
-	private String getDefaultProfileBase64() throws IOException {
-		// 例) profileProperty.getDefaultMaxNumber()が3の場合
-		// 1~3まで取得
-		int generatedNumber = random.nextInt(profileProperty.getDefaultMaxNumber()) + 1;
-		String path = Paths.get( "default/profile/base64", "avatar" + generatedNumber + ".txt").toString();
-		log.debug("absolutePath : {}",Paths.get( "default/profile/base64", "avatar" + generatedNumber + ".txt").toAbsolutePath().toString());
-		try(InputStream is = this.getClass().getClassLoader().getResourceAsStream(path); BufferedInputStream bi = new BufferedInputStream(is)){
-			return new String(bi.readAllBytes()); 
-		}
+	private String getDefaultProfilePath() throws URISyntaxException  {
+		URL url = this.getClass().getClassLoader().getResource("static/image/default/profile");
+		File folder = new File(url.toURI());
+		log.debug("folder : {}",folder.getAbsolutePath());
+		
+		String[] files = folder.list();
+		int fileCount = files.length;
+
+		int generatedNumber = random.nextInt(fileCount) + 1;
+		int resolvedFileIndex = generatedNumber-1;
+		
+		log.debug("fileName : {}, fileCount : {}, resolvedFileIndex = {}",Arrays.asList(files).stream().collect(Collectors.joining(",")), fileCount,resolvedFileIndex);
+
+		return Paths.get( "/image/default/profile",files[resolvedFileIndex]).toString();
 	}
 }

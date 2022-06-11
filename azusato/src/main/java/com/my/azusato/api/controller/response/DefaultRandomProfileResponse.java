@@ -14,11 +14,7 @@ import lombok.Data;
 public class DefaultRandomProfileResponse {
 
 	/**
-	 * プロフィールbase64
+	 * プロフィール
 	 */
-	private String profileImageBase64;
-	/**
-	 * プロフィールイメージタイプ
-	 */
-	private String profileImageType;
+	private String profileImagePath;
 }

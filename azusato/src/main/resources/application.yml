@@ -28,6 +28,9 @@ spring:
       ddl-auto: none
       # use strategy identity not table for auto
       use-new-id-generator-mappings: false
+  web:
+    resources:
+      static-locations: classpath:/static, file:/project/azusato/resources
 # ===============================
 # DATABASE Log
 # ===============================

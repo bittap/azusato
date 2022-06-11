@@ -15,3 +15,6 @@ spring:
     baseline-on-migrate: true
     # ignore order
     out-of-order: true
+  web:
+    resources:
+      static-locations: classpath:/static, file:/git/azusato/azusato/resources
