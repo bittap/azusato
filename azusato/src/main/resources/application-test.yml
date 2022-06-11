@@ -22,4 +22,7 @@ spring:
   web:
     resources:
       static-locations: classpath:/static, file:/git/azusato/azusato/resources/test-resources
-    
+
+profile:
+  # クライアントの本イメージのファイルの格納場所
+  client-image-folder-path: /git/azusato/azusato/resources/test-resources

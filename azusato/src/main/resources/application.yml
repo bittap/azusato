@@ -61,13 +61,15 @@ user:
   non-member-id-length: 30
   # max-age of cookie 10 years
   non-member-cookie-max-time: 315360000
-
-profile:
-  # 基本イメージの最大番号
-  default-max-number: 8
-  # 基本イメージのイメージタイプ
-  default-image-type: image/png
   
+profile:
+  # サーバーからするとの基本イメージの格納場所
+  server-default-image-folder-path: static/image/default/profile
+  # クライアントからするとの基本イメージの格納場所
+  client-default-image-folder-path: /image/default/profile
+  # クライアントの本イメージのファイルの格納場所
+  client-image-folder-path: /project/azusato/resources
+
 session:
   # セッション維持時間
   max-interval-seconds: 3600 

@@ -1,21 +1,29 @@
 package com.my.azusato.api.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.my.azusato.api.service.request.ModifyUserProfileServiceAPIRequest;
 import com.my.azusato.entity.ProfileEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.common.CommonDateEntity;
-import com.my.azusato.exception.AzusatoException;
+import com.my.azusato.property.ProfileProperty;
 import com.my.azusato.repository.UserRepository;
-import com.my.azusato.view.controller.common.ValueConstant;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,35 +44,85 @@ public class ProfileServiceAPI {
 
 	private final UserRepository userRepo;
 
-	private final MessageSource messageSource;
+	//private final MessageSource messageSource;
+	
+	private final ProfileProperty profileProperty;
+	
+	private final Random random = new Random();
+	
+	
+	/**
+	 * イメージを外部フォルダに格納する。
+	 * ファイルネームは"userNo.extention"
+	 * @param bytes 書き込み対象のデータ
+	 * @param extention 拡張子
+	 * @param userNo ファイルネーム
+	 * @return 格納された場所
+	 * @throws IOException 書き込みエラー
+	 */
+	private String uploadImage(byte[] bytes, String extention , Long userNo) throws IOException {
+		final String FOLDER = profileProperty.getClientImageFolderPath();
+		String fileName = String.valueOf(userNo) + "," + extention;
+		Path filePath = Paths.get(FOLDER,fileName);
+		try(OutputStream os = new FileOutputStream(filePath.toFile())){
+			os.write(bytes);
+			return filePath.toString();
+		}
+	}
+	
+	/**
+	 * 既に登録した基本イメージファイルパスを返す。 
+	 * 基本イメージがあるクラスパスの中にあるファイルを全部取得し、その中でランダムでファイルのイメージパスを取得する。
+	 * @return クライアント側からアクセスするpath
+	 * @throws URISyntaxException クラスパスよりURLを生成する時、不正なURLの場合
+	 */
+	public String getDefaultProfilePath() throws URISyntaxException  {
+		File folder = getClassImageFolder(profileProperty.getServerDefaultImageFolderPath());
+		log.debug("folder : {}",folder.getAbsolutePath());
+		
+		String[] files = folder.list();
+		int fileCount = files.length;
+
+		int generatedNumber = random.nextInt(fileCount) + 1;
+		int resolvedFileIndex = generatedNumber-1;
+		
+		log.debug("fileName : {}, fileCount : {}, resolvedFileIndex = {}",Arrays.asList(files).stream().collect(Collectors.joining(",")), fileCount,resolvedFileIndex);
+
+		return Paths.get(profileProperty.getClientDefaultImageFolderPath(),files[resolvedFileIndex]).toString();
+	}
+	
+	/**
+	 * クラスパスにてフォルダを取得する。
+	 * @param folder 対象のフォルダ
+	 * @return クラスパス
+	 * @throws URISyntaxException クラスパスよりURLを生成する時、不正なURLの場合
+	 */
+	private File getClassImageFolder(String folder) throws URISyntaxException {
+		URL url = this.getClass().getClassLoader().getResource(folder);
+		return new File(url.toURI());
+	}
 	
 
 	/**
-	 * update profile with name for user table.
-	 * 
+	 * イメージをアップロードし、アップロードされたイメージパスにてイメージパスを更新する。
 	 * @param req request parameter
-	 * @param locale   locale of client. for error message
+	 * @param locale エラーメッセージ用。使用しない。
+	 * @throws IOException イメージを外部フォルダに書き込む時のエラー
 	 */
 	@Transactional
-	public void updateUserProfile(ModifyUserProfileServiceAPIRequest req, Locale locale) {
+	public void updateUserProfile(ModifyUserProfileServiceAPIRequest req, Locale locale) throws IOException {
 		log.debug("req : {}", req);
 		
-		UserEntity updateTargetEntity = userRepo.findByNoAndCommonFlagDeleteFlag(req.getUserNo(),ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
-				String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
-				log.error("not exist {} table, no : {}", tableName, req.getUserNo());
-				throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
-						messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
-		});
+		UserEntity modifyTargetUserEntity = req.getUserEntity();
 		
-		ProfileEntity profileEntity = updateTargetEntity.getProfile();
-		profileEntity.setImageBase64(req.getProfileImageBase64());
-		profileEntity.setImageType(req.getProfileImageType());
+		String uploadedPath = uploadImage(req.getProfileImageBytes(), req.getProfileImageType(), modifyTargetUserEntity.getNo());
 
-		CommonDateEntity commonDateEntity = updateTargetEntity.getCommonDate();
+		ProfileEntity profileEntity = modifyTargetUserEntity.getProfile();
+		profileEntity.setImagePath(uploadedPath);
+
+		CommonDateEntity commonDateEntity = modifyTargetUserEntity.getCommonDate();
 		commonDateEntity.setUpdateDatetime(LocalDateTime.now());
 		
-		updateTargetEntity.setName(req.getName());
-		
-		userRepo.save(updateTargetEntity);
+		userRepo.save(modifyTargetUserEntity);
 	}
 }

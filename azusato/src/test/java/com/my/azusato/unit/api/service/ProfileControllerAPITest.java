@@ -52,17 +52,18 @@ public class ProfileControllerAPITest {
 			});
 		}
 		
-		private Map<String, Boolean> expect(){
-			Path path = Paths.get("src","main","resources","static","image","default","profile");
-			System.out.printf("absolutPath: %s\n",path.toAbsolutePath());
-			List<String> fileNames = Arrays.asList(path.toFile().list());
+	}
+	
+	public static Map<String, Boolean> expect(){
+		Path path = Paths.get("src","main","resources","static","image","default","profile");
+		System.out.printf("absolutPath: %s\n",path.toAbsolutePath());
+		List<String> fileNames = Arrays.asList(path.toFile().list());
 
-			return fileNames.stream().collect(Collectors.toMap((e)->{
-				return Paths.get("/image/default/profile/",e).toString();
-			}, (e)->{
-				return Boolean.valueOf(false);
-			}));
+		return fileNames.stream().collect(Collectors.toMap((e)->{
+			return Paths.get("/image/default/profile/",e).toString();
+		}, (e)->{
+			return Boolean.valueOf(false);
+		}));
 
-		}
 	}
 }

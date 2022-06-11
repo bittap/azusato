@@ -21,9 +21,7 @@ public class GetSessionUserServiceAPIResponse {
 
 	String name;
 
-	String profileImageType;
-
-	String profileImageBase64;
+	String profileImagePath;
 
 	String id;
 }

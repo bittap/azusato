@@ -28,7 +28,7 @@ public class ProfileEntity {
 	@Column(name = "user_no")
 	private Long userNo;
 	
-	private String imageSrc;
+	private String imagePath;
 	
 	@OneToOne
 	@JoinColumn(name = "user_no")

@@ -23,6 +23,6 @@ public class ModifyCelebationServiceAPIRequest {
 	String name;
 
 	String profileImageType;
-
-	String profileImageBase64;
+	
+	byte[] profileImageBytes;
 }

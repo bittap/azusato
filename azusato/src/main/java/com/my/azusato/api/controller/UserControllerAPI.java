@@ -111,8 +111,7 @@ public class UserControllerAPI {
 		} else {
 			String id = getNonMemberRandomString();
 			AddNonMemberUserServiceAPIRequest serviceReq = AddNonMemberUserServiceAPIRequest.builder()
-					.name(req.getName()).profileImageBase64(req.getProfileImageBase64())
-					.profileImageType(req.getProfileImageType()).id(id).build();
+					.name(req.getName()).id(id).build();
 			String savedUsername = userAPIService.addNonMember(serviceReq);
 
 			Cookie nonMemberCookie = createNonmemberCookie(String.valueOf(savedUsername));

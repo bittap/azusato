@@ -32,7 +32,4 @@ public class AddCelebrationAPIReqeust {
 	@Pattern(regexp = RegexConstant.profileImageBase64, message = "{profileImageBase64.regex}")
 	@NotBlank(message = "{notBlank}")
 	String profileImageType;
-
-	@NotBlank(message = "{notBlank}")
-	String profileImageBase64;
 }

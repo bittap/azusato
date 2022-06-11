@@ -21,10 +21,6 @@ import lombok.NoArgsConstructor;
 public class AddNonMemberUserServiceAPIRequest {
 
 	String name;
-
-	String profileImageType;
-
-	String profileImageBase64;
-
+	
 	String id;
 }

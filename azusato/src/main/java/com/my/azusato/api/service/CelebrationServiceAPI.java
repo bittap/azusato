@@ -1,5 +1,6 @@
 package com.my.azusato.api.service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
+import com.my.azusato.api.service.request.ModifyUserProfileServiceAPIRequest;
 import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse.CelebrationReply;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
@@ -27,7 +29,6 @@ import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
 import com.my.azusato.entity.CelebrationContentEntity;
 import com.my.azusato.entity.CelebrationSummaryEntity;
-import com.my.azusato.entity.ProfileEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.entity.common.CommonDateEntity;
@@ -66,6 +67,8 @@ public class CelebrationServiceAPI {
 	private final CelebrationSummaryRepository celeSummaryRepo;
 	
 	private final CelebrationContentRepository celeContentRepo;
+	
+	private final ProfileServiceAPI profileService;
 
 	/**
 	 * delegate
@@ -73,8 +76,9 @@ public class CelebrationServiceAPI {
 	 * 
 	 * @param req    request parameter.
 	 * @param locale locale of client.
+	 * @throws IOException 
 	 */
-	public void addCelebartionAdmin(AddCelebrationServiceAPIRequest req, Locale locale) {
+	public void addCelebartionAdmin(AddCelebrationServiceAPIRequest req, Locale locale) throws IOException {
 		addCelebartion(req, locale, "admin");
 	}
 
@@ -84,8 +88,9 @@ public class CelebrationServiceAPI {
 	 * 
 	 * @param req    request parameter.
 	 * @param locale locale of client.
+	 * @throws IOException 
 	 */
-	public void addCelebartion(AddCelebrationServiceAPIRequest req, Locale locale) {
+	public void addCelebartion(AddCelebrationServiceAPIRequest req, Locale locale) throws IOException {
 		addCelebartion(req, locale, "not_admin");
 	}
 
@@ -97,9 +102,10 @@ public class CelebrationServiceAPI {
 	 * @param req      request parameter.
 	 * @param locale   locale of client. for error message
 	 * @param userType admin,etc
+	 * @throws IOException 
 	 */
 	@Transactional
-	private void addCelebartion(AddCelebrationServiceAPIRequest req, Locale locale, String userType) {
+	private void addCelebartion(AddCelebrationServiceAPIRequest req, Locale locale, String userType) throws IOException {
 		log.debug("{}#addCelebartion , req : {}, locale : {}", CelebrationServiceAPI.class.getName(), req, locale);
 
 		UserEntity userEntity = userRepo.findByNoAndCommonFlagDeleteFlag(req.getUserNo(),ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(() -> {
@@ -116,10 +122,6 @@ public class CelebrationServiceAPI {
 		
 		LocalDateTime nowLdt = LocalDateTime.now();
 		
-		ProfileEntity profileEntity = userEntity.getProfile();
-		profileEntity.setImageBase64(req.getProfileImageBase64());
-		profileEntity.setImageType(req.getProfileImageType());
-
 		CommonDateEntity commonDateEntity = userEntity.getCommonDate();
 		commonDateEntity.setUpdateDatetime(nowLdt);
 		
@@ -136,7 +138,14 @@ public class CelebrationServiceAPI {
 				.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
 				.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
 
-		celeContentRepo.save(insertedEntity);
+		CelebrationContentEntity insertedCelebrationEntity = celeContentRepo.save(insertedEntity);
+		
+		ModifyUserProfileServiceAPIRequest profileReq = ModifyUserProfileServiceAPIRequest.builder()
+				.profileImageBytes(req.getProfileImageBytes())
+				.profileImageType(req.getProfileImageType())
+				.userEntity(insertedCelebrationEntity.getCommonUser().getCreateUserEntity()).build();
+		
+		profileService.updateUserProfile(profileReq, locale);
 
 		log.debug("{}#addCelebartion END");
 	}
@@ -150,10 +159,11 @@ public class CelebrationServiceAPI {
 	 * 
 	 * @param ModifyCelebationServiceAPIRequest 検索条件
 	 * @param locale エラーメッセージ用
+	 * @throws IOException 
 	 * @throws AzusatoException 対象データ存在なし、生成したユーザではない場合
 	 */
 	@Transactional
-	public void modifyCelebartion(ModifyCelebationServiceAPIRequest req , Locale locale) {
+	public void modifyCelebartion(ModifyCelebationServiceAPIRequest req , Locale locale) throws IOException{
 		CelebrationContentEntity fetchedCelebationEntity = 
 				celeContentRepo.findByNoAndCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(req.getCelebationNo(),ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
 						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationContentEntity.TABLE_NAME_KEY);
@@ -170,12 +180,17 @@ public class CelebrationServiceAPI {
 		fetchedCelebationEntity.setTitle(req.getTitle());
 		fetchedCelebationEntity.setContent(req.getContent());
 		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().setName(req.getName());
-		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().setImageType(req.getProfileImageType());
-		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().setImageBase64(req.getProfileImageBase64());
 		fetchedCelebationEntity.getCommonDate().setUpdateDatetime(now);
 		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getCommonDate().setUpdateDatetime(now);
 	
-		celeContentRepo.save(fetchedCelebationEntity);
+		CelebrationContentEntity updatedCelebrationEntity = celeContentRepo.save(fetchedCelebationEntity);
+		
+		ModifyUserProfileServiceAPIRequest profileReq = ModifyUserProfileServiceAPIRequest.builder()
+				.profileImageBytes(req.getProfileImageBytes())
+				.profileImageType(req.getProfileImageType())
+				.userEntity(updatedCelebrationEntity.getCommonUser().getCreateUserEntity()).build();
+		
+		profileService.updateUserProfile(profileReq, locale);
 	}
 	
 	/**
@@ -259,8 +274,7 @@ public class CelebrationServiceAPI {
 					.title(fetchedCelebationEntity.getTitle())
 					.content(fetchedCelebationEntity.getContent())
 					.name(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getName())
-					.profileImageType(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().getImageType())
-					.profileImageBase64(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
+					.profileImagePath(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().getImagePath())
 					.build();
 	}
 	
@@ -296,8 +310,7 @@ public class CelebrationServiceAPI {
 								.createdDatetime(e2.getCommonDate().getCreateDatetime())
 								.owner(e2.getCommonUser().getCreateUserEntity().getNo() == userNo ? true : false)
 								.name(e2.getCommonUser().getCreateUserEntity().getName())
-								.profileImageType(e2.getCommonUser().getCreateUserEntity().getProfile().getImageType())
-								.profileImageBase64(e2.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
+								.profileImagePath(e2.getCommonUser().getCreateUserEntity().getProfile().getImagePath())
 								.build();
 						return reply;
 					})
@@ -329,8 +342,7 @@ public class CelebrationServiceAPI {
 			return Celebration.builder()
 					.title(e.getTitle())
 					.name(e.getCommonUser().getCreateUserEntity().getName())
-					.profileImageType(e.getCommonUser().getCreateUserEntity().getProfile().getImageType())
-					.profileImageBase64(e.getCommonUser().getCreateUserEntity().getProfile().getImageBase64())
+					.profileImagePath(e.getCommonUser().getCreateUserEntity().getProfile().getImagePath())
 					.no(e.getNo())
 					.createdDatetime(e.getCommonDate().getCreateDatetime())
 					.build();

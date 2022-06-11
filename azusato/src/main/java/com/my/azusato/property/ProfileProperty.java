@@ -18,12 +18,17 @@ import lombok.Getter;
 @Getter
 public class ProfileProperty {
 	/**
-	 * 基本イメージの最大番号
+	 * サーバーからするとの基本イメージの格納場所
 	 */
-	private final Integer defaultMaxNumber;
-
+	private final String serverDefaultImageFolderPath;
+	
 	/**
-	 * 基本イメージのイメージタイプ
+	 * クライアントからするとの基本イメージの格納場所
 	 */
-	private final String defaultImageType;
+	private final String clientDefaultImageFolderPath;
+	
+	/**
+	 * クライアントの本イメージのファイルの格納場所
+	 */
+	private final String clientImageFolderPath;
 }

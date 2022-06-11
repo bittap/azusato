@@ -32,9 +32,7 @@ public class GetCelebrationsSerivceAPIResponse {
 		
 		private String name;
 		
-		private String profileImageType;
-		
-		private String profileImageBase64;
+		private String profileImagePath;
 		
 		private Long no;
 		

@@ -50,8 +50,7 @@ public class UserServiceAPI {
 	public String addNonMember(AddNonMemberUserServiceAPIRequest req) {
 		log.debug("{}#addNonMember , req : {}", UserServiceAPI.class.getName(), req);
 
-		ProfileEntity profileEntity = ProfileEntity.builder().ImageBase64(req.getProfileImageBase64())
-				.ImageType(req.getProfileImageType()).build();
+		ProfileEntity profileEntity = ProfileEntity.builder().build();
 
 		LocalDateTime currentDatetime = LocalDateTime.now();
 
@@ -83,8 +82,7 @@ public class UserServiceAPI {
 		});
 
 		GetSessionUserServiceAPIResponse response = GetSessionUserServiceAPIResponse.builder().id(userEntity.getId())
-				.name(userEntity.getName()).profileImageBase64(userEntity.getProfile().getImageBase64())
-				.profileImageType(userEntity.getProfile().getImageType()).build();
+				.name(userEntity.getName()).profileImagePath(userEntity.getProfile().getImagePath()).build();
 
 		return response;
 	}
