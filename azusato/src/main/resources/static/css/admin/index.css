@@ -27,9 +27,6 @@
 	.letter-left{
 		width:25%;
 	}
-	.letter-left img:nth-child(4){
-		display : none;
-	}
 	.letter-right{
 		width:75%;
 	}
