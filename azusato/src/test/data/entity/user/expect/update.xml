@@ -12,7 +12,6 @@
     />
     <profile
     	user_no='1'
-    	image_base64='update3' 
-    	image_type='update4' 
+    	image_path='update1'
     />
 </dataset>

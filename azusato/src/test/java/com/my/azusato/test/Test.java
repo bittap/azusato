@@ -1,15 +1,23 @@
 package com.my.azusato.test;
 
-import java.io.File;
-import java.nio.file.Paths;
-
-import org.assertj.core.util.Arrays;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.my.azusato.api.controller.request.AddNonMemberUserAPIRequest;
 
 public class Test {
 
-	public void test() {
-		File[] files = Paths.get("/git/azusato/azusato/test-resources").toFile().listFiles();
+	public void test()  {
+
+	}
+	
+	public static void main(String[] args) throws JsonProcessingException {
+		AddNonMemberUserAPIRequest req = new AddNonMemberUserAPIRequest("asd");
+		req.setName("asd");
 		
-		Arrays.asList(files).forEach(System.out::println);
+		ObjectMapper om = new ObjectMapper();
+		
+		String json = om.writeValueAsString(req);
+		AddNonMemberUserAPIRequest pojo = om.readValue(json, AddNonMemberUserAPIRequest.class);
+		System.out.println(pojo);
 	}
 }

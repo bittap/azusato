@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
     <profile 
-    	image_base64='varchar1' 
-    	image_type='png' 
+    	image_path='varchar1' 
     	create_datetime='2022-01-02 03:04:05' 
     	update_datetime='2022-01-02 03:04:05' 
     	delete_flag='true'/>

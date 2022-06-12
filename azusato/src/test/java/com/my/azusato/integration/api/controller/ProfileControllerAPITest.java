@@ -4,7 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,7 +30,7 @@ public class ProfileControllerAPITest extends AbstractIntegration {
 		/**
 		 * random基本イメージを比較するために、宣言 key : base64 , value : false マッチするとfalseからtrueに変更する。
 		 */
-		Map<String, Boolean> expects = com.my.azusato.unit.api.service.ProfileSerivceAPITest.expect();
+		Map<String, Boolean> expects = expect();
 
 		@Test
 		public void normal_case() throws Exception {
@@ -38,5 +43,18 @@ public class ProfileControllerAPITest extends AbstractIntegration {
 
 			assertTrue(expects.containsKey(result.getProfileImagePath()));
 		}
+	}
+	
+	public Map<String, Boolean> expect(){
+		Path path = Paths.get("src","main","resources","static","image","default","profile");
+		System.out.printf("absolutPath: %s\n",path.toAbsolutePath());
+		List<String> fileNames = Arrays.asList(path.toFile().list());
+
+		return fileNames.stream().collect(Collectors.toMap((e)->{
+			return Paths.get(profileProperty.getClientDefaultImageFolderPath(),e).toString();
+		}, (e)->{
+			return Boolean.valueOf(false);
+		}));
+
 	}
 }

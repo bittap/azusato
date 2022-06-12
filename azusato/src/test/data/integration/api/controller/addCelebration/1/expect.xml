@@ -13,8 +13,7 @@
     />
     <profile
     	user_no='1'
-    	image_base64='update2' 
-    	image_type='image/png' 
+    	image_path='\git\azusato\azusato\test-resources\1.png'
     />
     <celebration 
     	title='varchar1' 

@@ -67,7 +67,7 @@ public class ProfileSerivceAPITest extends AbstractIntegration {
 		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "updateUserProfile/";
 		
 		@Test
-		public void admin_normal_case() throws Exception {
+		public void givenPng_resultOk() throws Exception {
 			String folderName = "1";
 			String expectFileName = "1."+Entity.ImageType[0];
 			
@@ -76,6 +76,40 @@ public class ProfileSerivceAPITest extends AbstractIntegration {
 			ModifyUserProfileServiceAPIRequest req = ModifyUserProfileServiceAPIRequest.builder()
 			.profileImageBytes(TestStream.getTestImageBytes())
 			.profileImageType(Entity.ImageType[0])
+			.userNo(Entity.createdLongs[0])
+			.build();
+				
+			targetService.updateUserProfile(req, TestConstant.LOCALE_JA);
+			
+			String[] COMPARED_TABLE_NAME = { "user", "profile" };
+			
+			// compare tables
+			for (String table : COMPARED_TABLE_NAME) {
+				// exclude to compare dateTime columns when celebration table
+				if (table.equals("user")) {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+							TestConstant.DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS);
+				}else {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
+				}
+			}
+			
+			// ファイル存在有無チェック
+			Assertions.assertDoesNotThrow(()->{
+				Paths.get(profileProperty.getClientImageFolderPath() + expectFileName );
+			}); 
+		}
+		
+		@Test
+		public void givenJpeg_resultOk() throws Exception {
+			String folderName = "2";
+			String expectFileName = "1."+Entity.ImageType[1];
+			
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+			
+			ModifyUserProfileServiceAPIRequest req = ModifyUserProfileServiceAPIRequest.builder()
+			.profileImageBytes(TestStream.getTestImageBytes())
+			.profileImageType(Entity.ImageType[1])
 			.userNo(Entity.createdLongs[0])
 			.build();
 				

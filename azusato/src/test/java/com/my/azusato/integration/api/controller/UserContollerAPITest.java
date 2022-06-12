@@ -34,7 +34,6 @@ import com.my.azusato.entity.UserEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.integration.AbstractIntegration;
-import com.my.azusato.integration.api.controller.CelebrationContollerAPITest.AddCelebration;
 import com.my.azusato.view.controller.common.CookieConstant;
 import com.my.azusato.view.controller.common.HttpConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
@@ -44,13 +43,13 @@ public class UserContollerAPITest extends AbstractIntegration {
 	final static String RESOUCE_BASIC_PATH = "src/test/data/integration/api/controller/";
 	
 	@Nested
-	class getSessionUser {
+	class getLoginUser {
 		
-		final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getSessionUser/";
+		final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getLoginUser/";
 		
 		@Test
 		public void givenNormalCase_result200() throws Exception {
-			dbUnitCompo.initalizeTable(Paths.get(AddCelebration.RESOUCE_PATH, "1", TestConstant.INIT_XML_FILE_NAME));
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, "1", TestConstant.INIT_XML_FILE_NAME));
 			
 			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
 						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET+UserControllerAPI.COMMON_URL)
@@ -64,8 +63,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 			GetSessionUserServiceAPIResponse expect = GetSessionUserServiceAPIResponse.builder()
 					.id(Entity.createdVarChars[0])
 					.name(Entity.createdVarChars[2])
-					.profileImageBase64(Entity.createdVarChars[0])
-					.profileImageType(Entity.ImageType[0])
+					.profileImagePath(Entity.createdVarChars[0])
 					.build();
 			
 			Assertions.assertEquals(expect, result);
@@ -133,8 +131,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 		public void givenAlreadyCookie_result400(Locale locale) throws Exception {
 			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, "1", TestConstant.INIT_XML_FILE_NAME));
 			
-			AddNonMemberUserAPIRequest req = AddNonMemberUserAPIRequest.builder().name(Entity.createdVarChars[0])
-			.profileImageType("image/png").profileImageBase64(Entity.createdVarChars[2]).build();
+			AddNonMemberUserAPIRequest req = AddNonMemberUserAPIRequest.builder().name(Entity.createdVarChars[0]).build();
 			String requestBody = om.writeValueAsString(req);
 			
 			MvcResult mvcResult = mockMvc
@@ -177,10 +174,7 @@ public class UserContollerAPITest extends AbstractIntegration {
 	@SuppressWarnings("unused")
 	private static Stream<Arguments> givenVaildParameter_resultOk() {
 		return Stream.of(
-				Arguments.of(AddNonMemberUserAPIRequest.builder().name(Entity.createdVarChars[0])
-						.profileImageType("image/png").profileImageBase64(Entity.createdVarChars[2]).build()),
-				Arguments.of(AddNonMemberUserAPIRequest.builder().name(Entity.createdVarChars[0])
-						.profileImageType("image/jpeg").profileImageBase64(Entity.createdVarChars[2]).build())
+				Arguments.of(AddNonMemberUserAPIRequest.builder().name(Entity.createdVarChars[0]).build())
 				);
 	}
 	
@@ -188,17 +182,17 @@ public class UserContollerAPITest extends AbstractIntegration {
 	private static Stream<Arguments> givenInvaildParameter_result400() {
 		return Stream.of(
 				Arguments.of(TestConstant.LOCALE_JA,
-						AddNonMemberUserAPIRequest.builder().name(RandomStringUtils.randomAlphabetic(11)).profileImageType("image/svg+xml").build(),
-						"プロフィールイメージはpng、jpegのみ可能です。\n名前は最大10桁数まで入力可能です。"),
+						AddNonMemberUserAPIRequest.builder().name(RandomStringUtils.randomAlphabetic(11)).build(),
+						"名前は最大10桁数まで入力可能です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
-						AddNonMemberUserAPIRequest.builder().profileImageType("image/svg+xml").build(),
-						"プロフィールイメージはpng、jpegのみ可能です。\n名前は必修項目です。"),
+						AddNonMemberUserAPIRequest.builder().build(),
+						"名前は必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_KO,
-						AddNonMemberUserAPIRequest.builder().profileImageType("image/svg+xml").build(),
-						"이름을 입력해주세요.\n프로필사진은 png, jpeg만 지원됩니다."),
+						AddNonMemberUserAPIRequest.builder().build(),
+						"이름을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
-						AddNonMemberUserAPIRequest.builder().name(RandomStringUtils.randomAlphabetic(11)).profileImageType("image/svg+xml").build(),
-						"글자 수 10을 초과해서 이름을 입력하는 것은 불가능합니다.\n프로필사진은 png, jpeg만 지원됩니다.")
+						AddNonMemberUserAPIRequest.builder().name(RandomStringUtils.randomAlphabetic(11)).build(),
+						"글자 수 10을 초과해서 이름을 입력하는 것은 불가능합니다.")
 				);
 	}
 }

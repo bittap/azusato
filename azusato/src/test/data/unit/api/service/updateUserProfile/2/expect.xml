@@ -3,16 +3,15 @@
     <user 
     	no='1'
     	id='varchar1' 
-    	password='varchar2' 
-    	name='varchar3' 
+    	password='varchar2'
+    	name='varchar3'
     	user_type='admin' 
     	create_datetime='2022-01-02 03:04:05' 
     	update_datetime='2022-01-02 03:04:05' 
-    	delete_flag='true'
+    	delete_flag='false'
     />
     <profile
     	user_no='1'
-    	image_base64='varchar1' 
-    	image_type='png' 
+    	image_path='\git\azusato\azusato\test-resources\1.jpeg'
     />
 </dataset>

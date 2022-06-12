@@ -1,10 +1,7 @@
 package com.my.azusato.integration.entity;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -109,8 +106,7 @@ public class UserEntityTest extends AbstractIntegration {
 			savedData.setUserType(UPDATE_TYPE.toString());
 			savedData.setName(TestConstant.Entity.updatedVarChars[2]);
 			ProfileEntity savedProfileEntity = savedData.getProfile();
-			savedProfileEntity.setImageBase64(TestConstant.Entity.updatedVarChars[2]);
-			savedProfileEntity.setImageType(TestConstant.Entity.updatedVarChars[3]);
+			savedProfileEntity.setImagePath(TestConstant.Entity.updatedVarChars[0]);
 			savedData.setProfile(savedProfileEntity);
 			
 			savedData.setCommonDate(CommonDateEntity.builder().createDatetime(TestConstant.Entity.createdDatetime).updateDatetime(TestConstant.Entity.updatedDatetime).build());
@@ -124,8 +120,7 @@ public class UserEntityTest extends AbstractIntegration {
 		private UserEntity getExpect(long userNo) {
 			ProfileEntity expectedProfile = new ProfileEntity();
 			expectedProfile.setUserNo(userNo);
-			expectedProfile.setImageBase64(TestConstant.Entity.updatedVarChars[2]);
-			expectedProfile.setImageType(TestConstant.Entity.updatedVarChars[3]);
+			expectedProfile.setImagePath(TestConstant.Entity.updatedVarChars[0]);
 			
 			UserEntity expectedUser = UserEntity.builder()
 			.no(userNo)
@@ -143,18 +138,13 @@ public class UserEntityTest extends AbstractIntegration {
 			return expectedUser;
 		}
 	}
-	
-	private static String getBase64() throws Exception {
-		Path path = Paths.get(TestConstant.COMMON_TEST_DATA_FOLDER,"base64OfImage(PNG).txt");
-		return Files.lines(path).collect(Collectors.joining());
-	}
-	
+
 	/**
 	 * return inserted entity which is normal case.
 	 */
 	public ProfileEntity insertedProfileData_normal_case() throws Exception {
 		return ProfileEntity.builder()
-		.ImageBase64(getBase64()).ImageType(TestConstant.Entity.ImageType[0])
+		.imagePath(TestConstant.Entity.createdVarChars[0])
 		.build();
 	}
 	
@@ -164,7 +154,7 @@ public class UserEntityTest extends AbstractIntegration {
 	public static ProfileEntity insertedProfileData_normal_case(long userNo) throws Exception {
 		return ProfileEntity.builder()
 				.userNo(userNo)
-				.ImageBase64(getBase64()).ImageType(TestConstant.Entity.ImageType[0])
+				.imagePath(TestConstant.Entity.createdVarChars[0])
 				.build();
 	}
 

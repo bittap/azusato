@@ -129,7 +129,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 
 		private String getRequestBody() throws Exception {
 			AddCelebrationAPIReqeust req = AddCelebrationAPIReqeust.builder()
-					.name(Entity.updatedVarChars[0]).profileImageBase64(Entity.updatedVarChars[1]).profileImageType(profileProperty.getDefaultImageType())
+					.name(Entity.updatedVarChars[0]).profileImageType(Entity.ProfileImageType[0])
 					.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1]).build();
 
 			return om.writeValueAsString(req);
@@ -479,8 +479,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					.title(Entity.createdVarChars[0])
 					.content(Entity.createdVarChars[1])
 					.name(Entity.createdVarChars[2])
-					.profileImageType(Entity.ImageType[0])
-					.profileImageBase64(Entity.createdVarChars[0])
+					.profileImagePath(Entity.createdVarChars[0])
 					.build();
 			
 			assertEquals(expect, result);
@@ -559,16 +558,14 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 								.content(Entity.createdVarChars[0])
 								.createdDatetime(Entity.createdDatetimes[0])
 								.name(Entity.createdVarChars[2])
-								.profileImageType(Entity.ImageType[0])
-								.profileImageBase64(Entity.createdVarChars[0])
+								.profileImagePath(Entity.createdVarChars[0])
 								.owner(true).build(),
 							CelebrationReply.builder()
 								.no(Entity.createdLongs[1])
 								.content(Entity.createdVarChars[1])
 								.createdDatetime(Entity.createdDatetimes[1])
 								.name(Entity.createdVarChars[2])
-								.profileImageType(Entity.ImageType[0])
-								.profileImageBase64(Entity.createdVarChars[0])
+								.profileImagePath(Entity.createdVarChars[0])
 								.owner(false).build()
 							))
 					.build();
@@ -653,16 +650,14 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 							Celebration.builder()
 							.title(Entity.createdVarChars[2])
 							.name(Entity.createdVarChars[2])
-							.profileImageType(Entity.ImageType[0])
-							.profileImageBase64(Entity.createdVarChars[0])
+							.profileImagePath(Entity.createdVarChars[0])
 							.no(Entity.createdLongs[1])
 							.createdDatetime(Entity.createdDatetimes[1])
 							.build(),
 							Celebration.builder()
 								.title(Entity.createdVarChars[0])
 								.name(Entity.createdVarChars[2])
-								.profileImageType(Entity.ImageType[0])
-								.profileImageBase64(Entity.createdVarChars[0])
+								.profileImagePath(Entity.createdVarChars[0])
 								.no(Entity.createdLongs[0])
 								.createdDatetime(Entity.createdDatetimes[0])
 								.build()
@@ -698,16 +693,14 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 							Celebration.builder()
 							.title(Entity.createdVarChars[2])
 							.name(Entity.createdVarChars[2])
-							.profileImageType(Entity.ImageType[0])
-							.profileImageBase64(Entity.createdVarChars[0])
+							.profileImagePath(Entity.createdVarChars[0])
 							.no(Entity.createdLongs[1])
 							.createdDatetime(Entity.createdDatetimes[1])
 							.build(),
 							Celebration.builder()
 								.title(Entity.createdVarChars[0])
 								.name(Entity.createdVarChars[2])
-								.profileImageType(Entity.ImageType[0])
-								.profileImageBase64(Entity.createdVarChars[0])
+								.profileImagePath(Entity.createdVarChars[0])
 								.no(Entity.createdLongs[0])
 								.createdDatetime(Entity.createdDatetimes[0])
 								.build()
