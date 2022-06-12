@@ -1,5 +1,9 @@
 package com.my.azusato.integration;
 
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.Arrays;
+
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.dbunit.DBUnitComponent;
+import com.my.azusato.property.ProfileProperty;
 import com.my.azusato.repository.CelebrationContentRepository;
 import com.my.azusato.repository.CelebrationNoticeRepository;
 import com.my.azusato.repository.CelebrationReplyNoticeRepository;
@@ -37,6 +42,9 @@ public abstract class AbstractIntegration  {
 	protected MockMvc mockMvc;
 	
 	protected ObjectMapper om = new ObjectMapper();
+	
+	@Autowired
+	protected ProfileProperty profileProperty;
 	
 	@Autowired
 	protected DataSource dataSource;
@@ -73,15 +81,29 @@ public abstract class AbstractIntegration  {
 	
 	/**
 	 * delete all data. commit for deleting all data and then start to commit for avoiding lazy exception. Because session is closed 
-	 * Reference this <a href="https://stackoverflow.com/questions/11746499/how-to-solve-the-failed-to-lazily-initialize-a-collection-of-role-hibernate-ex.">lazily-initialize</a>  
+	 * Reference this <a href="https://stackoverflow.com/questions/11746499/how-to-solve-the-failed-to-lazily-initialize-a-collection-of-role-hibernate-ex.">lazily-initialize</a> 
+	 *  後、テストフォルダにあるファイル全部削除する。
 	 */
 	@BeforeEach
 	@Commit
-	public void allDataDelete() {
+	public void superBeforeEach() {
+		allDataDelete();
+		allFileDelete();
+	}
+	
+	private void allDataDelete() {
 		profileRepo.deleteAll();
 		celeReplyRepo.deleteAll();
 		celeRepo.deleteAll();
 		userRepo.deleteAll();
+	}
+	
+	/**
+	 * テストし使用したファイルを全部削除する。
+	 */
+	private void allFileDelete() {
+		File file = Paths.get(profileProperty.getClientImageFolderPath()).toFile();
+		Arrays.asList(file.listFiles()).forEach(File::delete);
 	}
 	
 	protected void commitAndStart() {

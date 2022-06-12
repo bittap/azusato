@@ -26,6 +26,7 @@ import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
+import com.my.azusato.common.TestStream;
 import com.my.azusato.entity.CelebrationContentEntity;
 import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.entity.UserEntity;
@@ -141,9 +142,9 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 
 		}
 
-		private AddCelebrationServiceAPIRequest getNormalReq() {
+		private AddCelebrationServiceAPIRequest getNormalReq() throws Exception{
 			return AddCelebrationServiceAPIRequest.builder()
-					.name(Entity.updatedVarChars[0]).profileImageBase64(Entity.updatedVarChars[1]).profileImageType(Entity.updatedVarChars[2])
+					.name(Entity.updatedVarChars[0]).profileImageBytes(TestStream.getTestImageBytes()).profileImageType(Entity.updatedVarChars[2])
 					.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1]).userNo(Long.valueOf(Entity.createdInts[0]))
 					.build();
 		}
@@ -259,10 +260,11 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			String[] COMPARED_TABLE_NAME = { "user", "celebration", "profile" };
 			
 			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+			
 			ModifyCelebationServiceAPIRequest normalReq = ModifyCelebationServiceAPIRequest.builder()
 			.userNo(Long.valueOf(Entity.createdInts[0]))
 			.celebationNo(Long.valueOf(Entity.createdInts[0]))
-			.name(Entity.updatedVarChars[2]).profileImageBase64(Entity.updatedVarChars[3]).profileImageType(Entity.updatedVarChars[4])
+			.name(Entity.updatedVarChars[2]).profileImageBytes(TestStream.getTestImageBytes()).profileImageType(Entity.ImageType[0])
 			.title(Entity.updatedVarChars[0]).content(Entity.updatedVarChars[1])
 			.build();
 			
@@ -384,8 +386,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 							.title(Entity.createdVarChars[0])
 							.content(Entity.createdVarChars[1])
 							.name(Entity.createdVarChars[2])
-							.profileImageBase64(Entity.createdVarChars[3])
-							.profileImageType(Entity.createdVarChars[4])
+							.profileImagePath(Entity.createdVarChars[0])
 							.build();
 			
 			assertEquals(expect, result);
@@ -445,16 +446,14 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 								.content(Entity.createdVarChars[0])
 								.createdDatetime(Entity.createdDatetimes[0])
 								.name(Entity.createdVarChars[2])
-								.profileImageType(Entity.ImageType[0])
-								.profileImageBase64(Entity.createdVarChars[0])
+								.profileImagePath(Entity.createdVarChars[0])
 								.owner(true).build(),
 							CelebrationReply.builder()
 								.no(Entity.createdLongs[1])
 								.content(Entity.createdVarChars[1])
 								.createdDatetime(Entity.createdDatetimes[1])
 								.name(Entity.createdVarChars[2])
-								.profileImageType(Entity.ImageType[0])
-								.profileImageBase64(Entity.createdVarChars[0])
+								.profileImagePath(Entity.createdVarChars[0])
 								.owner(true).build()
 							))
 					.build();
@@ -480,16 +479,14 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 								.content(Entity.createdVarChars[0])
 								.createdDatetime(Entity.createdDatetimes[0])
 								.name(Entity.createdVarChars[2])
-								.profileImageType(Entity.ImageType[0])
-								.profileImageBase64(Entity.createdVarChars[0])
+								.profileImagePath(Entity.createdVarChars[0])
 								.owner(false).build(),
 							CelebrationReply.builder()
 								.no(Entity.createdLongs[1])
 								.content(Entity.createdVarChars[1])
 								.createdDatetime(Entity.createdDatetimes[1])
 								.name(Entity.createdVarChars[2])
-								.profileImageType(Entity.ImageType[0])
-								.profileImageBase64(Entity.createdVarChars[0])
+								.profileImagePath(Entity.createdVarChars[0])
 								.owner(true).build()
 							))
 					.build();
@@ -515,8 +512,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 								.content(Entity.createdVarChars[1])
 								.createdDatetime(Entity.createdDatetimes[1])
 								.name(Entity.createdVarChars[2])
-								.profileImageType(Entity.ImageType[0])
-								.profileImageBase64(Entity.createdVarChars[0])
+								.profileImagePath(Entity.createdVarChars[0])
 								.owner(true).build()
 							))
 					.build();
@@ -578,16 +574,14 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 							Celebration.builder()
 							.title(Entity.createdVarChars[2])
 							.name(Entity.createdVarChars[2])
-							.profileImageType(Entity.ImageType[0])
-							.profileImageBase64(Entity.createdVarChars[0])
+							.profileImagePath(Entity.createdVarChars[0])
 							.no(Entity.createdLongs[1])
 							.createdDatetime(Entity.createdDatetimes[1])
 							.build(),
 							Celebration.builder()
 								.title(Entity.createdVarChars[0])
 								.name(Entity.createdVarChars[2])
-								.profileImageType(Entity.ImageType[0])
-								.profileImageBase64(Entity.createdVarChars[0])
+								.profileImagePath(Entity.createdVarChars[0])
 								.no(Entity.createdLongs[0])
 								.createdDatetime(Entity.createdDatetimes[0])
 								.build()
@@ -618,8 +612,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 							Celebration.builder()
 								.title(Entity.createdVarChars[0])
 								.name(Entity.createdVarChars[2])
-								.profileImageType(Entity.ImageType[0])
-								.profileImageBase64(Entity.createdVarChars[0])
+								.profileImagePath(Entity.createdVarChars[0])
 								.no(Entity.createdLongs[0])
 								.createdDatetime(Entity.createdDatetimes[0])
 								.build()
@@ -653,16 +646,14 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 							Celebration.builder()
 							.title(Entity.createdVarChars[2])
 							.name(Entity.createdVarChars[2])
-							.profileImageType(Entity.ImageType[0])
-							.profileImageBase64(Entity.createdVarChars[0])
+							.profileImagePath(Entity.createdVarChars[0])
 							.no(Entity.createdLongs[1])
 							.createdDatetime(Entity.createdDatetimes[1])
 							.build(),
 							Celebration.builder()
 								.title(Entity.createdVarChars[0])
 								.name(Entity.createdVarChars[2])
-								.profileImageType(Entity.ImageType[0])
-								.profileImageBase64(Entity.createdVarChars[0])
+								.profileImagePath(Entity.createdVarChars[0])
 								.no(Entity.createdLongs[0])
 								.createdDatetime(Entity.createdDatetimes[0])
 								.build()

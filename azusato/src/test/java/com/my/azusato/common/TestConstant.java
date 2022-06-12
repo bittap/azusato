@@ -14,6 +14,8 @@ import org.springframework.validation.BindingResult;
 public class TestConstant {
 
 	public final static String HOST = "192.168.0.1";
+	
+	public final static String TEST_IMAGE_PATH = "src/test/image/test.png";
 
 	public final static String DEFAULT_CHARSET = "UTF-8";
 
@@ -88,6 +90,7 @@ public class TestConstant {
 		public static final LocalDateTime updatedDatetimeWhenCreate = LocalDateTime.of(2022, 1, 2, 3, 4, 5);
 		public static final LocalDateTime updatedDatetime = LocalDateTime.of(2022, 6, 7, 8, 9, 10);
 		public static final LocalDateTime[] updatedDatetimes = {updatedDatetime, LocalDateTime.of(2022, 7, 7, 7, 7, 7)};
+		public static final String[] updatedImagePath = { "\\git\\azusato\\azusato\\test-resources\\1.png"};
 
 	}
 

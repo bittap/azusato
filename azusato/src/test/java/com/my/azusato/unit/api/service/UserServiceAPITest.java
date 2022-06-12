@@ -52,8 +52,7 @@ public class UserServiceAPITest extends AbstractIntegration {
 			GetSessionUserServiceAPIResponse expect = GetSessionUserServiceAPIResponse.builder()
 												.id(Entity.createdVarChars[0])
 												.name(Entity.createdVarChars[2])
-												.profileImageBase64(Entity.createdVarChars[0])
-												.profileImageType(Entity.ImageType[0])
+												.profileImagePath(Entity.createdVarChars[0])
 												.build();
 			
 			assertEquals(expect,result);
@@ -81,8 +80,7 @@ public class UserServiceAPITest extends AbstractIntegration {
 			LocalDateTime beforeExecuteTime = LocalDateTime.now();
 			String id = ReflectionTestUtils.invokeMethod(userControllerAPI, "getNonMemberRandomString");
 			AddNonMemberUserServiceAPIRequest serviceReq = AddNonMemberUserServiceAPIRequest.builder()
-					.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[1])
-					.profileImageType(Entity.createdVarChars[2]).id(id).build();
+					.name(Entity.createdVarChars[0]).id(id).build();
 
 			userServiceAPI.addNonMember(serviceReq);
 
@@ -90,8 +88,6 @@ public class UserServiceAPITest extends AbstractIntegration {
 
 			assertEquals(id, result.getId());
 			assertEquals(Entity.createdVarChars[0], result.getName());
-			assertEquals(Entity.createdVarChars[1], result.getProfile().getImageBase64());
-			assertEquals(Entity.createdVarChars[2], result.getProfile().getImageType());
 			assertTrue(beforeExecuteTime.isBefore(result.getCommonDate().getCreateDatetime()));
 			assertTrue(beforeExecuteTime.isBefore(result.getCommonDate().getUpdateDatetime()));
 			assertEquals(Type.nonmember.toString(), result.getUserType());

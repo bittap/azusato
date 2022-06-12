@@ -13,8 +13,7 @@
     />
     <profile
     	user_no='1'
-    	image_base64='varchar4' 
-    	image_type='varchar5' 
+    	image_path='\git\azusato\azusato\test-resources\notExist.png'
     />
     <celebration 
    		no='1'

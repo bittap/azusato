@@ -33,7 +33,7 @@ public class CelebrationReplyServiceAPITest extends AbstractIntegration {
 	final String RESOUCE_BASIC_PATH = "src/test/data/unit/api/service/";
 
 	@Nested
-	class AddCelebration {
+	class AddCelebrationReply {
 
 		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "addCelebration-reply/";
 		

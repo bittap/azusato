@@ -13,8 +13,7 @@
     />
     <profile
     	user_no='1'
-    	image_base64='varchar1' 
-    	image_type='png' 
+		image_path='varchar1'
     />
     
 </dataset>

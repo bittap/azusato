@@ -25,7 +25,7 @@ public class ProfileControllerAPITest extends AbstractIntegration {
 		/**
 		 * random基本イメージを比較するために、宣言 key : base64 , value : false マッチするとfalseからtrueに変更する。
 		 */
-		Map<String, Boolean> expects = com.my.azusato.unit.api.service.ProfileControllerAPITest.expect();
+		Map<String, Boolean> expects = com.my.azusato.unit.api.service.ProfileSerivceAPITest.expect();
 
 		@Test
 		public void normal_case() throws Exception {

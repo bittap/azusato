@@ -25,4 +25,4 @@ spring:
 
 profile:
   # クライアントの本イメージのファイルの格納場所
-  client-image-folder-path: /git/azusato/azusato/resources/test-resources
+  client-image-folder-path: /git/azusato/azusato/test-resources

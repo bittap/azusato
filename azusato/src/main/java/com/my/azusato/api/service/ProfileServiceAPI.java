@@ -16,14 +16,17 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import com.my.azusato.api.service.request.ModifyUserProfileServiceAPIRequest;
 import com.my.azusato.entity.ProfileEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.common.CommonDateEntity;
+import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.property.ProfileProperty;
 import com.my.azusato.repository.UserRepository;
+import com.my.azusato.view.controller.common.ValueConstant;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,8 +46,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ProfileServiceAPI {
 
 	private final UserRepository userRepo;
-
-	//private final MessageSource messageSource;
+	
+	private final MessageSource messageSource;
 	
 	private final ProfileProperty profileProperty;
 	
@@ -62,7 +65,7 @@ public class ProfileServiceAPI {
 	 */
 	private String uploadImage(byte[] bytes, String extention , Long userNo) throws IOException {
 		final String FOLDER = profileProperty.getClientImageFolderPath();
-		String fileName = String.valueOf(userNo) + "," + extention;
+		String fileName = String.valueOf(userNo) + "." + extention;
 		Path filePath = Paths.get(FOLDER,fileName);
 		try(OutputStream os = new FileOutputStream(filePath.toFile())){
 			os.write(bytes);
@@ -104,16 +107,19 @@ public class ProfileServiceAPI {
 	
 
 	/**
-	 * イメージをアップロードし、アップロードされたイメージパスにてイメージパスを更新する。
+	 * イメージをアップロードし、アップロードされたイメージパスにてイメージパスをしたい更新する。
 	 * @param req request parameter
 	 * @param locale エラーメッセージ用。使用しない。
 	 * @throws IOException イメージを外部フォルダに書き込む時のエラー
+	 * @throws AzusatoException パラメータにあるuserNoより参照したユーザ情報が存在しない。
 	 */
 	@Transactional
 	public void updateUserProfile(ModifyUserProfileServiceAPIRequest req, Locale locale) throws IOException {
 		log.debug("req : {}", req);
 		
-		UserEntity modifyTargetUserEntity = req.getUserEntity();
+		UserEntity modifyTargetUserEntity = userRepo.findByNoAndCommonFlagDeleteFlag(req.getUserNo(),ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(() -> {
+			throw AzusatoException.createI0005Error(locale, messageSource, UserEntity.TABLE_NAME_KEY);
+		});
 		
 		String uploadedPath = uploadImage(req.getProfileImageBytes(), req.getProfileImageType(), modifyTargetUserEntity.getNo());
 

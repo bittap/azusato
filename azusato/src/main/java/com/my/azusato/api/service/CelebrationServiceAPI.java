@@ -143,7 +143,7 @@ public class CelebrationServiceAPI {
 		ModifyUserProfileServiceAPIRequest profileReq = ModifyUserProfileServiceAPIRequest.builder()
 				.profileImageBytes(req.getProfileImageBytes())
 				.profileImageType(req.getProfileImageType())
-				.userEntity(insertedCelebrationEntity.getCommonUser().getCreateUserEntity()).build();
+				.userNo(insertedCelebrationEntity.getCommonUser().getCreateUserEntity().getNo()).build();
 		
 		profileService.updateUserProfile(profileReq, locale);
 
@@ -188,7 +188,7 @@ public class CelebrationServiceAPI {
 		ModifyUserProfileServiceAPIRequest profileReq = ModifyUserProfileServiceAPIRequest.builder()
 				.profileImageBytes(req.getProfileImageBytes())
 				.profileImageType(req.getProfileImageType())
-				.userEntity(updatedCelebrationEntity.getCommonUser().getCreateUserEntity()).build();
+				.userNo(updatedCelebrationEntity.getCommonUser().getCreateUserEntity().getNo()).build();
 		
 		profileService.updateUserProfile(profileReq, locale);
 	}

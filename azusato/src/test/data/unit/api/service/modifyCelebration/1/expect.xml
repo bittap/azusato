@@ -12,8 +12,7 @@
     />
     <profile
     	user_no='1'
-    	image_base64='update4' 
-    	image_type='update5' 
+    	image_path='\git\azusato\azusato\test-resources\1.png'
     />
     <celebration 
    		no='1'

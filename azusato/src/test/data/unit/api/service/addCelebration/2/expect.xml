@@ -33,18 +33,13 @@
     />
     <profile
     	user_no='1'
-    	image_base64='update2' 
-    	image_type='update3' 
+		image_path='\git\azusato\azusato\test-resources\1.png'
     />
     <profile
     	user_no='2'
-    	image_base64='varchar1' 
-    	image_type='png' 
     />
     <profile
     	user_no='3'
-    	image_base64='varchar1' 
-    	image_type='png' 
     />
     <celebration 
     	title='varchar1' 
