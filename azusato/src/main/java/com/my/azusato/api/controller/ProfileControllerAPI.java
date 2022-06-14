@@ -1,11 +1,22 @@
 package com.my.azusato.api.controller;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,8 +25,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.my.azusato.api.controller.request.ModifyUserProfileAPIRequest;
+import com.my.azusato.api.controller.request.UploadProfileImageAPIRequest;
 import com.my.azusato.api.controller.response.DefaultRandomProfileResponse;
 import com.my.azusato.api.service.ProfileServiceAPI;
+import com.my.azusato.api.service.request.ModifyUserProfileServiceAPIRequest;
+import com.my.azusato.exception.AzusatoException;
+import com.my.azusato.login.LoginUser;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
 import lombok.RequiredArgsConstructor;
@@ -40,7 +55,15 @@ public class ProfileControllerAPI {
 	
 	public static final String RANDOM_URL = COMMON_URL + "/random";
 	
+	public static final String UPLOAD_IMG_URL = "upload-img";
+	
+	public static final List<String> PERMIT_IMAGE_TYPES = List.of("png","jpeg");
+	
 	private final ProfileServiceAPI profileService;
+	
+	private final MessageSource ms;
+	
+	private final HttpServletRequest servletRequest;
 
 	/**
 	 * 既に登録したランダムイメージの情報を取得する。
@@ -59,6 +82,45 @@ public class ProfileControllerAPI {
 
 		log.debug("[ランダムイメージ取得] END response : {}", response);
 		return response;
+	}
+	
+	/**
+	 * イメージのアップロード行う。
+	 * <ul>
+	 * 	<li>200 : 成功</li>
+	 * 	<li>400 : <br>パラメータがnull<br>サポートしない拡張子</li>
+	 *  <li>401 : ログインしていない</li>
+	 *  <li>500 : その他エラー</li>
+	 * </ul>
+	 * @param req　リクエストパラメータ
+	 * @param loginUser ログインしたユーザ情報
+	 * @throws IOException
+	 */
+	@ResponseStatus(HttpStatus.OK)
+	@PutMapping(value =  UPLOAD_IMG_URL, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public void uploadImage(@ModelAttribute UploadProfileImageAPIRequest req,@AuthenticationPrincipal LoginUser loginUser) throws IOException {
+		String extension = FilenameUtils.getExtension(req.getProfileImage().getOriginalFilename());
+		// ファイル拡張子チェック
+		PERMIT_IMAGE_TYPES.stream().filter((e)->e.equalsIgnoreCase(extension)).findFirst()
+				.orElseThrow(()->{
+					throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0004, ms.getMessage(extension, 
+							new String[] {PERMIT_IMAGE_TYPES.stream().collect(Collectors.joining(",")),"profileImageType"}, servletRequest.getLocale()));
+				});
+		
+		if(Objects.isNull(loginUser)) {
+			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
+					ms.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
+		}
+		
+		ModifyUserProfileServiceAPIRequest serviceReq = ModifyUserProfileServiceAPIRequest.builder()
+				.userNo(loginUser.getUSER_NO())
+				.profileImageBytes(req.getProfileImage().getBytes())
+				.profileImageType(extension)
+				.build();
+		
+		
+		profileService.updateUserProfile(serviceReq, servletRequest.getLocale());
+		
 	}
 	
 	
