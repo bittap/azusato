@@ -4,8 +4,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.my.azusato.common.RegexConstant;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,11 +26,4 @@ public class ModifyCelebrationAPIReqeust {
 	@NotBlank(message = "{notBlank}")
 	@Size(max = 10, message = "{size-string.max}")
 	String name;
-
-	@Pattern(regexp = RegexConstant.profileImageBase64, message = "{profileImageBase64.regex}")
-	@NotBlank(message = "{notBlank}")
-	String profileImageType;
-
-	@NotBlank(message = "{notBlank}")
-	String profileImageBase64;
 }

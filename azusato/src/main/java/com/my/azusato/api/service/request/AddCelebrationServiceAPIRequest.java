@@ -27,8 +27,4 @@ public class AddCelebrationServiceAPIRequest {
 	Long userNo;
 	
 	String name;
-
-	String profileImageType;
-	
-	byte[] profileImageBytes;
 }

@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
-import com.my.azusato.api.service.request.ModifyUserProfileServiceAPIRequest;
 import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse.CelebrationReply;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
@@ -67,8 +66,6 @@ public class CelebrationServiceAPI {
 	private final CelebrationSummaryRepository celeSummaryRepo;
 	
 	private final CelebrationContentRepository celeContentRepo;
-	
-	private final ProfileServiceAPI profileService;
 
 	/**
 	 * delegate
@@ -138,14 +135,7 @@ public class CelebrationServiceAPI {
 				.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
 				.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
 
-		CelebrationContentEntity insertedCelebrationEntity = celeContentRepo.save(insertedEntity);
-		
-		ModifyUserProfileServiceAPIRequest profileReq = ModifyUserProfileServiceAPIRequest.builder()
-				.profileImageBytes(req.getProfileImageBytes())
-				.profileImageType(req.getProfileImageType())
-				.userNo(insertedCelebrationEntity.getCommonUser().getCreateUserEntity().getNo()).build();
-		
-		profileService.updateUserProfile(profileReq, locale);
+		celeContentRepo.save(insertedEntity);
 
 		log.debug("{}#addCelebartion END");
 	}
@@ -183,14 +173,7 @@ public class CelebrationServiceAPI {
 		fetchedCelebationEntity.getCommonDate().setUpdateDatetime(now);
 		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getCommonDate().setUpdateDatetime(now);
 	
-		CelebrationContentEntity updatedCelebrationEntity = celeContentRepo.save(fetchedCelebationEntity);
-		
-		ModifyUserProfileServiceAPIRequest profileReq = ModifyUserProfileServiceAPIRequest.builder()
-				.profileImageBytes(req.getProfileImageBytes())
-				.profileImageType(req.getProfileImageType())
-				.userNo(updatedCelebrationEntity.getCommonUser().getCreateUserEntity().getNo()).build();
-		
-		profileService.updateUserProfile(profileReq, locale);
+		celeContentRepo.save(fetchedCelebationEntity);
 	}
 	
 	/**

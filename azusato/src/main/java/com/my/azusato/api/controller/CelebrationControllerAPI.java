@@ -1,8 +1,6 @@
 package com.my.azusato.api.controller;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Locale;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,8 +33,6 @@ import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.login.Grant;
 import com.my.azusato.login.LoginUser;
-import com.my.azusato.stream.NonEmtpyInputStream;
-import com.my.azusato.stream.NonEmtpyInputStream.EmptyInputStreamException;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
 import lombok.RequiredArgsConstructor;
@@ -136,7 +132,7 @@ public class CelebrationControllerAPI {
 	 * 	<li>200 : お祝い情報修正成功</li>
 	 * 	<li>400 : <br>対象データ存在なし<br>生成したユーザではない場合<br>パラメータがエラー</li>
 	 *  <li>401 : ログインしていない</li>
-	 *  <li>500 : プロフィールイメージの書き込み失敗</li>
+	 *  <li>500 : その他エラー</li>
 	 * </ul>
 	 * @param req パラメータ
 	 * @param loginUser ログインしたユーザ情報
@@ -149,12 +145,9 @@ public class CelebrationControllerAPI {
 			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
 					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
 		}
-		
-		byte[] bytes = checkNonEmptyInputStream(servletRequest.getInputStream(), servletRequest.getLocale()).readAllBytes();
-		
+
 		AddCelebrationServiceAPIRequest serviceReq = AddCelebrationServiceAPIRequest.builder()
-				.name(req.getName()).profileImageType(req.getProfileImageType())
-				.profileImageBytes(bytes)
+				.name(req.getName())
 				.title(req.getTitle()).content(req.getContent()).userNo(loginUser.getUSER_NO()).build();
 
 		if (Grant.containGrantedAuthority(loginUser.getAuthorities(), Grant.ADMIN_ROLE)) {
@@ -186,12 +179,10 @@ public class CelebrationControllerAPI {
 			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
 					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
 		}
-		
-		byte[] bytes = checkNonEmptyInputStream(servletRequest.getInputStream(), servletRequest.getLocale()).readAllBytes();
-		
+
 		ModifyCelebationServiceAPIRequest serviceReq = ModifyCelebationServiceAPIRequest.builder()
 				.celebationNo(celebationNo)
-				.name(req.getName()).profileImageBytes(bytes).profileImageType(req.getProfileImageType())
+				.name(req.getName())
 				.title(req.getTitle()).content(req.getContent()).userNo(loginUser.getUSER_NO()).build();
 		
 		celeAPIService.modifyCelebartion(serviceReq, servletRequest.getLocale());
@@ -233,22 +224,22 @@ public class CelebrationControllerAPI {
 		celeAPIService.deleteCelebartion(celebationNo, loginUser.getUSER_NO(),servletRequest.getLocale());
 	}
 	
-	/**
-	 * {@link NonEmtpyInputStream}を生成し、Inputstreamに読み込めるデータが存在するかチェック。
-	 * originalInputStreamは読み込み可能。
-	 * @param originalInputStream 対象のInputstream
-	 * @param locale エラーメッセージ用
-	 * @return Inputstream また読み込む可能なInputstream
-	 * @throws IOException 
-	 * @throws AzusatoException 読み込めるデータが存在しない場合
-	 */
-	private InputStream checkNonEmptyInputStream(InputStream originalInputStream, Locale locale) throws IOException {
-		try {
-			return new NonEmtpyInputStream(originalInputStream);
-		} catch (EmptyInputStreamException e) {
-			String profileImageMessage = messageSource.getMessage("profileImage", null, locale);
-			throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
-					messageSource.getMessage(AzusatoException.I0005, new String[] {profileImageMessage}, servletRequest.getLocale()));
-		}
-	}
+//	/**
+//	 * {@link NonEmtpyInputStream}を生成し、Inputstreamに読み込めるデータが存在するかチェック。
+//	 * originalInputStreamは読み込み可能。
+//	 * @param originalInputStream 対象のInputstream
+//	 * @param locale エラーメッセージ用
+//	 * @return Inputstream また読み込む可能なInputstream
+//	 * @throws IOException 
+//	 * @throws AzusatoException 読み込めるデータが存在しない場合
+//	 */
+//	private InputStream checkNonEmptyInputStream(InputStream originalInputStream, Locale locale) throws IOException {
+//		try {
+//			return new NonEmtpyInputStream(originalInputStream);
+//		} catch (EmptyInputStreamException e) {
+//			String profileImageMessage = messageSource.getMessage("profileImage", null, locale);
+//			throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+//					messageSource.getMessage(AzusatoException.I0005, new String[] {profileImageMessage}, servletRequest.getLocale()));
+//		}
+//	}
 }

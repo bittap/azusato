@@ -26,7 +26,6 @@ import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
-import com.my.azusato.common.TestStream;
 import com.my.azusato.entity.CelebrationContentEntity;
 import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.entity.UserEntity;
@@ -144,7 +143,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 
 		private AddCelebrationServiceAPIRequest getNormalReq() throws Exception{
 			return AddCelebrationServiceAPIRequest.builder()
-					.name(Entity.updatedVarChars[0]).profileImageBytes(TestStream.getTestImageBytes()).profileImageType(Entity.updatedVarChars[2])
+					.name(Entity.updatedVarChars[0])
 					.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1]).userNo(Long.valueOf(Entity.createdInts[0]))
 					.build();
 		}
@@ -264,7 +263,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			ModifyCelebationServiceAPIRequest normalReq = ModifyCelebationServiceAPIRequest.builder()
 			.userNo(Long.valueOf(Entity.createdInts[0]))
 			.celebationNo(Long.valueOf(Entity.createdInts[0]))
-			.name(Entity.updatedVarChars[2]).profileImageBytes(TestStream.getTestImageBytes()).profileImageType(Entity.ImageType[0])
+			.name(Entity.updatedVarChars[2])
 			.title(Entity.updatedVarChars[0]).content(Entity.updatedVarChars[1])
 			.build();
 			

@@ -12,5 +12,6 @@
     />
     <profile
     	user_no='1'
+    	image_path='varchar1'
     />
 </dataset>

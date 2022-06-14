@@ -33,15 +33,12 @@
     />
     <profile
     	user_no='1'
-		image_path='varchar1'
     />
     <profile
     	user_no='2'
-		image_path='varchar1'
     />
     <profile
     	user_no='3'
-		image_path='varchar1'
     />
     
 </dataset>

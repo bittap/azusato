@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -45,7 +44,6 @@ import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.integration.AbstractIntegration;
 import com.my.azusato.page.MyPageResponse;
-import com.my.azusato.property.ProfileProperty;
 import com.my.azusato.view.controller.common.HttpConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
@@ -53,9 +51,6 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 
 	final static String RESOUCE_BASIC_PATH = "src/test/data/integration/api/controller/";
 	
-	@Autowired
-	private ProfileProperty profileProperty;
-
 	@Nested
 	class AddCelebration {
 
@@ -129,8 +124,8 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 
 		private String getRequestBody() throws Exception {
 			AddCelebrationAPIReqeust req = AddCelebrationAPIReqeust.builder()
-					.name(Entity.updatedVarChars[0]).profileImageType(Entity.ProfileImageType[0])
-					.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1]).build();
+					.title(Entity.createdVarChars[0])
+					.name(Entity.updatedVarChars[0]).content(Entity.createdVarChars[1]).build();
 
 			return om.writeValueAsString(req);
 		}
@@ -271,7 +266,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 
 		private String getRequestBody() throws Exception {
 			ModifyCelebrationAPIReqeust req = ModifyCelebrationAPIReqeust.builder()
-					.name(Entity.updatedVarChars[0]).profileImageBase64(Entity.updatedVarChars[1]).profileImageType(Entity.ProfileImageType[1])
+					.name(Entity.updatedVarChars[0])
 					.title(Entity.updatedVarChars[2]).content(Entity.updatedVarChars[3]).build();
 
 			return om.writeValueAsString(req);
@@ -737,103 +732,67 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 		return Stream.of(
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(null).content(Entity.createdVarChars[1])
 						.build(),
 						"タイトルは必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
 						.build(),
 						"タイトルは最大50桁数まで入力可能です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(Entity.createdVarChars[1]).content("")
 						.build(),
 						"内容は必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
 						.build(),
 						"内容は不正な値です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType("image/gif")
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"プロフィールイメージはpng、jpegのみ可能です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(null)
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"プロフィールイメージタイプは必修項目です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64("").profileImageType(NORMAL_IMAGE_TYPE)
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"プロフィールイメージ情報は必修項目です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						AddCelebrationAPIReqeust.builder()
-						.name("").profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name("")
 						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
 						.build(),
 						"名前は必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(null).content(Entity.createdVarChars[1])
 						.build(),
 						"제목을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
 						.build(),
 						"글자 수 50을 초과해서 제목을 입력하는 것은 불가능합니다."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(Entity.createdVarChars[1]).content("")
 						.build(),
 						"내용을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
 						.build(),
 						"내용을 올바르게 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType("image/gif")
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"프로필사진은 png, jpeg만 지원됩니다."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(null)
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"프로필이미지타입을 입력해주세요."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64("").profileImageType(NORMAL_IMAGE_TYPE)
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"프로필이미지정보을 입력해주세요."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						AddCelebrationAPIReqeust.builder()
-						.name("").profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name("")
 						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
 						.build(),
 						"이름을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddCelebrationAPIReqeust.builder().build(),
-						"タイトルは必修項目です。\nプロフィールイメージタイプは必修項目です。\nプロフィールイメージ情報は必修項目です。\n内容は必修項目です。\n名前は必修項目です。"));
+						"タイトルは必修項目です。\n内容は必修項目です。\n名前は必修項目です。"));
 
 	}
 	
@@ -938,115 +897,79 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 		return Stream.of(
 				Arguments.of(TestConstant.LOCALE_JA,
 						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(null).content(Entity.createdVarChars[1])
 						.build(),
 						"タイトルは必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
 						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
 						.build(),
 						"タイトルは最大50桁数まで入力可能です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
 						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(Entity.createdVarChars[1]).content("")
 						.build(),
 						"内容は必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
 						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
 						.build(),
 						"内容は不正な値です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
 						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType("image/gif")
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"プロフィールイメージはpng、jpegのみ可能です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(null)
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"プロフィールイメージタイプは必修項目です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64("").profileImageType(NORMAL_IMAGE_TYPE)
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"プロフィールイメージ情報は必修項目です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						ModifyCelebrationAPIReqeust.builder()
-						.name("").profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name("")
 						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
 						.build(),
 						"名前は必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
 						ModifyCelebrationAPIReqeust.builder()
-						.name(RandomStringUtils.randomAlphabetic(11)).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(RandomStringUtils.randomAlphabetic(11))
 						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
 						.build(),
 						"名前は最大10桁数まで入力可能です。"),
 				Arguments.of(TestConstant.LOCALE_KO,
 						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(null).content(Entity.createdVarChars[1])
 						.build(),
 						"제목을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
 						.build(),
 						"글자 수 50을 초과해서 제목을 입력하는 것은 불가능합니다."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(Entity.createdVarChars[1]).content("")
 						.build(),
 						"내용을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
 						.build(),
 						"내용을 올바르게 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType("image/gif")
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"프로필사진은 png, jpeg만 지원됩니다."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(null)
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"프로필이미지타입을 입력해주세요."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64("").profileImageType(NORMAL_IMAGE_TYPE)
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"프로필이미지정보을 입력해주세요."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(RandomStringUtils.randomAlphabetic(11)).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(RandomStringUtils.randomAlphabetic(11))
 						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
 						.build(),
 						"글자 수 10을 초과해서 이름을 입력하는 것은 불가능합니다."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						ModifyCelebrationAPIReqeust.builder()
-						.name("").profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name("")
 						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
 						.build(),
 						"이름을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_JA,
 						ModifyCelebrationAPIReqeust.builder().build(),
-						"タイトルは必修項目です。\nプロフィールイメージタイプは必修項目です。\nプロフィールイメージ情報は必修項目です。\n内容は必修項目です。\n名前は必修項目です。"));
+						"タイトルは必修項目です。\n内容は必修項目です。\n名前は必修項目です。"));
 
 	}
 	
@@ -1058,115 +981,79 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 		return Stream.of(
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(null).content(Entity.createdVarChars[1])
 						.build(),
 						"タイトルは必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
 						.build(),
 						"タイトルは最大50桁数まで入力可能です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(Entity.createdVarChars[1]).content("")
 						.build(),
 						"内容は必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
 						.build(),
 						"内容は不正な値です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType("image/gif")
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"プロフィールイメージはpng、jpegのみ可能です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(null)
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"プロフィールイメージタイプは必修項目です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64("").profileImageType(NORMAL_IMAGE_TYPE)
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"プロフィールイメージ情報は必修項目です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						AddCelebrationAPIReqeust.builder()
-						.name("").profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name("")
 						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
 						.build(),
 						"名前は必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddCelebrationAPIReqeust.builder()
-						.name(RandomStringUtils.randomAlphabetic(11)).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(RandomStringUtils.randomAlphabetic(11))
 						.title(Entity.createdVarChars[1]).content(Entity.createdVarChars[1])
 						.build(),
 						"名前は最大10桁数まで入力可能です。"),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(null).content(Entity.createdVarChars[1])
 						.build(),
 						"제목을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
 						.build(),
 						"글자 수 50을 초과해서 제목을 입력하는 것은 불가능합니다."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(Entity.createdVarChars[1]).content("")
 						.build(),
 						"내용을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(Entity.createdVarChars[0])
 						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
 						.build(),
 						"내용을 올바르게 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType("image/gif")
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"프로필사진은 png, jpeg만 지원됩니다."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64(Entity.createdVarChars[2]).profileImageType(null)
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"프로필이미지타입을 입력해주세요."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0]).profileImageBase64("").profileImageType(NORMAL_IMAGE_TYPE)
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"프로필이미지정보을 입력해주세요."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						AddCelebrationAPIReqeust.builder()
-						.name(RandomStringUtils.randomAlphabetic(11)).profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name(RandomStringUtils.randomAlphabetic(11))
 						.title(Entity.createdVarChars[1]).content(Entity.createdVarChars[1])
 						.build(),
 						"글자 수 10을 초과해서 이름을 입력하는 것은 불가능합니다."),
 				Arguments.of(TestConstant.LOCALE_KO,
 						AddCelebrationAPIReqeust.builder()
-						.name("").profileImageBase64(Entity.createdVarChars[2]).profileImageType(NORMAL_IMAGE_TYPE)
+						.name("")
 						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
 						.build(),
 						"이름을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_JA,
 						AddCelebrationAPIReqeust.builder().build(),
-						"タイトルは必修項目です。\nプロフィールイメージタイプは必修項目です。\nプロフィールイメージ情報は必修項目です。\n内容は必修項目です。\n名前は必修項目です。"));
+						"タイトルは必修項目です。\n内容は必修項目です。\n名前は必修項目です。"));
 
 	}
 }

@@ -21,8 +21,4 @@ public class ModifyCelebationServiceAPIRequest {
 	String content;
 
 	String name;
-
-	String profileImageType;
-	
-	byte[] profileImageBytes;
 }

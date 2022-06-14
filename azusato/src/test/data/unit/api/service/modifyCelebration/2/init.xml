@@ -13,7 +13,7 @@
     />
     <profile
     	user_no='1'
-    	image_path='\git\azusato\azusato\test-resources\notExist.png'
+   		image_path='varchar1'
     />
     <celebration 
    		no='1'
