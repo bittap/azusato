@@ -16,6 +16,12 @@ public class TestConstant {
 	public final static String HOST = "192.168.0.1";
 	
 	public final static String TEST_IMAGE_PATH = "src/test/image/test.png";
+	
+	public final static String TEST_LARGE_IMAGE_PATH = "src/test/image/large30MB.png";
+	
+	public final static String TEST_IMAGE_FILENAME = "test.png";
+	
+	public final static String TEST_LARGE_IMAGE_FILENAME = "large30MB.png";
 
 	public final static String DEFAULT_CHARSET = "UTF-8";
 

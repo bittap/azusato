@@ -6,6 +6,10 @@ server:
 # DATABASE
 # ===============================
 spring:
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
   h2:
     console.enabled: true
     console.path: /h2-console

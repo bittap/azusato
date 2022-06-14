@@ -17,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,7 +58,7 @@ public class ProfileControllerAPI {
 	
 	public static final String UPLOAD_IMG_URL = "upload-img";
 	
-	public static final List<String> PERMIT_IMAGE_TYPES = List.of("png","jpeg");
+	public static final List<String> PERMIT_IMAGE_TYPES = List.of("png","jpeg","jpg");
 	
 	private final ProfileServiceAPI profileService;
 	
@@ -97,14 +98,15 @@ public class ProfileControllerAPI {
 	 * @throws IOException
 	 */
 	@ResponseStatus(HttpStatus.OK)
-	@PutMapping(value =  UPLOAD_IMG_URL, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public void uploadImage(@ModelAttribute UploadProfileImageAPIRequest req,@AuthenticationPrincipal LoginUser loginUser) throws IOException {
+	@PostMapping(value =  UPLOAD_IMG_URL, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public void uploadImage(@Validated @ModelAttribute UploadProfileImageAPIRequest req,@AuthenticationPrincipal LoginUser loginUser) throws IOException {
 		String extension = FilenameUtils.getExtension(req.getProfileImage().getOriginalFilename());
 		// ファイル拡張子チェック
 		PERMIT_IMAGE_TYPES.stream().filter((e)->e.equalsIgnoreCase(extension)).findFirst()
 				.orElseThrow(()->{
-					throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0004, ms.getMessage(extension, 
-							new String[] {PERMIT_IMAGE_TYPES.stream().collect(Collectors.joining(",")),"profileImageType"}, servletRequest.getLocale()));
+					String profileImageFieldName = ms.getMessage("profileImage", new String[] {}, servletRequest.getLocale());
+					throw new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0004, ms.getMessage("file-type-mismatch", 
+							new String[] {extension,profileImageFieldName,PERMIT_IMAGE_TYPES.stream().collect(Collectors.joining(","))}, servletRequest.getLocale()));
 				});
 		
 		if(Objects.isNull(loginUser)) {

@@ -12,4 +12,10 @@ public class TestStream {
 			return bis.readAllBytes();
 		}
 	}
+	
+	public static byte[] getTestLargeImageBytes() throws Exception  {
+		try(InputStream is = new FileInputStream(new File(TestConstant.TEST_LARGE_IMAGE_PATH)); BufferedInputStream bis = new BufferedInputStream(is)){
+			return bis.readAllBytes();
+		}
+	}
 }
