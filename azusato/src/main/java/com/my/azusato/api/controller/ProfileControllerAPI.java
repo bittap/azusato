@@ -56,7 +56,7 @@ public class ProfileControllerAPI {
 	
 	public static final String RANDOM_URL = COMMON_URL + "/random";
 	
-	public static final String UPLOAD_IMG_URL = "upload-img";
+	public static final String UPLOAD_IMG_URL = COMMON_URL + "/upload-img";
 	
 	public static final List<String> PERMIT_IMAGE_TYPES = List.of("png","jpeg","jpg");
 	

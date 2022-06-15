@@ -6,4 +6,9 @@ ApiCommon = function(){
 	  'Accept-Language': language,
 	  'X-CSRF-TOKEN': document.querySelector('[name="_csrf"]').getAttribute('content')
 	}
+	// 基本ヘッダー
+	this.noContentTypeheader = {
+	  'Accept-Language': language,
+	  'X-CSRF-TOKEN': document.querySelector('[name="_csrf"]').getAttribute('content')
+	}
 }

@@ -4,8 +4,14 @@
 // initalize
 const profileAvatarTag = document.querySelector("#profile-avatar");
 const fileInputTag = document.querySelector("#file-input");
-const FR = new FileReader();
 const writeBtnTag = document.querySelector("#writeBtn");
+// プロフィールイメージのアップロードタイプ
+const UPLOAD_IMAGE_TYPE = {
+	URL_IMAGE: 'URLイメージ',
+	USER_UPLOAD_IMAGE: 'ユーザアップロードイメージ'
+}
+// 解決されたプロフィールイメージのアップロードタイプ
+let resolvedUploadImageType;
 
 //initalize summbernote
 $('#summernote').summernote({
@@ -26,27 +32,93 @@ const getRandomImage = async function(){
 	if(!res.ok) {
 		return Promise.reject(result);
 	}else{
+		console.log("結果",result);
 		return result;
 	}
 }
 
 /*
- * プロフィールイメージを更新する。
+ * イメージのURLよりblobデータを取得する。
  */
-const changeProfileByTypeAndBase64 = function(imageType, imageBase64){
-	document.querySelector("[name='profileImageType']").value = imageType;
-	document.querySelector("[name='profileImageBase64']").value = imageBase64;
-	imageCommon.changeImageSrcBase64(profileAvatarTag,imageType,imageBase64);
+const getBlobByImageUrl = async function(){
+	let imageSrc = profileAvatarTag.getAttribute("src");
+	
+	const res = await fetch(imageSrc,{
+		method: 'GET',
+		headers: apiCommon.header
+	});
+	
+	const result = await res.blob();
+	
+	if(!res.ok) {
+		return Promise.reject(result);
+	}else{
+		let resultWithFileName = {
+				blob: result,
+				filename: imageSrc.split("/").pop()
+		}
+		console.log("URLによるBlob取得結果",resultWithFileName);
+		return resultWithFileName;
+	}
+}
+
+/*
+ * プロフィールをアップロードする。
+ */
+const profileUpload = async function(){
+	const formData = new FormData();
+	const FILE_FIELD_NAME = 'profileImage';
+	if(resolvedUploadImageType == UPLOAD_IMAGE_TYPE.URL_IMAGE){
+		const blobData = await getBlobByImageUrl();
+		formData.append(FILE_FIELD_NAME,blobData.blob,blobData.filename);
+	}else if(resolvedUploadImageType == UPLOAD_IMAGE_TYPE.USER_UPLOAD_IMAGE){
+		formData.append(FILE_FIELD_NAME,fileInputTag.files[0]);
+	}
+	
+	const res = await fetch(apiUrl+"/profile/upload-img",{
+		method: 'POST',
+		headers: apiCommon.noContentTypeheader,
+		body: formData
+	});
+	
+	if(!res.ok) {
+		const result = await res.json();
+		return Promise.reject(result);
+	}else{
+		return Promise.resolve();
+	}
+}
+
+/*
+ * プロフィールイメージをURLにより更新する。
+ */
+const changeProfileByDefaultImage = function(imagePath){
+	console.log("プロフィールイメージをURLにより更新");
+	resolvedUploadImageType = UPLOAD_IMAGE_TYPE.URL_IMAGE;
+	console.log("解決されたタイプ : "+resolvedUploadImageType);
+	profileAvatarTag.setAttribute('src', imagePath);
+}
+
+/*
+ * プロフィールイメージをユーザの入力したファイルにて更新する。
+ */
+const changeProfileByUserInputFile = function(loadedFile){
+	console.log("プロフィールイメージをユーザの入力したファイルにて更新");
+	resolvedUploadImageType = UPLOAD_IMAGE_TYPE.USER_UPLOAD_IMAGE;
+	console.log("解決されたタイプ : "+resolvedUploadImageType);
+	profileAvatarTag.setAttribute('src', loadedFile.target.result);
 }
 
 profileAvatarTag.addEventListener('click',() =>{
 	modalCommon.displayThreeBtnModal(profileModalTitle,profileModalBody,profileModalFirstBtnMsg,profileModalSecondBtnMsg,
+	// イメージアップロード選択
 	function(){
 		fileInputTag.click();
+	// 基本イメージ選択
 	},async function(){
 		try{
 			const result = await getRandomImage();
-			changeProfileByTypeAndBase64(result.profileImageType,result.profileImageBase64);
+			changeProfileByDefaultImage(result.profileImagePath);
 		}catch(e){
 			console.log(e)
 			modalCommon.displayErrorModal(e.title,e.message);
@@ -69,13 +141,11 @@ fileInputTag.addEventListener('change',function(){
 		modalCommon.displayErrorModal("I-0004",badRequestProfileType);
 		return;
 	}
+	const FR = new FileReader();
 	
 	FR.addEventListener("load", function(loadedFile){
 		console.log(loadedFile);
-		const fullBase64 = loadedFile.target.result;
-		// 削除 data:*/*;base64,
-		const base64 = fullBase64.replace("data:","").replace(/^.+,/,"");
-		changeProfileByTypeAndBase64(fileType,base64);
+		changeProfileByUserInputFile(loadedFile);
 	});
 	
 	FR.readAsDataURL(this.files[0]);

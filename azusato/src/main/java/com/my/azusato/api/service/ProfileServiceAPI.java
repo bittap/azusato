@@ -60,7 +60,7 @@ public class ProfileServiceAPI {
 	 * @param bytes 書き込み対象のデータ
 	 * @param extention 拡張子
 	 * @param userNo ファイルネーム
-	 * @return 格納された場所
+	 * @return 絶対パスのファイルネーム
 	 * @throws IOException 書き込みエラー
 	 */
 	private String uploadImage(byte[] bytes, String extention , Long userNo) throws IOException {
@@ -69,7 +69,7 @@ public class ProfileServiceAPI {
 		Path filePath = Paths.get(FOLDER,fileName);
 		try(OutputStream os = new FileOutputStream(filePath.toFile())){
 			os.write(bytes);
-			return filePath.toString();
+			return "/"+fileName;
 		}
 	}
 	
