@@ -22,8 +22,6 @@
 					  <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" id="profile-avatar" class="rounded-circle profile-avatar" alt="User avatar">
 					  <div class="form-text" th:text="#{celebration.write.profile.placeholder}">
 					  </div>
-			          <input name="profileImageType" type="text" hidden/>
-					  <input name="profileImageBase64" type="text" hidden/>
 					  <!-- プロフィールモーダルでファイル選択時利用するfileタグ-->
 					  <input id="file-input" type="file" accept="image/jpeg, image/png, image/jpg" hidden/>
 					</div>
@@ -84,6 +82,7 @@
 		
 		const summernote_lang = window.language == "ko" ? "ko-KR" : "ja-JP";
 	</script>
+	<script src="/js/celebration/celebration_common.js"></script>
 	<script src="/js/celebration/write/common.js"></script>
 	<!--/* celebrationNoがあるかどうかにより読み込むjsを異なるようにする*/-->
 	<script th:src="${data?.celebrationNo != null} ? '/js/celebration/write/modify.js' : '/js/celebration/write/write.js'"></script>

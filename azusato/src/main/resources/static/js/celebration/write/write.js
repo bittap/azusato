@@ -4,9 +4,7 @@ const addnonMember = async function(){
 		method: 'POST',
 		headers: apiCommon.header,
 		body: JSON.stringify({
-			 name: document.querySelector('[name="name"]').value, 
-			 profileImageType: document.querySelector('[name="profileImageType"]').value, 
-			 profileImageBase64: document.querySelector('[name="profileImageBase64"]').value, 
+			 name: document.querySelector('[name="name"]').value
 		})
 	});
 	

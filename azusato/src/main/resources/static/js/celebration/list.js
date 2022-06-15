@@ -31,7 +31,7 @@ const initialize = function(){
 			const toggleWrap_tag = celebrationClone.querySelector(".toggle_wrap");
 			const toggleContentWrap_tag = celebrationClone.querySelector(".toggl_content_wrap");
 
-			imageCommon.changeImageSrcBase64(PROFILE_TAG,celebation.profileImageType,celebation.profileImageBase64);
+			PROFILE_TAG.src = celebation.profileImagePath;
 			NO_TAG.textContent = "No."+celebation.no;
 			REG_TAG.textContent = moment(new Date(celebation.createdDatetime)).format(DATETIME_FORMAT);
 			NAME_TAG.textContent = "@"+celebation.name;
@@ -163,7 +163,7 @@ const initContentArea = async function(contents , toggledTag ){
 		const REPLY_CONTENT_TAG = celebrationReplyClone.querySelector(".-reply_content");
 		const REPLY_DELETE_BTN_TAG = celebrationReplyClone.querySelector(".-reply_delete");
 		
-		imageCommon.changeImageSrcBase64(REPLY_PROFILE_TAG,reply.profileImageType,reply.profileImageBase64);
+		REPLY_PROFILE_TAG.src = reply.profileImagePath;
 		REPLY_NAME_TAG.textContent = reply.name;
 		REPLY_RAG_TAG.textContent = moment(new Date(reply.createdDatetime)).format(DATETIME_FORMAT);
 		REPLY_CONTENT_TAG.textContent = reply.content;
@@ -195,14 +195,21 @@ const initContentArea = async function(contents , toggledTag ){
 	REPLY_WRITE_BTN_TAG.setAttribute(CELBRATION_NO_DATA_ATTRIBUTE_NAME, contents.no);
 	REPLY_WRITE_BTN_TAG.addEventListener('click',async function(){
 		try{
+			// Loading画面を表示
+			modalCommon.displayLoadingModal();
+			
 			// 非ログインしはユーザを登録しておく。
 			if(Boolean(AUTHENTICATIONED) == false){
-				const randomImage = await getRandomImage();
-				await addnonMember(REPLY_WRITE_BTN_TAG, randomImage);
+				await addnonMember(REPLY_WRITE_BTN_TAG);
+				await profileUpload();
 			}
 			await addCelebrationReply(REPLY_WRITE_BTN_TAG);
 		}catch(e){
 			console.log(e);
+			
+			await asyncCommon.delay(LOADING_MODAL_DELAY);
+			modalCommon.hideLoadingModal();
+			
 			modalCommon.displayErrorModal(e.title,e.message);
 			
 		}
@@ -213,19 +220,30 @@ const initContentArea = async function(contents , toggledTag ){
 	
 }
 
-const getRandomImage = async function(){
-	console.log("ランダムイメージ取得");
-	const res = await fetch(apiUrl+"/profile/random",{
-		method: 'GET',
-		headers: apiCommon.header
+/*
+ * プロフィールをアップロードする。
+ */
+const profileUpload = async function(){
+	const formData = new FormData();
+	const FILE_FIELD_NAME = 'profileImage';
+	
+	const randomImage = await getRandomImage();
+	
+	const blobData = await getBlobByImageUrl(randomImage.profileImagePath);
+	
+	formData.append(FILE_FIELD_NAME,blobData.blob,blobData.filename);
+	
+	const res = await fetch(apiUrl+"/profile/upload-img",{
+		method: 'POST',
+		headers: apiCommon.noContentTypeheader,
+		body: formData
 	});
 	
-	const result = await res.json();
-	
 	if(!res.ok) {
+		const result = await res.json();
 		return Promise.reject(result);
 	}else{
-		return result;
+		return Promise.resolve();
 	}
 }
 
@@ -261,15 +279,13 @@ const addCelebrationReply = async function(clickedEle){
 	}
 }
 
-const addnonMember = async function(clickedEle, randomImage){
+const addnonMember = async function(clickedEle){
 	console.log("非会員ユーザ作成API");
 	const res = await fetch(apiUrl+"/user/nonmember",{
 		method: 'POST',
 		headers: apiCommon.header,
 		body: JSON.stringify({
-			 name: clickedEle.parentNode.querySelector('[name="name"]').value,
-			 profileImageType: randomImage.profileImageType, 
-			 profileImageBase64: randomImage.profileImageBase64, 
+			 name: clickedEle.parentNode.querySelector('[name="name"]').value
 		})
 	});
 	

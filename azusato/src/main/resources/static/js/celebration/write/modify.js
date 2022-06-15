@@ -8,23 +8,18 @@
  */
 const modifyCelebration = async function(){
 	console.log("お祝い修正API");
-	modalCommon.displayLoadingModal();
 	const res = await fetch(apiUrl+"/celebration"+ "/" +CELEBATION_NO,{
 		method: 'PUT',
 		headers: apiCommon.header,
 		body: JSON.stringify({
 			 title: document.querySelector('[name="title"]').value, 
 			 content: $('#summernote').summernote('code'),
-			 name: document.querySelector('[name="name"]').value, 
-			 profileImageType: document.querySelector('[name="profileImageType"]').value, 
-			 profileImageBase64: document.querySelector('[name="profileImageBase64"]').value
+			 name: document.querySelector('[name="name"]').value
 		})
 	});
 
 	
 	if(!res.ok) {
-		await asyncCommon.delay(LOADING_MODAL_DELAY);
-		modalCommon.hideLoadingModal();
 		const result = await res.json();
 		return Promise.reject(result);
 	}else{
@@ -60,7 +55,7 @@ const initialize = async function(){
 		document.querySelector("[name='name']").value = celebation.name;
 		document.querySelector("[name='title']").value = celebation.title;
 		// イメージ変更
-		changeProfileByTypeAndBase64(celebation.profileImageType,celebation.profileImageBase64);
+		changeProfileByDefaultImage(celebation.profileImagePath);
 		// 
 		$('#summernote').summernote('code', celebation.content);
 	}catch(e){
@@ -77,11 +72,21 @@ const initialize = async function(){
 writeBtnTag.addEventListener('click', function(){
 	modalCommon.displayTwoBtnModal(modifyModalTitle,modifyModalBody,async function(){
 		try{
+			// Loading画面を表示
+			modalCommon.displayLoadingModal();
+			
+			// プロフィールイメージ更新
+			await profileUpload();
+			
 			await modifyCelebration();
 			
 			location.href = `/${language}/celebration`; 
 		}catch(e){
-			console.log(e)
+			console.log(e);
+			
+			await asyncCommon.delay(LOADING_MODAL_DELAY);
+			modalCommon.hideLoadingModal();
+			
 			modalCommon.displayErrorModal(e.title,e.message);
 		}
 	});

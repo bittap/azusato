@@ -20,48 +20,6 @@ $('#summernote').summernote({
 		lang: summernote_lang // default: 'en-US'
 });
 
-const getRandomImage = async function(){
-	console.log("ランダムイメージ取得");
-	const res = await fetch(apiUrl+"/profile/random",{
-		method: 'GET',
-		headers: apiCommon.header
-	});
-	
-	const result = await res.json();
-	
-	if(!res.ok) {
-		return Promise.reject(result);
-	}else{
-		console.log("結果",result);
-		return result;
-	}
-}
-
-/*
- * イメージのURLよりblobデータを取得する。
- */
-const getBlobByImageUrl = async function(){
-	let imageSrc = profileAvatarTag.getAttribute("src");
-	
-	const res = await fetch(imageSrc,{
-		method: 'GET',
-		headers: apiCommon.header
-	});
-	
-	const result = await res.blob();
-	
-	if(!res.ok) {
-		return Promise.reject(result);
-	}else{
-		let resultWithFileName = {
-				blob: result,
-				filename: imageSrc.split("/").pop()
-		}
-		console.log("URLによるBlob取得結果",resultWithFileName);
-		return resultWithFileName;
-	}
-}
-
 /*
  * プロフィールをアップロードする。
  */
@@ -69,7 +27,8 @@ const profileUpload = async function(){
 	const formData = new FormData();
 	const FILE_FIELD_NAME = 'profileImage';
 	if(resolvedUploadImageType == UPLOAD_IMAGE_TYPE.URL_IMAGE){
-		const blobData = await getBlobByImageUrl();
+		let imageSrc = profileAvatarTag.getAttribute("src");
+		const blobData = await getBlobByImageUrl(imageSrc);
 		formData.append(FILE_FIELD_NAME,blobData.blob,blobData.filename);
 	}else if(resolvedUploadImageType == UPLOAD_IMAGE_TYPE.USER_UPLOAD_IMAGE){
 		formData.append(FILE_FIELD_NAME,fileInputTag.files[0]);
