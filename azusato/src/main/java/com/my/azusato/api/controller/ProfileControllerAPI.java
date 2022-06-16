@@ -1,7 +1,6 @@
 package com.my.azusato.api.controller;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -70,12 +69,11 @@ public class ProfileControllerAPI {
 	 * 既に登録したランダムイメージの情報を取得する。
 	 * 
 	 * @return {@link DefaultRandomProfileResponse}
-	 * @throws URISyntaxException ラスパスよりURLを生成する時、不正なURLの場合
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	@GetMapping(value = RANDOM_URL)
-	public DefaultRandomProfileResponse getDefaultRandomProfile() throws URISyntaxException {
+	public DefaultRandomProfileResponse getDefaultRandomProfile() {
 		log.debug("[ランダムイメージ取得] START");
 		DefaultRandomProfileResponse response = new DefaultRandomProfileResponse();
 

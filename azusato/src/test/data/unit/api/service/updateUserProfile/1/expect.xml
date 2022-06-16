@@ -12,6 +12,6 @@
     />
     <profile
     	user_no='1'
-    	image_path='\git\azusato\azusato\test-resources\1.png'
+    	image_path='/1.png'
     />
 </dataset>

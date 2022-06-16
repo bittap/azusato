@@ -39,7 +39,7 @@ spring:
 # DATABASE Log
 # ===============================
 logging:
-  absolute-path: ${LOGGING_ABSOLUTE_PATH:/project/azsuato/logs}
+  absolute-path: ${LOGGING_ABSOLUTE_PATH:/project/azusato/logs}
   file-name: ${LOGGING_FILE_NAME:log}
   level:
     root: DEBUG
@@ -68,7 +68,8 @@ user:
   
 profile:
   # サーバーからするとの基本イメージの格納場所
-  server-default-image-folder-path: static/image/default/profile
+  # 元々はサーバから「client-default-image-folder-path」にアクセスしよう思ったが、Jarの中ではフォルダにあるファイル取得が上手くいななくて別々に保存に変更
+  server-default-image-folder-path: /project/azusato/resources/image/default/profile
   # クライアントからするとの基本イメージの格納場所
   client-default-image-folder-path: /image/default/profile
   # クライアントの本イメージのファイルの格納場所

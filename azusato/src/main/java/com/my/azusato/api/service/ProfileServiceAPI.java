@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -77,10 +75,9 @@ public class ProfileServiceAPI {
 	 * 既に登録した基本イメージファイルパスを返す。 
 	 * 基本イメージがあるクラスパスの中にあるファイルを全部取得し、その中でランダムでファイルのイメージパスを取得する。
 	 * @return クライアント側からアクセスするpath
-	 * @throws URISyntaxException クラスパスよりURLを生成する時、不正なURLの場合
 	 */
-	public String getDefaultProfilePath() throws URISyntaxException  {
-		File folder = getClassImageFolder(profileProperty.getServerDefaultImageFolderPath());
+	public String getDefaultProfilePath()  {
+		File folder = Paths.get(profileProperty.getServerDefaultImageFolderPath()).toFile();
 		log.debug("folder : {}",folder.getAbsolutePath());
 		
 		String[] files = folder.list();
@@ -93,18 +90,6 @@ public class ProfileServiceAPI {
 
 		return Paths.get(profileProperty.getClientDefaultImageFolderPath(),files[resolvedFileIndex]).toString();
 	}
-	
-	/**
-	 * クラスパスにてフォルダを取得する。
-	 * @param folder 対象のフォルダ
-	 * @return クラスパス
-	 * @throws URISyntaxException クラスパスよりURLを生成する時、不正なURLの場合
-	 */
-	private File getClassImageFolder(String folder) throws URISyntaxException {
-		URL url = this.getClass().getClassLoader().getResource(folder);
-		return new File(url.toURI());
-	}
-	
 
 	/**
 	 * イメージをアップロードし、アップロードされたイメージパスにてイメージパスをしたい更新する。

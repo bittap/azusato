@@ -20,7 +20,7 @@
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     	<file>${ABSOLUTE_PATH}/${FILE_NAME}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-        	日ずつファイル作成
+        	<!-- 日ずつファイル作成 -->
             <fileNamePattern>${ABSOLUTE_PATH}/%d{yyyyMM}/${FILE_NAME}.%d{yyyyMMdd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
             	<maxFileSize>5MB</maxFileSize>
@@ -28,7 +28,7 @@
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         
-        出力メッセージ
+       <!--  出力メッセージ -->
         <encoder>
             <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{100}.%M - %.-512msg%n</pattern>
         </encoder>
