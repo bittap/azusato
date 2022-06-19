@@ -1,6 +1,12 @@
 package com.my.azusato.api.service;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -8,6 +14,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +41,7 @@ import com.my.azusato.entity.common.DefaultValueConstant;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.page.MyPageRequest;
 import com.my.azusato.page.MyPaging;
+import com.my.azusato.property.CelebrationProperty;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.UserRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
@@ -56,6 +64,8 @@ import lombok.extern.slf4j.Slf4j;
 public class CelebrationServiceAPI {
 
 	private final UserRepository userRepo;
+	
+	private final CelebrationProperty celeProperty;
 
 	private final MessageSource messageSource;
 
@@ -122,7 +132,7 @@ public class CelebrationServiceAPI {
 		// 小さいプロジェクトでは同じ条件でできたので、JPAのバグの可能性がある。
 		UserEntity savedUserEntity = userRepo.save(userEntity);
 		
-		CelebrationEntity insertedEntity = CelebrationEntity.builder().title(req.getTitle()).contentPath(req.getContent())
+		CelebrationEntity insertedEntity = CelebrationEntity.builder().title(req.getTitle())
 				.commonUser(
 						CommonUserEntity.builder().createUserEntity(savedUserEntity).updateUserEntity(savedUserEntity).build())
 				//.notices(admins)
@@ -130,7 +140,12 @@ public class CelebrationServiceAPI {
 				.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
 				.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
 
-		celeRepo.save(insertedEntity);
+		CelebrationEntity insetredEntity = celeRepo.save(insertedEntity);
+		
+		String contentFileName = uploadContent(req.getContent(), insetredEntity.getNo());
+		insetredEntity.setContentPath(contentFileName);
+		
+		celeRepo.save(insetredEntity);
 
 		log.debug("{}#addCelebartion END");
 	}
@@ -163,12 +178,14 @@ public class CelebrationServiceAPI {
 		}
 		LocalDateTime now = LocalDateTime.now();
 		fetchedCelebationEntity.setTitle(req.getTitle());
-		fetchedCelebationEntity.setContentPath(req.getContent());
+		fetchedCelebationEntity.setContentPath(getContentFileName(fetchedCelebationEntity.getNo()));
 		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().setName(req.getName());
 		fetchedCelebationEntity.getCommonDate().setUpdateDatetime(now);
 		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getCommonDate().setUpdateDatetime(now);
 	
 		celeRepo.save(fetchedCelebationEntity);
+		
+		uploadContent(req.getContent(),fetchedCelebationEntity.getNo());
 	}
 	
 	/**
@@ -330,5 +347,27 @@ public class CelebrationServiceAPI {
 		
 		
 		return response;
+	}
+	
+	/**
+	 * コンテンツを外部フォルダに格納する。
+	 * @param content コンテンツ
+	 * @param celebrationNo お祝いバン後
+	 * @return ファイルネーム
+	 * @throws IOException
+	 */
+	private String uploadContent(InputStream content, Long celebrationNo) throws IOException {
+		final String FOLDER = celeProperty.getServerContentFolderPath();
+		final String FILE_NAME = getContentFileName(celebrationNo);
+		final Path filePath = Paths.get(FOLDER,FILE_NAME);
+		try(content;
+				BufferedWriter bw = new BufferedWriter(new FileWriter(filePath.toString(), Charset.forName(ValueConstant.DEFAULT_CHARSET)));){
+			IOUtils.copy(content, bw, Charset.forName(ValueConstant.DEFAULT_CHARSET));
+			return FILE_NAME;
+		}
+	}
+	
+	private String getContentFileName(Long celebrationNo) {
+		return String.valueOf(celebrationNo) + "." + celeProperty.getContentExtention();
 	}
 }

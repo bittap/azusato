@@ -24,5 +24,5 @@ public class CelebrationProperty {
 	/**
 	 * 拡張子
 	 */
-	private final String contentExtentions;
+	private final String contentExtention;
 }

@@ -70,7 +70,7 @@ celebration:
   # お祝いテーブルのコンテンツパスが保持されるサーバーのフォルダ位置
   server-content-folder-path: /project/azusato/celebration/content
   # 拡張子
-  content-extentions: txt
+  content-extention: txt
   
   
 profile:

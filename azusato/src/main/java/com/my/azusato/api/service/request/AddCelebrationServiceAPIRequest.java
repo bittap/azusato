@@ -1,5 +1,7 @@
 package com.my.azusato.api.service.request;
 
+import java.io.InputStream;
+
 import com.my.azusato.api.controller.CelebrationControllerAPI;
 
 import lombok.AllArgsConstructor;
@@ -22,7 +24,7 @@ public class AddCelebrationServiceAPIRequest {
 
 	String title;
 
-	String content;
+	InputStream content;
 
 	Long userNo;
 	

@@ -1,5 +1,7 @@
 package com.my.azusato.api.service.request;
 
+import java.io.InputStream;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,13 +14,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ModifyCelebationServiceAPIRequest {
 
-	Long userNo;
+	private Long userNo;
 	
-	Long celebationNo;
+	private Long celebationNo;
 	
-	String title;
+	private String title;
 
-	String content;
+	private InputStream content;
 
-	String name;
+	private String name;
 }

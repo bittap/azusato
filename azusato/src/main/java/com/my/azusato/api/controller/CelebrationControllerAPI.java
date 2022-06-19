@@ -137,9 +137,9 @@ public class CelebrationControllerAPI {
 	 * @throws IOException
 	 */
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping(value = CELEBRATION_CONTENT_RESOUCE + "/{path}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public void celebationContentResource(@PathVariable(name = "path", required = true) String celeContentPath) throws IOException {
-		Path celeContentFullPath = Paths.get(celeProperty.getServerContentFolderPath(),celeContentPath);
+	@GetMapping(value = CELEBRATION_CONTENT_RESOUCE + "/{filename}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public void celebationContentResource(@PathVariable(name = "filename", required = true) String celeContentFilename) throws IOException {
+		Path celeContentFullPath = Paths.get(celeProperty.getServerContentFolderPath(),celeContentFilename);
 		
 		try(InputStream io = new FileInputStream(celeContentFullPath.toString()); 
 				PrintWriter pw = servletResponse.getWriter()){
@@ -188,7 +188,7 @@ public class CelebrationControllerAPI {
 
 		AddCelebrationServiceAPIRequest serviceReq = AddCelebrationServiceAPIRequest.builder()
 				.name(req.getName())
-				.title(req.getTitle()).content(req.getContent()).userNo(loginUser.getUSER_NO()).build();
+				.title(req.getTitle()).content(req.getContent().getInputStream()).userNo(loginUser.getUSER_NO()).build();
 
 		if (Grant.containGrantedAuthority(loginUser.getAuthorities(), Grant.ADMIN_ROLE)) {
 			celeAPIService.addCelebartionAdmin(serviceReq, servletRequest.getLocale());
@@ -223,7 +223,7 @@ public class CelebrationControllerAPI {
 		ModifyCelebationServiceAPIRequest serviceReq = ModifyCelebationServiceAPIRequest.builder()
 				.celebationNo(celebationNo)
 				.name(req.getName())
-				.title(req.getTitle()).content(req.getContent()).userNo(loginUser.getUSER_NO()).build();
+				.title(req.getTitle()).content(req.getContent().getInputStream()).userNo(loginUser.getUSER_NO()).build();
 		
 		celeAPIService.modifyCelebartion(serviceReq, servletRequest.getLocale());
 	}
