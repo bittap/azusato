@@ -8,4 +8,6 @@ public class ValueConstant {
 	 * {@link CommonFlagEntity#getDeleteFlag()} default value.
 	 */
 	public static final boolean DEFAULT_DELETE_FLAG = false;
+	
+	public final static String DEFAULT_CHARSET = "UTF-8";
 }

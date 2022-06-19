@@ -18,7 +18,7 @@ public class GetCelebrationContentSerivceAPIResponse {
 	
 	private Boolean owner;
 	
-	private String content;
+	private String contentPath;
 	
 	private List<CelebrationReply> replys;
 	

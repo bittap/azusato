@@ -1,12 +1,20 @@
 package com.my.azusato.api.controller;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,7 +41,9 @@ import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.login.Grant;
 import com.my.azusato.login.LoginUser;
+import com.my.azusato.property.CelebrationProperty;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
+import com.my.azusato.view.controller.common.ValueConstant;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,11 +69,17 @@ public class CelebrationControllerAPI {
 
 	private final HttpServletRequest servletRequest;
 	
+	private final HttpServletResponse servletResponse;
+	
+	private final CelebrationProperty celeProperty;
+	
 	public static final String COMMON_URL = "celebration";
 	
 	public static final String CELEBRATION_URL = COMMON_URL + "/{celebrationNo}";
 	
 	public static final String CELEBRATION_CONTENT_URL = COMMON_URL + "/content" + "/{celebrationNo}";
+	
+	public static final String CELEBRATION_CONTENT_RESOUCE = COMMON_URL + "/content-resource" + "/{path}";
 	
 	public static final String PUT_URL = COMMON_URL + "/{celebrationNo}";
 	
@@ -108,6 +124,23 @@ public class CelebrationControllerAPI {
 		long userNo = Objects.nonNull(loginUser) ? loginUser.getUSER_NO() : NO_LOGIN_USER_NO;
 		
 		return celeAPIService.getCelebrationContent(celebationNo,userNo,servletRequest.getLocale());
+	}
+	
+	/**
+	 * "celeContentPath"よりサーバーにあるコンテンツを返す。
+	 * @param celeContentPath コンテンツが保持されているパス
+	 * @throws IOException
+	 */
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = CELEBRATION_CONTENT_RESOUCE, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public void celebationContentResource(@PathVariable(name = "path", required = true) String celeContentPath) throws IOException {
+		Path celeContentFullPath = Paths.get(celeProperty.getServerContentFolderPath(),celeContentPath);
+		
+		try(InputStream io = new FileInputStream(celeContentFullPath.toString()); 
+				PrintWriter pw = servletResponse.getWriter();){
+			
+			IOUtils.copy(io, pw, ValueConstant.DEFAULT_CHARSET);
+		}
 	}
 	
 	@ResponseStatus(HttpStatus.OK)

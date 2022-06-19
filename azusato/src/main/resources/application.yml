@@ -66,6 +66,13 @@ user:
   # max-age of cookie 10 years
   non-member-cookie-max-time: 315360000
   
+celebration:
+  # お祝いテーブルのコンテンツパスが保持されるサーバーのフォルダ位置
+  server-content-folder-path: /project/azusato/celebration/content
+  # 拡張子
+  content-extentions: txt
+  
+  
 profile:
   # サーバーからするとの基本イメージの格納場所
   # 元々はサーバから「client-default-image-folder-path」にアクセスしよう思ったが、Jarの中ではフォルダにあるファイル取得が上手くいななくて別々に保存に変更

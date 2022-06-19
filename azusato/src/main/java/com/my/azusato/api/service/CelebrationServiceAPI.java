@@ -271,7 +271,7 @@ public class CelebrationServiceAPI {
 		});
 		
 		return GetCelebrationContentSerivceAPIResponse.builder()
-			.content(fetchedCelebationEntity.getContentPath())
+			.contentPath(fetchedCelebationEntity.getContentPath())
 			.no(fetchedCelebationEntity.getNo())
 			.owner(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getNo() == userNo ? true : false)
 			.replys(fetchedCelebationEntity.getReplys().stream()
