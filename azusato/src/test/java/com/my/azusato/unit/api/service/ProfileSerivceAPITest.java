@@ -2,6 +2,7 @@ package com.my.azusato.unit.api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -22,7 +23,6 @@ import com.my.azusato.api.service.ProfileServiceAPI;
 import com.my.azusato.api.service.request.ModifyUserProfileServiceAPIRequest;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
-import com.my.azusato.common.TestStream;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.integration.AbstractIntegration;
@@ -74,7 +74,7 @@ public class ProfileSerivceAPITest extends AbstractIntegration {
 			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
 			
 			ModifyUserProfileServiceAPIRequest req = ModifyUserProfileServiceAPIRequest.builder()
-			.profileImageBytes(TestStream.getTestImageBytes())
+			.profileImage(new FileInputStream(TestConstant.TEST_IMAGE_PATH))
 			.profileImageType(Entity.ImageType[0])
 			.userNo(Entity.createdLongs[0])
 			.build();
@@ -108,7 +108,7 @@ public class ProfileSerivceAPITest extends AbstractIntegration {
 			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
 			
 			ModifyUserProfileServiceAPIRequest req = ModifyUserProfileServiceAPIRequest.builder()
-			.profileImageBytes(TestStream.getTestImageBytes())
+			.profileImage(new FileInputStream(TestConstant.TEST_IMAGE_PATH))
 			.profileImageType(Entity.ImageType[1])
 			.userNo(Entity.createdLongs[0])
 			.build();

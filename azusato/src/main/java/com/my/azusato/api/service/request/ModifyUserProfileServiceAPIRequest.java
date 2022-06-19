@@ -1,5 +1,7 @@
 package com.my.azusato.api.service.request;
 
+import java.io.InputStream;
+
 import com.my.azusato.api.service.ProfileServiceAPI;
 
 import lombok.AllArgsConstructor;
@@ -20,7 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ModifyUserProfileServiceAPIRequest {
 
-	byte[] profileImageBytes;
+	InputStream profileImage;
 
 	Long userNo;
 	

@@ -114,7 +114,7 @@ public class ProfileControllerAPI {
 		
 		ModifyUserProfileServiceAPIRequest serviceReq = ModifyUserProfileServiceAPIRequest.builder()
 				.userNo(loginUser.getUSER_NO())
-				.profileImageBytes(req.getProfileImage().getBytes())
+				.profileImage(req.getProfileImage().getInputStream())
 				.profileImageType(extension)
 				.build();
 		
