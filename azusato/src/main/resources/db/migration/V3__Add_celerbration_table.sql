@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS celebration CASCADE;
 create table celebration (
     no BIGINT not null AUTO_INCREMENT COMMENT '番号',
     title VARCHAR(50) not null COMMENT 'タイトル',
-	content LONGTEXT not null COMMENT '内容(htmlタグ)',
+	content_path VARCHAR(100) null  COMMENT '内容(htmlタグ)のパス',
 	read_count INT not null default 0 COMMENT '読んだ数',
 	create_datetime TIMESTAMP not null DEFAULT CURRENT_TIMESTAMP,
 	update_datetime TIMESTAMP not null DEFAULT CURRENT_TIMESTAMP,
