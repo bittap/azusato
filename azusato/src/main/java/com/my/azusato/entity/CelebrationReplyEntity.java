@@ -1,14 +1,9 @@
 package com.my.azusato.entity;
 
-import java.util.Set;
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.my.azusato.entity.common.CommonDateEntity;
@@ -40,15 +35,6 @@ public class CelebrationReplyEntity {
 	private Long celebrationNo;
 	
 	private String content;
-	
-	@OneToMany
-	@JoinTable(
-			name = "celebration_reply_notice",
-			joinColumns = @JoinColumn(name="celebration_reply_no"),
-			inverseJoinColumns = @JoinColumn(name="user_no")
-			
-	)
-	private Set<UserEntity> replyNotices;
 	
 	@Embedded
 	private CommonUserEntity commonUser;

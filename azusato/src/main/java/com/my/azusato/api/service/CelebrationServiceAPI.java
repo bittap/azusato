@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -26,10 +25,8 @@ import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIRespon
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
-import com.my.azusato.entity.CelebrationContentEntity;
-import com.my.azusato.entity.CelebrationSummaryEntity;
+import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.entity.UserEntity;
-import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.entity.common.CommonDateEntity;
 import com.my.azusato.entity.common.CommonFlagEntity;
 import com.my.azusato.entity.common.CommonUserEntity;
@@ -37,8 +34,7 @@ import com.my.azusato.entity.common.DefaultValueConstant;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.page.MyPageRequest;
 import com.my.azusato.page.MyPaging;
-import com.my.azusato.repository.CelebrationContentRepository;
-import com.my.azusato.repository.CelebrationSummaryRepository;
+import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.UserRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
 
@@ -63,9 +59,7 @@ public class CelebrationServiceAPI {
 
 	private final MessageSource messageSource;
 
-	private final CelebrationSummaryRepository celeSummaryRepo;
-	
-	private final CelebrationContentRepository celeContentRepo;
+	private final CelebrationRepository celeRepo;
 
 	/**
 	 * delegate
@@ -109,13 +103,13 @@ public class CelebrationServiceAPI {
 			throw AzusatoException.createI0005Error(locale, messageSource, UserEntity.TABLE_NAME_KEY);
 		});
 
-		Set<UserEntity> admins = null;
-
-		if (userType.equals("not_admin")) {
-			// for create celebration_notice table
-			// Select that user type is admin.
-			admins = userRepo.findByUserTypeAndCommonFlagDeleteFlag(Type.admin.toString(),ValueConstant.DEFAULT_DELETE_FLAG);
-		}
+//		Set<UserEntity> admins = null;
+//
+//		if (userType.equals("not_admin")) {
+//			// for create celebration_notice table
+//			// Select that user type is admin.
+//			admins = userRepo.findByUserTypeAndCommonFlagDeleteFlag(Type.admin.toString(),ValueConstant.DEFAULT_DELETE_FLAG);
+//		}
 		
 		LocalDateTime nowLdt = LocalDateTime.now();
 		
@@ -128,14 +122,15 @@ public class CelebrationServiceAPI {
 		// 小さいプロジェクトでは同じ条件でできたので、JPAのバグの可能性がある。
 		UserEntity savedUserEntity = userRepo.save(userEntity);
 		
-		CelebrationContentEntity insertedEntity = CelebrationContentEntity.builder().title(req.getTitle()).content(req.getContent())
+		CelebrationEntity insertedEntity = CelebrationEntity.builder().title(req.getTitle()).contentPath(req.getContent())
 				.commonUser(
 						CommonUserEntity.builder().createUserEntity(savedUserEntity).updateUserEntity(savedUserEntity).build())
-				.notices(admins).readCount(DefaultValueConstant.READ_COUNT)
+				//.notices(admins)
+				.readCount(DefaultValueConstant.READ_COUNT)
 				.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
 				.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
 
-		celeContentRepo.save(insertedEntity);
+		celeRepo.save(insertedEntity);
 
 		log.debug("{}#addCelebartion END");
 	}
@@ -154,9 +149,9 @@ public class CelebrationServiceAPI {
 	 */
 	@Transactional
 	public void modifyCelebartion(ModifyCelebationServiceAPIRequest req , Locale locale) throws IOException{
-		CelebrationContentEntity fetchedCelebationEntity = 
-				celeContentRepo.findByNoAndCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(req.getCelebationNo(),ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
-						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationContentEntity.TABLE_NAME_KEY);
+		CelebrationEntity fetchedCelebationEntity = 
+				celeRepo.findByNoAndCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(req.getCelebationNo(),ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
+						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
 				});
 		
 		// 生成したユーザかユーザをチェックする。
@@ -168,12 +163,12 @@ public class CelebrationServiceAPI {
 		}
 		LocalDateTime now = LocalDateTime.now();
 		fetchedCelebationEntity.setTitle(req.getTitle());
-		fetchedCelebationEntity.setContent(req.getContent());
+		fetchedCelebationEntity.setContentPath(req.getContent());
 		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().setName(req.getName());
 		fetchedCelebationEntity.getCommonDate().setUpdateDatetime(now);
 		fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getCommonDate().setUpdateDatetime(now);
 	
-		celeContentRepo.save(fetchedCelebationEntity);
+		celeRepo.save(fetchedCelebationEntity);
 	}
 	
 	/**
@@ -190,10 +185,10 @@ public class CelebrationServiceAPI {
 	 */
 	@Transactional
 	public void deleteCelebartion(Long celebationNo, Long userNo,Locale locale) {
-		CelebrationSummaryEntity fetchedCelebationEntity = 
+		CelebrationEntity fetchedCelebationEntity = 
 				// ユーザが削除されたとしても、削除処理は行われるように
-				celeSummaryRepo.findByNoAndCommonFlagDeleteFlag(celebationNo,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
-						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationContentEntity.TABLE_NAME_KEY);
+				celeRepo.findByNoAndCommonFlagDeleteFlag(celebationNo,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
+						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
 				});
 		
 		// 生成したユーザかユーザをチェックする。
@@ -214,7 +209,7 @@ public class CelebrationServiceAPI {
 			e.getCommonFlag().setDeleteFlag(!ValueConstant.DEFAULT_DELETE_FLAG);	
 		});
 	
-		celeSummaryRepo.save(fetchedCelebationEntity);
+		celeRepo.save(fetchedCelebationEntity);
 	}
 	
 
@@ -228,16 +223,16 @@ public class CelebrationServiceAPI {
 	 */
 	@Transactional
 	public void readCountUp(Long celebationNo, Locale locale) {
-		CelebrationSummaryEntity fetchedCelebationEntity = 
+		CelebrationEntity fetchedCelebationEntity = 
 				// note：ユーザが開いた状態でのコンテンツはクリック可能にするため、deletedは使わない。
-				celeSummaryRepo.findById(celebationNo).orElseThrow(()->{
-						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationContentEntity.TABLE_NAME_KEY);
+				celeRepo.findById(celebationNo).orElseThrow(()->{
+						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
 				});
 		
 		int upedReadCount = fetchedCelebationEntity.getReadCount() + 1;
 		fetchedCelebationEntity.setReadCount(upedReadCount);
 	
-		celeSummaryRepo.save(fetchedCelebationEntity);
+		celeRepo.save(fetchedCelebationEntity);
 	}
 
 	/**
@@ -248,14 +243,14 @@ public class CelebrationServiceAPI {
 	 * @throws AzusatoException 対象データが存在しない場合
 	 */
 	public GetCelebrationSerivceAPIResponse getCelebration(Long celebationNo , Locale locale) {
-		CelebrationContentEntity fetchedCelebationEntity = celeContentRepo.findById(celebationNo).orElseThrow(()->{
-			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationContentEntity.TABLE_NAME_KEY);
+		CelebrationEntity fetchedCelebationEntity = celeRepo.findById(celebationNo).orElseThrow(()->{
+			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
 		});
 		
 		return GetCelebrationSerivceAPIResponse.builder()
 					.celebrationNo(fetchedCelebationEntity.getNo())
 					.title(fetchedCelebationEntity.getTitle())
-					.content(fetchedCelebationEntity.getContent())
+					.content(fetchedCelebationEntity.getContentPath())
 					.name(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getName())
 					.profileImagePath(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getProfile().getImagePath())
 					.build();
@@ -271,12 +266,12 @@ public class CelebrationServiceAPI {
 	 */
 	@Transactional
 	public GetCelebrationContentSerivceAPIResponse getCelebrationContent(Long celebationNo , Long userNo, Locale locale) {
-		CelebrationContentEntity fetchedCelebationEntity = celeContentRepo.findById(celebationNo).orElseThrow(()->{
-			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationContentEntity.TABLE_NAME_KEY);
+		CelebrationEntity fetchedCelebationEntity = celeRepo.findById(celebationNo).orElseThrow(()->{
+			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
 		});
 		
 		return GetCelebrationContentSerivceAPIResponse.builder()
-			.content(fetchedCelebationEntity.getContent())
+			.content(fetchedCelebationEntity.getContentPath())
 			.no(fetchedCelebationEntity.getNo())
 			.owner(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getNo() == userNo ? true : false)
 			.replys(fetchedCelebationEntity.getReplys().stream()
@@ -311,7 +306,7 @@ public class CelebrationServiceAPI {
 	public GetCelebrationsSerivceAPIResponse getCelebrations(GetCelebrationsSerivceAPIRequset req) {
 		// 注意 : 一番最初のパラメータpageは0から始まる。
 		Pageable sortedByNo = PageRequest.of(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement(),Sort.by(Direction.DESC,"no"));
-		Page<CelebrationSummaryEntity> celebrationEntitys = celeSummaryRepo
+		Page<CelebrationEntity> celebrationEntitys = celeRepo
 				.findAllByCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(sortedByNo,ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG);
 		
 		GetCelebrationsSerivceAPIResponse response = new GetCelebrationsSerivceAPIResponse();
