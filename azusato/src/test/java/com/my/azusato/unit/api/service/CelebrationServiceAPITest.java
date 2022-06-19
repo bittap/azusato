@@ -84,8 +84,8 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 							TestConstant.DEFAULT_EXCLUDE_COLUMNS);
 				} else if (table.equals("celebration_notice")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							new String[] { "celebration_no" });
+//					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+//							new String[] { "celebration_no" });
 				} else if(table.equals("user") || table.equals("profile")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);

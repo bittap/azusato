@@ -18,7 +18,7 @@
     <celebration 
    		no='1'
     	title='varchar1' 
-    	content='varchar2'
+    	content_path='varchar2'
     	read_count='0' 
     	create_user_no='1'
     	update_user_no='1' 

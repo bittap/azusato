@@ -17,7 +17,7 @@
      <celebration 
    		no='1'
     	title='varchar1' 
-    	content='varchar2'
+    	content_path='varchar2'
     	read_count='0' 
     	create_datetime='2022-01-02 03:04:05' 
     	update_datetime='2022-01-02 03:04:05'
@@ -28,7 +28,7 @@
     <celebration 
    		no='2'
     	title='varchar3' 
-    	content='varchar4'
+    	content_path='varchar4'
     	read_count='1' 
     	create_datetime='2022-02-02 02:02:02' 
     	update_datetime='2022-07-07 07:07:07'
@@ -39,7 +39,7 @@
     <celebration 
    		no='3'
     	title='varchar1' 
-    	content='varchar2'
+    	content_path='varchar2'
     	read_count='0' 
     	create_datetime='2022-01-02 03:04:05' 
     	update_datetime='2022-01-02 03:04:05'
@@ -50,7 +50,7 @@
      <celebration 
    		no='4'
     	title='varchar1' 
-    	content='varchar2'
+    	content_path='varchar2'
     	read_count='0' 
     	create_datetime='2022-01-02 03:04:05' 
     	update_datetime='2022-01-02 03:04:05'
@@ -61,7 +61,7 @@
    <celebration 
    		no='5'
     	title='varchar1' 
-    	content='varchar2'
+    	content_path='varchar2'
     	read_count='0' 
     	create_datetime='2022-01-02 03:04:05' 
     	update_datetime='2022-01-02 03:04:05'
@@ -72,7 +72,7 @@
     <celebration 
    		no='6'
     	title='varchar1' 
-    	content='varchar2'
+    	content_path='varchar2'
     	read_count='0' 
     	create_datetime='2022-01-02 03:04:05' 
     	update_datetime='2022-01-02 03:04:05'
@@ -83,7 +83,7 @@
     <celebration 
    		no='7'
     	title='varchar3' 
-    	content='varchar4'
+    	content_path='varchar4'
     	read_count='1' 
     	create_datetime='2022-02-02 02:02:02' 
     	update_datetime='2022-07-07 07:07:07'

@@ -17,7 +17,7 @@
     <celebration 
    		no='1'
     	title='update1' 
-    	content='update2'
+    	content_path='update2'
     	read_count='0' 
     	create_user_no='1'
     	update_user_no='1' 
