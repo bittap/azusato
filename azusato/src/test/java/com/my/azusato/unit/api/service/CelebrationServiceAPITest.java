@@ -26,7 +26,6 @@ import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
-import com.my.azusato.entity.CelebrationContentEntity;
 import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.exception.AzusatoException;
@@ -170,7 +169,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 		@MethodSource("com.my.azusato.common.TestSource#locales")
 		public void givenNoCelebrationData_resultError(Locale locale) throws Exception {
 			
-			String tableName = messageSource.getMessage(CelebrationContentEntity.TABLE_NAME_KEY, null, locale);
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
 			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
 					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
 
@@ -235,7 +234,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 		@MethodSource("com.my.azusato.common.TestSource#locales")
 		public void givenNoCelebrationData_resultError(Locale locale) throws Exception {
 			
-			String tableName = messageSource.getMessage(CelebrationContentEntity.TABLE_NAME_KEY, null, locale);
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
 			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
 					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
 
@@ -316,7 +315,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
 			req.setUserNo(100000L);
 
-			String tableName = messageSource.getMessage(CelebrationContentEntity.TABLE_NAME_KEY, null, locale);
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
 			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
 					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
 
@@ -336,7 +335,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
 			req.setUserNo(100000L);
 
-			String tableName = messageSource.getMessage(CelebrationContentEntity.TABLE_NAME_KEY, null, locale);
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
 			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
 					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
 
@@ -354,7 +353,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
 			req.setUserNo(100000L);
 
-			String tableName = messageSource.getMessage(CelebrationContentEntity.TABLE_NAME_KEY, null, locale);
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
 			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
 					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
 
@@ -397,7 +396,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 		public void givenNodata_result400(Locale locale) throws Exception {
 			long celebationNo = 100000L;
 			
-			String tableName = messageSource.getMessage(CelebrationContentEntity.TABLE_NAME_KEY, null, locale);
+			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
 			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
 					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
 
@@ -436,7 +435,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			
 			
 			GetCelebrationContentSerivceAPIResponse expect = GetCelebrationContentSerivceAPIResponse.builder()
-					.content(Entity.createdVarChars[1])
+					.contentPath(Entity.createdVarChars[1])
 					.no(Entity.createdLongs[0])
 					.owner(true)
 					.replys(List.of(
@@ -469,7 +468,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			
 			
 			GetCelebrationContentSerivceAPIResponse expect = GetCelebrationContentSerivceAPIResponse.builder()
-					.content(Entity.createdVarChars[1])
+					.contentPath(Entity.createdVarChars[1])
 					.no(Entity.createdLongs[0])
 					.owner(false)
 					.replys(List.of(
@@ -502,7 +501,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			
 			
 			GetCelebrationContentSerivceAPIResponse expect = GetCelebrationContentSerivceAPIResponse.builder()
-					.content(Entity.createdVarChars[1])
+					.contentPath(Entity.createdVarChars[1])
 					.no(Entity.createdLongs[0])
 					.owner(true)
 					.replys(List.of(
