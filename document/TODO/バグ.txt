@@ -11,14 +11,18 @@
 ・エラーメッセージが韓国語の時日本語で出力される。（上）(●)
 =>API要求する時はheaderを指定する。
 
-・CookieをID暗号化（上）
+・CookieをID暗号化（中）
 
 ・Junit Transcion問題（中）(●)
 => classに投与された@transcionalを除外して解決
 
 ・404エラー時のハンドリング(下)
 
-・作成時、userテーブルの情報が変わらない。（上）
+・作成時、userテーブルの情報が変わらない。（上）(●)
 =>解決できなかったため、userテーブルは別々にupdate
 =>Batch update returned unexpected row count from update [0]; actual row count: 0; expected: 1; statement executed: delete from celebration where no=?; nested exception is org.hibernate.StaleStateException: Batch update returned unexpected row count from update [0]; actual row count: 0; expected: 
 1; statement executed: delete from celebration where no=?
+
+・いっぱいファイル保存する時エラーが出る(中）
+
+org.springframework.web.util.NestedServletException: Handler dispatch failed; nested exception is java.lang.OutOfMemoryError: Java heap space

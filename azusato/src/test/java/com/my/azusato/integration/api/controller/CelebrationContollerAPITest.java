@@ -6,6 +6,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,6 +16,7 @@ import java.util.stream.Stream;
 
 import javax.servlet.http.Cookie;
 
+import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -46,6 +48,7 @@ import com.my.azusato.integration.AbstractIntegration;
 import com.my.azusato.page.MyPageResponse;
 import com.my.azusato.view.controller.common.HttpConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
+import com.my.azusato.view.controller.common.ValueConstant;
 
 public class CelebrationContollerAPITest extends AbstractIntegration {
 
@@ -517,6 +520,70 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			String message = messageSource.getMessage(AzusatoException.I0008, new String[] { null }, locale);
 
 			assertEquals(new ErrorResponse(AzusatoException.I0008, message), result);
+		}
+	}
+	
+	@Nested
+	class GetCelebrationContentResouce {
+		
+		@Test
+		public void givenNormalCase_WhenSmallFile_result200() throws Exception {
+			String fileName = createSmallFile();
+			
+			mockMvc.perform(
+					MockMvcRequestBuilders
+						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.CELEBRATION_CONTENT_RESOUCE + "/" + fileName)
+					).andDo(print()).andExpect(status().isOk()).andReturn();
+			
+			
+			// 結果テストに関してはOutputstreamにあるデータをどうやって取得すればいいのか分からなくて諦めました。
+		}
+		
+		@Test
+		public void givenNormalCase_WhenLargeFile_result200() throws Exception {
+			String fileName = createLargeFile();
+			mockMvc.perform(
+					MockMvcRequestBuilders
+						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.CELEBRATION_CONTENT_RESOUCE + "/" + fileName)
+					).andDo(print()).andExpect(status().isOk()).andReturn();
+			
+			
+			// 結果テストに関してはOutputstreamにあるデータをどうやって取得すればいいのか分からなくて諦めました。
+		}
+		
+		@ParameterizedTest
+		@MethodSource("com.my.azusato.common.TestSource#locales")
+		public void givenParameterError_result400(Locale locale) throws Exception {
+			MvcResult mvcResult = mockMvc.perform(
+					MockMvcRequestBuilders
+						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.CELEBRATION_CONTENT_RESOUCE + "/" + "noExistFile")
+						.locale(locale)
+					).andExpect(status().is5xxServerError()).andReturn();
+			
+			String resultBody = mvcResult.getResponse()
+					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+
+			String contentFieldName = messageSource.getMessage("content", null, locale);
+			String message = messageSource.getMessage(AzusatoException.E0002, new String[] { contentFieldName }, locale);
+
+			assertEquals(new ErrorResponse(AzusatoException.E0002, message), result);
+		}
+		
+		private String createSmallFile() throws Exception {
+			return createFile(TestConstant.TEST_CELEBRATION_CONTENT_SMALL_PATH);
+		}
+		
+		private String createLargeFile() throws Exception {
+			return createFile(TestConstant.TEST_CELEBRATION_CONTENT_LARGE_PATH);
+		}
+		
+		private String createFile(String filePath) throws Exception {
+			String fileName = "test.txt";
+			Path writedPath = Paths.get(celeProperty.getServerContentFolderPath(),fileName);
+			Writer wi = new FileWriterWithEncoding(writedPath.toString(), ValueConstant.DEFAULT_CHARSET);
+			wi.write(filePath);
+			return fileName;
 		}
 	}
 	

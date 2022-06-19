@@ -19,6 +19,10 @@ spring:
     resources:
       static-locations: classpath:/static, file:/git/resources
       
+celebration:
+  # お祝いテーブルのコンテンツパスが保持されるサーバーのフォルダ位置
+  server-content-folder-path: /git/resources/celebration/content      
+      
 profile:
   # サーバーからするとの基本イメージの格納場所
   server-default-image-folder-path: src\main\resources\static\image\default\profile

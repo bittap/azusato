@@ -19,6 +19,10 @@ public class TestConstant {
 	
 	public final static String TEST_LARGE_IMAGE_PATH = "src/test/image/large30MB.png";
 	
+	public final static String TEST_CELEBRATION_CONTENT_SMALL_PATH = "src\\test\\data\\celebrationSmallBody.txt";
+	
+	public final static String TEST_CELEBRATION_CONTENT_LARGE_PATH = "src\\test\\data\\celebrationBody.txt";
+	
 	public final static String TEST_IMAGE_FILENAME = "test.png";
 	
 	public final static String TEST_LARGE_IMAGE_FILENAME = "large30MB.png";

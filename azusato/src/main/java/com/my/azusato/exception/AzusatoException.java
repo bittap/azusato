@@ -78,6 +78,11 @@ public class AzusatoException extends RuntimeException {
 	 * 予期せぬエラー
 	 */
 	public static final String E0001 = "E-0001";
+	
+	/**
+	 * 指定したパスにファイルが存在しないため、読み込み失敗
+	 */
+	public static final String E0002 = "E-0002";
 
 	private static final long serialVersionUID = 1L;
 

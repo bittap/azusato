@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.dbunit.DBUnitComponent;
+import com.my.azusato.property.CelebrationProperty;
 import com.my.azusato.property.ProfileProperty;
 import com.my.azusato.repository.CelebrationNoticeRepository;
 import com.my.azusato.repository.CelebrationReplyNoticeRepository;
@@ -73,6 +74,9 @@ public abstract class AbstractIntegration  {
 	@Autowired
 	protected CelebrationReplyNoticeRepository celeReplyNoticeRepo;
 	
+	@Autowired
+	protected CelebrationProperty celeProperty;
+	
 	public AbstractIntegration() {
 		// サポートjavatime
 		om.registerModule(new JavaTimeModule());
@@ -102,8 +106,11 @@ public abstract class AbstractIntegration  {
 	 * テストし使用したファイルを全部削除する。
 	 */
 	private void allFileDelete() {
-		File file = Paths.get(profileProperty.getClientImageFolderPath()).toFile();
-		Arrays.asList(file.listFiles()).forEach(File::delete);
+		File file1 = Paths.get(celeProperty.getServerContentFolderPath()).toFile();
+		Arrays.asList(file1.listFiles()).forEach(File::delete);
+		
+		File file2 = Paths.get(profileProperty.getClientImageFolderPath()).toFile();
+		Arrays.asList(file2.listFiles()).forEach(File::delete);
 	}
 	
 	protected void commitAndStart() {

@@ -1,6 +1,7 @@
 package com.my.azusato.api.controller;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -79,7 +80,7 @@ public class CelebrationControllerAPI {
 	
 	public static final String CELEBRATION_CONTENT_URL = COMMON_URL + "/content" + "/{celebrationNo}";
 	
-	public static final String CELEBRATION_CONTENT_RESOUCE = COMMON_URL + "/content-resource" + "/{path}";
+	public static final String CELEBRATION_CONTENT_RESOUCE = COMMON_URL + "/content-resource";
 	
 	public static final String PUT_URL = COMMON_URL + "/{celebrationNo}";
 	
@@ -128,18 +129,24 @@ public class CelebrationControllerAPI {
 	
 	/**
 	 * "celeContentPath"よりサーバーにあるコンテンツを返す。
+	 * <ul>
+	 * 	<li>200 : 成功</li>
+	 * 	<li>500 : ファイルが存在しない。</li>
+	 * </ul>
 	 * @param celeContentPath コンテンツが保持されているパス
 	 * @throws IOException
 	 */
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping(value = CELEBRATION_CONTENT_RESOUCE, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@GetMapping(value = CELEBRATION_CONTENT_RESOUCE + "/{path}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public void celebationContentResource(@PathVariable(name = "path", required = true) String celeContentPath) throws IOException {
 		Path celeContentFullPath = Paths.get(celeProperty.getServerContentFolderPath(),celeContentPath);
 		
 		try(InputStream io = new FileInputStream(celeContentFullPath.toString()); 
-				PrintWriter pw = servletResponse.getWriter();){
-			
+				PrintWriter pw = servletResponse.getWriter()){
 			IOUtils.copy(io, pw, ValueConstant.DEFAULT_CHARSET);
+		}catch(FileNotFoundException e) {
+			String contentFieldName = messageSource.getMessage("content", null, servletRequest.getLocale());
+			throw new AzusatoException(HttpStatus.INTERNAL_SERVER_ERROR, AzusatoException.E0002, messageSource.getMessage(AzusatoException.E0002, new String[] {contentFieldName}, servletRequest.getLocale()));
 		}
 	}
 	

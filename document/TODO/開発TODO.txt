@@ -11,7 +11,7 @@
 
 ・コンテンツlazy表示(中)(●)
 
-・セッションからログイン情報(名前)等保持するように(下)
+・セッションからログイン情報(名前)等保持するように(下)(●)
 
 ・Randomイメージテストコードが遅い。(下)
 
@@ -23,4 +23,10 @@
 
 ・ドメイン変更 tk -> com(中)
 
-・S3変更
+・S3変更(中)
+
+・LocaleInterceptorのstatic修正(中) -> filiterに変更
+=>IndexController
+=>AdminIndexControllerTest#givenNotlogin_resultRedicrtLoginPage
+
+・各APIのログインしている状態確認SecurityConfigでするように(下)

@@ -22,6 +22,10 @@ spring:
   web:
     resources:
       static-locations: classpath:/static, file:/git/azusato/azusato/resources/test-resources
+      
+celebration:
+  # お祝いテーブルのコンテンツパスが保持されるサーバーのフォルダ位置
+  server-content-folder-path: /git/azusato/azusato/test-resources
 
 profile:
   # サーバーからするとの基本イメージの格納場所
