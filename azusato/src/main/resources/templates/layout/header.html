@@ -1,13 +1,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 <!--/*
 	the fragment for head tag.
 	this declars css, meta, and title etc...
 	<note> this is used in head tag.
 */-->
-<head th:fragment = "header(contents)">
+<head th:fragment="header(contents)">
 	<title th:text="#{navbar.brand}"></title>
-	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<meta name="_csrf" th:content="${_csrf.token}" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+	<link href="/image/icon/apple-touch-icon.png" rel="apple-touch-icon" />
+	<link href="/image/icon/apple-touch-icon-152x152.png" rel="apple-touch-icon" sizes="152x152" />
+	<link href="/image/icon/apple-touch-icon-167x167.png" rel="apple-touch-icon" sizes="167x167" />
+	<link href="/image/icon/apple-touch-icon-180x180.png" rel="apple-touch-icon" sizes="180x180" />
+	<link href="/image/icon/icon-hires.png" rel="icon" sizes="192x192" />
+	<link href="/image/icon/icon-normal.png" rel="icon" sizes="128x128" />
 	<link rel="stylesheet" href="/css/bootstrap.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 	<link rel="stylesheet" href="/css/common.css">
