@@ -29,17 +29,13 @@ const modifyCelebration = async function(){
 
 const getCelebation = async function(){
 	console.log("お祝い情報取得");
-	modalCommon.displayLoadingModal();
 	const res = await fetch(apiUrl + "/celebration" + "/" +CELEBATION_NO,{
 		method: 'GET',
 		headers: apiCommon.header
 	});
 	
 	const result = await res.json();
-	
-	await asyncCommon.delay(LOADING_MODAL_DELAY);
-	modalCommon.hideLoadingModal();
-	
+
 	if(!res.ok) {
 		return Promise.reject(result);
 	}else{
@@ -50,20 +46,27 @@ const getCelebation = async function(){
 
 const initialize = async function(){
 	console.log("初期画面設定");
+	modalCommon.displayLoadingModal();
+	
 	try{
 		const celebation = await getCelebation();
 		document.querySelector("[name='name']").value = celebation.name;
 		document.querySelector("[name='title']").value = celebation.title;
 		// イメージ変更
 		changeProfileByDefaultImage(celebation.profileImagePath);
+		
+		const content = await getContent(celebation.content);
 		// 
-		$('#summernote').summernote('code', celebation.content);
+		$('#summernote').summernote('code', content);
 	}catch(e){
 		console.log(e);
 		// 以前ページに移動
 		modalCommon.displayErrorModal(e.title,e.message,function(){
 			history.back();
 		});
+	}finally{
+		await asyncCommon.delay(LOADING_MODAL_DELAY);
+		modalCommon.hideLoadingModal();
 	}
 }
 
@@ -78,7 +81,7 @@ writeBtnTag.addEventListener('click', function(){
 			// プロフィールイメージ更新
 			await profileUpload();
 			
-			await modifyCelebration();
+			await celebrationAction();
 			
 			location.href = `/${language}/celebration`; 
 		}catch(e){

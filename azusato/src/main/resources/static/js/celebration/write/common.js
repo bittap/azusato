@@ -49,6 +49,49 @@ const profileUpload = async function(){
 }
 
 /*
+ * バックエンドから取得した"CELEBATION_NO"があるかどうかによって作成・修正ページを判断する。
+ * "CELEBATION_NO"がある : 修正ページ , ない　: 作成ページ
+ */
+const isWritePage = function(){
+	return CELEBATION_NO == null ? Boolean(true) : Boolean(false);
+}
+
+/*
+ * お祝い作成＆修正を行う。
+ */
+const celebrationAction = async function(){
+	const formData = new FormData();
+	
+	formData.append("content",valueToText($('#summernote').summernote('code')));
+	formData.append("title",document.querySelector('[name="title"]').value);
+	formData.append("name",document.querySelector('[name="name"]').value);
+	
+	console.log("お祝いアクションAPI",formData);
+	
+	const METHOD_TYPE = isWritePage ? "POST" : "PUT";
+
+	const res = await fetch(apiUrl+"/celebration",{
+		method: METHOD_TYPE,
+		headers: apiCommon.noContentTypeheader,
+		body: formData
+	});
+
+	
+	if(!res.ok) {
+		const result = await res.json();
+		return Promise.reject(result);
+	}else{
+		return Promise.resolve();
+	}
+}
+
+const valueToText = function(value){
+	return new Blob([value], {
+	    type: 'text/plain'
+	});
+}
+
+/*
  * プロフィールイメージをURLにより更新する。
  */
 const changeProfileByDefaultImage = function(imagePath){

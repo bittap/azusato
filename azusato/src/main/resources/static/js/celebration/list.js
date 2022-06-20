@@ -118,12 +118,13 @@ const getUser = async function(){
  * @param {document} toggledTag クリックEventによる表示されるコンテンツ領域のdocument
  */
 const initContentArea = async function(contents , toggledTag ){
+	console.log("コンテンツエリア表示",contents);
 	const BODY_TAG = toggledTag.querySelector(".-body");
 	const MODIFY_BTN_TAG = toggledTag.querySelector(".-modify");
 	const DELETE_BTN_TAG = toggledTag.querySelector(".-delete");
 	
 	
-	BODY_TAG.innerHTML = contents.content;
+	BODY_TAG.innerHTML = await getContent(contents.contentPath);
 	
 	if(contents.owner){
 		// 属性追加

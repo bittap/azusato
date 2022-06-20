@@ -19,6 +19,26 @@ const getRandomImage = async function(){
 }
 
 /*
+ * お祝い作成、修正、リスト全体に使われる共通JS
+ */
+const getContent = async function(contentPath){ 
+	console.log("コンテンツ取得");
+	const res = await fetch(apiUrl+"/celebration/content-resource/"+contentPath,{
+		method: 'GET',
+		headers: apiCommon.noContentTypeheader
+	});
+	
+	const result = await res.blob();
+	
+	if(!res.ok) {
+		return Promise.reject(result);
+	}else{
+		console.log("結果",result);
+		return await result.text();
+	}
+}
+
+/*
  * イメージのURLよりblobデータを取得する。
  */
 const getBlobByImageUrl = async function(imageSrc){

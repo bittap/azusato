@@ -102,7 +102,7 @@ writeBtnTag.addEventListener('click', function(){
 			// プロフィールイメージ更新
 			await profileUpload();
 			
-			await addCelebration();
+			await celebrationAction();
 			
 			location.href = `/${language}/celebration`; 
 		}catch(e){
