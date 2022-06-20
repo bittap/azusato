@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -145,6 +144,7 @@ public class CelebrationControllerAPI {
 				PrintWriter pw = servletResponse.getWriter()){
 			IOUtils.copy(io, pw, ValueConstant.DEFAULT_CHARSET);
 		}catch(FileNotFoundException e) {
+			log.error("path : \"{}\"にお祝いコンテンツファイルが存在しません。",celeContentFullPath);
 			String contentFieldName = messageSource.getMessage("content", null, servletRequest.getLocale());
 			throw new AzusatoException(HttpStatus.INTERNAL_SERVER_ERROR, AzusatoException.E0002, messageSource.getMessage(AzusatoException.E0002, new String[] {contentFieldName}, servletRequest.getLocale()));
 		}
@@ -180,7 +180,7 @@ public class CelebrationControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(COMMON_URL)
-	public void add(@RequestBody @Validated AddCelebrationAPIReqeust req, @AuthenticationPrincipal LoginUser loginUser ) throws IOException {
+	public void add(@ModelAttribute @Validated AddCelebrationAPIReqeust req, @AuthenticationPrincipal LoginUser loginUser ) throws IOException {
 		if(Objects.isNull(loginUser)) {
 			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
 					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
@@ -213,7 +213,7 @@ public class CelebrationControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping(PUT_URL)
-	public void modify(@PathVariable(name = "celebrationNo", required = true) Long celebationNo, @RequestBody @Validated ModifyCelebrationAPIReqeust req,
+	public void modify(@PathVariable(name = "celebrationNo", required = true) Long celebationNo, @ModelAttribute @Validated ModifyCelebrationAPIReqeust req,
 			@AuthenticationPrincipal LoginUser loginUser)  throws IOException {
 		if(Objects.isNull(loginUser)) {
 			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,

@@ -32,4 +32,12 @@ public class TestStream {
 	public static String getTestLargeCelebrationContent() throws Exception  {
 		return IOUtils.toString(new FileReader(TestConstant.TEST_CELEBRATION_CONTENT_LARGE_PATH,Charset.forName(ValueConstant.DEFAULT_CHARSET)));
 	}
+	
+	public static byte[] getTestSmallCelebrationContentByte() throws Exception  {
+		return IOUtils.toByteArray(new FileReader(TestConstant.TEST_CELEBRATION_CONTENT_LARGE_PATH),Charset.forName(ValueConstant.DEFAULT_CHARSET));
+	}
+	
+	public static byte[] getTestLargeCelebrationContentByte() throws Exception  {
+		return IOUtils.toByteArray(new FileReader(TestConstant.TEST_CELEBRATION_CONTENT_LARGE_PATH),Charset.forName(ValueConstant.DEFAULT_CHARSET));
+	}
 }

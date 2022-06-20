@@ -3,35 +3,39 @@ package com.my.azusato.integration.api.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 
-import javax.servlet.http.Cookie;
-
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.my.azusato.api.controller.CelebrationControllerAPI;
 import com.my.azusato.api.controller.request.AddCelebrationAPIReqeust;
-import com.my.azusato.api.controller.request.ModifyCelebrationAPIReqeust;
 import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse.CelebrationReply;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
@@ -39,8 +43,8 @@ import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
-import com.my.azusato.common.TestCookie;
 import com.my.azusato.common.TestLogin;
+import com.my.azusato.common.TestStream;
 import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
@@ -61,21 +65,25 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 
 		@ParameterizedTest
 		@MethodSource("com.my.azusato.integration.api.controller.CelebrationContollerAPITest#addCelebration_normal_case")
-		public void normal_case_admin(UserDetails loginUser, Cookie cookie, Path initFilePath, Path expectFilePath,
+		public void normal_case_admin(UserDetails loginUser, Path initFilePath, Path expectFilePath,
 				String[] comparedTables) throws Exception {
 			dbUnitCompo.initalizeTable(initFilePath);
-
-			mockMvc.perform(MockMvcRequestBuilders
-					.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL)
-					.with(csrf())
-					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING).with(user(loginUser))
-					.cookie(cookie)).andDo(print()).andExpect(status().isCreated());
+			
+			mockMvc.perform(
+						multipart(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL)
+							.file(getMultiPartFile())
+							.params(getParams())
+							.with(user(loginUser))
+							.with(csrf())
+						)
+						.andDo(print())
+						.andExpect(status().isCreated());
 
 			// compare tables
 			for (String table : comparedTables) {
 				// exclude to compare dateTime columns when celebration table
 				if (table.equals("celebration")) {
-					dbUnitCompo.compareTable(expectFilePath, table, TestConstant.DEFAULT_EXCLUDE_COLUMNS);
+					dbUnitCompo.compareTable(expectFilePath, table, TestConstant.DEFAULT_CELEBRATION_EXCLUDE_COLUMNS);
 				} else if (table.equals("celebration_notice")) {
 					//dbUnitCompo.compareTable(expectFilePath, table, new String[] { "celebration_no" });
 				} else if(table.equals("user") || table.equals("profile")) {
@@ -84,6 +92,10 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					dbUnitCompo.compareTable(expectFilePath, table);
 				}
 			}
+			
+			contentPathCheck();
+			
+			
 		}
 
 		@ParameterizedTest
@@ -91,12 +103,15 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 		public void abnormal_case(Locale locale) throws Exception {
 
 			MvcResult mvcResult = mockMvc
-					.perform(MockMvcRequestBuilders
-							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL)
+					.perform(
+							multipart(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL)
+							.file(getMultiPartFile())
+							.params(getParams())
 							.with(csrf())
-							.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-							.locale(locale))
-					.andDo(print()).andExpect(status().is(401)).andReturn();
+							.locale(locale)
+						)
+					.andDo(print())
+					.andExpect(status().is(401)).andReturn();
 
 			String resultBody = mvcResult.getResponse()
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
@@ -107,15 +122,17 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 		}
 
 		@ParameterizedTest
-		@MethodSource("com.my.azusato.integration.api.controller.CelebrationContollerAPITest#addCelebration_semi_abnormal_case")
-		public void semi_abnormal_case(Locale locale, AddCelebrationAPIReqeust req, String expectedMessage)
+		@MethodSource("com.my.azusato.integration.api.controller.CelebrationContollerAPITest#addAndModifyCelebration_givenAbnormalParameter_result400")
+		public void givenAbnormalParameter_result400(Locale locale, MockMultipartFile multipartFile ,MultiValueMap<String, String> params, String expectedMessage)
 				throws Exception {
-			String requestBody = om.writeValueAsString(req);
 			MvcResult mvcResult = mockMvc
-					.perform(MockMvcRequestBuilders
-							.post(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL)
+					.perform(
+							multipart(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL)
+							.file(multipartFile)
+							.params(params)
 							.with(csrf())
-							.content(requestBody).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING).locale(locale))
+							.locale(locale)
+						)
 					.andDo(print()).andExpect(status().is(400)).andReturn();
 
 			String resultBody = mvcResult.getResponse()
@@ -125,12 +142,12 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 			assertEquals(new ErrorResponse(AzusatoException.I0004, expectedMessage), result);
 		}
 
-		private String getRequestBody() throws Exception {
-			AddCelebrationAPIReqeust req = AddCelebrationAPIReqeust.builder()
-					.title(Entity.createdVarChars[0])
-					.name(Entity.updatedVarChars[0]).content(Entity.createdVarChars[1]).build();
+		private MultiValueMap<String, String> getParams() throws Exception {
+			MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+			params.add("title", Entity.createdVarChars[0]);
+			params.add("name", Entity.updatedVarChars[0]);
 
-			return om.writeValueAsString(req);
+			return params;
 		}
 	}
 	
@@ -145,15 +162,17 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 		public void givenNoraml_result200() throws Exception {
 			Path initFilePath = Paths.get(ModifyCelebration.RESOUCE_PATH, "1", TestConstant.INIT_XML_FILE_NAME);
 			Path expectFilePath = Paths.get(ModifyCelebration.RESOUCE_PATH, "1", TestConstant.EXPECT_XML_FILE_NAME);
-			String[] comparedTables = new String[] { "user", "celebration" , "profile" };
+			String[] comparedTables = new String[] { "user", "celebration" };
 			dbUnitCompo.initalizeTable(initFilePath);
 
-			mockMvc.perform(MockMvcRequestBuilders
-					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
+		    mockMvc.perform(getPutBuilder()
+					.file(getMultiPartFile())
+					.params(getParams())
+					.with(user(TestLogin.adminLoginUser()))
 					.with(csrf())
-					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-					.with(user(TestLogin.adminLoginUser()))).andDo(print()).andExpect(status().isOk());
-
+		    		)
+				.andDo(print())
+				.andExpect(status().isOk());
 			// compare tables
 			for (String table : comparedTables) {
 				// exclude to compare dateTime columns when celebration table
@@ -163,6 +182,8 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					dbUnitCompo.compareTable(expectFilePath, table);
 				}
 			}
+			
+			contentPathCheck();
 		}
 		
 		@ParameterizedTest
@@ -170,13 +191,16 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 		public void givenDifferenceUser_result400(Locale locale) throws Exception {
 			Path initFilePath = Paths.get(ModifyCelebration.RESOUCE_PATH, "2", TestConstant.INIT_XML_FILE_NAME);
 			dbUnitCompo.initalizeTable(initFilePath);
-			
-			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
+		    
+		    MvcResult mvcResult = mockMvc.perform(getPutBuilder()
+					.file(getMultiPartFile())
+					.params(getParams())
+					.with(user(TestLogin.adminLoginUser()))
 					.with(csrf())
-					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-										.with(user(TestLogin.adminLoginUser())).locale(locale))
-			.andDo(print()).andExpect(status().is(400)).andReturn();
+					.locale(locale)
+		    		)
+				.andDo(print())
+				.andExpect(status().isBadRequest()).andReturn();
 
 			String resultBody = mvcResult.getResponse()
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
@@ -189,13 +213,17 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 		@ParameterizedTest
 		@MethodSource("com.my.azusato.common.TestSource#locales")
 		public void givenNodata_result400(Locale locale) throws Exception {
-			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + "1000")
+			
+		    
+		    MvcResult mvcResult = mockMvc.perform(getPutBuilder()
+					.file(getMultiPartFile())
+					.params(getParams())
+					.with(user(TestLogin.adminLoginUser()))
 					.with(csrf())
-					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-										.with(user(TestLogin.adminLoginUser()))
-					.locale(locale))
-			.andDo(print()).andExpect(status().is(400)).andReturn();
+					.locale(locale)
+		    		)
+				.andDo(print())
+				.andExpect(status().isBadRequest()).andReturn();
 
 			String resultBody = mvcResult.getResponse()
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
@@ -209,11 +237,14 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 		@ParameterizedTest
 		@MethodSource("com.my.azusato.common.TestSource#locales")
 		public void givenNoSession_result401(Locale locale) throws Exception {
-			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
+		    MvcResult mvcResult = mockMvc.perform(getPutBuilder()
+					.file(getMultiPartFile())
+					.params(getParams())
 					.with(csrf())
-					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING).locale(locale))
-			.andDo(print()).andExpect(status().is(401)).andReturn();
+					.locale(locale)
+		    		)
+				.andDo(print())
+				.andExpect(status().is(401)).andReturn();
 
 			String resultBody = mvcResult.getResponse()
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
@@ -227,13 +258,25 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 		@MethodSource("com.my.azusato.common.TestSource#locales")
 		public void givenPathValueTypeError_result400(Locale locale)
 				throws Exception {
-			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + "string")
+			// Multipartをputで実行するために
+			MockMultipartHttpServletRequestBuilder builder =
+		            MockMvcRequestBuilders.multipart(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + "string");
+		    builder.with(new RequestPostProcessor() {
+		        @Override
+		        public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
+		            request.setMethod("PUT");
+		            return request;
+		        }
+		    });
+		    
+		    MvcResult mvcResult = mockMvc.perform(builder
+					.file(getMultiPartFile())
+					.params(getParams())
 					.with(csrf())
-					.content(getRequestBody()).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-										.with(user(TestLogin.adminLoginUser()))
-					.locale(locale))
-			.andDo(print()).andExpect(status().is(400)).andReturn();
+					.locale(locale)
+		    		)
+				.andDo(print())
+				.andExpect(status().is(400)).andReturn();
 
 
 			String resultBody = mvcResult.getResponse()
@@ -246,19 +289,17 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 		}
 
 		@ParameterizedTest
-		@MethodSource("com.my.azusato.integration.api.controller.CelebrationContollerAPITest#moidfyCelebration_parameter_error")
-		public void givenParameterError_result400(Locale locale, ModifyCelebrationAPIReqeust req, String expectedMessage)
+		@MethodSource("com.my.azusato.integration.api.controller.CelebrationContollerAPITest#addAndModifyCelebration_givenAbnormalParameter_result400")
+		public void givenParameterError_result400(Locale locale, MockMultipartFile multiPartFile,MultiValueMap<String, String>  params, String expectedMessage)
 				throws Exception {
-			String requestBody = om.writeValueAsString(req);
-			
-			MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-					.put(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO)
+		    MvcResult mvcResult = mockMvc.perform(getPutBuilder()
+					.file(multiPartFile)
+					.params(params)
 					.with(csrf())
-					.content(requestBody).contentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING)
-										.with(user(TestLogin.adminLoginUser()))
-					.locale(locale))
-			.andDo(print()).andExpect(status().is(400)).andReturn();
-
+					.locale(locale)
+		    		)
+				.andDo(print())
+				.andExpect(status().is(400)).andReturn();
 
 			String resultBody = mvcResult.getResponse()
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
@@ -266,13 +307,27 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 
 			assertEquals(new ErrorResponse(AzusatoException.I0004, expectedMessage), result);
 		}
+		
+		private MockMultipartHttpServletRequestBuilder getPutBuilder() {
+			// Multipartをputで実行するために
+			MockMultipartHttpServletRequestBuilder builder =
+		            MockMvcRequestBuilders.multipart(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.COMMON_URL + "/" + CELEBRATION_NO);
+		    builder.with(new RequestPostProcessor() {
+		        @Override
+		        public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
+		            request.setMethod("PUT");
+		            return request;
+		        }
+		    });
+		    return builder;
+		}
 
-		private String getRequestBody() throws Exception {
-			ModifyCelebrationAPIReqeust req = ModifyCelebrationAPIReqeust.builder()
-					.name(Entity.updatedVarChars[0])
-					.title(Entity.updatedVarChars[2]).content(Entity.updatedVarChars[3]).build();
+		private MultiValueMap<String, String> getParams() throws Exception {
+			MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+			params.add("title", Entity.updatedVarChars[2]);
+			params.add("name", Entity.updatedVarChars[0]);
 
-			return om.writeValueAsString(req);
+			return params;
 		}
 	}
 	
@@ -793,71 +848,79 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 	}
 	
 	@SuppressWarnings("unused")
-	private static Stream<Arguments> modifyCelebration_givenParameterError_result400() {
-		final String NORMAL_IMAGE_TYPE = "image/png";
-		
+	private static Stream<Arguments> modifyCelebration_givenParameterError_result400() throws Exception {
 		return Stream.of(
 				Arguments.of(TestConstant.LOCALE_JA,
+						getMultiPartFile(),
 						AddCelebrationAPIReqeust.builder()
 						.name(Entity.createdVarChars[0])
-						.title(null).content(Entity.createdVarChars[1])
+						.title(null)
 						.build(),
 						"タイトルは必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
+						getMultiPartFile(),
 						AddCelebrationAPIReqeust.builder()
 						.name(Entity.createdVarChars[0])
-						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
+						.title(RandomStringUtils.randomAlphabetic(51))
 						.build(),
 						"タイトルは最大50桁数まで入力可能です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
+						new MockMultipartFile("noExistName", new byte[] {}),
 						AddCelebrationAPIReqeust.builder()
 						.name(Entity.createdVarChars[0])
-						.title(Entity.createdVarChars[1]).content("")
+						.title(Entity.createdVarChars[1])
 						.build(),
 						"内容は必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
+						new MockMultipartFile("content", "<script>alert('asd')</script>".getBytes()),
 						AddCelebrationAPIReqeust.builder()
 						.name(Entity.createdVarChars[0])
-						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
 						.build(),
 						"内容は不正な値です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
+						getMultiPartFile(),
 						AddCelebrationAPIReqeust.builder()
 						.name("")
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.title(Entity.createdVarChars[0])
 						.build(),
 						"名前は必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_KO,
+						getMultiPartFile(),
 						AddCelebrationAPIReqeust.builder()
 						.name(Entity.createdVarChars[0])
-						.title(null).content(Entity.createdVarChars[1])
+						.title(null)
 						.build(),
 						"제목을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
+						getMultiPartFile(),
 						AddCelebrationAPIReqeust.builder()
 						.name(Entity.createdVarChars[0])
-						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
+						.title(RandomStringUtils.randomAlphabetic(51))
 						.build(),
 						"글자 수 50을 초과해서 제목을 입력하는 것은 불가능합니다."),
 				Arguments.of(TestConstant.LOCALE_KO,
+						new MockMultipartFile("noExistName", new byte[] {}),
 						AddCelebrationAPIReqeust.builder()
 						.name(Entity.createdVarChars[0])
-						.title(Entity.createdVarChars[1]).content("")
+						.title(Entity.createdVarChars[1])
 						.build(),
 						"내용을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
+						new MockMultipartFile("content", "<script>alert('asd')</script>".getBytes()),
 						AddCelebrationAPIReqeust.builder()
 						.name(Entity.createdVarChars[0])
-						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
+						.title(Entity.createdVarChars[1])
 						.build(),
 						"내용을 올바르게 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
+						getMultiPartFile(),
 						AddCelebrationAPIReqeust.builder()
 						.name("")
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+						.title(Entity.createdVarChars[0])
 						.build(),
 						"이름을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_JA,
+						new MockMultipartFile("noExistName", new byte[] {}),
 						AddCelebrationAPIReqeust.builder().build(),
 						"タイトルは必修項目です。\n内容は必修項目です。\n名前は必修項目です。"));
 
@@ -940,187 +1003,80 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 	private static Stream<Arguments> addCelebration_normal_case() {
 		return Stream.of(
 				// admin login
-				Arguments.of(TestLogin.adminLoginUser(), TestCookie.getNonmemberCookie(),
+				Arguments.of(TestLogin.adminLoginUser(),
 						Paths.get(AddCelebration.RESOUCE_PATH, "1", TestConstant.INIT_XML_FILE_NAME),
 						Paths.get(AddCelebration.RESOUCE_PATH, "1", TestConstant.EXPECT_XML_FILE_NAME),
-						new String[] { "user", "celebration", "profile" }),
+						new String[] { "user", "celebration" }),
 				// not admin login
-				Arguments.of(TestLogin.kakaoLoginUser(), TestCookie.getNonmemberCookie(),
+				Arguments.of(TestLogin.kakaoLoginUser(),
 						Paths.get(AddCelebration.RESOUCE_PATH, "2", TestConstant.INIT_XML_FILE_NAME),
 						Paths.get(AddCelebration.RESOUCE_PATH, "2", TestConstant.EXPECT_XML_FILE_NAME),
-						new String[] { "user", "celebration", "celebration_notice", "profile" }),
+						new String[] { "user", "celebration", "celebration_notice" }),
 				// nonmember login
-				Arguments.of(TestLogin.nonmemberLoginUser(), TestCookie.getNonmemberCookie(),
+				Arguments.of(TestLogin.nonmemberLoginUser(),
 						Paths.get(AddCelebration.RESOUCE_PATH, "3", TestConstant.INIT_XML_FILE_NAME),
 						Paths.get(AddCelebration.RESOUCE_PATH, "3", TestConstant.EXPECT_XML_FILE_NAME),
-						new String[] { "user", "celebration", "celebration_notice", "profile" }));
+						new String[] { "user", "celebration", "celebration_notice" }));
 
 	}
 	
+	private static LinkedMultiValueMap<String,String> addAndModify400Parameter(String name, String title) {
+		LinkedMultiValueMap<String,String> params = new LinkedMultiValueMap<>();
+		params.add("name", name);
+		params.add("title", title);
+		return params;
+	}
+	
 	@SuppressWarnings("unused")
-	private static Stream<Arguments> moidfyCelebration_parameter_error() {
-		final String NORMAL_IMAGE_TYPE = "image/png";
-		
+	private static Stream<Arguments> addAndModifyCelebration_givenAbnormalParameter_result400() throws Exception {
 		return Stream.of(
 				Arguments.of(TestConstant.LOCALE_JA,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(null).content(Entity.createdVarChars[1])
-						.build(),
+						getMultiPartFile(),
+						addAndModify400Parameter(Entity.createdVarChars[0], null),
 						"タイトルは必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
-						.build(),
+						getMultiPartFile(),
+						addAndModify400Parameter(Entity.createdVarChars[0], RandomStringUtils.randomAlphabetic(51)),
 						"タイトルは最大50桁数まで入力可能です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(Entity.createdVarChars[1]).content("")
-						.build(),
+						new MockMultipartFile("noExistName", new byte[] {}),
+						addAndModify400Parameter(Entity.createdVarChars[0], Entity.createdVarChars[1]),
 						"内容は必修項目です。"),
 				Arguments.of(TestConstant.LOCALE_JA,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
-						.build(),
-						"内容は不正な値です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						ModifyCelebrationAPIReqeust.builder()
-						.name("")
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
+						getMultiPartFile(),
+						addAndModify400Parameter("", Entity.createdVarChars[0]),
 						"名前は必修項目です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(RandomStringUtils.randomAlphabetic(11))
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"名前は最大10桁数まで入力可能です。"),
 				Arguments.of(TestConstant.LOCALE_KO,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(null).content(Entity.createdVarChars[1])
-						.build(),
+						getMultiPartFile(),
+						addAndModify400Parameter(Entity.createdVarChars[0], null),
 						"제목을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
-						.build(),
+						getMultiPartFile(),
+						addAndModify400Parameter(Entity.createdVarChars[0], RandomStringUtils.randomAlphabetic(51)),
 						"글자 수 50을 초과해서 제목을 입력하는 것은 불가능합니다."),
 				Arguments.of(TestConstant.LOCALE_KO,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(Entity.createdVarChars[1]).content("")
-						.build(),
+						new MockMultipartFile("noExistName", new byte[] {}),
+						addAndModify400Parameter(Entity.createdVarChars[0], Entity.createdVarChars[1]),
 						"내용을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_KO,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
-						.build(),
-						"내용을 올바르게 입력해주세요."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						ModifyCelebrationAPIReqeust.builder()
-						.name(RandomStringUtils.randomAlphabetic(11))
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"글자 수 10을 초과해서 이름을 입력하는 것은 불가능합니다."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						ModifyCelebrationAPIReqeust.builder()
-						.name("")
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
+						getMultiPartFile(),
+						addAndModify400Parameter("", Entity.createdVarChars[0]),
 						"이름을 입력해주세요."),
 				Arguments.of(TestConstant.LOCALE_JA,
-						ModifyCelebrationAPIReqeust.builder().build(),
+						new MockMultipartFile("noExistName", new byte[] {}),
+						addAndModify400Parameter("", ""),
 						"タイトルは必修項目です。\n内容は必修項目です。\n名前は必修項目です。"));
 
 	}
 	
+	private void contentPathCheck() {
+		String insertedPath = celeRepo.findAll().get(Entity.GET_INDEXS[0]).getContentPath();
+		Assertions.assertNotNull(insertedPath);
+		Assertions.assertTrue(Files.exists(Paths.get(celeProperty.getServerContentFolderPath())));
+	}
 	
-	@SuppressWarnings("unused")
-	private static Stream<Arguments> addCelebration_semi_abnormal_case() {
-		final String NORMAL_IMAGE_TYPE = "image/png";
-		
-		return Stream.of(
-				Arguments.of(TestConstant.LOCALE_JA,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(null).content(Entity.createdVarChars[1])
-						.build(),
-						"タイトルは必修項目です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
-						.build(),
-						"タイトルは最大50桁数まで入力可能です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(Entity.createdVarChars[1]).content("")
-						.build(),
-						"内容は必修項目です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
-						.build(),
-						"内容は不正な値です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						AddCelebrationAPIReqeust.builder()
-						.name("")
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"名前は必修項目です。"),
-				Arguments.of(TestConstant.LOCALE_JA,
-						AddCelebrationAPIReqeust.builder()
-						.name(RandomStringUtils.randomAlphabetic(11))
-						.title(Entity.createdVarChars[1]).content(Entity.createdVarChars[1])
-						.build(),
-						"名前は最大10桁数まで入力可能です。"),
-				Arguments.of(TestConstant.LOCALE_KO,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(null).content(Entity.createdVarChars[1])
-						.build(),
-						"제목을 입력해주세요."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(RandomStringUtils.randomAlphabetic(51)).content(Entity.createdVarChars[1])
-						.build(),
-						"글자 수 50을 초과해서 제목을 입력하는 것은 불가능합니다."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(Entity.createdVarChars[1]).content("")
-						.build(),
-						"내용을 입력해주세요."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						AddCelebrationAPIReqeust.builder()
-						.name(Entity.createdVarChars[0])
-						.title(Entity.createdVarChars[1]).content("<script>alert('asd')</script>")
-						.build(),
-						"내용을 올바르게 입력해주세요."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						AddCelebrationAPIReqeust.builder()
-						.name(RandomStringUtils.randomAlphabetic(11))
-						.title(Entity.createdVarChars[1]).content(Entity.createdVarChars[1])
-						.build(),
-						"글자 수 10을 초과해서 이름을 입력하는 것은 불가능합니다."),
-				Arguments.of(TestConstant.LOCALE_KO,
-						AddCelebrationAPIReqeust.builder()
-						.name("")
-						.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-						.build(),
-						"이름을 입력해주세요."),
-				Arguments.of(TestConstant.LOCALE_JA,
-						AddCelebrationAPIReqeust.builder().build(),
-						"タイトルは必修項目です。\n内容は必修項目です。\n名前は必修項目です。"));
-
+	
+	private static MockMultipartFile getMultiPartFile() throws Exception {
+		return new MockMultipartFile("content", TestStream.getTestSmallCelebrationContentByte());
 	}
 }

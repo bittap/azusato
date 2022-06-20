@@ -2,6 +2,8 @@ package com.my.azusato.unit.api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.FileInputStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
@@ -58,7 +60,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 				// exclude to compare dateTime columns when celebration table
 				if (table.equals("celebration")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_EXCLUDE_COLUMNS);
+							TestConstant.DEFAULT_CELEBRATION_EXCLUDE_COLUMNS);
 				} else if(table.equals("user") || table.equals("profile")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
@@ -66,6 +68,8 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
 				}
 			}
+			
+			contentPathCheck();
 
 		}
 
@@ -82,7 +86,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 				// exclude to compare dateTime columns when celebration table
 				if (table.equals("celebration")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_EXCLUDE_COLUMNS);
+							TestConstant.DEFAULT_CELEBRATION_EXCLUDE_COLUMNS);
 				} else if (table.equals("celebration_notice")) {
 //					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 //							new String[] { "celebration_no" });
@@ -93,6 +97,8 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
 				}
 			}
+			
+			contentPathCheck();
 
 		}
 
@@ -109,7 +115,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 				// exclude to compare dateTime columns when celebration table
 				if (table.equals("celebration")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_EXCLUDE_COLUMNS);
+							TestConstant.DEFAULT_CELEBRATION_EXCLUDE_COLUMNS);
 				} else if(table.equals("user") || table.equals("profile")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
@@ -118,7 +124,8 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 				}
 			}
 
-			Assertions.assertEquals(0, celeNoticeRepo.count());
+			contentPathCheck();
+			//Assertions.assertEquals(0, celeNoticeRepo.count());
 
 		}
 
@@ -139,11 +146,13 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			assertEquals(expect, result);
 
 		}
-
+		
 		private AddCelebrationServiceAPIRequest getNormalReq() throws Exception{
 			return AddCelebrationServiceAPIRequest.builder()
 					.name(Entity.updatedVarChars[0])
-					.title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1]).userNo(Long.valueOf(Entity.createdInts[0]))
+					.title(Entity.createdVarChars[0])
+					.content(new FileInputStream(TestConstant.TEST_CELEBRATION_CONTENT_SMALL_PATH))
+					.userNo(Long.valueOf(Entity.createdInts[0]))
 					.build();
 		}
 	}
@@ -263,7 +272,8 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			.userNo(Long.valueOf(Entity.createdInts[0]))
 			.celebationNo(Long.valueOf(Entity.createdInts[0]))
 			.name(Entity.updatedVarChars[2])
-			.title(Entity.updatedVarChars[0]).content(Entity.updatedVarChars[1])
+			.title(Entity.updatedVarChars[0])
+			.content(new FileInputStream(TestConstant.TEST_CELEBRATION_CONTENT_SMALL_PATH))
 			.build();
 			
 			celeServiceAPI.modifyCelebartion(normalReq, TestConstant.LOCALE_JA);
@@ -273,7 +283,7 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 				// exclude to compare dateTime columns when celebration table
 				if (table.equals("celebration")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS);
+							TestConstant.DEFAULT_CELEBRATION_EXCLUDE_UPDATE_DATE_COLUMNS);
 				} else if(table.equals("user") || table.equals("profile")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 							TestConstant.DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS);
@@ -281,6 +291,8 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
 				}
 			}
+			
+			contentPathCheck();
 		}
 
 		@ParameterizedTest
@@ -661,5 +673,11 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 			assertEquals(expect, response);
 		}
 		
+	}
+	
+	private void contentPathCheck() {
+		String insertedPath = celeRepo.findAll().get(Entity.GET_INDEXS[0]).getContentPath();
+		Assertions.assertNotNull(insertedPath);
+		Assertions.assertTrue(Files.exists(Paths.get(celeProperty.getServerContentFolderPath())));
 	}
 }

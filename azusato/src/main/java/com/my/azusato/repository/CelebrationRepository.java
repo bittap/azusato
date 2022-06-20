@@ -4,13 +4,14 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import com.my.azusato.entity.CelebrationEntity;
 
 @Repository
-public interface CelebrationRepository extends PagingAndSortingRepository<CelebrationEntity, Long> { //JpaRepository<CelebrationSummaryEntity, Long>
+public interface CelebrationRepository extends PagingAndSortingRepository<CelebrationEntity, Long> , JpaRepository<CelebrationEntity, Long> { 
 
 	/**
 	 * where no = "celebationNo" and delete_flag = "deleted"

@@ -67,10 +67,14 @@ public class TestConstant {
 	public final static String INIT_XML_FILE_NAME = "init.xml";
 
 	public final static String[] DEFAULT_EXCLUDE_COLUMNS = { "no", "create_datetime", "update_datetime" };
+	
+	public final static String[] DEFAULT_CELEBRATION_EXCLUDE_COLUMNS = { "no", "content_path","create_datetime", "update_datetime" };
 
 	public final static String[] DEFAULT_EXCLUDE_DATE_COLUMNS = { "create_datetime", "update_datetime" };
 	
 	public final static String[] DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS = { "update_datetime" };
+	
+	public final static String[] DEFAULT_CELEBRATION_EXCLUDE_UPDATE_DATE_COLUMNS = { "update_datetime","content_path" };
 
 	/**
 	 * common location for test data
