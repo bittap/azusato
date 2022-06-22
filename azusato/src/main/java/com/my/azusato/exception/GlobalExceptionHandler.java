@@ -67,6 +67,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(value = { MaxUploadSizeExceededException.class })
 	public ResponseEntity<ErrorResponse> handleFileSizeException(MaxUploadSizeExceededException ex , WebRequest request){
+		log.info("アップロードサイズを超えたエラー", ex.getMessage());
+		
 		ErrorResponse responseBody = new ErrorResponse(AzusatoException.I0011,
 				ms.getMessage(AzusatoException.I0011, null, request.getLocale()));
 		return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
