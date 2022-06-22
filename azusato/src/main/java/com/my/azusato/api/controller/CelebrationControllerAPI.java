@@ -42,6 +42,7 @@ import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.login.Grant;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.property.CelebrationProperty;
+import com.my.azusato.view.controller.common.HttpConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 import com.my.azusato.view.controller.common.ValueConstant;
 
@@ -130,7 +131,7 @@ public class CelebrationControllerAPI {
 	 * "celeContentPath"よりサーバーにあるコンテンツを返す。
 	 * <ul>
 	 * 	<li>200 : 成功</li>
-	 * 	<li>500 : ファイルが存在しない。</li>
+	 * 	<li>404 : ファイルが存在しない。</li>
 	 * </ul>
 	 * @param celeContentPath コンテンツが保持されているパス
 	 * @throws IOException
@@ -145,9 +146,10 @@ public class CelebrationControllerAPI {
 				PrintWriter pw = servletResponse.getWriter()){
 			IOUtils.copy(io, pw, ValueConstant.DEFAULT_CHARSET);
 		}catch(FileNotFoundException e) {
+			servletResponse.setContentType(HttpConstant.DEFAULT_CONTENT_TYPE_STRING);
 			log.error("path : \"{}\"にお祝いコンテンツファイルが存在しません。",celeContentFullPath);
 			String contentFieldName = messageSource.getMessage("content", null, servletRequest.getLocale());
-			throw new AzusatoException(HttpStatus.INTERNAL_SERVER_ERROR, AzusatoException.E0002, messageSource.getMessage(AzusatoException.E0002, new String[] {contentFieldName}, servletRequest.getLocale()));
+			throw new AzusatoException(HttpStatus.NOT_FOUND, AzusatoException.E0002, messageSource.getMessage(AzusatoException.E0002, new String[] {contentFieldName}, servletRequest.getLocale()));
 		}
 	}
 	

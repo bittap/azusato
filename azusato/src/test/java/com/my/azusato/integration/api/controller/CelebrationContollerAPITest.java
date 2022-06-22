@@ -608,12 +608,12 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 		
 		@ParameterizedTest
 		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void givenParameterError_result400(Locale locale) throws Exception {
+		public void givenParameterError_result404(Locale locale) throws Exception {
 			MvcResult mvcResult = mockMvc.perform(
 					MockMvcRequestBuilders
 						.get(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET + CelebrationControllerAPI.CELEBRATION_CONTENT_RESOUCE + "/" + "noExistFile")
 						.locale(locale)
-					).andExpect(status().is5xxServerError()).andReturn();
+					).andExpect(status().isNotFound()).andReturn();
 			
 			String resultBody = mvcResult.getResponse()
 					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
