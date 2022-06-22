@@ -68,7 +68,7 @@ const celebrationAction = async function(){
 	
 	console.log("お祝いアクションAPI",formData);
 	
-	const METHOD_TYPE = isWritePage ? "POST" : "PUT";
+	const METHOD_TYPE = isWritePage() ? "POST" : "PUT";
 
 	const res = await fetch(apiUrl+"/celebration",{
 		method: METHOD_TYPE,
