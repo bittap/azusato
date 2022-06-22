@@ -140,6 +140,7 @@ public class CelebrationControllerAPI {
 	public void celebationContentResource(@PathVariable(name = "filename", required = true) String celeContentFilename) throws IOException {
 		Path celeContentFullPath = Paths.get(celeProperty.getServerContentFolderPath(),celeContentFilename);
 		
+		servletResponse.setContentType("text/plain; charset=UTF-8");
 		try(InputStream io = new FileInputStream(celeContentFullPath.toString()); 
 				PrintWriter pw = servletResponse.getWriter()){
 			IOUtils.copy(io, pw, ValueConstant.DEFAULT_CHARSET);
