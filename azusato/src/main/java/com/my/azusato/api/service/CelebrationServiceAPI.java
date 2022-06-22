@@ -1,6 +1,5 @@
 package com.my.azusato.api.service;
 
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -361,8 +360,8 @@ public class CelebrationServiceAPI {
 		final String FILE_NAME = getContentFileName(celebrationNo);
 		final Path filePath = Paths.get(FOLDER,FILE_NAME);
 		try(content;
-				BufferedWriter bw = new BufferedWriter(new FileWriter(filePath.toString(), Charset.forName(ValueConstant.DEFAULT_CHARSET)));){
-			IOUtils.copy(content, bw, Charset.forName(ValueConstant.DEFAULT_CHARSET));
+				FileWriter fw = new FileWriter(filePath.toString(), Charset.forName(ValueConstant.DEFAULT_CHARSET));){
+			IOUtils.copy(content, fw, Charset.forName(ValueConstant.DEFAULT_CHARSET));
 			return FILE_NAME;
 		}
 	}
