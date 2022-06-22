@@ -5,7 +5,7 @@ server:
     # tomcatが大きいサイズのリクエスト取り消さないようにする。
     # MultiPartアップロード時、容量超えをキャッチするため
     # https://stackoverflow.com/questions/2689989/how-to-handle-maxuploadsizeexceededexception
-    max-swallow-size: 1
+    max-swallow-size: -1
 
 # ===============================
 # Spring
