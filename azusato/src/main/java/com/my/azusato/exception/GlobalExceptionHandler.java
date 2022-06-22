@@ -19,6 +19,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -58,7 +59,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 	}
 	
-	
+	/**
+	 * 容量を超えた場合のエラーのハンドリング
+	 * @param ex 容量超えエラー
+	 * @param request エラーメッセージ用
+	 * @return {@link AzusatoException#I0011}エラー
+	 */
+	@ExceptionHandler(value = { MaxUploadSizeExceededException.class })
+	public ResponseEntity<ErrorResponse> handleFileSizeException(MaxUploadSizeExceededException ex , WebRequest request){
+		ErrorResponse responseBody = new ErrorResponse(AzusatoException.I0011,
+				ms.getMessage(AzusatoException.I0011, null, request.getLocale()));
+		return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+	}
 	
 	@Override
 	protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,

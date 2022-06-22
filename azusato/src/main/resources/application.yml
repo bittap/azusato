@@ -1,15 +1,23 @@
 # jenkins use 8080
 server:
   port: 8081
+  tomcat:
+    # tomcatが大きいサイズのリクエスト取り消さないようにする。
+    # MultiPartアップロード時、容量超えをキャッチするため
+    # https://stackoverflow.com/questions/2689989/how-to-handle-maxuploadsizeexceededexception
+    max-swallow-size: 1
 
 # ===============================
-# DATABASE
+# Spring
 # ===============================
 spring:
   servlet:
     multipart:
       max-file-size: 30MB
       max-request-size: 30MB
+      # controllerの前でキャッチされないように
+      # https://stackoverflow.com/questions/2689989/how-to-handle-maxuploadsizeexceededexception
+      resolve-lazily: true
   h2:
     console.enabled: true
     console.path: /h2-console

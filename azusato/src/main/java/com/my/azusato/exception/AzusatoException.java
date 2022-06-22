@@ -65,6 +65,11 @@ public class AzusatoException extends RuntimeException {
 	public static final String I0010 = "I-0010";
 	
 	/**
+	 * アップロード可能な容量を超えた場合
+	 */
+	public static final String I0011 = "I-0011";
+	
+	/**
 	 * 存在しないユーザタイプ
 	 */
 	public static final String W0001 = "W-0001";
