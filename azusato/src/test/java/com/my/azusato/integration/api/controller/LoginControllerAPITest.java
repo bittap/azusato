@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.Charset;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.test.web.servlet.MvcResult;
@@ -30,10 +32,14 @@ import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.integration.AbstractIntegration;
 import com.my.azusato.login.Grant;
+import com.my.azusato.property.CookieProperty;
 
 public class LoginControllerAPITest extends AbstractIntegration {
 
 	final static String RESOUCE_BASIC_PATH = "src/test/data/integration/api/controller/";
+	
+	@Autowired
+	private CookieProperty cookieProperty;
 
 	@Nested
 	class Login {
@@ -56,6 +62,46 @@ public class LoginControllerAPITest extends AbstractIntegration {
 					.andExpect(authenticated().withUsername(userName).withAuthorities(expectedRoles))
 					.andExpect(status().isOk()).andReturn();
 		}
+		
+		@Test
+		public void givenSavedIdTrue_thenResultsavedCookie_and_ivenSavedIdFalse_thenResultdeleteCookie() throws Exception {
+			String userName = Entity.createdVarChars[0];
+			String folderName = "6";
+			
+			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+			// ユーザID保存 trueの場合
+			mockMvc
+					.perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
+							.param(SecurityConfig.USERNAME_PARAMETER, userName)
+							.param(SecurityConfig.PASSWORD_PARAMETER, Entity.createdVarChars[1])
+							.param(cookieProperty.getLoginSaveIdName(), "true")
+							.with(csrf())
+							)
+					.andDo(print())
+					.andExpect(status().isOk())
+					.andExpect(cookie().exists(cookieProperty.getLoginSaveIdName()))
+					.andExpect(cookie().maxAge(cookieProperty.getLoginSaveIdName(),cookieProperty.getCookieMaxTime()))
+					.andExpect(cookie().value(cookieProperty.getLoginSaveIdName(),userName))
+					.andExpect(cookie().path(cookieProperty.getLoginSaveIdName(), cookieProperty.getPath()))
+					.andReturn();
+			
+			// ユーザID保存 falseの場合
+			mockMvc
+					.perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
+							.param(SecurityConfig.USERNAME_PARAMETER, userName)
+							.param(SecurityConfig.PASSWORD_PARAMETER, Entity.createdVarChars[1])
+							.param(cookieProperty.getLoginSaveIdName(), "false")
+							.with(csrf())
+							)
+					.andDo(print())
+					.andExpect(status().isOk())
+					.andExpect(cookie().exists(cookieProperty.getLoginSaveIdName()))
+					.andExpect(cookie().maxAge(cookieProperty.getLoginSaveIdName(),0))
+					.andExpect(cookie().path(cookieProperty.getLoginSaveIdName(), cookieProperty.getPath()))
+					.andReturn();
+		}
+		
+		
 		
 		@ParameterizedTest
 		@MethodSource("com.my.azusato.common.TestSource#locales")

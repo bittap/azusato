@@ -107,3 +107,11 @@ client:
   # ページのリスト表示数
   page-pageOfElement: 5
   datetime-format: YYYY-MM-DD
+  
+cookie:
+  # 基本クッキーが反映されるパス
+  path: /
+  # クッキーを保持する期間「30日」 60*60*24*30
+  cookie-max-time: 2592000
+  #ログインページでID保存ボタン押下後、ログインした時のIDを保持するクッキーのネーム
+  login-save-id-name: savedId

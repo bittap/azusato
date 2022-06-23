@@ -7,7 +7,8 @@ const urlParams = urlCommon.urlParams;
 const login = async function(){
 	const res = await fetch(apiUrl+"/login?"+ new URLSearchParams({
 			"id": document.querySelector('[name="id"]').value,
-			"password": document.querySelector('[name="password"]').value
+			"password": document.querySelector('[name="password"]').value,
+			"savedId": document.querySelector('[name="savedId"]').checked
 		}),{
 		method: 'POST',
 		headers: apiCommon.header

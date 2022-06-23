@@ -4,11 +4,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +46,7 @@ import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.interceptor.LocaleInterceptor;
 import com.my.azusato.locale.LocaleConstant;
+import com.my.azusato.property.CookieProperty;
 import com.my.azusato.view.controller.UserController;
 import com.my.azusato.view.controller.common.UrlConstant;
 
@@ -72,6 +77,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final ObjectMapper om = new ObjectMapper();
 	
 	private final MessageSource ms;
+	
+	private final CookieProperty cookieProperty;
 	
 	@Override
 	public void configure(WebSecurity web) throws Exception {
@@ -115,12 +122,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.successHandler(new AuthenticationSuccessHandler() {
 					
 					/**
-					 * 成功しは200ステータスコードを返す。
+					 * ログインに成功した場合。
+					 * 「ユーザID保存」のチェックボックスがcheckedの場合は、「ユーザID保存」に対するクッキーに保持する。
+					 * checkedではない場合は、クッキーを削除する。
 					 */
 					@Override
 					public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 							Authentication authentication) throws IOException, ServletException {
 						log.debug("ログイン成功");
+						log.debug("parametes : {}",request.getParameterMap().keySet()
+								.stream()
+								.map((e)->
+									String.format("%s:%s", e,request.getParameter(e))
+								).collect(Collectors.joining(",")));
+						String savedId = request.getParameter(cookieProperty.getLoginSaveIdName());
+						if(Objects.isNull(savedId)) {
+							log.warn("ログインに成功したものの、パラメータに\"{}\"が含まれてないためユーザID保存の追加・削除が行われていなかったです。",cookieProperty.getLoginSaveIdName());
+						}else {
+							// true
+							if(Boolean.valueOf(savedId)) {
+								addSaveIdCookie(request.getParameter(USERNAME_PARAMETER), response);
+							}else {
+								deleteSaveIdCookie(response);
+							}
+						}
 						response.setStatus(HttpStatus.OK.value());
 					}
 				})
@@ -222,6 +247,41 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					}
 				});
 	};
+	
+	/**
+	 * クッキーを追加する。
+	 * {@link SecurityConfig#addOrdeleteSaveIdCookie(String, HttpServletResponse)}に処理を委員する。
+	 */
+	private void addSaveIdCookie(String id , HttpServletResponse response) {
+		addOrdeleteSaveIdCookie(id, response);
+	}
+	
+	/**
+	 * クッキーを削除する。
+	 * {@link SecurityConfig#addOrdeleteSaveIdCookie(String, HttpServletResponse)}に処理を委員する。
+	 */
+	private void deleteSaveIdCookie(HttpServletResponse response) {
+		addOrdeleteSaveIdCookie(null, response);
+	}
+	
+	
+	/**
+	 * "id"がtrueの場合はクッキーにIDを保持する。その以外はクッキーを削除する。
+	 * @param isSave notEmpty : 追加、empty : 削除
+	 * @param response クッキーを保持・削除する。
+	 */
+	private void addOrdeleteSaveIdCookie(String id , HttpServletResponse response) {
+		int maxAge;
+		if(StringUtils.isEmpty(id)) {
+			maxAge = 0;
+		}else {
+			maxAge = cookieProperty.getCookieMaxTime();
+		}
+		Cookie cookie = new Cookie(cookieProperty.getLoginSaveIdName(), id);
+		cookie.setMaxAge(maxAge);
+		cookie.setPath(cookieProperty.getPath());
+		response.addCookie(cookie);
+	}
 	
 	/**
 	 * ロケールによるログイン画面URL取得
