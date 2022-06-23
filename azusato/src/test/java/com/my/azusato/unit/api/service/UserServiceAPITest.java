@@ -78,15 +78,14 @@ public class UserServiceAPITest extends AbstractIntegration {
 		@Test
 		public void normal_case() throws Exception {
 			LocalDateTime beforeExecuteTime = LocalDateTime.now();
-			String id = ReflectionTestUtils.invokeMethod(userControllerAPI, "getNonMemberRandomString");
 			AddNonMemberUserServiceAPIRequest serviceReq = AddNonMemberUserServiceAPIRequest.builder()
-					.name(Entity.createdVarChars[0]).id(id).build();
+					.name(Entity.createdVarChars[0]).id(Entity.createdVarChars[1]).build();
 
 			userServiceAPI.addNonMember(serviceReq);
 
 			UserEntity result = userRepo.findAll().get(Entity.GET_INDEXS[0]);
 
-			assertEquals(id, result.getId());
+			assertEquals(Entity.createdVarChars[1], result.getId());
 			assertEquals(Entity.createdVarChars[0], result.getName());
 			assertTrue(beforeExecuteTime.isBefore(result.getCommonDate().getCreateDatetime()));
 			assertTrue(beforeExecuteTime.isBefore(result.getCommonDate().getUpdateDatetime()));
