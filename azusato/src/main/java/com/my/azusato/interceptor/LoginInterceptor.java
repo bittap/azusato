@@ -51,7 +51,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 		log.debug("[セッションpreHandle]");
 		HttpSession session = request.getSession();
 		if(Objects.nonNull(request.getUserPrincipal())) {
-			log.debug("[既にログイン情報が存在。log更新]");
+			log.debug("[既にログイン情報が存在。セッション更新]");
 			session.setMaxInactiveInterval(sessionProperty.getMaxIntervalSeconds());
 			// ログイン情報がない かつ 非ログインの場合はログイン扱いにする。
 		} else {

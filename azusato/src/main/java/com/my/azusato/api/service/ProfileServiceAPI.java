@@ -19,6 +19,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import com.my.azusato.annotation.MethodAnnotation;
 import com.my.azusato.api.service.request.ModifyUserProfileServiceAPIRequest;
 import com.my.azusato.entity.ProfileEntity;
 import com.my.azusato.entity.UserEntity;
@@ -78,6 +79,7 @@ public class ProfileServiceAPI {
 	 * 基本イメージがあるクラスパスの中にあるファイルを全部取得し、その中でランダムでファイルのイメージパスを取得する。
 	 * @return クライアント側からアクセスするpath
 	 */
+	@MethodAnnotation(description = "既に登録した基本イメージファイルパスの返却")
 	public String getDefaultProfilePath()  {
 		File folder = Paths.get(profileProperty.getServerDefaultImageFolderPath()).toFile();
 		log.debug("folder : {}",folder.getAbsolutePath());
@@ -101,6 +103,7 @@ public class ProfileServiceAPI {
 	 * @throws AzusatoException パラメータにあるuserNoより参照したユーザ情報が存在しない。
 	 */
 	@Transactional
+	@MethodAnnotation(description = "プロフィールのイメージのアップロード&更新")
 	public void updateUserProfile(ModifyUserProfileServiceAPIRequest req, Locale locale) throws IOException {
 		log.debug("req : {}", req);
 		

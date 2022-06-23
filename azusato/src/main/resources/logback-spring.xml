@@ -45,11 +45,24 @@
     	</if>
     </logger>
     
- <!--    バインドされるEntity内容見えないように。 
+ 	<!-- バインドされるEntity内容見えないように。 -->
     <logger name="org.hibernate.engine.internal.TwoPhaseLoad" level="INFO">
     	<appender-ref ref="STDOUT"/>
-    	<appender-ref ref="FILE" />
-    </logger> -->
+    	<if condition='property("USE_ROLLING_FILE").contains("true")'>
+    		<then>
+    			<appender-ref ref="FILE" />
+    		</then>
+    	</if>
+    </logger> 
+    
+    <logger name="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" level="INFO">
+    	<appender-ref ref="STDOUT"/>
+    	<if condition='property("USE_ROLLING_FILE").contains("true")'>
+    		<then>
+    			<appender-ref ref="FILE" />
+    		</then>
+    	</if>
+    </logger>
     
     <!-- 基本ログ出力レベル設定 -->
     <root level="${logLevel}">

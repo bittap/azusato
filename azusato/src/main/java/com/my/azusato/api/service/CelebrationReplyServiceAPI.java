@@ -12,6 +12,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.my.azusato.annotation.MethodAnnotation;
 import com.my.azusato.api.controller.request.AddCelebrationReplyAPIReqeust;
 import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.entity.CelebrationReplyEntity;
@@ -82,6 +83,7 @@ public class CelebrationReplyServiceAPI {
 	 * @throws ユーザ情報、お祝い情報が存在しない。
 	 */
 	@Transactional
+	@MethodAnnotation(description = "お祝い書き込み情報を登録する")
 	public void addCelebartionReply(AddCelebrationReplyAPIReqeust req, Long celebationNo , Long loginUserNo , Locale locale) {
 		UserEntity loginUserEntity = userRepo.findByNoAndCommonFlagDeleteFlag(loginUserNo,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(() -> {
 			throw AzusatoException.createI0005Error(locale, messageSource, UserEntity.TABLE_NAME_KEY);
@@ -140,6 +142,7 @@ public class CelebrationReplyServiceAPI {
 	 * @throws AzusatoException 対象データ存在なし、生成したユーザではない場合
 	 */
 	@Transactional
+	@MethodAnnotation(description = "お祝い書き込み情報を論理削除する")
 	public void deleteCelebartionReply(Long celebationReplyNo, Long userNo,Locale locale) {
 		CelebrationReplyEntity fetchedCelebationReplyEntity = 
 				celeReplyRepo.findByNoAndCommonFlagDeleteFlag(celebationReplyNo,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{

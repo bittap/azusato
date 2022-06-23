@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.my.azusato.annotation.MethodAnnotation;
 import com.my.azusato.api.controller.request.ModifyUserProfileAPIRequest;
 import com.my.azusato.api.controller.request.UploadProfileImageAPIRequest;
 import com.my.azusato.api.controller.response.DefaultRandomProfileResponse;
@@ -73,6 +74,7 @@ public class ProfileControllerAPI {
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	@GetMapping(value = RANDOM_URL)
+	@MethodAnnotation(description = "API_pro_001 ランダムイメージの情報取得")
 	public DefaultRandomProfileResponse getDefaultRandomProfile() {
 		log.debug("[ランダムイメージ取得] START");
 		DefaultRandomProfileResponse response = new DefaultRandomProfileResponse();
@@ -84,7 +86,7 @@ public class ProfileControllerAPI {
 	}
 	
 	/**
-	 * イメージのアップロード行う。
+	 * イメージのアップロード&更新を行う。
 	 * <ul>
 	 * 	<li>200 : 成功</li>
 	 * 	<li>400 : <br>パラメータがnull<br>サポートしない拡張子</li>
@@ -97,6 +99,7 @@ public class ProfileControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@PostMapping(value =  UPLOAD_IMG_URL, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@MethodAnnotation(description = "API_pro_002 イメージのアップロード&更新")
 	public void uploadImage(@Validated @ModelAttribute UploadProfileImageAPIRequest req,@AuthenticationPrincipal LoginUser loginUser) throws IOException {
 		String extension = FilenameUtils.getExtension(req.getProfileImage().getOriginalFilename());
 		// ファイル拡張子チェック

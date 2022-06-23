@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.my.azusato.annotation.MethodAnnotation;
 import com.my.azusato.api.controller.request.AddCelebrationAPIReqeust;
 import com.my.azusato.api.controller.request.ModifyCelebrationAPIReqeust;
 import com.my.azusato.api.controller.request.MyPageControllerRequest;
@@ -101,6 +102,7 @@ public class CelebrationControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(CELEBRATION_URL)
+	@MethodAnnotation(description ="API_cel_001 お祝い情報取得")
 	public GetCelebrationSerivceAPIResponse celebation(@PathVariable(name = "celebrationNo", required = true) Long celebationNo) {
 		return celeAPIService.getCelebration(celebationNo,servletRequest.getLocale());
 	}
@@ -117,6 +119,7 @@ public class CelebrationControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(CELEBRATION_CONTENT_URL)
+	@MethodAnnotation(description = "API_cel_002 「お祝い情報」と「書き込み情報」取得")
 	public GetCelebrationContentSerivceAPIResponse celebationContent(@PathVariable(name = "celebrationNo", required = true) Long celebationNo,
 			@AuthenticationPrincipal LoginUser loginUser) {
 		// ログインしていない時のuserNo
@@ -137,6 +140,7 @@ public class CelebrationControllerAPI {
 	 * @throws IOException
 	 */
 	@ResponseStatus(HttpStatus.OK)
+	@MethodAnnotation(description = "API_cel_003 お祝いコンテンツ情報取得")
 	@GetMapping(value = CELEBRATION_CONTENT_RESOUCE + "/{filename}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public void celebationContentResource(@PathVariable(name = "filename", required = true) String celeContentFilename) throws IOException {
 		Path celeContentFullPath = Paths.get(celeProperty.getServerContentFolderPath(),celeContentFilename);
@@ -155,6 +159,7 @@ public class CelebrationControllerAPI {
 	
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(CELEBRATIONS_URL)
+	@MethodAnnotation(description = "API_cel_004 お祝いリスト情報取得")
 	public GetCelebrationsSerivceAPIResponse celebrations(@ModelAttribute @Validated MyPageControllerRequest page) {
 
 		// もし、現在ページ番号がないと現在ページ番号は１を設定
@@ -170,9 +175,9 @@ public class CelebrationControllerAPI {
 	}
 
 	/**
-	 * お祝い情報を修正する。
+	 * お祝い情報を追加する。
 	 * <ul>
-	 * 	<li>200 : お祝い情報修正成功</li>
+	 * 	<li>200 : お祝い情報追加成功</li>
 	 * 	<li>400 : <br>対象データ存在なし<br>生成したユーザではない場合<br>パラメータがエラー</li>
 	 *  <li>401 : ログインしていない</li>
 	 *  <li>500 : その他エラー</li>
@@ -183,6 +188,7 @@ public class CelebrationControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(COMMON_URL)
+	@MethodAnnotation(description = "API_cel_005 お祝い情報追加")
 	public void add(@ModelAttribute @Validated AddCelebrationAPIReqeust req, @AuthenticationPrincipal LoginUser loginUser ) throws IOException {
 		if(Objects.isNull(loginUser)) {
 			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
@@ -216,6 +222,7 @@ public class CelebrationControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping(PUT_URL)
+	@MethodAnnotation(description = "API_cel_006 お祝い情報修正")
 	public void modify(@PathVariable(name = "celebrationNo", required = true) Long celebationNo, @ModelAttribute @Validated ModifyCelebrationAPIReqeust req,
 			@AuthenticationPrincipal LoginUser loginUser)  throws IOException {
 		if(Objects.isNull(loginUser)) {
@@ -241,6 +248,7 @@ public class CelebrationControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping(READCOUNTUP_URL)
+	@MethodAnnotation(description = "API_cel_007 お祝い参照回数アップ")
 	public void readCountUp(@PathVariable(name = "celebrationNo", required = true) Long celebationNo) {
 		celeAPIService.readCountUp(celebationNo, servletRequest.getLocale());
 	}
@@ -257,6 +265,7 @@ public class CelebrationControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping(DELETE_URL)
+	@MethodAnnotation(description = "API_cel_008 お祝い削除")
 	public void delete(@PathVariable(name = "celebrationNo", required = true) Long celebationNo,
 			@AuthenticationPrincipal LoginUser loginUser) {
 		if(Objects.isNull(loginUser)) {

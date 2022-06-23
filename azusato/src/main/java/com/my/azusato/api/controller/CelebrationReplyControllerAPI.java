@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.my.azusato.annotation.MethodAnnotation;
 import com.my.azusato.api.controller.request.AddCelebrationReplyAPIReqeust;
 import com.my.azusato.api.service.CelebrationReplyServiceAPI;
 import com.my.azusato.exception.AzusatoException;
@@ -64,6 +65,7 @@ public class CelebrationReplyControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(POST_URL)
+	@MethodAnnotation(description = "API_cel_rep_001 お祝い書き込み追加")
 	public void add(@RequestBody @Validated AddCelebrationReplyAPIReqeust req, @PathVariable(name = "celebrationNo", required = true) Long celebationNo,
 			@AuthenticationPrincipal LoginUser loginUser) {
 		if(Objects.isNull(loginUser)) {
@@ -85,6 +87,7 @@ public class CelebrationReplyControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping(DELETE_URL)
+	@MethodAnnotation(description = "API_cel_rep_002 お祝い書き込み削除")
 	public void delete(@PathVariable(name = "celebrationReplyNo", required = true) Long celebrationReplyNo,
 			@AuthenticationPrincipal LoginUser loginUser) {
 		if(Objects.isNull(loginUser)) {

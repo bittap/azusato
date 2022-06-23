@@ -9,6 +9,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.my.azusato.annotation.MethodAnnotation;
 import com.my.azusato.api.service.request.AddNonMemberUserServiceAPIRequest;
 import com.my.azusato.api.service.response.GetSessionUserServiceAPIResponse;
 import com.my.azusato.entity.ProfileEntity;
@@ -47,6 +48,7 @@ public class UserServiceAPI {
 	 * @param req request parameter
 	 */
 	@Transactional
+	@MethodAnnotation(description = "非会員ユーザDB登録")
 	public String addNonMember(AddNonMemberUserServiceAPIRequest req) {
 		log.debug("{}#addNonMember , req : {}", UserServiceAPI.class.getName(), req);
 
@@ -73,6 +75,7 @@ public class UserServiceAPI {
 	 * @return ユーザ情報
 	 * @throws AzusatoException 該当するユーザ情報がない場合
 	 */
+	@MethodAnnotation(description = "ユーザ情報の返却")
 	public GetSessionUserServiceAPIResponse getSessionUser(Long no, Locale locale) {
 		UserEntity userEntity = userRepo.findByNoAndCommonFlagDeleteFlag(no,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(() -> {
 			String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);

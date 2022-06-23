@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.my.azusato.annotation.MethodAnnotation;
 import com.my.azusato.api.controller.request.AddNonMemberUserAPIRequest;
 import com.my.azusato.api.service.UserServiceAPI;
 import com.my.azusato.api.service.request.AddNonMemberUserServiceAPIRequest;
@@ -75,6 +76,7 @@ public class UserControllerAPI {
 	 * @return ユーザ情報
 	 */
 	@GetMapping(COMMON_URL)
+	@MethodAnnotation(description = "API_user_001 ログインしたユーザ情報の取得")
 	public ResponseEntity<Object> getLoginUser(@AuthenticationPrincipal LoginUser loginUser) {
 		
 		if(Objects.nonNull(loginUser)) {
@@ -101,6 +103,7 @@ public class UserControllerAPI {
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(ADD_NONMEMBER_URL)
+	@MethodAnnotation(description = "API_user_002 非会員ユーザ登録")
 	public void addNonMember(@RequestBody @Validated AddNonMemberUserAPIRequest req,
 			@CookieValue(value = CookieConstant.NON_MEMBER_KEY, required = false) Cookie nonmemberCookie) {
 		log.debug("{}#addNonMember START, req : {}", UserControllerAPI.class.getName(), req);

@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.my.azusato.annotation.MethodAnnotation;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
@@ -78,6 +79,7 @@ public class CelebrationServiceAPI {
 	 * @param locale locale of client.
 	 * @throws IOException 
 	 */
+	@MethodAnnotation(description = "お祝い情報登録(管理者)")
 	public void addCelebartionAdmin(AddCelebrationServiceAPIRequest req, Locale locale) throws IOException {
 		addCelebartion(req, locale, "admin");
 	}
@@ -90,6 +92,7 @@ public class CelebrationServiceAPI {
 	 * @param locale locale of client.
 	 * @throws IOException 
 	 */
+	@MethodAnnotation(description = "お祝い情報登録(管理者以外)")
 	public void addCelebartion(AddCelebrationServiceAPIRequest req, Locale locale) throws IOException {
 		addCelebartion(req, locale, "not_admin");
 	}
@@ -162,6 +165,7 @@ public class CelebrationServiceAPI {
 	 * @throws AzusatoException 対象データ存在なし、生成したユーザではない場合
 	 */
 	@Transactional
+	@MethodAnnotation(description = "お祝い情報修正")
 	public void modifyCelebartion(ModifyCelebationServiceAPIRequest req , Locale locale) throws IOException{
 		CelebrationEntity fetchedCelebationEntity = 
 				celeRepo.findByNoAndCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(req.getCelebationNo(),ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(()->{
@@ -200,6 +204,7 @@ public class CelebrationServiceAPI {
 	 * @throws AzusatoException 対象データ存在なし、生成したユーザではない場合
 	 */
 	@Transactional
+	@MethodAnnotation(description = "お祝い情報削除")
 	public void deleteCelebartion(Long celebationNo, Long userNo,Locale locale) {
 		CelebrationEntity fetchedCelebationEntity = 
 				// ユーザが削除されたとしても、削除処理は行われるように
@@ -238,6 +243,7 @@ public class CelebrationServiceAPI {
 	 * @throws AzusatoException 対象データ存在なし
 	 */
 	@Transactional
+	@MethodAnnotation(description = "お祝い情報の参照回数のアップ")
 	public void readCountUp(Long celebationNo, Locale locale) {
 		CelebrationEntity fetchedCelebationEntity = 
 				// note：ユーザが開いた状態でのコンテンツはクリック可能にするため、deletedは使わない。
@@ -258,6 +264,7 @@ public class CelebrationServiceAPI {
 	 * @return 対象のお祝い情報
 	 * @throws AzusatoException 対象データが存在しない場合
 	 */
+	@MethodAnnotation(description = "対象のお祝い情報の返却")
 	public GetCelebrationSerivceAPIResponse getCelebration(Long celebationNo , Locale locale) {
 		CelebrationEntity fetchedCelebationEntity = celeRepo.findById(celebationNo).orElseThrow(()->{
 			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
@@ -281,6 +288,7 @@ public class CelebrationServiceAPI {
 	 * @throws AzusatoException テーブルにお祝いデータが存在しない。
 	 */
 	@Transactional
+	@MethodAnnotation(description = "対象のお祝い情報のコンテンツパスと書き込み情報の返却")
 	public GetCelebrationContentSerivceAPIResponse getCelebrationContent(Long celebationNo , Long userNo, Locale locale) {
 		CelebrationEntity fetchedCelebationEntity = celeRepo.findById(celebationNo).orElseThrow(()->{
 			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
@@ -319,6 +327,7 @@ public class CelebrationServiceAPI {
 	 * @param req お祝いリストに関するリクエスト
 	 * @return お祝い+お祝い書き込みリスト
 	 */
+	@MethodAnnotation(description = "お祝い情報リストの返却")
 	public GetCelebrationsSerivceAPIResponse getCelebrations(GetCelebrationsSerivceAPIRequset req) {
 		// 注意 : 一番最初のパラメータpageは0から始まる。
 		Pageable sortedByNo = PageRequest.of(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement(),Sort.by(Direction.DESC,"no"));
