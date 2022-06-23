@@ -45,6 +45,21 @@ $(document).keypress(function (e) {
     }
 });
 
+/*
+ * 画面を初期化する。
+ * クッキー「ユーザID保存」に値がある場合は、そのユーザIDをINPUTに入れておき、チェックボックスをチェックする。
+ */
+const initalize = function(){
+	const SAVED_ID = cookieCommon.getCookie(COOKIE_LOGIN_SAVE_ID_NAME);
+	
+	if(SAVED_ID != ""){
+		document.querySelector('[name="id"]').value = SAVED_ID;
+		document.querySelector('[name="savedId"]').checked = true;
+	}
+}
+
+initalize();
+
 
 
 

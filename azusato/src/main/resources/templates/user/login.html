@@ -32,7 +32,7 @@
 									<div class="d-flex align-items-center">
 										<label class="checkbox-wrap checkbox-primary fw-bold" th:text="#{login.button.checkbox.label}">
 										</label>
-										<input name="savedId" class="form-check-input" type="checkbox" id="flexCheckChecked" checked>
+										<input name="savedId" class="form-check-input" type="checkbox" id="flexCheckChecked">
 									</div>
 								</div>
 <!--								<div class="social d-flex justify-content-between">
@@ -50,6 +50,10 @@
 			</section>
 		</th:block>
 	</th:block>
+	<script th:inline="javascript">
+		// ログインページでID保存ボタン押下後、ログインした時のIDを保持するクッキーのネーム
+		const COOKIE_LOGIN_SAVE_ID_NAME = /*[[${@environment.getProperty('cookie.login-save-id-name')}]]*/ "";
+	</script>
 	<script src="/js/user/login.js"></script>
 </body>
 

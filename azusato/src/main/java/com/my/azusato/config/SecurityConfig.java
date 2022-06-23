@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -130,11 +129,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 							Authentication authentication) throws IOException, ServletException {
 						log.debug("ログイン成功");
-						log.debug("parametes : {}",request.getParameterMap().keySet()
-								.stream()
-								.map((e)->
-									String.format("%s:%s", e,request.getParameter(e))
-								).collect(Collectors.joining(",")));
 						String savedId = request.getParameter(cookieProperty.getLoginSaveIdName());
 						if(Objects.isNull(savedId)) {
 							log.warn("ログインに成功したものの、パラメータに\"{}\"が含まれてないためユーザID保存の追加・削除が行われていなかったです。",cookieProperty.getLoginSaveIdName());
