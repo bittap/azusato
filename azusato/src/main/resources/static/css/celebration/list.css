@@ -1,6 +1,7 @@
 .list .title > img {
 	height: 4rem; 
 	width: 4rem;
+	aspect-ratio: 1/1; /*必ず1:1比率にイメージのサイズがバラバラにならないように */
 }
 
 .list .title > p {
@@ -15,6 +16,7 @@
 .list .reply .list > img{
 	width:2rem;
 	height:2rem;
+	aspect-ratio: 1/1; /*必ず1:1比率にイメージのサイズがバラバラにならないように */
 }
 
 .list .reply .list > .reply-title-right{
