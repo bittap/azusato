@@ -30,6 +30,7 @@ public class AOPUtil {
 	public static String getParameterMsg(Object[] parameterValues) {
 		// map -> String
 		return Arrays.asList(parameterValues).stream()
+				.filter(Objects::nonNull)
 				.map((e) -> String.format("%s : %s", e.getClass().getSimpleName(), e)).collect(Collectors.joining("、"));
 	}
 	
