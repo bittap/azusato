@@ -28,6 +28,8 @@ public class UrlConstant {
 	 */
 	public static final String CELEBRATION_CONTROLLER_REQUSET = "/celebration";
 	
+	public static final String OFFLINE_CONTROLLER_REQUSET = "/offline";
+	
 	/**
 	 * mapping url for {@link UserController}
 	 */

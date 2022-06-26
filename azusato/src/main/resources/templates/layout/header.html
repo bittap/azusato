@@ -8,6 +8,7 @@
 <head th:fragment="header(contents)">
 	<title th:text="#{navbar.brand}"></title>
 	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="theme-color" content="#ffffff"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 	<link href="/image/icon/apple-touch-icon.png" rel="apple-touch-icon" />
 	<link href="/image/icon/apple-touch-icon-152x152.png" rel="apple-touch-icon" sizes="152x152" />
@@ -24,5 +25,11 @@
 	<th:block th:if="__${#locale}__ == 'ja'">
 		<link rel="stylesheet" href="/css/language/ja.css">
 	</th:block>
+	<link rel="manifest" href="/manifest.json" />
 	<th:block th:replace="${contents}"></th:block>
+	<script type="module">
+	   import 'https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate';
+	   const el = document.createElement('pwa-update');
+	   document.body.appendChild(el);
+	</script>
 </head>

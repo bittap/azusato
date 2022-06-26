@@ -5,7 +5,6 @@
 */-->
 <script th:inline="javascript">
 	const AUTHENTICATION = /*[[${#authentication}]]*/ "ログインしたユーザID";
-	console.log(AUTHENTICATION);
 	const AUTHENTICATION_NAME = /*[[${#authentication.name}]]*/ "ログインしたユーザID";
 	// ログイン有無
 	// 注意:anonymousUserのIDがある場合は、障害が起きる可能性がある。
