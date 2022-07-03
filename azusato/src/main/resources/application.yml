@@ -6,6 +6,10 @@ server:
     # MultiPartアップロード時、容量超えをキャッチするため
     # https://stackoverflow.com/questions/2689989/how-to-handle-maxuploadsizeexceededexception
     max-swallow-size: -1
+  servlet:
+    session:
+      cookie:
+        same-site: LAX
 
 # ===============================
 # Spring
@@ -100,6 +104,7 @@ rest:
 
 # クライアントに関する設定  
 client:
+  origin: https://azusato.com
   loading-modal-delay: 1000
   api-url: api
   # 表示ページ数

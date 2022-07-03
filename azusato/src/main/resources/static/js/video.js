@@ -1,3 +1,7 @@
+/*
+ * 動画再生関連JS。
+ * 「/js/backgroundMusic.js」に依存する。
+ */
 $(document).ready(function(){
 	
 	/*
@@ -20,17 +24,4 @@ $(document).ready(function(){
 		console.log("video play event");
 		stopBackgroundMusic();
 	});
-	
-	/*
-	 * バックグラウンド音楽の再生を止める。
-	 * 「#background-audio」がある場合それをstopする。
-	 */
-	function stopBackgroundMusic(){
-		const audio = document.querySelector("#background-audio");
-		// exist a element
-		if(audio != null){
-			audio.pause();
-		}
-		
-	}
 })

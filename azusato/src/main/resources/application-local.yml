@@ -28,3 +28,7 @@ profile:
   server-default-image-folder-path: src\main\resources\static\image\default\profile
   # クライアントの本イメージのファイルの格納場所
   client-image-folder-path: /git/resources
+  
+# クライアントに関する設定  
+client:
+  origin: http://localhost:8081

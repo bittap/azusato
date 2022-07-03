@@ -24,3 +24,16 @@ $(document).ready(function(){
 		document.body.appendChild(audioTag);
 	}
 })
+
+/*
+ * バックグラウンド音楽の再生を止める。
+ * 「#background-audio」がある場合それをstopする。
+ */
+function stopBackgroundMusic(){
+	const audio = document.querySelector("#background-audio");
+	// exist a element
+	if(audio != null){
+		audio.pause();
+	}
+	
+}
