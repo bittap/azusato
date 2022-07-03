@@ -1,0 +1,8 @@
+.jumbotron .carousel-inner {
+	max-height: 700px;
+}
+
+.jumbotron .carousel-inner img {
+	aspect-ratio: 1.5/1;
+}
+
