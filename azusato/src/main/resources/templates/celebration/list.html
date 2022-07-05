@@ -1,6 +1,7 @@
 <html>
 <head th:include = "layout/header :: header(~{::link})">
 	<link rel="stylesheet" href="/css/celebration/list.css">
+	<link rel="stylesheet" href="/css/external/translate/translate.css">
 </head>
 <body>
 	<!-- nav -->
@@ -100,6 +101,7 @@
 								<a th:href="@{'/'+${#locale}+'/celebration/write'}" class="btn btn-primary ms-auto me-0" th:text="#{celebration.list.write}"></a>
 						  	</ul>
 						</nav>
+						<div id="google_translate_element"></div>
 					</small>			
 				</div>
 			</div>	<!-- End Container-->
@@ -113,6 +115,7 @@
 	</script>
 	<script src="/js/celebration/celebration_common.js"></script>
 	<script src="/js/celebration/list.js"></script>
-			
+	<script src="/js/external/translate/translate.js"></script>
+	<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit2"></script>
 </body>
 </html>
