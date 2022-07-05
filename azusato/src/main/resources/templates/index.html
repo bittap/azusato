@@ -47,39 +47,17 @@
 					</div> <!-- End main-letter-->
 				</div> <!-- End main letter-->
 				<div class="main-video py-5">  
-					<div class="ratio ratio-16x9" id="test">
-						<div id="player"></div>
+					<div class="ratio ratio-16x9">
+						<video controls="controls">  
+						  <source src="/video/main.mp4" type="video/mp4">
+						</video>
 					</div>
 				</div>
 			</div>	<!-- End Container-->
 		</th:block>
 	</th:block>
 	<script src="/js/backgroundMusic.js" music-path="/music/" one="1"></script>
-	<script src="https://www.youtube.com/player_api"></script>
-	<script th:inline="javascript">
-    
-    // create youtube player
-    var player;
-    function onYouTubePlayerAPIReady() {
-        player = new YT.Player('player', {
-          videoId: /*[[#{main.youtube.video-id}]]*/ "",
-		  playerVars: { 
-			  'origin': /*[[${@environment.getProperty('client.origin')}]]*/ "",
-		  },
-          events: {
-            'onStateChange': onPlayerStateChange
-          }
-        });
-    }
-
-    // when video ends
-    function onPlayerStateChange(event) {      
-        if(event.data === 1) {            
-            stopBackgroundMusic();
-        }
-    }
-    
-	</script>
+	<script src="/js/video.js"></script>	
 		
 </body>
 </html>
