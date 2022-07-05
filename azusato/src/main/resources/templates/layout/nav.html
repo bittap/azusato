@@ -23,7 +23,7 @@
 				</a>
 		      </li>
 		     <li class="nav-item px-1">
-				<a th:href="@{'/'+${#locale}+'/celebration'}">
+				<a id="nav_celebration" th:href="@{'/'+${#locale}+'/celebration'}" th:title="#{tooltip.click}">
 			        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-envelope-paper-heart" viewBox="0 0 16 16">
 						<title th:text="#{celebration.title}"></title>
 					  	<th:block th:if="${header.celebration} == true">
