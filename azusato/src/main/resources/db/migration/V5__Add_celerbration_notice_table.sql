@@ -7,11 +7,10 @@ create table celebration_notice (
     celebration_no BIGINT not null COMMENT 'celerbrationテーブルのFK',
 	-- ManyToOne
 	celebration_reply_no BIGINT null COMMENT 'celerbration_replyテーブルのFK',
-	readed BOOLEAN not null default 0 COMMENT '読んでたら : ture, 読んでなかったら : false',
+	readed BOOLEAN not null default 0 COMMENT '既読フラグ 既読すると : ture, 既読していない場合 : false',
 	create_datetime TIMESTAMP not null DEFAULT CURRENT_TIMESTAMP,
-	update_datetime TIMESTAMP not null DEFAULT CURRENT_TIMESTAMP,
-	create_user_no BIGINT not null,
-	update_user_no BIGINT not null,
+	read_datetime TIMESTAMP COMMENT '既読した日時',
+	target_user_no BIGINT not null COMMENT '通知対象ユーザ',
 	delete_flag BOOLEAN not null default 0 COMMENT '基本 false',
 	PRIMARY KEY (no),
 	FOREIGN KEY (celebration_no)
@@ -22,13 +21,9 @@ create table celebration_notice (
 		REFERENCES celebration_reply (no)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE,
-	FOREIGN KEY (create_user_no)
+	FOREIGN KEY (target_user_no)
 		REFERENCES user (no)
 		ON UPDATE CASCADE
-		ON DELETE CASCADE,
-	FOREIGN KEY (update_user_no)
-		REFERENCES user (no)
-		ON UPDATE CASCADE
-		ON DELETE RESTRICT
+		ON DELETE CASCADE
 )
 COMMENT='まだ確認していない人に対して通知のために';
