@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestLogin;
 import com.my.azusato.integration.AbstractIntegration;
 import com.my.azusato.locale.LocaleConstant;
@@ -29,8 +28,6 @@ import com.my.azusato.view.controller.common.UrlConstant;
 import com.my.azusato.view.controller.response.HeaderReponse;
 
 public class AdminIndexControllerTest extends AbstractIntegration {
-
-	private final int MODEL_SIZE = 1 + TestConstant.SPRING_MODEL_SIZE;
 
 	@Nested
 	public class Index {
@@ -63,13 +60,8 @@ public class AdminIndexControllerTest extends AbstractIntegration {
 					.andReturn();
 
 			ModelAndView mavOfResult = resultOfMvc.getModelAndView();
-
+			
 			Map<String, Object> mapsOfResult = mavOfResult.getModel();
-			mapsOfResult.forEach((k, v) -> {
-				System.out.printf("key : %s, value : %s\n", k, v);
-			});
-
-			Assertions.assertEquals(MODEL_SIZE, mapsOfResult.size());
 
 			HeaderReponse headerOfResult = (HeaderReponse) mapsOfResult.get(ModelConstant.HEADER_KEY);
 
