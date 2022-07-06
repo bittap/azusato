@@ -1,9 +1,13 @@
 package com.my.azusato.entity;
 
+import java.util.List;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.my.azusato.entity.common.CommonDateEntity;
@@ -35,6 +39,9 @@ public class CelebrationReplyEntity {
 	private Long celebrationNo;
 	
 	private String content;
+	
+	@OneToMany(mappedBy = "Reply", fetch = FetchType.LAZY)
+	private List<CelebrationNoticeEntity> notices;
 	
 	@Embedded
 	private CommonUserEntity commonUser;

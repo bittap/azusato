@@ -7,8 +7,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -33,13 +35,16 @@ import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
 import com.my.azusato.entity.CelebrationEntity;
+import com.my.azusato.entity.CelebrationNoticeEntity;
 import com.my.azusato.entity.UserEntity;
+import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.entity.common.CommonDateEntity;
 import com.my.azusato.entity.common.CommonFlagEntity;
 import com.my.azusato.entity.common.CommonUserEntity;
 import com.my.azusato.entity.common.DefaultValueConstant;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.page.MyPageRequest;
+import com.my.azusato.page.MyPageResponse;
 import com.my.azusato.page.MyPaging;
 import com.my.azusato.property.CelebrationProperty;
 import com.my.azusato.repository.CelebrationRepository;
@@ -109,20 +114,10 @@ public class CelebrationServiceAPI {
 	 */
 	@Transactional
 	private void addCelebartion(AddCelebrationServiceAPIRequest req, Locale locale, String userType) throws IOException {
-		log.debug("{}#addCelebartion , req : {}, locale : {}", CelebrationServiceAPI.class.getName(), req, locale);
-
 		UserEntity userEntity = userRepo.findByNoAndCommonFlagDeleteFlag(req.getUserNo(),ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(() -> {
 			throw AzusatoException.createI0005Error(locale, messageSource, UserEntity.TABLE_NAME_KEY);
 		});
 
-//		Set<UserEntity> admins = null;
-//
-//		if (userType.equals("not_admin")) {
-//			// for create celebration_notice table
-//			// Select that user type is admin.
-//			admins = userRepo.findByUserTypeAndCommonFlagDeleteFlag(Type.admin.toString(),ValueConstant.DEFAULT_DELETE_FLAG);
-//		}
-		
 		LocalDateTime nowLdt = LocalDateTime.now();
 		
 		CommonDateEntity commonDateEntity = userEntity.getCommonDate();
@@ -141,6 +136,26 @@ public class CelebrationServiceAPI {
 				.readCount(DefaultValueConstant.READ_COUNT)
 				.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
 				.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
+		
+		List<CelebrationNoticeEntity> notices = new ArrayList<>();
+
+		if (userType.equals("not_admin")) {
+			// 管理者リスト参照
+			Set<UserEntity> admins = userRepo.findByUserTypeAndCommonFlagDeleteFlag(Type.admin.toString(),ValueConstant.DEFAULT_DELETE_FLAG);
+			for (UserEntity admin : admins) {
+				CelebrationNoticeEntity notice = CelebrationNoticeEntity.builder()
+													.celebration(insertedEntity)
+													.readed(false)
+													.targetUser(admin)
+													.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
+													.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
+				
+				notices.add(notice);
+			}
+		}
+		
+		// 通知追加
+		insertedEntity.setNotices(notices);
 
 		CelebrationEntity insetredEntity = celeRepo.save(insertedEntity);
 		
@@ -148,8 +163,6 @@ public class CelebrationServiceAPI {
 		insetredEntity.setContentPath(contentFileName);
 		
 		celeRepo.save(insetredEntity);
-
-		log.debug("{}#addCelebartion END");
 	}
 	
 	/**
@@ -192,7 +205,7 @@ public class CelebrationServiceAPI {
 	}
 	
 	/**
-	 * 「お祝い」と「お祝い書き込み」論理削除。
+	 * 「お祝い」と「お祝い書き込み」と「お祝い通知」の論理削除。
 	 * お祝い番号より参照後、ない場合はエラーをスローする。
 	 * ある場合は、生成したユーザか比較し、生成したユーザではない場合はエラーをスローする。
 	 * 生成したユーザの場合は削除を行う。
@@ -228,6 +241,12 @@ public class CelebrationServiceAPI {
 		fetchedCelebationEntity.getReplys().parallelStream().forEach((e)->{
 			e.getCommonDate().setUpdateDatetime(now);
 			e.getCommonFlag().setDeleteFlag(!ValueConstant.DEFAULT_DELETE_FLAG);	
+		});
+		
+		// お祝い通知論理削除
+		fetchedCelebationEntity.getNotices().parallelStream().forEach((e)->{
+			e.getCommonDate().setUpdateDatetime(now);
+			e.getCommonFlag().setDeleteFlag(!ValueConstant.DEFAULT_DELETE_FLAG);		
 		});
 	
 		celeRepo.save(fetchedCelebationEntity);
@@ -329,10 +348,7 @@ public class CelebrationServiceAPI {
 	 */
 	@MethodAnnotation(description = "お祝い情報リストの返却")
 	public GetCelebrationsSerivceAPIResponse getCelebrations(GetCelebrationsSerivceAPIRequset req) {
-		// 注意 : 一番最初のパラメータpageは0から始まる。
-		Pageable sortedByNo = PageRequest.of(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement(),Sort.by(Direction.DESC,"no"));
-		Page<CelebrationEntity> celebrationEntitys = celeRepo
-				.findAllByCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(sortedByNo,ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG);
+		Page<CelebrationEntity> celebrationEntitys = getCelebrations(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement());
 		
 		GetCelebrationsSerivceAPIResponse response = new GetCelebrationsSerivceAPIResponse();
 		
@@ -355,6 +371,26 @@ public class CelebrationServiceAPI {
 		
 		
 		return response;
+	}
+	
+	private Page<CelebrationEntity> getCelebrations(Integer currentPageNo, Integer pageOfElement ){
+		// 注意 : 一番最初のパラメータpageは0から始まる。
+		Pageable sortedByNo = PageRequest.of(currentPageNo, pageOfElement,Sort.by(Direction.DESC,"no"));
+		return celeRepo
+				.findAllByCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(sortedByNo,ValueConstant.DEFAULT_DELETE_FLAG,ValueConstant.DEFAULT_DELETE_FLAG);
+	}
+	
+	/**
+	 * お祝い番号よりページ情報を返す。
+	 * @param req お祝いリストに関するリクエスト
+	 * @return ページ情報
+	 */
+	public MyPageResponse getPage(GetCelebrationsSerivceAPIRequset req) {
+		Page<CelebrationEntity> celebrationEntitys = getCelebrations(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement());
+		
+		return MyPaging.of(
+				MyPageRequest.of(req.getPageReq(), celebrationEntitys.getTotalElements())
+			);
 	}
 	
 	/**

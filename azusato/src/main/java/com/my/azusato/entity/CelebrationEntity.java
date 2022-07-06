@@ -45,6 +45,9 @@ public class CelebrationEntity {
 	@OneToMany(mappedBy = "celebrationNo", fetch = FetchType.LAZY)
 	private List<CelebrationReplyEntity> replys;
 	
+	@OneToMany(mappedBy = "celebration", fetch = FetchType.LAZY)
+	private List<CelebrationNoticeEntity> notices;
+	
 	@Embedded
 	private CommonUserEntity commonUser;
 	
@@ -53,4 +56,6 @@ public class CelebrationEntity {
 	
 	@Embedded
 	private CommonFlagEntity commonFlag;
+	
+	
 }

@@ -1,6 +1,8 @@
 package com.my.azusato.api.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.my.azusato.annotation.MethodAnnotation;
 import com.my.azusato.api.controller.request.AddCelebrationReplyAPIReqeust;
 import com.my.azusato.entity.CelebrationEntity;
+import com.my.azusato.entity.CelebrationNoticeEntity;
 import com.my.azusato.entity.CelebrationReplyEntity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.common.CommonDateEntity;
@@ -54,28 +57,10 @@ public class CelebrationReplyServiceAPI {
 
 	/**
 	 * 「お祝い書き込み」と「お祝い書き込み通知」を登録する。
-	 * 通知追加処理
-	 * (既存の書き込み者 + お祝い作成者)　- 書き込み作成者
-			作成者、書き込み作成者、既存の書き込み者
-			
-			・作成者：A、書き込み作成者：A、既存の書き込み者：X
-			A
-			 A
-			結果 : 0
-			・作成者：A、書き込み作成者：A、既存の書き込み者：ある
-			A
-			 B
-			 A
-			結果 : B
-			・作成者：A、書き込み作成者：B、既存の書き込み者：X
-			A
-			 B
-			結果 : A
-			・作成者：A、書き込み作成者：B、既存の書き込み者：ある
-			A
-			 C
-			 B
-			結果 : A、C
+	 * 通知追加処理方法
+	 * <pre>
+	 * 	お祝い作成者 + 書き込み作成者達 + 重複除外 {@code -} 本人除外
+	 * </pre>
 	 * @param req パラメータ
 	 * @param celebationNo お祝い番号
 	 * @param loginUserNo ログインしたユーザの番号
@@ -94,23 +79,7 @@ public class CelebrationReplyServiceAPI {
 						throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
 				});
 		
-		List<CelebrationReplyEntity> fetchedReplys = fetchedCelebrationEntity.getReplys();
-		// (既存の書き込み者 + お祝い作成者)　- 書き込み作成者
-		Set<UserEntity> replyNoticeUsers = null;
-		// 既存の書き込み者
-		replyNoticeUsers = fetchedReplys.stream()
-				.map((e)->{
-					return e.getCommonUser().getCreateUserEntity();
-				})
-				// 自分は通知に除外する。
-				.filter((e)->{
-					return e.getNo() != loginUserNo;
-				}).collect(Collectors.toSet());
-		// お祝い作成者
-		replyNoticeUsers.add(fetchedCelebrationEntity.getCommonUser().getCreateUserEntity());
-		// - 書き込み作成者
-		replyNoticeUsers.remove(loginUserEntity);
-
+		
 		LocalDateTime nowLdt = LocalDateTime.now();
 
 		CommonDateEntity commonDateEntity = loginUserEntity.getCommonDate();
@@ -126,11 +95,61 @@ public class CelebrationReplyServiceAPI {
 				.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
 				.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
 
+		List<CelebrationNoticeEntity> notices = new ArrayList<>();
+		
+		List<CelebrationReplyEntity> fetchedReplys = fetchedCelebrationEntity.getReplys();
+		// 書き込み作成者達
+		Set<UserEntity> fetchedReplyUsers = fetchedReplys.stream()
+				.map((e)-> e.getCommonUser().getCreateUserEntity())
+				.collect(Collectors.toSet());
+		// 通知対象者
+		Set<UserEntity> replyNoticeUsers = getNoitceTragetUsers(fetchedReplyUsers, loginUserEntity, fetchedCelebrationEntity.getCommonUser().getCreateUserEntity());
+
+		
+		for (UserEntity replyNoticeUser : replyNoticeUsers) {
+			CelebrationNoticeEntity notice = CelebrationNoticeEntity.builder()
+												.celebration(fetchedCelebrationEntity)
+												.readed(false)
+												.targetUser(replyNoticeUser)
+												.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
+												.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
+			
+			notices.add(notice);
+		}
+		
+		// 通知追加
+		insertedEntity.setNotices(notices);
+		
 		celeReplyRepo.save(insertedEntity);
 	}
 	
 	/**
-	 * 「お祝い書き込み」論理削除。
+	 * 	通知対象者を探す方法
+	 * <pre>
+	 * 	お祝い作成者 + 書き込み作成者達 + 重複除外 {@code -} 本人除外
+	 * </pre>
+	 * @param fetchedReplyUsers 書き込み作成者達
+	 * @param loginUser 本人
+	 * @param celebrationUser お祝い作成者
+	 * @return 通知対象者
+	 */
+	private Set<UserEntity> getNoitceTragetUsers(Set<UserEntity> fetchedReplyUsers, UserEntity loginUser , UserEntity celebrationUser){
+		// 重複除外
+		Set<UserEntity> replyNoticeUsers = new HashSet<>();
+		
+		// お祝い作成者
+		replyNoticeUsers.add(celebrationUser);
+		// 書き込み作成者達
+		for (UserEntity replyNoticeUser : replyNoticeUsers) {
+			replyNoticeUsers.add(replyNoticeUser);
+		}
+		// 本人除外
+		replyNoticeUsers.remove(loginUser);
+		return replyNoticeUsers;
+	}
+	
+	/**
+	 * 「お祝い書き込み」と「お祝い通知」論理削除。
 	 * お祝い番号より参照後、ない場合はエラーをスローする。
 	 * ある場合は、生成したユーザか比較し、生成したユーザではない場合はエラーをスローする。
 	 * 生成したユーザの場合は削除を行う。
@@ -160,6 +179,12 @@ public class CelebrationReplyServiceAPI {
 		LocalDateTime now = LocalDateTime.now();
 		fetchedCelebationReplyEntity.getCommonFlag().setDeleteFlag(!ValueConstant.DEFAULT_DELETE_FLAG);
 		fetchedCelebationReplyEntity.getCommonDate().setUpdateDatetime(now);
+		
+		// お祝い通知論理削除
+		fetchedCelebationReplyEntity.getNotices().parallelStream().forEach((e)->{
+			e.getCommonDate().setUpdateDatetime(now);
+			e.getCommonFlag().setDeleteFlag(!ValueConstant.DEFAULT_DELETE_FLAG);		
+		});
 	
 		celeReplyRepo.save(fetchedCelebationReplyEntity);
 	}
