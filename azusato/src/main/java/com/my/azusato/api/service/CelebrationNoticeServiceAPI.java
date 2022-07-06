@@ -77,9 +77,11 @@ public class CelebrationNoticeServiceAPI {
 	public void read(Long celebationNo, LoginUser loginUser, Locale locale) {
 		List<CelebrationNoticeEntity> notices = celeNotiRepo.findAllByCelebrationNoAndTargetUserNo(celebationNo, celebationNo);
 		
+		LocalDateTime now = LocalDateTime.now();
 		for (CelebrationNoticeEntity notice : notices) {
 			notice.setReaded(true);
-			notice.setReadDatetime(LocalDateTime.now());
+			notice.setReadDatetime(now);
+			notice.getCommonDate().setUpdateDatetime(now);
 			
 			celeNotiRepo.save(notice);
 		}
