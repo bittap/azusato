@@ -40,7 +40,7 @@ public class CelebrationReplyEntity {
 	
 	private String content;
 	
-	@OneToMany(mappedBy = "Reply", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "reply", fetch = FetchType.LAZY)
 	private List<CelebrationNoticeEntity> notices;
 	
 	@Embedded

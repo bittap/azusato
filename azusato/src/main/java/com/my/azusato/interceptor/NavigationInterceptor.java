@@ -14,6 +14,8 @@ import com.my.azusato.api.controller.request.MyPageControllerRequest;
 import com.my.azusato.api.service.CelebrationNoticeServiceAPI;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.api.service.response.GetCelebrationNoticesSerivceAPIResponse;
+import com.my.azusato.login.LoginUser;
+import com.my.azusato.util.LoginUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +48,8 @@ public class NavigationInterceptor implements HandlerInterceptor {
 				GetCelebrationsSerivceAPIRequset serviceReq = GetCelebrationsSerivceAPIRequset.builder()
 										.pageReq(page)
 										.build();
-				List<GetCelebrationNoticesSerivceAPIResponse> result = celeNotiAPIService.celebrationNotices(serviceReq);
+				LoginUser loginUser = LoginUtil.getLoginUser();
+				List<GetCelebrationNoticesSerivceAPIResponse> result = celeNotiAPIService.celebrationNotices(serviceReq,loginUser.getUSER_NO());
 				modelAndView.addObject(MODEL_MAP_NAME, result);
 				log.debug("お祝い通知(nav):対象:{}",result);
 			}else {

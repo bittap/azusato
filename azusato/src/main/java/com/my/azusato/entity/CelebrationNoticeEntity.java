@@ -17,7 +17,9 @@ import com.my.azusato.entity.common.CommonFlagEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "celebration_notice")
@@ -25,6 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor 
 @Builder
+@EqualsAndHashCode(exclude = {"celebration","reply"})
 public class CelebrationNoticeEntity {
 	
 	/**
@@ -39,6 +42,7 @@ public class CelebrationNoticeEntity {
 	 */
 	@ManyToOne
 	@JoinColumn(name = "celebration_no")
+	@ToString.Exclude
 	private CelebrationEntity celebration;
 	
 	/**
@@ -46,7 +50,8 @@ public class CelebrationNoticeEntity {
 	 */
 	@ManyToOne
 	@JoinColumn(name = "celebration_reply_no")
-	private CelebrationReplyEntity Reply;
+	@ToString.Exclude
+	private CelebrationReplyEntity reply;
 	
 	/**
 	 * 既読フラグ 既読すると : ture, 既読していない場合 : false

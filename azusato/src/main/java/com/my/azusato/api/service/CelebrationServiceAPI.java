@@ -47,6 +47,7 @@ import com.my.azusato.page.MyPageRequest;
 import com.my.azusato.page.MyPageResponse;
 import com.my.azusato.page.MyPaging;
 import com.my.azusato.property.CelebrationProperty;
+import com.my.azusato.repository.CelebrationNoticeRepository;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.UserRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
@@ -75,6 +76,8 @@ public class CelebrationServiceAPI {
 	private final MessageSource messageSource;
 
 	private final CelebrationRepository celeRepo;
+	
+	private final CelebrationNoticeRepository celeNotiRepo;
 
 	/**
 	 * delegate
@@ -125,8 +128,6 @@ public class CelebrationServiceAPI {
 		
 		userEntity.setName(req.getName());
 		
-		// mappedSuperClassに変更した後、なぜかUserEntityについて更新ができないため、一応UserEntityはupdateしておく。
-		// 小さいプロジェクトでは同じ条件でできたので、JPAのバグの可能性がある。
 		UserEntity savedUserEntity = userRepo.save(userEntity);
 		
 		CelebrationEntity insertedEntity = CelebrationEntity.builder().title(req.getTitle())
@@ -136,6 +137,13 @@ public class CelebrationServiceAPI {
 				.readCount(DefaultValueConstant.READ_COUNT)
 				.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
 				.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
+		
+		CelebrationEntity insetredEntity = celeRepo.save(insertedEntity);
+		
+		String contentFileName = uploadContent(req.getContent(), insetredEntity.getNo());
+		insetredEntity.setContentPath(contentFileName);
+		
+		insetredEntity = celeRepo.save(insetredEntity);
 		
 		List<CelebrationNoticeEntity> notices = new ArrayList<>();
 
@@ -151,18 +159,16 @@ public class CelebrationServiceAPI {
 													.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
 				
 				notices.add(notice);
+				
+				celeNotiRepo.save(notice);
 			}
 		}
 		
 		// 通知追加
-		insertedEntity.setNotices(notices);
-
-		CelebrationEntity insetredEntity = celeRepo.save(insertedEntity);
+		//insertedEntity.setNotices(notices);
+		// TODO お祝いテーブルから通知挿入できるように修正
 		
-		String contentFileName = uploadContent(req.getContent(), insetredEntity.getNo());
-		insetredEntity.setContentPath(contentFileName);
 		
-		celeRepo.save(insetredEntity);
 	}
 	
 	/**

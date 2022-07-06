@@ -14,13 +14,13 @@ import com.my.azusato.entity.CelebrationNoticeEntity;
 public interface CelebrationNoticeRepository extends PagingAndSortingRepository<CelebrationNoticeEntity, Long> , JpaRepository<CelebrationNoticeEntity, Long> { 
 
 	/**
-	 * where delete_flag = ""  order by xx limit xx 
+	 * where  target_user_no = "" and delete_flag = ""  order by xx limit xx 
 	 * @param pageable ページングとソート情報
 	 * @param deleted 削除フラグ。基本falseで検索
 	 * @param createUserDeleted 生成したユーザの削除フラグ
 	 * @return お祝通知いリスト
 	 */
-	public Page<CelebrationNoticeEntity> findAllByCommonFlagDelete(Pageable pageable, boolean deleted );
+	public Page<CelebrationNoticeEntity> findAllByTargetUserNoAndCommonFlagDeleteFlag(Pageable pageable, Long targetUserNo , boolean deleted );
 	
 	/**
 	 * where celebration_no = "" and target_user_no = ""

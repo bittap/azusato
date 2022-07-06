@@ -37,19 +37,22 @@ public class CelebrationNoticeServiceAPI {
 	 * お祝いリストを返却する。
 	 * お祝いNoの降順、書き込みNoの昇順で取得
 	 * @param req お祝いリストに関するリクエスト
+	 * @param loginUserNo ログインしたユーザ番号
 	 * @return お祝い+お祝い書き込みリスト
 	 */
 	@MethodAnnotation(description = "お祝い通知情報リストの返却")
-	public List<GetCelebrationNoticesSerivceAPIResponse> celebrationNotices(GetCelebrationsSerivceAPIRequset req) {
-		Page<CelebrationNoticeEntity> celebrationNotices = getCelebrationNotices(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement());
+	public List<GetCelebrationNoticesSerivceAPIResponse> celebrationNotices(GetCelebrationsSerivceAPIRequset req, Long loginUserNo) {
+		Page<CelebrationNoticeEntity> celebrationNotices = getCelebrationNotices(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement(), loginUserNo);
 		
 		
 		return celebrationNotices.stream().map((e)->{
 			String title;
 			LocalDateTime createdDatetime;
+			Long celeReplyNo = null;
 			if(Objects.nonNull(e.getReply())) {
 				title = e.getReply().getContent();
 				createdDatetime = e.getReply().getCommonDate().getCreateDatetime();
+				celeReplyNo = e.getReply().getNo();
 			}else {
 				title = e.getCelebration().getTitle();
 				createdDatetime = e.getCelebration().getCommonDate().getCreateDatetime();
@@ -59,17 +62,17 @@ public class CelebrationNoticeServiceAPI {
 					.title(title)
 					.createdDatetime(createdDatetime)
 					.celebrationNo(e.getCelebration().getNo())
-					.celebrationReplyNo(e.getReply().getNo())
+					.celebrationReplyNo(celeReplyNo)
 					.build();
 		}).collect(Collectors.toList());
 	}
 	
-	private Page<CelebrationNoticeEntity> getCelebrationNotices(Integer currentPageNo, Integer pageOfElement ){
+	private Page<CelebrationNoticeEntity> getCelebrationNotices(Integer currentPageNo, Integer pageOfElement ,Long loginUserNo){
 		// 注意 : 一番最初のパラメータpageは0から始まる。
 		// TODO 정렬 : read 안 읽은거, 축하 내림차순 ,축하댓글 내림차순
 		List<Order> orders = List.of(Order.asc("readed"),Order.desc("no"));
 		Pageable sortedByNo = PageRequest.of(currentPageNo, pageOfElement,Sort.by(orders));
-		return celeNotiRepo.findAllByCommonFlagDelete(sortedByNo, ValueConstant.DEFAULT_DELETE_FLAG);
+		return celeNotiRepo.findAllByTargetUserNoAndCommonFlagDeleteFlag(sortedByNo, loginUserNo , ValueConstant.DEFAULT_DELETE_FLAG);
 	}
 
 	@Transactional

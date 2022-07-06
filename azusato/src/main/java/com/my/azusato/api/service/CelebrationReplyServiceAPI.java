@@ -25,6 +25,7 @@ import com.my.azusato.entity.common.CommonFlagEntity;
 import com.my.azusato.entity.common.CommonUserEntity;
 import com.my.azusato.entity.common.DefaultValueConstant;
 import com.my.azusato.exception.AzusatoException;
+import com.my.azusato.repository.CelebrationNoticeRepository;
 import com.my.azusato.repository.CelebrationReplyRepository;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.UserRepository;
@@ -54,6 +55,8 @@ public class CelebrationReplyServiceAPI {
 	private final CelebrationRepository celeRepo;
 
 	private final CelebrationReplyRepository celeReplyRepo;
+	
+	private final CelebrationNoticeRepository celeNotiRepo;
 
 	/**
 	 * 「お祝い書き込み」と「お祝い書き込み通知」を登録する。
@@ -95,6 +98,12 @@ public class CelebrationReplyServiceAPI {
 				.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
 				.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
 
+		// TODO お祝いテーブルから通知挿入できるように修正
+		// 通知追加
+		//insertedEntity.setNotices(notices);
+		
+		celeReplyRepo.save(insertedEntity);
+		
 		List<CelebrationNoticeEntity> notices = new ArrayList<>();
 		
 		List<CelebrationReplyEntity> fetchedReplys = fetchedCelebrationEntity.getReplys();
@@ -109,18 +118,15 @@ public class CelebrationReplyServiceAPI {
 		for (UserEntity replyNoticeUser : replyNoticeUsers) {
 			CelebrationNoticeEntity notice = CelebrationNoticeEntity.builder()
 												.celebration(fetchedCelebrationEntity)
+												.reply(insertedEntity)
 												.readed(false)
 												.targetUser(replyNoticeUser)
 												.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
 												.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
 			
 			notices.add(notice);
+			celeNotiRepo.save(notice);
 		}
-		
-		// 通知追加
-		insertedEntity.setNotices(notices);
-		
-		celeReplyRepo.save(insertedEntity);
 	}
 	
 	/**
@@ -134,17 +140,20 @@ public class CelebrationReplyServiceAPI {
 	 * @return 通知対象者
 	 */
 	private Set<UserEntity> getNoitceTragetUsers(Set<UserEntity> fetchedReplyUsers, UserEntity loginUser , UserEntity celebrationUser){
+		log.debug("通知対象者取得 書き込み作成者達 : {}, 本人 : {}, お祝い作成者 : {} ",
+				fetchedReplyUsers.stream().map(UserEntity::getNo).collect(Collectors.toList()),loginUser.getNo(),celebrationUser.getNo());
 		// 重複除外
 		Set<UserEntity> replyNoticeUsers = new HashSet<>();
 		
 		// お祝い作成者
 		replyNoticeUsers.add(celebrationUser);
 		// 書き込み作成者達
-		for (UserEntity replyNoticeUser : replyNoticeUsers) {
-			replyNoticeUsers.add(replyNoticeUser);
+		for (UserEntity fetchedReplyUser : fetchedReplyUsers) {
+			replyNoticeUsers.add(fetchedReplyUser);
 		}
 		// 本人除外
 		replyNoticeUsers.remove(loginUser);
+		log.debug("通知対象者取得 結果 : {} ",replyNoticeUsers.stream().map(UserEntity::getNo).collect(Collectors.toList()));
 		return replyNoticeUsers;
 	}
 	

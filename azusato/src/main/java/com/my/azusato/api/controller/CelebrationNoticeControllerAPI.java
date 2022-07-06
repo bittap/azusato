@@ -49,14 +49,14 @@ public class CelebrationNoticeControllerAPI {
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(CELEBRATION_NOTICES_URL)
 	@MethodAnnotation(description = "API_cel-noti_001 お祝い通知リスト情報取得")
-	public List<GetCelebrationNoticesSerivceAPIResponse> celebrationNotices() {
+	public List<GetCelebrationNoticesSerivceAPIResponse> celebrationNotices(@AuthenticationPrincipal LoginUser loginUser) {
 		MyPageControllerRequest page = new MyPageControllerRequest(1, 3, 5);
 			
 		GetCelebrationsSerivceAPIRequset serviceReq = GetCelebrationsSerivceAPIRequset.builder()
 								.pageReq(page)
 								.build();
 		
-		return celeNotiAPIService.celebrationNotices(serviceReq);
+		return celeNotiAPIService.celebrationNotices(serviceReq,loginUser.getUSER_NO());
 	}
 	
 	/**
