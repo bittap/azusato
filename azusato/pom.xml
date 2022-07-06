@@ -11,9 +11,9 @@
 	</parent>
 	<groupId>com.my.azusato</groupId>
 	<artifactId>azusato</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>azusato</name>
-	<description>Demo project for Spring Boot</description>
+	<description>あずさト幸せな結婚生活</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
