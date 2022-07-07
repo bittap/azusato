@@ -1,7 +1,8 @@
 package com.my.azusato.aop;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,9 @@ import org.aspectj.lang.reflect.MethodSignature;
 
 import com.my.azusato.annotation.MethodAnnotation;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class AOPUtil {
 
 	
@@ -27,11 +31,20 @@ public class AOPUtil {
 	    return apiAnno.description();
 	}
 	
-	public static String getParameterMsg(Object[] parameterValues) {
-		// map -> String
-		return Arrays.asList(parameterValues).stream()
-				.filter(Objects::nonNull)
-				.map((e) -> String.format("%s : %s", e.getClass().getSimpleName(), e)).collect(Collectors.joining("、"));
+	public static String getParameterMsg(String[] parameterNames , Object[] parameterValues) {
+		if(parameterNames.length != parameterValues.length) {
+			log.warn("パラメータ配列のネームと値の数が異なります。 ネーム数 : {} , 値の数 : {}", parameterNames.length, parameterValues.length);
+		}
+		
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		for (int i = 0; i < parameterNames.length; i++) {
+			parameters.put(parameterNames[i], parameterValues[i]);
+		}
+		
+		return parameters.keySet().stream().map((e)->{
+			String value = Objects.nonNull(parameters.get(e)) ? parameters.get(e).toString() : "";
+			return String.format("%s : %s", e, value);
+		}).collect(Collectors.joining("、"));
 	}
 	
 	/**

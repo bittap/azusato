@@ -4,6 +4,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.reflect.CodeSignature;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,9 @@ public class ControllerAPILoggingAOP {
 	
 	@Before(value = "execution (* com.my.azusato.api.controller.*.*(..)) && @annotation(com.my.azusato.annotation.MethodAnnotation)")
 	public void beforeAPI(JoinPoint joinPoint) {
-		String parameterMsg = AOPUtil.getParameterMsg(joinPoint.getArgs());
+		CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
+		
+		String parameterMsg = AOPUtil.getParameterMsg(codeSignature.getParameterNames(),joinPoint.getArgs());
 		log.debug("【{}】[{}]処理開始\n[パラメータ] : {}", FULL_TITLE,AOPUtil.getDescription(joinPoint), parameterMsg);
 	}
 
