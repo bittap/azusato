@@ -9,6 +9,9 @@
 	// ログイン有無
 	// 注意:anonymousUserのIDがある場合は、障害が起きる可能性がある。
 	const AUTHENTICATIONED = AUTHENTICATION_NAME != "anonymousUser" ? true : false;
+	// 管理者でログインした有無フラグ
+	const ADMIN_LOGIN = AUTHENTICATION.authorities != null && 
+			AUTHENTICATION.authorities[0]?.authority == 'ROLE_admin' ? true : false; 
 	const language = /*[[${#locale}]]*/ "language";
 	const apiUrl = "/"+/*[[${@environment.getProperty('client.api-url')}]]*/ "commonApiUrl";
 	const DEFAULT_ERROR_TITLE = "E-0001";

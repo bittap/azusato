@@ -368,6 +368,7 @@ public class CelebrationServiceAPI {
 					.title(e.getTitle())
 					.name(e.getCommonUser().getCreateUserEntity().getName())
 					.profileImagePath(e.getCommonUser().getCreateUserEntity().getProfile().getImagePath())
+					.readCount(e.getReadCount())
 					.no(e.getNo())
 					.createdDatetime(e.getCommonDate().getCreateDatetime())
 					.build();

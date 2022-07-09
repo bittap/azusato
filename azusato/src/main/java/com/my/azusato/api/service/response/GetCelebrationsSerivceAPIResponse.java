@@ -37,5 +37,7 @@ public class GetCelebrationsSerivceAPIResponse {
 		private Long no;
 		
 		private LocalDateTime createdDatetime;
+		
+		private Integer readCount;
 	}
 }

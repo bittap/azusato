@@ -34,7 +34,13 @@ const initialize = function(){
 			PROFILE_TAG.src = celebation.profileImagePath;
 			NO_TAG.textContent = "No."+celebation.no;
 			REG_TAG.textContent = moment(new Date(celebation.createdDatetime)).format(DATETIME_FORMAT);
-			NAME_TAG.textContent = "@"+celebation.name;
+			
+			// 管理者ログインの場合は参照数を表示
+			let nameContent = "@"+celebation.name;
+			if(ADMIN_LOGIN){
+				nameContent += ` [${celebation.readCount}]`
+			}
+			NAME_TAG.textContent = nameContent;
 			TITLE_TAG.textContent = celebation.title;
 			
 			const toglledCollapse = celebrationClone.querySelector(".content_wrap");
