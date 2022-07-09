@@ -31,6 +31,13 @@ public class AOPUtil {
 	    return apiAnno.description();
 	}
 	
+	/**
+	 * パラメータネームと値を結合した文字列を取得する。
+	 * パラメータネーム1:値、パラメータネーム2:値...
+	 * @param parameterNames パラメータネーム
+	 * @param parameterValues パラメータ値
+	 * @return 結合した文字列
+	 */
 	public static String getParameterMsg(String[] parameterNames , Object[] parameterValues) {
 		if(parameterNames.length != parameterValues.length) {
 			log.warn("パラメータ配列のネームと値の数が異なります。 ネーム数 : {} , 値の数 : {}", parameterNames.length, parameterValues.length);
