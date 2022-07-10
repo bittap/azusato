@@ -45,7 +45,7 @@
 						  	<path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372l2.8-7Zm-2.54 1.183L5.93 9.363 1.591 6.602l11.833-4.733Z"/>
 						</svg>
 						<div class="notice">
-							<mark class="fw-bold">9+</mark>
+							<mark class="fw-bold" th:text="${#lists.size(nav)} + '+'"></mark>
 						</div>
 					</a>
 					<div class="text-start collapse" id="celebration_notice_list">
@@ -56,19 +56,17 @@
 						<div class="p-3 rounded shadow">
 							<div id="notice-list-container">
 								<div class="text-muted pt-3 list" style="cursor: pointer;">
-									<template id="celebration_notice_template-list">
-										<div class="d-flex content border-bottom ">
-											<img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="profile" class="me-2 rounded -profile">
-											<div class="mb-0 small overflow-hidden title-right"> 
-					    						<p class="fw-bold my-0 d-flex -kind">
-													<span class="flex-fill">お祝いがありました。</span>
-													<span>2022-03-27</span>
-												</p>
-											    <p class="fw-bold my-0 text-truncate">@BTS 정국asdadssadadsadsadsadasd</p>	
-												<p class="text-truncate my-0 -title">오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ</p>
+									<div th:each="nav : ${nav}" class="d-flex content border-bottom ">
+										<img th:src="${nav.profileImagePath}" alt="profile" class="me-2 rounded -profile">
+										<div class="w-100 mb-0 small overflow-hidden title-right"> 
+				    						<div class="fw-bold my-0 d-flex -kind">
+												<div class="flex-fill" th:text="${nav.celebrationReplyNo} != null ? #{celebration.notice.kind.celebration-reply} : #{celebration.notice.kind.celebration}"></div>
+												<div class="text-end" th:text="${#temporals.format(nav.createdDatetime, @environment.getProperty('client.datetime-format-thymeleaf'))}">2022-03-27</div>
 											</div>
+										    <p class="fw-bold my-0 text-truncate" th:text="'@'+${nav.name}"></p>	
+											<p class="text-truncate my-0" th:text="${nav.title}"></p>
 										</div>
-									</template>
+									</div>
 								</div>
 								<div class="d-grid gap-2">
 									<a class="btn-sm btn btn-primary mt-1" type="button" th:href="@{'/'+${#locale}+'/celebration'}">お祝いリストに遷移</a>

@@ -41,6 +41,7 @@ public class CelebrationNoticeServiceAPI {
 	 * @return お祝い+お祝い書き込みリスト
 	 */
 	@MethodAnnotation(description = "お祝い通知情報リストの返却")
+	@Transactional
 	public List<GetCelebrationNoticesSerivceAPIResponse> celebrationNotices(GetCelebrationsSerivceAPIRequset req, Long loginUserNo) {
 		Page<CelebrationNoticeEntity> celebrationNotices = getCelebrationNotices(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement(), loginUserNo);
 		
@@ -49,17 +50,21 @@ public class CelebrationNoticeServiceAPI {
 			String title;
 			LocalDateTime createdDatetime;
 			Long celeReplyNo = null;
+			String profileImagePath;
 			if(Objects.nonNull(e.getReply())) {
 				title = e.getReply().getContent();
 				createdDatetime = e.getReply().getCommonDate().getCreateDatetime();
 				celeReplyNo = e.getReply().getNo();
+				profileImagePath = e.getReply().getCommonUser().getCreateUserEntity().getProfile().getImagePath();
 			}else {
 				title = e.getCelebration().getTitle();
 				createdDatetime = e.getCelebration().getCommonDate().getCreateDatetime();
+				profileImagePath = e.getCelebration().getCommonUser().getCreateUserEntity().getProfile().getImagePath();
 			}
 			return GetCelebrationNoticesSerivceAPIResponse.builder()
 					.name(e.getCelebration().getCommonUser().getCreateUserEntity().getName())
 					.title(title)
+					.profileImagePath(profileImagePath)
 					.createdDatetime(createdDatetime)
 					.celebrationNo(e.getCelebration().getNo())
 					.celebrationReplyNo(celeReplyNo)

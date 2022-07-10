@@ -12,12 +12,6 @@
 	bottom: -3px;
 }
 
-.nav-item > a > .notice > mark{
-	color:purple;
-	font-size:0.7rem; 
-	font-family:sans-serif;
-}
-
 .navbar-brand {
 	font-family: 'Rampart One', 'Nanum Brush Script',cursive;
 	color: purple;
@@ -36,8 +30,10 @@
 }
 
 /* 通知関連 */
-.notice mark{
+.nav-item > a > .notice > mark{
 	color: #dc3545;
+	font-size:0.7rem; 
+	font-family:sans-serif;
 }
 
 #celebration_notice_list{

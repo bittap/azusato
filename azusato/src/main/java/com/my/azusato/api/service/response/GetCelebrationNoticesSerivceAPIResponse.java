@@ -22,4 +22,6 @@ public class GetCelebrationNoticesSerivceAPIResponse {
 	private Long celebrationNo;
 	
 	private Long celebrationReplyNo;
+	
+	private String profileImagePath;
 }

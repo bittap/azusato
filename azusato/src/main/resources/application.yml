@@ -111,7 +111,8 @@ client:
   page-pagesOfpage: 3
   # ページのリスト表示数
   page-pageOfElement: 5
-  datetime-format: YYYY-MM-DD
+  datetime-format-moment-js: YYYY-MM-DD
+  datetime-format-thymeleaf: YYYY-MM-dd
   
 cookie:
   # 基本クッキーが反映されるパス
