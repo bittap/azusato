@@ -9,7 +9,7 @@
 .nav-item > a > .notice{
 	position: absolute;
 	right:0px;
-	bottom: -5px;
+	bottom: -3px;
 }
 
 .nav-item > a > .notice > mark{
@@ -33,4 +33,32 @@
 .nav-item svg{
 	width : 2rem;
 	height : 2rem;
+}
+
+/* 通知関連 */
+.notice mark{
+	color: #dc3545;
+}
+
+#celebration_notice_list{
+	font-size: 0.75rem;
+	width: 300px;
+	background-color:rgba(245,245,245,1);
+	position: absolute;
+	z-index: 1100;
+	left: -248px;
+}
+
+#celebration_notice_list .top span{
+	color:#9161a8;
+	font-family: 'Rampart One', 'Nanum Brush Script',cursive;
+}
+
+#notice-list-container .content img{
+	width:1rem;
+	height:1rem;
+}
+
+#notice-list-container .title-right .-kind{
+	color:#9161a8;
 }

@@ -23,95 +23,60 @@
 				</a>
 		      </li>
 		     <li class="nav-item px-1">
-				<a id="nav_celebration" th:href="@{'/'+${#locale}+'/celebration'}" th:title="#{tooltip.click}">
-			        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-envelope-paper-heart" viewBox="0 0 16 16">
-						<title th:text="#{celebration.title}"></title>
-					  	<th:block th:if="${header.celebration} == true">
-							<desc>active celebration icon</desc>
-							<path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
-					  	</th:block>  
-					  	<th:block th:unless="${header.celebration} == true">
-			            	<desc>inactive celebration icon</desc>
-							<path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
-					  	</th:block>
-					</svg>
-				</a>
-				<div class="text-start" style="font-size:0.75rem;width:300px;background-color:rgba(245,245,245,1);position:absolute;z-index:1100;left:-248px;">
-					<div class="d-flex">
-						<span class="flex-fill" style="color:#9161a8;font-family: 'Rampart One', 'Nanum Brush Script',cursive;">お祝い通知</span>
-					</div>
-					<div class="p-3 rounded shadow">
-						<div id="notice-list-container">
-							<div class="text-muted pt-3 list" style="cursor: pointer;">
-								<div class="d-flex content border-bottom ">
-									<img style="width:1rem;height:1rem;"src="/9.png" alt="profile" class="me-2 rounded -profile">
-									<div class="mb-0 small overflow-hidden title-right"> 
-			    						<p class="fw-bold my-0 d-flex -kind">
-											<span style="color:#9161a8;" class="flex-fill">お祝いがありました。</span>
-											<span>2022-03-27</span>
-										</p>
-									    <p class="fw-bold my-0 text-truncate">@BTS 정국asdadssadadsadsadsadasd</p>	
-										<p class="text-truncate my-0 -title">오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ</p>
-									</div>
-								</div> 
-							</div>
-							<div class="text-muted pt-3 list" style="cursor: pointer;">
-								<div class="d-flex content border-bottom ">
-									<img style="width:20px;height:20px;"src="/9.png" alt="profile" class="me-2 rounded -profile">
-									<div class="mb-0 small overflow-hidden title-right"> 
-			    						<p class="fw-bold my-0 d-flex -kind">
-											<span style="color:#9161a8;" class="flex-fill">書き込みがありました。</span>
-											<span>2022-03-27</span>
-										</p>
-									    <p class="fw-bold my-0 text-truncate">@BTS 정국</p>	
-										<p class="text-truncate my-0 -title">오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ</p>
-									</div>
-								</div> 
-							<div class="text-muted pt-3 list">
-								<div class="d-flex content border-bottom ">
-									<img style="width:20px;height:20px;"src="/9.png" alt="profile" class="me-2 rounded -profile">
-									<div class="mb-0 small overflow-hidden title-right text-start" style="font-size:0.8rem"> 
-			    						<p class="fw-bold my-0 d-flex -kind">書き込みがありました。</p>
-									    <p class="fw-bold my-0 d-flex">
-												<span class="flex-fill -no">@BTS 정국</span>
-												<span class="-regdate">2022-03-27</span>
-										</p>
-										<p class="text-truncate my-0 -title">오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ</p>
-									</div>
-								</div> 
-							</div>
-							<div class="text-muted pt-3 list">
-								<div class="d-flex content border-bottom ">
-									<img style="width:20px;height:20px;"src="/9.png" alt="profile" class="me-2 rounded -profile">
-									<div class="mb-0 small overflow-hidden title-right text-start" style="font-size:0.8rem"> 
-			    						<p class="fw-bold my-0 d-flex -kind">書き込みがありました。</p>
-									    <p class="fw-bold my-0 d-flex">
-												<span class="flex-fill -no">@BTS 정국</span>
-												<span class="-regdate">2022-03-27</span>
-										</p>
-										<p class="text-truncate my-0 -title">오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ</p>
-									</div>
-								</div> 
-							</div>
-							<div class="text-muted pt-3 list">
-								<div class="d-flex content border-bottom ">
-									<img style="width:20px;height:20px;"src="/9.png" alt="profile" class="me-2 rounded -profile">
-									<div class="mb-0 small overflow-hidden title-right text-start" style="font-size:0.8rem"> 
-			    						<p class="fw-bold my-0 d-flex -kind">書き込みがありました。</p>
-									    <p class="fw-bold my-0 d-flex">
-												<span class="flex-fill -no">@BTS 정국</span>
-												<span class="-regdate">2022-03-27</span>
-										</p>
-										<p class="text-truncate my-0 -title">오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ</p>
-									</div>
-								</div> 
-							</div>
-							<div class="d-grid gap-2">
-								<button class="btn-sm btn btn-primary mt-1" type="button">お祝いリストに遷移</button>
-							</div>
+				<th:block th:if="${nav} == null or (${nav} != null and ${#lists.size(nav)} == 0)">
+					<a id="nav_celebration" th:href="@{'/'+${#locale}+'/celebration'}" th:title="#{tooltip.click}">
+				        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-envelope-paper-heart" viewBox="0 0 16 16">
+							<title th:text="#{celebration.title}"></title>
+						  	<th:block th:if="${header.celebration} == true">
+								<desc>active celebration icon</desc>
+								<path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+						  	</th:block>  
+						  	<th:block th:unless="${header.celebration} == true">
+				            	<desc>inactive celebration icon</desc>
+								<path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+						  	</th:block>
+						</svg>
+					</a>
+				</th:block>
+				<!-- 通知するリストが一つ以上存在すると -->
+				<th:block th:if="${nav} != null and ${#lists.size(nav)} > 0">
+					<a id="nav_celebration" th:title="#{tooltip.click}" href="#celebration_notice_list" data-bs-toggle="collapse" role="button" aria-expanded="false">
+				        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-envelope-paper-heart" viewBox="0 0 16 16">
+						  	<path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372l2.8-7Zm-2.54 1.183L5.93 9.363 1.591 6.602l11.833-4.733Z"/>
+						</svg>
+						<div class="notice">
+							<mark class="fw-bold">9+</mark>
 						</div>
-					</div>		
-				</div>
+					</a>
+					<div class="text-start collapse" id="celebration_notice_list">
+						<div class="d-flex top">
+							<span class="flex-fill">お祝い通知</span>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" href="#celebration_notice_list" data-bs-toggle="collapse" aria-expanded="false"></button>
+						</div>
+						<div class="p-3 rounded shadow">
+							<div id="notice-list-container">
+								<div class="text-muted pt-3 list" style="cursor: pointer;">
+									<template id="celebration_notice_template-list">
+										<div class="d-flex content border-bottom ">
+											<img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="profile" class="me-2 rounded -profile">
+											<div class="mb-0 small overflow-hidden title-right"> 
+					    						<p class="fw-bold my-0 d-flex -kind">
+													<span class="flex-fill">お祝いがありました。</span>
+													<span>2022-03-27</span>
+												</p>
+											    <p class="fw-bold my-0 text-truncate">@BTS 정국asdadssadadsadsadsadasd</p>	
+												<p class="text-truncate my-0 -title">오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ오 축하한다 ㄻㄴㅇㄹㄴㅁㄹ</p>
+											</div>
+										</div>
+									</template>
+								</div>
+								<div class="d-grid gap-2">
+									<a class="btn-sm btn btn-primary mt-1" type="button" th:href="@{'/'+${#locale}+'/celebration'}">お祝いリストに遷移</a>
+								</div>
+							</div>
+						</div>		
+					</div>
+				</th:block>
 		      </li>
 		      <li class="nav-item px-1 " style="display:block">
 				<th:block th:if="${header.user} == true">
