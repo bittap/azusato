@@ -55,8 +55,9 @@
 						</div>
 						<div class="p-3 rounded shadow">
 							<div id="notice-list-container">
-								<div class="text-muted pt-3 list" style="cursor: pointer;">
-									<div th:each="nav : ${nav}" class="d-flex content border-bottom ">
+								<div th:each="nav : ${nav}" class="text-muted pt-3 d-flex notice-list border-bottom ">
+									<!-- クリック時遷移させるためのElement -->
+									<a class="notice-list-anchor" th:href="${nav.celebrationReplyNo} != null ? @{'/'+${#locale}+'/celebration/redirect/list/from-notice/${nav.celebrationNo}/${nav.celebrationReplyNo}'} : @{'/'+${#locale}+'/celebration/redirect/list/from-notice/${nav.celebrationNo}'}">
 										<img th:src="${nav.profileImagePath}" alt="profile" class="me-2 rounded -profile">
 										<div class="w-100 mb-0 small overflow-hidden title-right"> 
 				    						<div class="fw-bold my-0 d-flex -kind">
@@ -66,7 +67,7 @@
 										    <p class="fw-bold my-0 text-truncate" th:text="'@'+${nav.name}"></p>	
 											<p class="text-truncate my-0" th:text="${nav.title}"></p>
 										</div>
-									</div>
+									</a>
 								</div>
 								<div class="d-grid gap-2">
 									<a class="btn-sm btn btn-primary mt-1" type="button" th:href="@{'/'+${#locale}+'/celebration'}">お祝いリストに遷移</a>
