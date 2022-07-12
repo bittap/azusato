@@ -37,14 +37,14 @@ public class CelebrationNoticeControllerAPI {
 	
 	public static final String COMMON_URL = "celebration-notice";
 	
-	public static final String CELEBRATION_NOTICES_URL = "celebration-notices";
+	public static final String CELEBRATION_NOTICES_URL = COMMON_URL + "s";
 	
 	public static final String READCOUNTUP_URL = COMMON_URL + "/read" + "/{celebrationNo}";
 	
 	private final CelebrationNoticeServiceAPI celeNotiAPIService;
 	
 	private final HttpServletRequest servletRequest;
-
+	
 	
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(CELEBRATION_NOTICES_URL)

@@ -128,11 +128,12 @@ const focusContent = async function(){
 		}
 		
 		// 通知テーブルの既読フラグを修正する
+		readCelebrationNotice();
 	}
 }
 
 /*
- * 通知テーブルの既読フラグを修正する
+ * 通知テーブルの既読フラグを修正し、成功した場合は通知リストを更新する。
  */
 const readCelebrationNotice = async function(celebrationNo){
 	const res = await fetch(apiUrl+"/celebration-notice/read/" + celebrationNo,{
@@ -144,7 +145,8 @@ const readCelebrationNotice = async function(celebrationNo){
 		const result = await res.json();
 		return Promise.reject(result);
 	}else{
-		// TODO お祝い通知リストを更新する。
+		// お祝い通知リストを更新する。
+		GET_NAV_CELEBRATION_NOTICES();
 	}
 }
 
