@@ -70,7 +70,7 @@ public class CelebrationNoticeControllerAPI {
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping(READCOUNTUP_URL)
 	@MethodAnnotation(description = "API_cel-noti_002 お祝い通知既読処理")
-	public void readCountUp(@PathVariable(name = "celebrationNo", required = true) Long celebationNo, @AuthenticationPrincipal LoginUser loginUser) {
+	public void read(@PathVariable(name = "celebrationNo", required = true) Long celebationNo, @AuthenticationPrincipal LoginUser loginUser) {
 		celeNotiAPIService.read(celebationNo, loginUser, servletRequest.getLocale());
 	}
 }

@@ -29,6 +29,8 @@ const initialize = function(){
 			const NAME_TAG = celebrationClone.querySelector(".-name");
 			const TITLE_TAG = celebrationClone.querySelector(".-title");
 			const toggleWrap_tag = celebrationClone.querySelector(".toggle_wrap");
+			// 通知処理から遷移した時、表示する時どんなお祝いを表示するか区別するために投与。
+			toggleWrap_tag.setAttribute('id',celebation.no);
 			const toggleContentWrap_tag = celebrationClone.querySelector(".toggl_content_wrap");
 
 			PROFILE_TAG.src = celebation.profileImagePath;
@@ -91,11 +93,98 @@ const initialize = function(){
 		paging(result.page);
 		// ユーザ情報を取得しておく
 		getUser();
+		// パラメータの値よりfocusを行う。
+		focusContent();
 	}).catch(e =>{
 		console.log(e);
 		modalCommon.displayErrorModal(e.title,e.message);
 	});
 }
+
+
+/*
+* 
+* クエリパラメータに"celebrationNo"と"celebrationReplyNo"がある場合、コンテンツを表示させfocusさせる。
+* クエリパラメータに"celebrationReplyNo"がある場合は、それに該当する。書き込みをfocusさせる。
+* "celebrationReplyNo"がない場合は、"celebrationNo"に該当するコンテンツのみ表示する。
+* 表示が終わったら、通知テーブルの既読フラグを修正する。
+*
+*/
+const focusContent = async function(){
+	// パラメータのお祝い番号
+	const PARAM_CELEBRATION_NO = urlParams.get('celebrationNo');
+	if(PARAM_CELEBRATION_NO != null){
+		let toggleWrap = getCelebrationToggleEle(PARAM_CELEBRATION_NO);
+		// コンテンツを表示
+		toggleWrap.click();
+		// パラメータに書き込みがある場合
+		if(urlParams.get('celebrationReplyNo') != null){
+			// 書き込みをfocusする。
+			let replyEle = getCelebrationReplyEle();
+			replyEle.focus();
+		}else{
+			// お祝いをfocusする。
+			toggleWrap.querySelector('.body').focus();
+		}
+		
+		// 通知テーブルの既読フラグを修正する
+	}
+}
+
+/*
+ * 通知テーブルの既読フラグを修正する
+ */
+const readCelebrationNotice = async function(celebrationNo){
+	const res = await fetch(apiUrl+"/celebration-notice/read/" + celebrationNo,{
+		method: 'PUT',
+		headers: apiCommon.header
+	});
+	
+	if(!res.ok) {
+		const result = await res.json();
+		return Promise.reject(result);
+	}else{
+		// TODO お祝い通知リストを更新する。
+	}
+}
+
+/*
+ * お祝い番号より対象のToggleのElementを取得する。
+* クラスが"toggle_wrap"のElementを全部取得し、IDがお祝い番号と一致したElementを返す。
+* @param celebrationNo 探すお祝い番号
+* @return 対象のToggleのElement. もしない場合はnull
+*/
+const getCelebrationToggleEle = function(celebrationNo){
+	let toggleWraps = document.querySelectorAll('.toggle_wrap');
+	
+	toggleWraps.forEach(toggleWrap => {
+		let id = toggleWrap.getAttribute('id');
+		if(id == celebrationNo){
+			return toggleWrap;
+		}
+	});
+	
+	return null;
+} 
+
+/*
+ * お祝い書き込み番号より対象の書き込みElementを取得する。
+* クラスが"reply-list"のElementを全部取得し、IDがお祝い書き込み番号と一致したElementを返す。
+* @param celebrationNo 探すお祝い書き込み番号
+* @return 対象のElement. もしない場合はnull
+*/
+const getCelebrationReplyEle = function(celebrationReplyNo){
+	let replyLists = document.querySelectorAll('.reply-list');
+	
+	replyLists.forEach(replyList => {
+		let id = replyList.getAttribute('id');
+		if(id == celebrationReplyNo){
+			return replyList;
+		}
+	});
+	
+	return null;
+} 
 
 /*
  * ユーザ情報を取得
@@ -164,6 +253,8 @@ const initContentArea = async function(contents , toggledTag ){
 	
 	contents.replys.forEach(reply=>{
 		const celebrationReplyClone = tempReply.content.cloneNode(true);
+		// 通知処理から遷移した時、表示する時どんなお祝い書き込みをfocusするか区別するために投与。
+		celebrationReplyClone.setAttribute('id',reply.no);
 		const REPLY_PROFILE_TAG = celebrationReplyClone.querySelector(".-reply_profile");
 		const REPLY_NAME_TAG = celebrationReplyClone.querySelector(".-reply_name");
 		const REPLY_RAG_TAG = celebrationReplyClone.querySelector(".-reply_rag");
@@ -226,6 +317,7 @@ const initContentArea = async function(contents , toggledTag ){
 	toggledTag.querySelector("#reply-container").appendChild(REPLY_FRAGMENT);
 	
 }
+
 
 /*
  * プロフィールをアップロードする。
@@ -436,6 +528,7 @@ const createNowPageUrl = function(currentPageNo){
 		"currentPageNo": currentPageNo
 	});
 }
+
 /*
  * 現在ページ番号を取得する。
  * クエリパラメータにない場合は1を返す。
