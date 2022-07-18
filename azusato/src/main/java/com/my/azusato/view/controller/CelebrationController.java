@@ -6,17 +6,14 @@ import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.my.azusato.api.controller.request.MyPageControllerRequest;
 import com.my.azusato.api.service.CelebrationServiceAPI;
-import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.interceptor.LocaleInterceptor;
+import com.my.azusato.property.CelebrationProperty;
 import com.my.azusato.view.controller.common.ModelConstant;
 import com.my.azusato.view.controller.common.UrlConstant;
 import com.my.azusato.view.controller.response.CelebrationModifyResponse;
@@ -48,6 +45,8 @@ public class CelebrationController {
 	public static final String CELEBRATION_WRITE_URL = "/write";
 	
 	public static final String CELEBRATION_MODIFY_URL = "/write/{no}";
+	
+	private final CelebrationProperty celeProperty;
 
 	@GetMapping
 	public ModelAndView list() {
@@ -63,21 +62,13 @@ public class CelebrationController {
 	
 	@GetMapping(value = {"/redirect/list/from-notice/{no}","/redirect/list/from-notice/{no}/{replyNo}"})
 	public String redirectListFromNotice(@PathVariable(name = "no",required = true) Long celebrationNo,
-			@PathVariable(name = "replyNo",required = false) Long celebrationReplyNo,
-			@ModelAttribute @Validated MyPageControllerRequest page) {
+			@PathVariable(name = "replyNo",required = false) Long celebrationReplyNo) {
 		log.debug("redirectListFromNotice controller");
 		
-		// もし、現在ページ番号がないと現在ページ番号は１を設定
-		if(Objects.isNull(page.getCurrentPageNo())) {
-			page.setCurrentPageNo(1);
-		}
-			
-		GetCelebrationsSerivceAPIRequset serviceReq = GetCelebrationsSerivceAPIRequset.builder()
-								.pageReq(page)
-								.build();
-		
-		int currentPageNo = celeAPIService.getPage(serviceReq).getCurrentPageNo();
-		String queryParameter = String.format("celebrationNo=%d&celebrationReplyNo=%d&currentPageNo=%d", celebrationNo,celebrationReplyNo,currentPageNo);
+		Integer currentPageNo = celeAPIService.getPage(celebrationNo,LocaleInterceptor.getLocale(servletRequest));
+		String queryParameter = Objects.nonNull(celebrationReplyNo) ? 
+				String.format("celebrationNo=%d&celebrationReplyNo=%d&currentPageNo=%d", celebrationNo,celebrationReplyNo,currentPageNo)
+				: String.format("celebrationNo=%d&currentPageNo=%d", celebrationNo,currentPageNo);
 		return LocaleInterceptor.getLocale(servletRequest) == Locale.KOREAN ? 
 				"redirect:" + UrlConstant.JAPANESE_CONTROLLER_REQUEST + UrlConstant.CELEBRATION_CONTROLLER_REQUSET + "?" + queryParameter
 				: "redirect:" + UrlConstant.KOREAN_CONTROLLER_REQUEST + UrlConstant.CELEBRATION_CONTROLLER_REQUSET + "?" + queryParameter;

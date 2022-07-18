@@ -23,7 +23,7 @@
 				</a>
 		      </li>
 		     <li class="nav-item px-1">
-				<th:block th:if="${nav} == null or (${nav} != null and ${#lists.size(nav)} == 0)">
+				<th:block th:if="${nav} == null or (${nav} != null and ${#lists.size(nav.notices)} == 0)">
 					<a id="nav_celebration" th:href="@{'/'+${#locale}+'/celebration'}" th:title="#{tooltip.click}">
 				        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-envelope-paper-heart" viewBox="0 0 16 16">
 							<title th:text="#{celebration.title}"></title>
@@ -39,13 +39,13 @@
 					</a>
 				</th:block>
 				<!-- 通知するリストが一つ以上存在すると -->
-				<th:block th:if="${nav} != null and ${#lists.size(nav)} > 0">
+				<th:block th:if="${nav} != null and ${#lists.size(nav.notices)} > 0">
 					<a id="nav_celebration" th:title="#{tooltip.click}" href="#celebration_notice_list" data-bs-toggle="collapse" role="button" aria-expanded="false">
 				        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-envelope-paper-heart" viewBox="0 0 16 16">
 						  	<path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372l2.8-7Zm-2.54 1.183L5.93 9.363 1.591 6.602l11.833-4.733Z"/>
 						</svg>
 						<div class="notice">
-							<mark class="fw-bold" th:text="${#lists.size(nav)} + '+'"></mark>
+							<mark id="celebration_notice_count" class="fw-bold" th:text="${nav.noReadLength} == 0 ? '0' : ${nav.noReadLength} + '+'"></mark>
 						</div>
 					</a>
 					<div class="text-start collapse" id="celebration_notice_list">
@@ -54,20 +54,22 @@
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" href="#celebration_notice_list" data-bs-toggle="collapse" aria-expanded="false"></button>
 						</div>
 						<div class="p-3 rounded shadow">
-							<div id="notice-list-container">
-								<div th:each="nav : ${nav}" id="" class="text-muted pt-3 d-flex notice-list border-bottom ">
-									<!-- クリック時遷移させるためのElement -->
-									<a class="notice-list-anchor" th:href="${nav.celebrationReplyNo} != null ? @{'/'+${#locale}+'/celebration/redirect/list/from-notice/${nav.celebrationNo}/${nav.celebrationReplyNo}'} : @{'/'+${#locale}+'/celebration/redirect/list/from-notice/${nav.celebrationNo}'}">
-										<img th:src="${nav.profileImagePath}" alt="profile" class="me-2 rounded -profile">
-										<div class="w-100 mb-0 small overflow-hidden title-right"> 
-				    						<div class="fw-bold my-0 d-flex ">
-												<div class="flex-fill -kind" th:text="${nav.celebrationReplyNo} != null ? #{celebration.notice.kind.celebration-reply} : #{celebration.notice.kind.celebration}"></div>
-												<div class="text-end -createdDateTime" th:text="${#temporals.format(nav.createdDatetime, @environment.getProperty('client.datetime-format-thymeleaf'))}">2022-03-27</div>
+							<div>
+								<div id="notice-list-container">
+									<div th:each="nav : ${nav.notices}" id="" class="text-muted pt-3 notice-list border-bottom " th:classappend="${nav.readed} == true ? 'bg-gray'">
+										<!-- クリック時遷移させるためのElement -->
+										<a class="notice-list-anchor d-flex" th:href="${nav.celebrationReplyNo} != null ? @{'/'+${#locale}+'/celebration/redirect/list/from-notice/' + ${nav.celebrationNo} + '/' + ${nav.celebrationReplyNo}} : @{'/'+${#locale}+'/celebration/redirect/list/from-notice/' + ${nav.celebrationNo}}">
+											<img th:src="${nav.profileImagePath}" alt="profile" class="me-2 rounded -profile">
+											<div class="w-100 mb-0 small overflow-hidden title-right"> 
+					    						<div class="fw-bold my-0 d-flex ">
+													<div class="flex-fill -kind" th:text="${nav.celebrationReplyNo} != null ? #{celebration.notice.kind.celebration-reply} : #{celebration.notice.kind.celebration}" th:classappend="${nav.readed} == true ? 'text-secondary'"></div>
+													<div class="text-end -createdDateTime" th:text="${#temporals.format(nav.createdDatetime, @environment.getProperty('client.datetime-format-thymeleaf'))}" th:classappend="${nav.readed} == true ? 'text-secondary'">2022-03-27</div>
+												</div>
+											    <p class="fw-bold my-0 text-truncate -name" th:text="'@'+${nav.name}" th:classappend="${nav.readed} == true ? 'text-secondary'"></p>	
+												<p class="text-truncate my-0 -title" th:text="${nav.title}" th:classappend="${nav.readed} == true ? 'text-secondary'"></p>
 											</div>
-										    <p class="fw-bold my-0 text-truncate -name" th:text="'@'+${nav.name}"></p>	
-											<p class="text-truncate my-0 -title" th:text="${nav.title}"></p>
-										</div>
-									</a>
+										</a>
+									</div>
 								</div>
 								<div class="d-grid gap-2">
 									<a class="btn-sm btn btn-primary mt-1" type="button" th:href="@{'/'+${#locale}+'/celebration'}">お祝いリストに遷移</a>

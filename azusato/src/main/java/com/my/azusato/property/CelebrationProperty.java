@@ -25,4 +25,14 @@ public class CelebrationProperty {
 	 * 拡張子
 	 */
 	private final String contentExtention;
+	
+	/**
+	 * 表示ページ数
+	 */
+	private final Integer pagesOfpage;
+	
+	/**
+	 * ページのリスト表示数
+	 */
+	private final Integer pageOfElement;
 }

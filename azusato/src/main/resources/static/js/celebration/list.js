@@ -12,7 +12,7 @@ const CELBRATION_REPLY_NO_DATA_ATTRIBUTE_NAME = "data-celebration-reply-no";
 // ログインしたユーザの情報
 let userRes;
 
-const initialize = function(){
+const initialize = async function(){
 	getCelebrations().then(result =>{
 		console.log("お祝いリスト結果",result);
 		// コンテンツのtemplate
@@ -117,18 +117,8 @@ const focusContent = async function(){
 		let toggleWrap = getCelebrationToggleEle(PARAM_CELEBRATION_NO);
 		// コンテンツを表示
 		toggleWrap.click();
-		// パラメータに書き込みがある場合
-		if(urlParams.get('celebrationReplyNo') != null){
-			// 書き込みをfocusする。
-			let replyEle = getCelebrationReplyEle();
-			replyEle.focus();
-		}else{
-			// お祝いをfocusする。
-			toggleWrap.querySelector('.body').focus();
-		}
-		
 		// 通知テーブルの既読フラグを修正する
-		readCelebrationNotice();
+		readCelebrationNotice(PARAM_CELEBRATION_NO);
 	}
 }
 
@@ -159,31 +149,12 @@ const readCelebrationNotice = async function(celebrationNo){
 const getCelebrationToggleEle = function(celebrationNo){
 	let toggleWraps = document.querySelectorAll('.toggle_wrap');
 	
-	toggleWraps.forEach(toggleWrap => {
-		let id = toggleWrap.getAttribute('id');
+	for(let i=0; i<toggleWraps.length; i++){
+		let id = toggleWraps[i].getAttribute('id');
 		if(id == celebrationNo){
-			return toggleWrap;
-		}
-	});
-	
-	return null;
-} 
-
-/*
- * お祝い書き込み番号より対象の書き込みElementを取得する。
-* クラスが"reply-list"のElementを全部取得し、IDがお祝い書き込み番号と一致したElementを返す。
-* @param celebrationNo 探すお祝い書き込み番号
-* @return 対象のElement. もしない場合はnull
-*/
-const getCelebrationReplyEle = function(celebrationReplyNo){
-	let replyLists = document.querySelectorAll('.reply-list');
-	
-	replyLists.forEach(replyList => {
-		let id = replyList.getAttribute('id');
-		if(id == celebrationReplyNo){
-			return replyList;
-		}
-	});
+			return toggleWraps[i];
+		} 
+	}
 	
 	return null;
 } 
@@ -256,7 +227,7 @@ const initContentArea = async function(contents , toggledTag ){
 	contents.replys.forEach(reply=>{
 		const celebrationReplyClone = tempReply.content.cloneNode(true);
 		// 通知処理から遷移した時、表示する時どんなお祝い書き込みをfocusするか区別するために投与。
-		celebrationReplyClone.setAttribute('id',reply.no);
+		celebrationReplyClone.querySelector('.reply-list').setAttribute('id',reply.no);
 		const REPLY_PROFILE_TAG = celebrationReplyClone.querySelector(".-reply_profile");
 		const REPLY_NAME_TAG = celebrationReplyClone.querySelector(".-reply_name");
 		const REPLY_RAG_TAG = celebrationReplyClone.querySelector(".-reply_rag");

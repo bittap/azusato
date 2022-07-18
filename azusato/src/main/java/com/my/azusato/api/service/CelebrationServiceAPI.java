@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,7 +45,6 @@ import com.my.azusato.entity.common.CommonUserEntity;
 import com.my.azusato.entity.common.DefaultValueConstant;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.page.MyPageRequest;
-import com.my.azusato.page.MyPageResponse;
 import com.my.azusato.page.MyPaging;
 import com.my.azusato.property.CelebrationProperty;
 import com.my.azusato.repository.CelebrationNoticeRepository;
@@ -389,15 +389,28 @@ public class CelebrationServiceAPI {
 	
 	/**
 	 * お祝い番号よりページ情報を返す。
-	 * @param req お祝いリストに関するリクエスト
-	 * @return ページ情報
+	 * @param celebrationNo お祝い番号
+	 * @return ページ番号
+	 * @throws AzusatoException celebrationNoに該当するお祝い番号が存在しない時
 	 */
-	public MyPageResponse getPage(GetCelebrationsSerivceAPIRequset req) {
-		Page<CelebrationEntity> celebrationEntitys = getCelebrations(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement());
+	public Integer getPage(Long celebrationNo,Locale locale) {
+		List<Long> celeNos = celeRepo.findAllCelebrationNos();
 		
-		return MyPaging.of(
-				MyPageRequest.of(req.getPageReq(), celebrationEntitys.getTotalElements())
-			);
+		Integer celeNoIndex = null;
+		
+		for (int i = 0; i < celeNos.size(); i++) {
+			if(celeNos.get(i) == celebrationNo) {
+				celeNoIndex = i+1;
+				break;
+			}
+		}
+		
+		if(Objects.isNull(celeNoIndex)) {
+			log.warn("CelebrationRepository#findAllCelebrationNosで参照したお祝いリストの中にお祝い番号が存在しません。\nお祝い番号：{}、お祝いリスト：{}が存在しません。",celebrationNo,celeNos);
+			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationEntity.TABLE_NAME_KEY);
+		}else {
+			return (int)(Math.ceil((double)celeNoIndex / celeProperty.getPageOfElement()));
+		}
 	}
 	
 	/**

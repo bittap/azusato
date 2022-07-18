@@ -9,6 +9,10 @@ p, span {
 	font-family: sans-serif;
 }
 
+.bg-gray{
+	background-color:#dadada;
+}
+
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:focus,

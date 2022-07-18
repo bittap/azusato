@@ -1,10 +1,10 @@
 package com.my.azusato.api.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -38,38 +38,53 @@ public class CelebrationNoticeServiceAPI {
 	 * お祝いNoの降順、書き込みNoの昇順で取得
 	 * @param req お祝いリストに関するリクエスト
 	 * @param loginUserNo ログインしたユーザ番号
-	 * @return お祝い+お祝い書き込みリスト
+	 * @return お祝い通知情報リスト
 	 */
 	@MethodAnnotation(description = "お祝い通知情報リストの返却")
 	@Transactional
-	public List<GetCelebrationNoticesSerivceAPIResponse> celebrationNotices(GetCelebrationsSerivceAPIRequset req, Long loginUserNo) {
+	public GetCelebrationNoticesSerivceAPIResponse celebrationNotices(GetCelebrationsSerivceAPIRequset req, Long loginUserNo) {
 		Page<CelebrationNoticeEntity> celebrationNotices = getCelebrationNotices(req.getPageReq().getCurrentPageNo()-1, req.getPageReq().getPageOfElement(), loginUserNo);
 		
 		
-		return celebrationNotices.stream().map((e)->{
+		GetCelebrationNoticesSerivceAPIResponse response = new GetCelebrationNoticesSerivceAPIResponse();
+		List<GetCelebrationNoticesSerivceAPIResponse.Notice> notices = new ArrayList<>();
+		
+		int noReadLength = 0;
+		for (CelebrationNoticeEntity celebrationNotice : celebrationNotices) {
+			if(celebrationNotice.getReaded() == false) {
+				noReadLength++;
+			}
 			String title;
 			LocalDateTime createdDatetime;
 			Long celeReplyNo = null;
 			String profileImagePath;
-			if(Objects.nonNull(e.getReply())) {
-				title = e.getReply().getContent();
-				createdDatetime = e.getReply().getCommonDate().getCreateDatetime();
-				celeReplyNo = e.getReply().getNo();
-				profileImagePath = e.getReply().getCommonUser().getCreateUserEntity().getProfile().getImagePath();
+			if(Objects.nonNull(celebrationNotice.getReply())) {
+				title = celebrationNotice.getReply().getContent();
+				createdDatetime = celebrationNotice.getReply().getCommonDate().getCreateDatetime();
+				celeReplyNo = celebrationNotice.getReply().getNo();
+				profileImagePath =celebrationNotice.getReply().getCommonUser().getCreateUserEntity().getProfile().getImagePath();
 			}else {
-				title = e.getCelebration().getTitle();
-				createdDatetime = e.getCelebration().getCommonDate().getCreateDatetime();
-				profileImagePath = e.getCelebration().getCommonUser().getCreateUserEntity().getProfile().getImagePath();
+				title = celebrationNotice.getCelebration().getTitle();
+				createdDatetime = celebrationNotice.getCelebration().getCommonDate().getCreateDatetime();
+				profileImagePath = celebrationNotice.getCelebration().getCommonUser().getCreateUserEntity().getProfile().getImagePath();
 			}
-			return GetCelebrationNoticesSerivceAPIResponse.builder()
-					.name(e.getCelebration().getCommonUser().getCreateUserEntity().getName())
+			GetCelebrationNoticesSerivceAPIResponse.Notice notice = GetCelebrationNoticesSerivceAPIResponse.Notice.builder()
+					.name(celebrationNotice.getCelebration().getCommonUser().getCreateUserEntity().getName())
 					.title(title)
 					.profileImagePath(profileImagePath)
 					.createdDatetime(createdDatetime)
-					.celebrationNo(e.getCelebration().getNo())
+					.celebrationNo(celebrationNotice.getCelebration().getNo())
 					.celebrationReplyNo(celeReplyNo)
+					.readed(celebrationNotice.getReaded())
 					.build();
-		}).collect(Collectors.toList());
+			
+			notices.add(notice);
+		}
+		
+		response.setNotices(notices);
+		response.setNoReadLength(noReadLength);
+		
+		return response;
 	}
 	
 	private Page<CelebrationNoticeEntity> getCelebrationNotices(Integer currentPageNo, Integer pageOfElement ,Long loginUserNo){
@@ -83,7 +98,7 @@ public class CelebrationNoticeServiceAPI {
 	@Transactional
 	@MethodAnnotation(description = "お祝い通知の既読処理")
 	public void read(Long celebationNo, LoginUser loginUser, Locale locale) {
-		List<CelebrationNoticeEntity> notices = celeNotiRepo.findAllByCelebrationNoAndTargetUserNo(celebationNo, celebationNo);
+		List<CelebrationNoticeEntity> notices = celeNotiRepo.findAllByCelebrationNoAndTargetUserNo(celebationNo, loginUser.getUSER_NO());
 		
 		LocalDateTime now = LocalDateTime.now();
 		for (CelebrationNoticeEntity notice : notices) {

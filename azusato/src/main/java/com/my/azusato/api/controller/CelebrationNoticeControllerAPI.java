@@ -1,7 +1,5 @@
 package com.my.azusato.api.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
@@ -49,7 +47,7 @@ public class CelebrationNoticeControllerAPI {
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(CELEBRATION_NOTICES_URL)
 	@MethodAnnotation(description = "API_cel-noti_001 お祝い通知リスト情報取得")
-	public List<GetCelebrationNoticesSerivceAPIResponse> celebrationNotices(@AuthenticationPrincipal LoginUser loginUser) {
+	public GetCelebrationNoticesSerivceAPIResponse celebrationNotices(@AuthenticationPrincipal LoginUser loginUser) {
 		MyPageControllerRequest page = new MyPageControllerRequest(1, 3, 5);
 			
 		GetCelebrationsSerivceAPIRequset serviceReq = GetCelebrationsSerivceAPIRequset.builder()

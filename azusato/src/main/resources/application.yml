@@ -83,6 +83,10 @@ celebration:
   server-content-folder-path: /project/azusato/celebration/content
   # 拡張子
   content-extention: txt
+  # 表示ページ数
+  pagesOfpage: 3
+  # ページのリスト表示数
+  pageOfElement: 5
   
   
 profile:

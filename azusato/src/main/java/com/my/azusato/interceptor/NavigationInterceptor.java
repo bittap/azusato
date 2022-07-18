@@ -1,6 +1,5 @@
 package com.my.azusato.interceptor;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +48,7 @@ public class NavigationInterceptor implements HandlerInterceptor {
 										.pageReq(page)
 										.build();
 				LoginUser loginUser = LoginUtil.getLoginUser();
-				List<GetCelebrationNoticesSerivceAPIResponse> result = celeNotiAPIService.celebrationNotices(serviceReq,loginUser.getUSER_NO());
+				GetCelebrationNoticesSerivceAPIResponse result = celeNotiAPIService.celebrationNotices(serviceReq,loginUser.getUSER_NO());
 				modelAndView.addObject(MODEL_MAP_NAME, result);
 				log.debug("お祝い通知(nav):対象:{}",result);
 			}else {

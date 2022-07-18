@@ -50,7 +50,7 @@
 	font-family: 'Rampart One', 'Nanum Brush Script',cursive;
 }
 
-#notice-list-container .content img{
+#notice-list-container .notice-list-anchor img{
 	width:1rem;
 	height:1rem;
 }
