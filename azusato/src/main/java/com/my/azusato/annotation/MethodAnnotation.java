@@ -21,5 +21,5 @@ public @interface MethodAnnotation {
 	 * 説明内容。
 	 * ログ記録のため使われる。
 	 */
-	String description() default "";
+	String description();
 }
