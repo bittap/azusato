@@ -3,7 +3,7 @@
 	<springProperty scope="context" name="ABSOLUTE_PATH" source="logging.absolute-path" />
 	<springProperty scope="context" name="FILE_NAME" source="logging.file-name" />
 	<springProperty scope="context" name="logLevel" source="logging.level.root" />
-	
+	<property name="parttern" value="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{100}.%M - %msg%n" />
 	<!-- ローカル環境とテスト環境以外にはファイルに書き込む機能を利用する。-->
 	<springProfile name="!(local|test)">
 		<property name="USE_ROLLING_FILE" value="true" />
@@ -13,7 +13,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <target>System.out</target>
         <encoder>
-            <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{100}.%M - %.-512msg%n</pattern>
+            <pattern>${parttern}</pattern>
         </encoder>
     </appender>
 
@@ -30,7 +30,7 @@
         
        <!--  出力メッセージ -->
         <encoder>
-            <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{100}.%M - %.-512msg%n</pattern>
+            <pattern>${parttern}</pattern>
         </encoder>
     </appender>
     
