@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.my.azusato</groupId>
 	<artifactId>azusato</artifactId>
-	<version>1.0.1</version>
+	<version>0.0.0</version>
 	<name>azusato</name>
 	<description>あずさト幸せな結婚生活</description>
 	<properties>
