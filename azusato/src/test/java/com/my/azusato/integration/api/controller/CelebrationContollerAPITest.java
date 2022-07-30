@@ -770,6 +770,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 							.profileImagePath(Entity.createdVarChars[0])
 							.no(Entity.createdLongs[1])
 							.createdDatetime(Entity.createdDatetimes[1])
+							.readCount(1)
 							.build(),
 							Celebration.builder()
 								.title(Entity.createdVarChars[0])
@@ -777,6 +778,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 								.profileImagePath(Entity.createdVarChars[0])
 								.no(Entity.createdLongs[0])
 								.createdDatetime(Entity.createdDatetimes[0])
+								.readCount(0)
 								.build()
 							))		
 					.build();
@@ -808,18 +810,20 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 					.page(MyPageResponse.builder().currentPageNo(1).pages(List.of(1)).hasPrivious(false).hasNext(false).totalPage(1).build())
 					.celebrations(List.of(
 							Celebration.builder()
-							.title(Entity.createdVarChars[2])
-							.name(Entity.createdVarChars[2])
-							.profileImagePath(Entity.createdVarChars[0])
-							.no(Entity.createdLongs[1])
-							.createdDatetime(Entity.createdDatetimes[1])
-							.build(),
+								.title(Entity.createdVarChars[2])
+								.name(Entity.createdVarChars[2])
+								.profileImagePath(Entity.createdVarChars[0])
+								.no(Entity.createdLongs[1])
+								.createdDatetime(Entity.createdDatetimes[1])
+								.readCount(1)
+								.build(),
 							Celebration.builder()
 								.title(Entity.createdVarChars[0])
 								.name(Entity.createdVarChars[2])
 								.profileImagePath(Entity.createdVarChars[0])
 								.no(Entity.createdLongs[0])
 								.createdDatetime(Entity.createdDatetimes[0])
+								.readCount(0)
 								.build()
 							))		
 					.build();
