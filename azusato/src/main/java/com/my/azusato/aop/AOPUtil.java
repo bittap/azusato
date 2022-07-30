@@ -13,6 +13,11 @@ import com.my.azusato.annotation.MethodAnnotation;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * AOPに関するUtilクラス。
+ * @author Carmel
+ *
+ */
 @Slf4j
 public class AOPUtil {
 
