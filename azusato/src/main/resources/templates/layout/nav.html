@@ -58,7 +58,7 @@
 								<div id="notice-list-container">
 									<div th:each="nav : ${nav.notices}" id="" class="text-muted pt-3 notice-list border-bottom " th:classappend="${nav.readed} == true ? 'bg-gray'">
 										<!-- クリック時遷移させるためのElement -->
-										<a class="notice-list-anchor d-flex" th:href="${nav.celebrationReplyNo} != null ? @{'/'+${#locale}+'/celebration/redirect/list/from-notice/' + ${nav.celebrationNo} + '/' + ${nav.celebrationReplyNo}} : @{'/'+${#locale}+'/celebration/redirect/list/from-notice/' + ${nav.celebrationNo}}">
+										<a class="notice-list-anchor d-flex" th:href="@{'/'+${#locale}+'/celebration/redirect/list/from-notice/' + ${nav.celebrationNo}}">
 											<img th:src="${nav.profileImagePath}" alt="profile" class="me-2 rounded -profile">
 											<div class="w-100 mb-0 small overflow-hidden title-right"> 
 					    						<div class="fw-bold my-0 d-flex ">

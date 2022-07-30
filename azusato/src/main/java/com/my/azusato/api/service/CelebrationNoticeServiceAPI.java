@@ -89,8 +89,7 @@ public class CelebrationNoticeServiceAPI {
 	
 	private Page<CelebrationNoticeEntity> getCelebrationNotices(Integer currentPageNo, Integer pageOfElement ,Long loginUserNo){
 		// 注意 : 一番最初のパラメータpageは0から始まる。
-		// TODO 정렬 : read 안 읽은거, 축하 내림차순 ,축하댓글 내림차순
-		List<Order> orders = List.of(Order.asc("readed"),Order.desc("no"));
+		List<Order> orders = List.of(Order.asc("readed"),Order.desc("celebration_no"),Order.desc("reply.no"));
 		Pageable sortedByNo = PageRequest.of(currentPageNo, pageOfElement,Sort.by(orders));
 		return celeNotiRepo.findAllByTargetUserNoAndCommonFlagDeleteFlag(sortedByNo, loginUserNo , ValueConstant.DEFAULT_DELETE_FLAG);
 	}

@@ -31,9 +31,7 @@ const GET_NAV_CELEBRATION_NOTICES = async function(){
 		result.notices.forEach(notice =>{
 			const CLONE_NOTICE_LIST = noticeList.cloneNode(true);
 		
-			let celebrationListUrl = notice.celebrationReplyNo != null ? 
-				`/${language}/celebration/redirect/list/from-notice/${notice.celebrationNo}/${notice.celebrationReplyNo}` :
-				`/${language}/celebration/redirect/list/from-notice/${notice.celebrationNo}`;
+			let celebrationListUrl = `/${language}/celebration/redirect/list/from-notice/${notice.celebrationNo}`;
 			
 			CLONE_NOTICE_LIST.querySelector('.notice-list-anchor').setAttribute('href',celebrationListUrl);
 			CLONE_NOTICE_LIST.querySelector('.-profile').setAttribute('src',notice.profileImagePath);

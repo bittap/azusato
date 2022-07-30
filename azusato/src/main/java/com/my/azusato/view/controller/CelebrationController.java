@@ -1,7 +1,6 @@
 package com.my.azusato.view.controller;
 
 import java.util.Locale;
-import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,7 +12,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.interceptor.LocaleInterceptor;
-import com.my.azusato.property.CelebrationProperty;
 import com.my.azusato.view.controller.common.ModelConstant;
 import com.my.azusato.view.controller.common.UrlConstant;
 import com.my.azusato.view.controller.response.CelebrationModifyResponse;
@@ -46,8 +44,6 @@ public class CelebrationController {
 	
 	public static final String CELEBRATION_MODIFY_URL = "/write/{no}";
 	
-	private final CelebrationProperty celeProperty;
-
 	@GetMapping
 	public ModelAndView list() {
 		log.debug("list controller");
@@ -60,15 +56,13 @@ public class CelebrationController {
 		return mav;
 	}
 	
-	@GetMapping(value = {"/redirect/list/from-notice/{no}","/redirect/list/from-notice/{no}/{replyNo}"})
+	@GetMapping(value = "/redirect/list/from-notice/{no}")
 	public String redirectListFromNotice(@PathVariable(name = "no",required = true) Long celebrationNo,
 			@PathVariable(name = "replyNo",required = false) Long celebrationReplyNo) {
 		log.debug("redirectListFromNotice controller");
 		
 		Integer currentPageNo = celeAPIService.getPage(celebrationNo,LocaleInterceptor.getLocale(servletRequest));
-		String queryParameter = Objects.nonNull(celebrationReplyNo) ? 
-				String.format("celebrationNo=%d&celebrationReplyNo=%d&currentPageNo=%d", celebrationNo,celebrationReplyNo,currentPageNo)
-				: String.format("celebrationNo=%d&currentPageNo=%d", celebrationNo,currentPageNo);
+		String queryParameter = String.format("celebrationNo=%d&currentPageNo=%d", celebrationNo,currentPageNo);
 		return LocaleInterceptor.getLocale(servletRequest) == Locale.KOREAN ? 
 				"redirect:" + UrlConstant.JAPANESE_CONTROLLER_REQUEST + UrlConstant.CELEBRATION_CONTROLLER_REQUSET + "?" + queryParameter
 				: "redirect:" + UrlConstant.KOREAN_CONTROLLER_REQUEST + UrlConstant.CELEBRATION_CONTROLLER_REQUSET + "?" + queryParameter;

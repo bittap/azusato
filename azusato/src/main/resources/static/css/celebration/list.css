@@ -19,10 +19,6 @@
 	aspect-ratio: 1/1; /*必ず1:1比率にイメージのサイズがバラバラにならないように */
 }
 
-.list .reply .list > .reply-title-right{
-	width: 100%;
-}
-
 /*.list > .reply > .write{
 	font-size:12px;
 }*/
