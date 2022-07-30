@@ -9,7 +9,7 @@
 .nav-item > a > .notice{
 	position: absolute;
 	right:0px;
-	bottom: -3px;
+	bottom: -12px;
 }
 
 .navbar-brand {
@@ -57,4 +57,18 @@
 
 #notice-list-container .title-right .-kind{
 	color:#9161a8;
+}
+
+@media (max-width: 767px) {
+	/* お祝い通知表示関連*/
+	
+	/* スマホの場合、お祝い通知リストをwidth:100%にするために親のnav-itemのpositionを初期化する。*/
+	.nav-item{ 
+		position: initial !important;
+	}
+	
+	#celebration_notice_list{
+		width: 100%;
+		left: 0px;
+	}
 }
