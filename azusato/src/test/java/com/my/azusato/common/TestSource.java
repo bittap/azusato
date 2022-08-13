@@ -18,4 +18,11 @@ public class TestSource {
 				Arguments.of(TestLogin.nonmemberLoginUser())
 			);
 	}
+	
+	public static Stream<Arguments> givenNoLogin_result401(){
+		return Stream.of(
+				Arguments.of(TestConstant.LOCALE_JA,"ログインが必要です。ログインしてください。"),
+				Arguments.of(TestConstant.LOCALE_KO,"로그인이 필요합니다.로그인 해주세요.")
+		);
+	}
 }

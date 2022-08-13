@@ -88,6 +88,10 @@ celebration:
   # ページのリスト表示数
   pageOfElement: 5
   
+celebration-notice:
+  # ページのリスト表示数
+  pageOfElement: 5
+  
   
 profile:
   # サーバーからするとの基本イメージの格納場所

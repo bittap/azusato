@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <user 
+    	no='1'
+    	id='varchar1' 
+    	password='varchar2'
+    	name='varchar3'
+    	user_type='admin' 
+    	create_datetime='2022-01-02 03:04:05' 
+    	update_datetime='2022-01-02 03:04:05' 
+    	delete_flag='false'	
+    />
+    <user 
+    	no='2'
+    	id='varchar4' 
+    	password='varchar5'
+    	name='varchar6'
+    	user_type='nonmember' 
+    	create_datetime='2022-02-02 02:02:02' 
+    	update_datetime='2022-07-07 07:07:07' 
+    	delete_flag='false'	
+    />
+    <profile
+    	user_no='1'
+		image_path='varchar1'
+    />
+   <profile
+    	user_no='2'
+		image_path='varchar2'
+    />
+    <celebration 
+   		no='1'
+    	title='varchar1' 
+    	content_path='varchar2'
+    	read_count='1' 
+    	create_user_no='1'
+    	update_user_no='1' 
+    	delete_flag='false' 
+    	create_datetime='2022-01-02 03:04:05' 	
+    	update_datetime='2022-01-02 03:04:05' 
+    />
+    <celebration_reply
+    	no='1'
+   		celebration_no='1'
+    	content='varchar2'
+    	create_datetime='2022-02-02 02:02:02' 
+    	update_datetime='2022-01-02 03:04:05'
+    	create_user_no='2'
+    	update_user_no='2' 
+    	delete_flag='false' 	
+    />
+    <celebration_notice
+    	no='1'
+    	celebration_no='1'
+    	readed='false'
+    	create_datetime='2022-01-02 03:04:05' 	
+    	update_datetime='2022-01-02 03:04:05' 
+    	target_user_no='1'
+    	delete_flag='false' 	
+    />
+    <celebration_notice
+    	no='2'
+    	celebration_no='1'
+    	celebration_reply_no='1'
+    	readed='false'
+    	create_datetime='2022-01-02 03:04:05' 	
+    	update_datetime='2022-01-02 03:04:05' 
+    	target_user_no='1'
+    	delete_flag='false' 	
+    />
+</dataset>

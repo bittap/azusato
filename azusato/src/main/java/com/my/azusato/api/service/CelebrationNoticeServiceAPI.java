@@ -25,11 +25,19 @@ import com.my.azusato.repository.CelebrationNoticeRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
+/**
+ * お祝い通知に関するサービスクラス。
+ * 以下のサービスメソッドがある。
+ * <pre>
+ *  ①お祝い通知情報リストの返却
+ *  ②お祝い通知の既読処理
+ * </pre>
+ * @author Carmel
+ *
+ */
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class CelebrationNoticeServiceAPI {
 	
 	private final CelebrationNoticeRepository celeNotiRepo;
@@ -37,8 +45,9 @@ public class CelebrationNoticeServiceAPI {
 	private final MessageSource messageSource;
 
 	/**
-	 * お祝いリストを返却する。
-	 * お祝いNoの降順、書き込みNoの昇順で取得
+	 * "loginUserNo"に紐づくお祝いリストを返却する。
+	 * 書き込み番号があると、書き込み情報からタイトル等の情報を取得する。書き込み番号がないと、お祝い情報からタイトル等の情報を取得する。
+	 * ソート順：参照フラグ昇順、お祝いNoの降順、書き込みNoの降順で取得
 	 * @param req お祝いリストに関するリクエスト
 	 * @param loginUserNo ログインしたユーザ番号
 	 * @return お祝い通知情報リスト
@@ -57,22 +66,25 @@ public class CelebrationNoticeServiceAPI {
 			if(celebrationNotice.getReaded() == false) {
 				noReadLength++;
 			}
+			String name;
 			String title;
 			LocalDateTime createdDatetime;
 			Long celeReplyNo = null;
 			String profileImagePath;
 			if(Objects.nonNull(celebrationNotice.getReply())) {
+				name = celebrationNotice.getReply().getCommonUser().getCreateUserEntity().getName();
 				title = celebrationNotice.getReply().getContent();
 				createdDatetime = celebrationNotice.getReply().getCommonDate().getCreateDatetime();
 				celeReplyNo = celebrationNotice.getReply().getNo();
 				profileImagePath =celebrationNotice.getReply().getCommonUser().getCreateUserEntity().getProfile().getImagePath();
 			}else {
+				name = celebrationNotice.getCelebration().getCommonUser().getCreateUserEntity().getName();
 				title = celebrationNotice.getCelebration().getTitle();
 				createdDatetime = celebrationNotice.getCelebration().getCommonDate().getCreateDatetime();
 				profileImagePath = celebrationNotice.getCelebration().getCommonUser().getCreateUserEntity().getProfile().getImagePath();
 			}
 			GetCelebrationNoticesSerivceAPIResponse.Notice notice = GetCelebrationNoticesSerivceAPIResponse.Notice.builder()
-					.name(celebrationNotice.getCelebration().getCommonUser().getCreateUserEntity().getName())
+					.name(name)
 					.title(title)
 					.profileImagePath(profileImagePath)
 					.createdDatetime(createdDatetime)
@@ -90,6 +102,14 @@ public class CelebrationNoticeServiceAPI {
 		return response;
 	}
 	
+	/**
+	 * お祝い通知リストを返却する。
+	 * ソート順：参照フラグ昇順、お祝いNoの降順、書き込みNoの降順で取得
+	 * @param currentPageNo 現在ページ番号
+	 * @param pageOfElement ページのリスト表示数
+	 * @param loginUserNo ユーザ番号
+	 * @return pageOfElement数のお祝い通知リスト
+	 */
 	private Page<CelebrationNoticeEntity> getCelebrationNotices(Integer currentPageNo, Integer pageOfElement ,Long loginUserNo){
 		// 注意 : 一番最初のパラメータpageは0から始まる。
 		List<Order> orders = List.of(Order.asc("readed"),Order.desc("celebration_no"),Order.desc("reply.no"));

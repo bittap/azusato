@@ -21,6 +21,7 @@ import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.api.service.response.GetCelebrationNoticesSerivceAPIResponse;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.login.LoginUser;
+import com.my.azusato.property.CelebrationNoticeProperty;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
 import lombok.RequiredArgsConstructor;
@@ -49,13 +50,23 @@ public class CelebrationNoticeControllerAPI {
 	
 	private final HttpServletRequest servletRequest;
 	
+	private final CelebrationNoticeProperty noticeProperty;
+	
 	
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(CELEBRATION_NOTICES_URL)
 	@MethodAnnotation(description = "API_cel-noti_001 お祝い通知リスト情報取得")
 	public GetCelebrationNoticesSerivceAPIResponse celebrationNotices(@AuthenticationPrincipal LoginUser loginUser) {
-		MyPageControllerRequest page = new MyPageControllerRequest(1, 3, 5);
-			
+		if(Objects.isNull(loginUser))
+			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
+					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
+		
+		final int CURRENT_PAGE = 1;
+		MyPageControllerRequest page = MyPageControllerRequest.builder()
+										.currentPageNo(CURRENT_PAGE)
+										.pageOfElement(noticeProperty.getPageOfElement())
+										.build();
+		
 		GetCelebrationsSerivceAPIRequset serviceReq = GetCelebrationsSerivceAPIRequset.builder()
 								.pageReq(page)
 								.build();

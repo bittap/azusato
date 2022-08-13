@@ -38,5 +38,8 @@ public class GetCelebrationNoticesSerivceAPIResponse {
 	
 
 	
+	/**
+	 * 既読していない数。navアイコンに表示すうｒ。
+	 */
 	private Integer noReadLength;
 }
