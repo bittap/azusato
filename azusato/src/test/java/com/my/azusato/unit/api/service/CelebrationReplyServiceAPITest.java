@@ -64,8 +64,6 @@ public class CelebrationReplyServiceAPITest extends AbstractIntegration {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
 				}
 			}
-			
-			//assertEquals(0, celeReplyNoticeRepo.findAll().size());
 		}
 		
 		@ParameterizedTest
@@ -87,12 +85,9 @@ public class CelebrationReplyServiceAPITest extends AbstractIntegration {
 
 		}
 		
-		/**
-		 * @throws Exception
-		 */
 		@Test
 		@DisplayName("正常系_書き込み作成者が本人&書き込みがある_結果「書き込み」と「通知」が挿入")
-		public void givenWriteSelfAndExistReply_resultCelebrationReplyAndCelebrationNoticeInserted() throws Exception {
+		public void givenWriterSelfAndExistReply_resultCelebrationReplyAndCelebrationNoticeInserted() throws Exception {
 			String folderName = "3";
 			String[] COMPARED_TABLE_NAME = { "user", "profile","celebration", "celebration_reply" , "celebration_notice" };
 
@@ -118,14 +113,12 @@ public class CelebrationReplyServiceAPITest extends AbstractIntegration {
 
 		}
 		
-		/**
-		 * 書き込み作成者が非本人で書き込みがある場合は、結果「書き込み」と「通知」が正常
-		 * @throws Exception
-		 */
+		
 		@Test
-		public void givenWriteAndExistReply_result200() throws Exception {
+		@DisplayName("正常系_書き込み作成者が非本人&書き込みがある_結果「書き込み」と「通知」が挿入")
+		public void givenNotWriterAndExistReply_resultCelebrationReplyAndCelebrationNoticeInserted() throws Exception {
 			String folderName = "4";
-			String[] COMPARED_TABLE_NAME = { "user", "profile","celebration", "celebration_reply" , "celebration_reply_notice" };
+			String[] COMPARED_TABLE_NAME = { "user", "profile","celebration", "celebration_reply" , "celebration_notice" };
 
 			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
 			celeReplyServiceAPI.addCelebartionReply(getNormalReq(),CELEBRATION_NO,LOGIN_USER_NO,TestConstant.LOCALE_JA);
@@ -136,9 +129,9 @@ public class CelebrationReplyServiceAPITest extends AbstractIntegration {
 				if (table.equals("celebration_reply")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 							TestConstant.DEFAULT_EXCLUDE_COLUMNS);
-				} else if (table.equals("celebration_reply_notice")) {
-//					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-//							new String[] { "celebration_reply_no" });
+				} else if (table.equals("celebration_notice")) {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+							TestConstant.DEFAULT_CELEBRATION_NOTICE_EXCLUDE_COLUMNS_CELEBRATION_REPLYNO);
 				} else if(table.equals("user")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
@@ -146,8 +139,6 @@ public class CelebrationReplyServiceAPITest extends AbstractIntegration {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
 				}
 			}
-			
-			//assertEquals(2, celeReplyNoticeRepo.findAll().size());
 		}
 
 		@ParameterizedTest
