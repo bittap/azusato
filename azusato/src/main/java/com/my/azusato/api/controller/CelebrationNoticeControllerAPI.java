@@ -1,7 +1,10 @@
 package com.my.azusato.api.controller;
 
+import java.util.Objects;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +19,7 @@ import com.my.azusato.api.controller.request.MyPageControllerRequest;
 import com.my.azusato.api.service.CelebrationNoticeServiceAPI;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.api.service.response.GetCelebrationNoticesSerivceAPIResponse;
+import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
@@ -32,6 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class CelebrationNoticeControllerAPI {
+	
+	private final MessageSource messageSource;
 	
 	public static final String COMMON_URL = "celebration-notice";
 	
@@ -62,6 +68,7 @@ public class CelebrationNoticeControllerAPI {
 	 * <ul>
 	 * 	<li>200 : 参照回数更新成功</li>
 	 * 	<li>400 : <br>対象データ存在なし</li>
+	 *  <li>401 : ログインしていない</li>
 	 * </ul>
 	 * @param celebationNo お祝い番号
 	 */
@@ -69,6 +76,10 @@ public class CelebrationNoticeControllerAPI {
 	@PutMapping(READCOUNTUP_URL)
 	@MethodAnnotation(description = "API_cel-noti_002 お祝い通知既読処理")
 	public void read(@PathVariable(name = "celebrationNo", required = true) Long celebationNo, @AuthenticationPrincipal LoginUser loginUser) {
-		celeNotiAPIService.read(celebationNo, loginUser, servletRequest.getLocale());
+		if(Objects.isNull(loginUser))
+			throw new AzusatoException(HttpStatus.UNAUTHORIZED, AzusatoException.I0001,
+					messageSource.getMessage(AzusatoException.I0001, null, servletRequest.getLocale()));
+		
+		celeNotiAPIService.read(celebationNo, loginUser.getUSER_NO(), servletRequest.getLocale());
 	}
 }

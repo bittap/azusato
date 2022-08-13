@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import javax.transaction.Transactional;
 
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,7 @@ import com.my.azusato.annotation.MethodAnnotation;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.api.service.response.GetCelebrationNoticesSerivceAPIResponse;
 import com.my.azusato.entity.CelebrationNoticeEntity;
-import com.my.azusato.login.LoginUser;
+import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.repository.CelebrationNoticeRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
 
@@ -32,6 +33,8 @@ import lombok.extern.slf4j.Slf4j;
 public class CelebrationNoticeServiceAPI {
 	
 	private final CelebrationNoticeRepository celeNotiRepo;
+	
+	private final MessageSource messageSource;
 
 	/**
 	 * お祝いリストを返却する。
@@ -94,10 +97,20 @@ public class CelebrationNoticeServiceAPI {
 		return celeNotiRepo.findAllByTargetUserNoAndCommonFlagDeleteFlag(sortedByNo, loginUserNo , ValueConstant.DEFAULT_DELETE_FLAG);
 	}
 
+	/**
+	 * お祝い通知の"既読フラグ"をtrueに変更する。"celebationNo"と"loginUserNo"に一致する通知リストを返却し、"既読フラグ"をtrueに変更する。
+	 * "celebationNo"と"loginUserNo"に一致する通知リストが一つも存在しない場合は、400エラーをスローする。
+	 * @param celebationNo　お祝い番号
+	 * @param loginUserNo ログインしたユーザの情報
+	 * @param locale エラーメッセージ用
+	 */
 	@Transactional
 	@MethodAnnotation(description = "お祝い通知の既読処理")
-	public void read(Long celebationNo, LoginUser loginUser, Locale locale) {
-		List<CelebrationNoticeEntity> notices = celeNotiRepo.findAllByCelebrationNoAndTargetUserNo(celebationNo, loginUser.getUSER_NO());
+	public void read(Long celebationNo, long loginUserNo, Locale locale) {
+		List<CelebrationNoticeEntity> notices = celeNotiRepo.findAllByCelebrationNoAndTargetUserNo(celebationNo, loginUserNo);
+		
+		if(notices.size() == 0)
+			throw AzusatoException.createI0005Error(locale, messageSource, CelebrationNoticeEntity.TABLE_NAME_KEY);
 		
 		LocalDateTime now = LocalDateTime.now();
 		for (CelebrationNoticeEntity notice : notices) {

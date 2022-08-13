@@ -30,6 +30,8 @@ public class TestConstant {
 	public final static String DEFAULT_CHARSET = "UTF-8";
 
 	public final static String MAKE_ABSOLUTE_URL = "/";
+	
+	public final static String API_REQUEST_URL = "api/";
 
 	/**
 	 * korean of LOCALE

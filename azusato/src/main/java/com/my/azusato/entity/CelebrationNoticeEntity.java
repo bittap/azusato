@@ -31,6 +31,11 @@ import lombok.ToString;
 public class CelebrationNoticeEntity {
 	
 	/**
+	 * message.propertyのテーブルネームのキー
+	 */
+	public static final String TABLE_NAME_KEY = "table.name.celebation-notice";
+	
+	/**
 	 * 番号
 	 */
 	@Id
