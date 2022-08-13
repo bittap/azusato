@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -74,7 +75,8 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 		}
 
 		@Test
-		public void normal_case() throws Exception {
+		@DisplayName("正常系_管理者意外で投稿&管理者二人存在_結果お祝いデータ&お祝い通知テーブルに二つデータが挿入")
+		public void givenNoAdminWriterAndTwoAdminExist_resultCelebrationAndCelebrationNotice2Data() throws Exception {
 			String folderName = "2";
 			String[] COMPARED_TABLE_NAME = { "user", "celebration", "celebration_notice" };
 
@@ -87,10 +89,10 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
 				if (table.equals("celebration")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 							TestConstant.DEFAULT_CELEBRATION_EXCLUDE_COLUMNS);
-				} else if (table.equals("celebration_notice")) {
-//					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-//							new String[] { "celebration_no" });
-				} else if(table.equals("user") || table.equals("profile")) {
+				} else if(table.equals("celebration_notice")) {
+					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+							TestConstant.DEFAULT_CELEBRATION_NOTICE_EXCLUDE_DATE_COLUMNS);
+				} else if(table.equals("user") || table.equals("profile") || table.equals("celebration_notice")) {
 					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
 							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
 				} else {

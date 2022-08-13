@@ -49,11 +49,27 @@
     	delete_flag='false' 	
     />
     
-   <celebration_notice 
-   		user_no='2'	
+    <celebration_notice
+    	no='1'
+    	celebration_no='1'
+    	celebration_reply_no='[null]'
+    	readed='false'
+    	create_datetime='2022-01-02 03:04:05' 	
+    	update_datetime='2022-01-02 03:04:05' 
+    	read_datetime='[null]'
+    	target_user_no='2'
+    	delete_flag='false' 	
     />
-   <celebration_notice 
-   		user_no='3'	
+    <celebration_notice
+    	no='2'
+    	celebration_no='1'
+    	celebration_reply_no='[null]'
+    	readed='false'
+    	create_datetime='2022-01-02 03:04:05' 	
+    	update_datetime='2022-01-02 03:04:05' 
+    	read_datetime='[null]'
+    	target_user_no='3'
+    	delete_flag='false' 	
     />
     
 </dataset>
