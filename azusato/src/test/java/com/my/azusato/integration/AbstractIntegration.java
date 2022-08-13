@@ -23,7 +23,6 @@ import com.my.azusato.dbunit.DBUnitComponent;
 import com.my.azusato.property.CelebrationProperty;
 import com.my.azusato.property.ProfileProperty;
 import com.my.azusato.repository.CelebrationNoticeRepository;
-import com.my.azusato.repository.CelebrationReplyNoticeRepository;
 import com.my.azusato.repository.CelebrationReplyRepository;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.ProfileRepository;
@@ -70,9 +69,6 @@ public abstract class AbstractIntegration  {
 	
 	@Autowired
 	protected CelebrationNoticeRepository celeNoticeRepo;
-	
-	@Autowired
-	protected CelebrationReplyNoticeRepository celeReplyNoticeRepo;
 	
 	@Autowired
 	protected CelebrationProperty celeProperty;
