@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * ログに関する。interceptor
+ * navigationに関してmodelにお祝い通知データを入れる。
  * 
  * @author kim-t
  *
@@ -35,12 +35,13 @@ public class NavigationInterceptor implements HandlerInterceptor {
 	private final CelebrationNoticeServiceAPI celeNotiAPIService;
 
 	/**
-	 * modelをログする。
+	 * お祝い通知データを{@link NavigationInterceptor#MODEL_MAP_NAME}に詰める。
+	 * ログインしていないと何もしない。
 	 */
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		if(Objects.nonNull(modelAndView) && Objects.nonNull(modelAndView.getModel())) {
+		if(Objects.nonNull(modelAndView)) {
 			if(Objects.nonNull(request.getUserPrincipal())) {
 				MyPageControllerRequest page = new MyPageControllerRequest(1, 3, 5);
 				
