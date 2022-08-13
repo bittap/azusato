@@ -94,14 +94,9 @@ public class CelebrationReplyServiceAPI {
 				.celebrationNo(celebationNo)
 				.commonUser(
 						CommonUserEntity.builder().createUserEntity(loginUserEntity).updateUserEntity(loginUserEntity).build())
-				//.replyNotices(replyNoticeUsers)
 				.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
 				.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
 
-		// TODO お祝いテーブルから通知挿入できるように修正
-		// 通知追加
-		//insertedEntity.setNotices(notices);
-		
 		celeReplyRepo.save(insertedEntity);
 		
 		List<CelebrationNoticeEntity> notices = new ArrayList<>();

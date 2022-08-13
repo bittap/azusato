@@ -106,12 +106,10 @@ public class CelebrationServiceAPI {
 	}
 
 	/**
-	 * add a celebration for celebration table. if userType is not admin. add notice
-	 * data for noticing to admin.
-	 * 
-	 * 
-	 * @param req      request parameter.
-	 * @param locale   locale of client. for error message
+	 * お祝い情報を登録する。
+	 * "userType"がadminではない場合は、管理者に通知するためにお祝い通知テーブルに通知情報を登録する。
+	 * @param req リクエストパラメータ
+	 * @param locale エラーメッセージ用
 	 * @param userType admin,etc
 	 * @throws IOException 
 	 */
@@ -133,7 +131,6 @@ public class CelebrationServiceAPI {
 		CelebrationEntity insertedEntity = CelebrationEntity.builder().title(req.getTitle())
 				.commonUser(
 						CommonUserEntity.builder().createUserEntity(savedUserEntity).updateUserEntity(savedUserEntity).build())
-				//.notices(admins)
 				.readCount(DefaultValueConstant.READ_COUNT)
 				.commonDate(CommonDateEntity.builder().createDatetime(nowLdt).updateDatetime(nowLdt).build())
 				.commonFlag(CommonFlagEntity.builder().deleteFlag(DefaultValueConstant.DELETE_FLAG).build()).build();
@@ -163,12 +160,6 @@ public class CelebrationServiceAPI {
 				celeNotiRepo.save(notice);
 			}
 		}
-		
-		// 通知追加
-		//insertedEntity.setNotices(notices);
-		// TODO お祝いテーブルから通知挿入できるように修正
-		
-		
 	}
 	
 	/**

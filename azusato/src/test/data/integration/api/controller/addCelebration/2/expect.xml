@@ -51,12 +51,4 @@
     	update_user_no='1' 
     	delete_flag='false' 	
     />
-    
-   <celebration_notice 
-   		user_no='2'	
-    />
-   <celebration_notice 
-   		user_no='3'	
-    />
-    
 </dataset>

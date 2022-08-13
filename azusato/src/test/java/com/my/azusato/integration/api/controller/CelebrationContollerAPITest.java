@@ -65,8 +65,7 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 
 		@ParameterizedTest
 		@MethodSource("com.my.azusato.integration.api.controller.CelebrationContollerAPITest#addCelebration_normal_case")
-		public void normal_case_admin(UserDetails loginUser, Path initFilePath, Path expectFilePath,
-				String[] comparedTables) throws Exception {
+		public void normal_case_admin(UserDetails loginUser, Path initFilePath, Path expectFilePath) throws Exception {
 			dbUnitCompo.initalizeTable(initFilePath);
 			
 			mockMvc.perform(
@@ -79,13 +78,12 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 						.andDo(print())
 						.andExpect(status().isCreated());
 
+			String[] comparedTables = new String[] { "user", "celebration"};
 			// compare tables
 			for (String table : comparedTables) {
 				// exclude to compare dateTime columns when celebration table
 				if (table.equals("celebration")) {
 					dbUnitCompo.compareTable(expectFilePath, table, TestConstant.DEFAULT_CELEBRATION_EXCLUDE_COLUMNS);
-				} else if (table.equals("celebration_notice")) {
-					//dbUnitCompo.compareTable(expectFilePath, table, new String[] { "celebration_no" });
 				} else if(table.equals("user") || table.equals("profile")) {
 					dbUnitCompo.compareTable(expectFilePath, table, TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
 				}else {
@@ -1009,19 +1007,15 @@ public class CelebrationContollerAPITest extends AbstractIntegration {
 				// admin login
 				Arguments.of(TestLogin.adminLoginUser(),
 						Paths.get(AddCelebration.RESOUCE_PATH, "1", TestConstant.INIT_XML_FILE_NAME),
-						Paths.get(AddCelebration.RESOUCE_PATH, "1", TestConstant.EXPECT_XML_FILE_NAME),
-						new String[] { "user", "celebration" }),
+						Paths.get(AddCelebration.RESOUCE_PATH, "1", TestConstant.EXPECT_XML_FILE_NAME)),
 				// not admin login
 				Arguments.of(TestLogin.kakaoLoginUser(),
 						Paths.get(AddCelebration.RESOUCE_PATH, "2", TestConstant.INIT_XML_FILE_NAME),
-						Paths.get(AddCelebration.RESOUCE_PATH, "2", TestConstant.EXPECT_XML_FILE_NAME),
-						new String[] { "user", "celebration", "celebration_notice" }),
+						Paths.get(AddCelebration.RESOUCE_PATH, "2", TestConstant.EXPECT_XML_FILE_NAME)),
 				// nonmember login
 				Arguments.of(TestLogin.nonmemberLoginUser(),
 						Paths.get(AddCelebration.RESOUCE_PATH, "3", TestConstant.INIT_XML_FILE_NAME),
-						Paths.get(AddCelebration.RESOUCE_PATH, "3", TestConstant.EXPECT_XML_FILE_NAME),
-						new String[] { "user", "celebration", "celebration_notice" }));
-
+						Paths.get(AddCelebration.RESOUCE_PATH, "3", TestConstant.EXPECT_XML_FILE_NAME)));
 	}
 	
 	private static LinkedMultiValueMap<String,String> addAndModify400Parameter(String name, String title) {

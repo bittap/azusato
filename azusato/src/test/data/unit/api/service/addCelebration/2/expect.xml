@@ -49,11 +49,27 @@
     	delete_flag='false' 	
     />
     
-   <celebration_notice 
-   		user_no='2'	
+    <celebration_notice
+    	no='非確認対象'
+    	celebration_no='非確認対象'
+    	celebration_reply_no='[null]'
+    	readed='false'
+    	create_datetime='非確認対象' 	
+    	update_datetime='非確認対象' 
+    	read_datetime='[null]'
+    	target_user_no='2'
+    	delete_flag='false' 	
     />
-   <celebration_notice 
-   		user_no='3'	
+    <celebration_notice
+    	no='非確認対象'
+    	celebration_no='非確認対象'
+    	celebration_reply_no='[null]'
+    	readed='false'
+    	create_datetime='非確認対象' 	
+    	update_datetime='非確認対象' 
+    	read_datetime='[null]'
+    	target_user_no='3'
+    	delete_flag='false' 	
     />
     
 </dataset>

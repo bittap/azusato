@@ -72,6 +72,10 @@ public class TestConstant {
 	
 	public final static String[] DEFAULT_CELEBRATION_EXCLUDE_COLUMNS = { "no", "content_path","create_datetime", "update_datetime" };
 
+	public final static String[] DEFAULT_CELEBRATION_NOTICE_EXCLUDE_COLUMNS_CELEBRATIONNO = { "no","celebration_no","create_datetime", "update_datetime" };
+	
+	public final static String[] DEFAULT_CELEBRATION_NOTICE_EXCLUDE_COLUMNS_CELEBRATION_REPLYNO = { "no","celebration_reply_no","create_datetime", "update_datetime" };
+	
 	public final static String[] DEFAULT_EXCLUDE_DATE_COLUMNS = { "create_datetime", "update_datetime" };
 	
 	public final static String[] DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS = { "update_datetime" };
