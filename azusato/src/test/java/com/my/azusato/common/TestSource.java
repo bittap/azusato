@@ -44,6 +44,13 @@ public class TestSource {
     );
   }
 
+  public static Stream<Arguments> E0002_Message() {
+    return Stream.of( //
+        Arguments.of(Locale.JAPANESE, "指定したパスにファイルが存在しないため、内容を読み込むのに失敗しました。"), //
+        Arguments.of(Locale.KOREAN, "지정된 경로에 파일이 존재하지 않아 내용을 읽는데 실패했습니다.") //
+    );
+  }
+
   public static Stream<Arguments> I0008_Message() {
     return Stream.of( //
         Arguments.of(Locale.JAPANESE, "不正な値が存在します。"), //
