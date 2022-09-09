@@ -40,8 +40,6 @@ import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.common.TestCookie;
 import com.my.azusato.common.TestLogin;
-import com.my.azusato.common.TestMessage.I0002;
-import com.my.azusato.common.TestMessage.I0003;
 import com.my.azusato.config.WebMvcConfig;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
@@ -110,7 +108,7 @@ public class UserControllerAPITest {
     class subnormal {
 
       @ParameterizedTest
-      @MethodSource("com.my.azusato.unit.api.controller.UserControllerAPITest#getLoginUser_givenNotLogin_resultThrowStatusCodeIs400")
+      @MethodSource("com.my.azusato.common.TestSource#I0002_Message")
       @DisplayName("ログインしていない状態_エラーをスローする")
       void givenNotLogin_resultThrow400(Locale locale, String expectMessage) throws Exception {
         MvcResult mvcResult = mockMvc
@@ -191,7 +189,7 @@ public class UserControllerAPITest {
       }
 
       @ParameterizedTest
-      @MethodSource("com.my.azusato.unit.api.controller.UserControllerAPITest#addNonMember_givenAlreadyCookie_result400")
+      @MethodSource("com.my.azusato.common.TestSource#I0003_Message")
       @DisplayName("既にクッキーが存在する_結果例外をスローする")
       void givenAlreadyCookie_resultThrow400(Locale locale, String expectedMessage)
           throws Exception {
@@ -220,21 +218,6 @@ public class UserControllerAPITest {
       }
     }
 
-  }
-
-  static Stream<Arguments> addNonMember_givenAlreadyCookie_result400() {
-    return Stream.of( //
-        Arguments.of(Locale.JAPANESE, I0003.JAPANESE), //
-        Arguments.of(Locale.KOREAN, I0003.KOREAN) //
-    );
-  }
-
-
-  static Stream<Arguments> getLoginUser_givenNotLogin_resultThrowStatusCodeIs400() {
-    return Stream.of( //
-        Arguments.of(Locale.JAPANESE, I0002.JAPANESE), //
-        Arguments.of(Locale.KOREAN, I0002.KOREAN) //
-    );
   }
 
   static Stream<Arguments> addNonMember_givenInvaildParameter_result400() {
