@@ -76,9 +76,11 @@ class CelebrationControllerApiTest {
   @MockBean
   CelebrationServiceAPI mockCeleAPIService;
 
-  // TODO
-  // celebationテストをやっていなかった。
-  // 結合テストでする。
+  @Nested
+  @DisplayName("結合テストで対応")
+  class celebation {
+
+  }
 
   @Nested
   class celebationContent {
