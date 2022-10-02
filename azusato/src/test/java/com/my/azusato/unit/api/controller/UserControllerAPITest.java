@@ -21,17 +21,13 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.servlet.HandlerInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.my.azusato.anonotation.UnitController;
 import com.my.azusato.api.controller.UserControllerAPI;
 import com.my.azusato.api.controller.request.AddNonMemberUserAPIRequest;
 import com.my.azusato.api.service.UserServiceAPI;
@@ -40,7 +36,6 @@ import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.common.TestCookie;
 import com.my.azusato.common.TestLogin;
-import com.my.azusato.config.WebMvcConfig;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.login.LoginUser;
@@ -48,10 +43,8 @@ import com.my.azusato.view.controller.common.CookieConstant;
 import com.my.azusato.view.controller.common.HttpConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
-@Import(value = InMemoryUserDetailsManager.class)
-@WebMvcTest(controllers = UserControllerAPI.class,
-    excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
-        classes = {WebMvcConfig.class, HandlerInterceptor.class})}) // Interceptor除外
+@UnitController
+@Import(value = UserControllerAPI.class)
 public class UserControllerAPITest {
 
   @Autowired
