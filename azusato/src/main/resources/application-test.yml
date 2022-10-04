@@ -7,18 +7,15 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
   datasource:
-    # servermode = AUTO_SERVER. for connecting console
-    url: jdbc:h2:./testdb/h2;MODE=MYSQL;DB_CLOSE_ON_EXIT=false;AUTO_SERVER=TRUE
-    username: sa
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/azusato_test
+    username: admin
     password: password
-    driverClassName: org.h2.Driver
-    hikari:
-      maximum-pool-size: 200
-      max-lifetime: 10000
   flyway:
-    user: sa
+    user: admin
     password: password
-    url: jdbc:h2:./testdb/h2;MODE=MYSQL;DB_CLOSE_ON_EXIT=false;AUTO_SERVER=TRUE
+    url: jdbc:mysql://localhost:3306/azusato_test
+    locations: classpath:db/test-migration
     # to make schema history table
     baseline-on-migrate: true
     # ignore order
@@ -26,6 +23,10 @@ spring:
   web:
     resources:
       static-locations: classpath:/static, file:/git/azusato/azusato/resources/test-resources
+  test:
+    database:
+      # DataJpaTestを使うとき、初期h2DBを使わずこの設定のDataSourceを利用する。
+      replace: none
       
 celebration:
   # お祝いテーブルのコンテンツパスが保持されるサーバーのフォルダ位置
