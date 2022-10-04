@@ -60,7 +60,7 @@ public class UserServiceAPITest {
     class subnormal {
       @ParameterizedTest
       @MethodSource("com.my.azusato.common.TestSource#I0005_user_Message")
-      public void givenNotExistData_result500Error(Locale locale, String expectedMessage)
+      public void givenNotExistData_result400Error(Locale locale, String expectedMessage)
           throws Exception {
         AzusatoException expected =
             new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005, expectedMessage);
