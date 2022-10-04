@@ -19,10 +19,9 @@ import com.my.azusato.config.WebMvcConfig;
  * コントローラーUnitテストの共通アノテーション
  * 
  * <p>
- * テスト対象のクラスは{@link Import}で各に宣言し、Importする必要があります。
+ * テスト対象のクラスは{@link Import}で独自に宣言し、Importする必要があります。
  * <p>
- * *
- * 理由:{@link WebMvcTest#value()}に何も指定しないと、コントローラー全部をImportする。しかし、共通アノテーションではどのコントローラーをImportするか判断ができないため、全部除外しました。
+ * * 理由:{@link WebMvcTest#value()}ではどのコントローラーをImportするか判断ができないため。
  * <p>
  * Ex)
  * 
@@ -33,6 +32,13 @@ import com.my.azusato.config.WebMvcConfig;
  * }
  * </pre>
  * 
+ * 以下のサポートする。
+ * 
+ * <pre>
+ * 1.{@link WebMvcTest}によるコントローラーのUnitテストをサポート
+ * 2.application-test.ymlに設定
+ * 3.Interceptorは除外
+ * </pre>
  * 
  * @author Carmel
  *
