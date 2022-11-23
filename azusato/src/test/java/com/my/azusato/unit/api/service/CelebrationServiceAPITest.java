@@ -17,7 +17,6 @@ import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse.CelebrationReply;
-import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Celebration;
 import com.my.azusato.common.TestConstant;
@@ -34,47 +33,6 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
   CelebrationServiceAPI celeServiceAPI;
 
   final String RESOUCE_BASIC_PATH = "src/test/data/unit/api/service/";
-
-  @Nested
-  class GetCelebration {
-
-    final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getCelebration/";
-
-    @Test
-    public void givenNormal_result200() throws Exception {
-      String folderName = "1";
-      long celebationNo = 1L;
-      dbUnitCompo
-          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-
-      GetCelebrationSerivceAPIResponse result =
-          celeServiceAPI.getCelebration(celebationNo, TestConstant.LOCALE_JA);
-
-      GetCelebrationSerivceAPIResponse expect =
-          GetCelebrationSerivceAPIResponse.builder().celebrationNo(celebationNo)
-              .title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
-              .name(Entity.createdVarChars[2]).profileImagePath(Entity.createdVarChars[0]).build();
-
-      assertEquals(expect, result);
-
-    }
-
-    @ParameterizedTest
-    @MethodSource("com.my.azusato.common.TestSource#locales")
-    public void givenNodata_result400(Locale locale) throws Exception {
-      long celebationNo = 100000L;
-
-      String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
-      AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
-          messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale));
-
-      AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-        celeServiceAPI.getCelebration(celebationNo, locale);
-      });
-
-      assertEquals(expect, result);
-    }
-  }
 
   @Nested
   class GetCelebrationContent {
