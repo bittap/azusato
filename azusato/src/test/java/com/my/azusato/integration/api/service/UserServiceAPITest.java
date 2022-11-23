@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import com.my.azusato.anonotation.IntegrationService;
 import com.my.azusato.api.service.UserServiceAPI;
@@ -21,11 +20,9 @@ import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.entity.UserEntity.Type;
 import com.my.azusato.exception.AzusatoException;
-import com.my.azusato.factory.EntityFactory;
 import com.my.azusato.repository.UserRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
 
-@Import(UserServiceAPI.class)
 @IntegrationService
 public class UserServiceAPITest {
 
@@ -41,17 +38,15 @@ public class UserServiceAPITest {
     @Nested
     @DisplayName("正常系")
     class normal {
+
       @Test
       public void givenNormalValue_resultOk() throws Exception {
+        UserEntity expected = userRepo.findById(1L).get();
         GetSessionUserServiceAPIResponse result =
-            userServiceAPI.getSessionUser(Long.valueOf(Entity.createdInts[0]), null);
+            userServiceAPI.getSessionUser(expected.getNo(), null);
 
-        UserEntity expectedEntity = EntityFactory.userByNo1();
-        GetSessionUserServiceAPIResponse expected = GetSessionUserServiceAPIResponse.builder()
-            .id(expectedEntity.getId()).name(expectedEntity.getName())
-            .profileImagePath(expectedEntity.getProfile().getImagePath()).build();
-
-        assertEquals(expected, result);
+        // 後でNo比較に変更する必要がある。
+        assertEquals(expected.getId(), result.getId());
       }
     }
 
@@ -81,10 +76,10 @@ public class UserServiceAPITest {
       AddNonMemberUserServiceAPIRequest serviceReq = AddNonMemberUserServiceAPIRequest.builder()
           .name(Entity.createdVarChars[0]).id(Entity.createdVarChars[1]).build();
 
-      userServiceAPI.addNonMember(serviceReq);
+      String insertedUserId = userServiceAPI.addNonMember(serviceReq);
 
       // 比較のために最後のインデックスを取得
-      UserEntity result = userRepo.findAll().stream().reduce((e1, e2) -> e2).get();
+      UserEntity result = userRepo.findById(insertedUserId).get();
 
       assertEquals(Entity.createdVarChars[1], result.getId());
       assertEquals(Entity.createdVarChars[0], result.getName());
