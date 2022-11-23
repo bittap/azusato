@@ -24,6 +24,7 @@ import com.my.azusato.anonotation.IntegrationService;
 import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
+import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.entity.CelebrationEntity;
@@ -222,6 +223,51 @@ public class CelebrationServiceAPITest {
   }
 
   @Nested
+  class getCelebrationContent {
+
+    long userNo = 1L;
+
+    long celebrationNo = 1L;
+
+    @Nested
+    @DisplayName("正常系")
+    class normal {
+
+      @Test
+      void resultOrderbyNoAsc() {
+        GetCelebrationContentSerivceAPIResponse actual =
+            target.getCelebrationContent(celebrationNo, userNo, null);
+
+        assertEquals(celebrationNo, actual.getNo());
+        assertEquals(2, actual.getReplys().size());
+        assertEquals(1L, actual.getReplys().get(0).getNo());
+        assertEquals(2L, actual.getReplys().get(1).getNo());
+      }
+    }
+
+    @Nested
+    @DisplayName("準正常系")
+    class subnormal {
+
+      @ParameterizedTest
+      @MethodSource("com.my.azusato.common.TestSource#I0005_celebration_Message")
+      public void givenNotExistedCelebration_resultThrow(Locale locale, String expectedMessage)
+          throws Exception {
+        long notExistNo = 99999L;
+        AzusatoException expected =
+            new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005, expectedMessage);
+
+        AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+          target.getCelebration(notExistNo, locale);
+        });
+
+        assertEquals(expected, result);
+      }
+    }
+
+  }
+
+  @Nested
   class getCelebration {
 
     @Nested
@@ -234,6 +280,7 @@ public class CelebrationServiceAPITest {
         Assertions.assertNotNull(actual);
       }
     }
+
     @Nested
     @DisplayName("準正常系")
     class subnormal {
