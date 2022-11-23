@@ -13,6 +13,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.servlet.HandlerInterceptor;
+import com.my.azusato.common.TestConstant;
 import com.my.azusato.config.WebMvcConfig;
 
 /**
@@ -54,7 +55,7 @@ import com.my.azusato.config.WebMvcConfig;
     // valueにimportするコントローラークラスを共通アノテーションでは指定できないため、コントローラーは全部除外する。
     // コントローラーを追加する方法は上記のコメントの例を参考
     @ComponentScan.Filter(type = FilterType.ANNOTATION, value = {Controller.class})})
-@ActiveProfiles("test") // application-test.xmlを使う。
+@ActiveProfiles(TestConstant.PROFILES) // application-test.xmlを使う。
 public @interface UnitController {
 
 }
