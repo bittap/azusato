@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -21,11 +22,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import com.my.azusato.anonotation.IntegrationService;
+import com.my.azusato.api.controller.request.MyPageControllerRequest;
 import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
+import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
 import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
+import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.entity.CelebrationNoticeEntity;
@@ -219,6 +223,77 @@ public class CelebrationServiceAPITest {
       return ModifyCelebationServiceAPIRequest.builder().userNo(userNo).celebationNo(celebrationNo)
           .name("updatedName").title("updatedTitle")
           .content(new FileInputStream(TestConstant.TEST_CELEBRATION_CONTENT_SMALL_PATH)).build();
+    }
+  }
+
+  @Nested
+  class getCelebrations {
+
+    @Nested
+    @DisplayName("正常系")
+    class normal {
+
+      final int pageOfElement = 3;
+      final int pagesOfpage = 3;
+      final int currentPageNo = 1;
+
+      final int orinalCelebrationCount = 3;
+
+      @Test
+      public void resultOrderd() throws Exception {
+        // given
+        GetCelebrationsSerivceAPIRequset req = getVaildParameter();
+        // when
+        GetCelebrationsSerivceAPIResponse actual = target.getCelebrations(req);
+
+        // result
+        Assertions.assertEquals(orinalCelebrationCount, actual.getCelebrations().size());
+        Assertions.assertEquals(orinalCelebrationCount, actual.getCelebrations().get(0).getNo());
+        Assertions.assertEquals(orinalCelebrationCount - 1,
+            actual.getCelebrations().get(1).getNo());
+        Assertions.assertEquals(orinalCelebrationCount - 2,
+            actual.getCelebrations().get(2).getNo());
+      }
+
+      @Test
+      public void given6data_whenPaginged_resultReturn3data() throws Exception {
+        int insertCount = 3;
+        addCelebration(insertCount);
+        // given
+        GetCelebrationsSerivceAPIRequset req = getVaildParameter();
+        // when
+        GetCelebrationsSerivceAPIResponse actual = target.getCelebrations(req);
+
+        // result
+        List<CelebrationEntity> expected = celeRepo.findByOrderByNoDesc();
+        Assertions.assertEquals(pageOfElement, actual.getCelebrations().size());
+        Assertions.assertEquals(expected.get(0).getNo(), actual.getCelebrations().get(0).getNo());
+        Assertions.assertEquals(expected.get(1).getNo(), actual.getCelebrations().get(1).getNo());
+        Assertions.assertEquals(expected.get(2).getNo(), actual.getCelebrations().get(2).getNo());
+
+        celeRepo.flush();
+      }
+
+      void addCelebration(int count) throws IOException {
+        for (int i = 0; i < count; i++) {
+          AddCelebrationServiceAPIRequest req =
+              new addCelebration().new normal().getVaildParameter();
+          target.addCelebartion(req, null);
+        }
+      }
+
+      GetCelebrationsSerivceAPIRequset getVaildParameter() {
+        return GetCelebrationsSerivceAPIRequset.builder()
+            .pageReq(MyPageControllerRequest.builder().currentPageNo(currentPageNo)
+                .pagesOfpage(pagesOfpage).pageOfElement(pageOfElement).build())
+            .build();
+      }
+
+      @AfterEach
+      void deleteContentFloder() {
+        File file1 = Paths.get(celeProperty.getServerContentFolderPath()).toFile();
+        Arrays.asList(file1.listFiles()).forEach(File::delete);
+      }
     }
   }
 

@@ -62,4 +62,11 @@ public interface CelebrationRepository extends PagingAndSortingRepository<Celebr
    * @return 最後のカラム
    */
   public Optional<CelebrationEntity> findTopByOrderByNoDesc();
+
+  /**
+   * Noの降順でリストを返す。
+   * 
+   * @return Noの降順のリスト
+   */
+  public List<CelebrationEntity> findByOrderByNoDesc();
 }
