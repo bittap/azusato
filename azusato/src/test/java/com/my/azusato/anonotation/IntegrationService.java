@@ -10,21 +10,18 @@ import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfigura
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
+import com.my.azusato.common.TestConstant;
 
 /**
  * Service~Repositoryまでの結合テスト用のアノテーション
  * 
- * <p>
- * テスト対象のクラスは{@link Import}で独自に宣言し、Importする必要があります。
- * <p>
- * * 理由:{@link @ataJpaTest#value()}ではどのコントローラーをImportするか判断ができないため。
- * <p>
  * Ex)
  * 
  * <pre>
- * &#64;ActiveProfiles(value = "test")
  * &#64;IntegrationService
  * public class UserServiceAPITest {
  * }
@@ -37,6 +34,7 @@ import org.springframework.test.context.ActiveProfiles;
  * 2.application-test.ymlに設定
  * 3.メモリDBではなく、「application-test.yml」に登録したDBを使う。
  * 4.MessageSourceをimportする
+ * 5.Serviceを全部インポート
  * </pre>
  * 
  * @author Carmel
@@ -45,9 +43,10 @@ import org.springframework.test.context.ActiveProfiles;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@DataJpaTest
+@DataJpaTest(
+    includeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION, value = {Service.class})})
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-@ActiveProfiles(value = "test")
+@ActiveProfiles(value = TestConstant.PROFILES)
 @ImportAutoConfiguration(value = MessageSourceAutoConfiguration.class)
 public @interface IntegrationService {
 
