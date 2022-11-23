@@ -1,25 +1,20 @@
 package com.my.azusato.unit.api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
-
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-
 import com.my.azusato.api.controller.request.MyPageControllerRequest;
 import com.my.azusato.api.service.CelebrationServiceAPI;
-import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
 import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
 import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse;
@@ -30,7 +25,6 @@ import com.my.azusato.api.service.response.GetCelebrationsSerivceAPIResponse.Cel
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.entity.CelebrationEntity;
-import com.my.azusato.entity.UserEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.integration.AbstractIntegration;
 import com.my.azusato.page.MyPageResponse;
@@ -38,653 +32,468 @@ import com.my.azusato.property.ProfileProperty;
 
 public class CelebrationServiceAPITest extends AbstractIntegration {
 
-	@Autowired
-	CelebrationServiceAPI celeServiceAPI;
+  @Autowired
+  CelebrationServiceAPI celeServiceAPI;
 
-	final String RESOUCE_BASIC_PATH = "src/test/data/unit/api/service/";
+  final String RESOUCE_BASIC_PATH = "src/test/data/unit/api/service/";
 
-	@Nested
-	class AddCelebration {
+  @Nested
+  class DeleteCelebation {
 
-		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "addCelebration/";
+    final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "deleteCelebration/";
 
-		@Test
-		public void admin_normal_case() throws Exception {
-			String folderName = "1";
-			String[] COMPARED_TABLE_NAME = { "user", "celebration" };
+    final long CELEBRATION_NO = 1L;
+    final long USER_NO = 1L;
 
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			celeServiceAPI.addCelebartionAdmin(getNormalReq(), TestConstant.LOCALE_JA);
+    @Test
+    public void givenNormal_result200() throws Exception {
+      String folderName = "1";
+      String[] COMPARED_TABLE_NAME = {"user", "celebration", "profile", "celebration_reply"};
 
-			// compare tables
-			for (String table : COMPARED_TABLE_NAME) {
-				// exclude to compare dateTime columns when celebration table
-				if (table.equals("celebration")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_CELEBRATION_EXCLUDE_COLUMNS);
-				} else if(table.equals("user") || table.equals("profile")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
-				} else {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
-				}
-			}
-			
-			contentPathCheck();
+      dbUnitCompo
+          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
 
-		}
+      celeServiceAPI.deleteCelebartion(CELEBRATION_NO, USER_NO, TestConstant.LOCALE_JA);
 
-		@Test
-		@DisplayName("正常系_管理者意外で投稿&管理者二人存在_結果お祝いデータ&お祝い通知テーブルに二つデータが挿入")
-		public void givenNoAdminWriterAndTwoAdminExist_resultCelebrationAndCelebrationNotice2Data() throws Exception {
-			String folderName = "2";
-			String[] COMPARED_TABLE_NAME = { "user", "celebration", "celebration_notice" };
+      // compare tables
+      for (String table : COMPARED_TABLE_NAME) {
+        // exclude to compare dateTime columns when celebration table
+        if (table.equals("user")) {
+          dbUnitCompo.compareTable(
+              Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
+        } else {
+          dbUnitCompo.compareTable(
+              Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+              TestConstant.DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS);
+        }
+      }
+    }
 
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			celeServiceAPI.addCelebartion(getNormalReq(), TestConstant.LOCALE_JA);
+    @ParameterizedTest
+    @MethodSource("com.my.azusato.common.TestSource#locales")
+    public void givenDifferenceUser_resultError(Locale locale) throws Exception {
+      String folderName = "2";
 
-			// compare tables
-			for (String table : COMPARED_TABLE_NAME) {
-				// exclude to compare dateTime columns when celebration table
-				if (table.equals("celebration")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_CELEBRATION_EXCLUDE_COLUMNS);
-				} else if(table.equals("celebration_notice")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_CELEBRATION_NOTICE_EXCLUDE_COLUMNS_CELEBRATIONNO);
-				} else if(table.equals("user") || table.equals("profile") || table.equals("celebration_notice")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
-				} else {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
-				}
-			}
-			
-			contentPathCheck();
+      dbUnitCompo
+          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
 
-		}
+      AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0006,
+          messageSource.getMessage(AzusatoException.I0006, null, locale));
 
-		@Test
-		public void notExistAdmin_normal_case() throws Exception {
-			String folderName = "3";
-			String[] COMPARED_TABLE_NAME = { "user", "celebration" };
+      AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+        celeServiceAPI.deleteCelebartion(CELEBRATION_NO, 1000L, locale);
+      });
 
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			celeServiceAPI.addCelebartion(getNormalReq(), TestConstant.LOCALE_JA);
+      assertEquals(expect, result);
 
-			// compare tables
-			for (String table : COMPARED_TABLE_NAME) {
-				// exclude to compare dateTime columns when celebration table
-				if (table.equals("celebration")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_CELEBRATION_EXCLUDE_COLUMNS);
-				} else if(table.equals("user") || table.equals("profile")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_EXCLUDE_DATE_COLUMNS);
-				} else {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
-				}
-			}
 
-			contentPathCheck();
-			//Assertions.assertEquals(0, celeNoticeRepo.count());
+    }
 
-		}
+    @ParameterizedTest
+    @MethodSource("com.my.azusato.common.TestSource#locales")
+    public void givenNoCelebrationData_resultError(Locale locale) throws Exception {
 
-		@ParameterizedTest
-		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void notExistUser_abnormal_case(Locale locale) throws Exception {
-			AddCelebrationServiceAPIRequest req = new AddCelebrationServiceAPIRequest();
-			req.setUserNo(100000L);
+      String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+      AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+          messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale));
 
-			String tableName = messageSource.getMessage(UserEntity.TABLE_NAME_KEY, null, locale);
-			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
-					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+      AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+        celeServiceAPI.deleteCelebartion(100000L, USER_NO, locale);
+      });
 
-			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-				celeServiceAPI.addCelebartion(req, locale);
-			});
+      assertEquals(expect, result);
 
-			assertEquals(expect, result);
+    }
+  }
 
-		}
-		
-		private AddCelebrationServiceAPIRequest getNormalReq() throws Exception{
-			return AddCelebrationServiceAPIRequest.builder()
-					.name(Entity.updatedVarChars[0])
-					.title(Entity.createdVarChars[0])
-					.content(new FileInputStream(TestConstant.TEST_CELEBRATION_CONTENT_SMALL_PATH))
-					.userNo(Long.valueOf(Entity.createdInts[0]))
-					.build();
-		}
-	}
-	
-	@Nested
-	class ReadCountUp {
+  @Nested
+  class ModifyCelebration {
 
-		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "readCountUp/";
-		
-		final long CELEBRATION_NO = 1L;
+    final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "modifyCelebration/";
 
-		@Test
-		public void givenNormal_result200() throws Exception {
-			String folderName = "1";
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			
-			celeServiceAPI.readCountUp(CELEBRATION_NO, TestConstant.LOCALE_JA);
-			
-			dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME));
-		}
+    @Test
+    public void givenNormal_resultUpdated() throws Exception {
+      String folderName = "1";
+      String[] COMPARED_TABLE_NAME = {"user", "celebration", "profile"};
 
-		@ParameterizedTest
-		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void givenNoCelebrationData_resultError(Locale locale) throws Exception {
-			
-			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
-			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
-					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+      dbUnitCompo
+          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
 
-			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-				celeServiceAPI.readCountUp(100000L, locale);
-			});
+      ModifyCelebationServiceAPIRequest normalReq = ModifyCelebationServiceAPIRequest.builder()
+          .userNo(Long.valueOf(Entity.createdInts[0]))
+          .celebationNo(Long.valueOf(Entity.createdInts[0])).name(Entity.updatedVarChars[2])
+          .title(Entity.updatedVarChars[0])
+          .content(new FileInputStream(TestConstant.TEST_CELEBRATION_CONTENT_SMALL_PATH)).build();
 
-			assertEquals(expect, result);
+      celeServiceAPI.modifyCelebartion(normalReq, TestConstant.LOCALE_JA);
 
-		}
-	}
-	
-	@Nested
-	class DeleteCelebation {
+      // compare tables
+      for (String table : COMPARED_TABLE_NAME) {
+        // exclude to compare dateTime columns when celebration table
+        if (table.equals("celebration")) {
+          dbUnitCompo.compareTable(
+              Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+              TestConstant.DEFAULT_CELEBRATION_EXCLUDE_UPDATE_DATE_COLUMNS);
+        } else if (table.equals("user") || table.equals("profile")) {
+          dbUnitCompo.compareTable(
+              Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
+              TestConstant.DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS);
+        } else {
+          dbUnitCompo.compareTable(
+              Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
+        }
+      }
 
-		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "deleteCelebration/";
-		
-		final long CELEBRATION_NO = 1L;
-		final long USER_NO = 1L;
+      contentPathCheck();
+    }
 
-		@Test
-		public void givenNormal_result200() throws Exception {
-			String folderName = "1";
-			String[] COMPARED_TABLE_NAME = { "user", "celebration", "profile" , "celebration_reply"};
-			
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			
-			celeServiceAPI.deleteCelebartion(CELEBRATION_NO, USER_NO, TestConstant.LOCALE_JA);
-			
-			// compare tables
-			for (String table : COMPARED_TABLE_NAME) {
-				// exclude to compare dateTime columns when celebration table
-				if(table.equals("user")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
-				} else {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS);
-				}
-			}
-		}
+    @ParameterizedTest
+    @MethodSource("com.my.azusato.common.TestSource#locales")
+    public void givenDifferenceUser_resultError(Locale locale) throws Exception {
+      String folderName = "2";
 
-		@ParameterizedTest
-		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void givenDifferenceUser_resultError(Locale locale) throws Exception {
-			String folderName = "2";
-			
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			
-			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0006,
-					messageSource.getMessage(AzusatoException.I0006, null, locale));
+      dbUnitCompo
+          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+      ModifyCelebationServiceAPIRequest normalReq = ModifyCelebationServiceAPIRequest.builder()
+          .userNo(1000L).celebationNo(Long.valueOf(Entity.createdInts[0])).build();
 
-			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-				celeServiceAPI.deleteCelebartion(CELEBRATION_NO, 1000L, locale);
-			});
-			
-			assertEquals(expect, result);
-			
-			
-		}
+      AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0006,
+          messageSource.getMessage(AzusatoException.I0006, null, locale));
 
-		@ParameterizedTest
-		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void givenNoCelebrationData_resultError(Locale locale) throws Exception {
-			
-			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
-			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
-					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+      AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+        celeServiceAPI.modifyCelebartion(normalReq, locale);
+      });
 
-			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-				celeServiceAPI.deleteCelebartion(100000L, USER_NO, locale);
-			});
+      assertEquals(expect, result);
 
-			assertEquals(expect, result);
 
-		}
-	}
-	
-	@Nested
-	class ModifyCelebration {
+    }
 
-		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "modifyCelebration/";
+    @ParameterizedTest
+    @MethodSource("com.my.azusato.common.TestSource#locales")
+    public void givenCelebrationDeletedFlag_resultError(Locale locale) throws Exception {
+      String folderName = "3";
+      dbUnitCompo
+          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
 
-		@Test
-		public void givenNormal_resultUpdated() throws Exception {
-			String folderName = "1";
-			String[] COMPARED_TABLE_NAME = { "user", "celebration", "profile" };
-			
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			
-			ModifyCelebationServiceAPIRequest normalReq = ModifyCelebationServiceAPIRequest.builder()
-			.userNo(Long.valueOf(Entity.createdInts[0]))
-			.celebationNo(Long.valueOf(Entity.createdInts[0]))
-			.name(Entity.updatedVarChars[2])
-			.title(Entity.updatedVarChars[0])
-			.content(new FileInputStream(TestConstant.TEST_CELEBRATION_CONTENT_SMALL_PATH))
-			.build();
-			
-			celeServiceAPI.modifyCelebartion(normalReq, TestConstant.LOCALE_JA);
-			
-			// compare tables
-			for (String table : COMPARED_TABLE_NAME) {
-				// exclude to compare dateTime columns when celebration table
-				if (table.equals("celebration")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_CELEBRATION_EXCLUDE_UPDATE_DATE_COLUMNS);
-				} else if(table.equals("user") || table.equals("profile")) {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-							TestConstant.DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS);
-				} else {
-					dbUnitCompo.compareTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
-				}
-			}
-			
-			contentPathCheck();
-		}
+      ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
+      req.setUserNo(100000L);
 
-		@ParameterizedTest
-		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void givenDifferenceUser_resultError(Locale locale) throws Exception {
-			String folderName = "2";
-			
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			ModifyCelebationServiceAPIRequest normalReq = ModifyCelebationServiceAPIRequest.builder()
-			.userNo(1000L)
-			.celebationNo(Long.valueOf(Entity.createdInts[0]))
-			.build();
-			
-			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0006,
-					messageSource.getMessage(AzusatoException.I0006, null, locale));
+      String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+      AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+          messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale));
 
-			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-				celeServiceAPI.modifyCelebartion(normalReq, locale);
-			});
+      AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+        celeServiceAPI.modifyCelebartion(req, locale);
+      });
 
-			assertEquals(expect, result);
-			
-			
-		}
-		
-		@ParameterizedTest
-		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void givenCelebrationDeletedFlag_resultError(Locale locale) throws Exception {
-			String folderName = "3";
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			
-			ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
-			req.setUserNo(100000L);
+      assertEquals(expect, result);
+    }
 
-			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
-			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
-					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+    @ParameterizedTest
+    @MethodSource("com.my.azusato.common.TestSource#locales")
+    public void givenUserDeletedFlag_resultError(Locale locale) throws Exception {
+      String folderName = "4";
+      dbUnitCompo
+          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
 
-			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-				celeServiceAPI.modifyCelebartion(req, locale);
-			});
+      ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
+      req.setUserNo(100000L);
 
-			assertEquals(expect, result);
-		}
-		
-		@ParameterizedTest
-		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void givenUserDeletedFlag_resultError(Locale locale) throws Exception {
-			String folderName = "4";
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			
-			ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
-			req.setUserNo(100000L);
+      String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+      AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+          messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale));
 
-			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
-			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
-					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+      AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+        celeServiceAPI.modifyCelebartion(req, locale);
+      });
 
-			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-				celeServiceAPI.modifyCelebartion(req, locale);
-			});
+      assertEquals(expect, result);
+    }
 
-			assertEquals(expect, result);
-		}
-		
-		
-		@ParameterizedTest
-		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void givenNoCelebrationData_resultError(Locale locale) throws Exception {
-			ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
-			req.setUserNo(100000L);
 
-			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
-			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
-					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+    @ParameterizedTest
+    @MethodSource("com.my.azusato.common.TestSource#locales")
+    public void givenNoCelebrationData_resultError(Locale locale) throws Exception {
+      ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
+      req.setUserNo(100000L);
 
-			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-				celeServiceAPI.modifyCelebartion(req, locale);
-			});
+      String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+      AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+          messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale));
 
-			assertEquals(expect, result);
+      AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+        celeServiceAPI.modifyCelebartion(req, locale);
+      });
 
-		}
-	}
-	
-	@Nested
-	class GetCelebration {
+      assertEquals(expect, result);
 
-		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getCelebration/";
+    }
+  }
 
-		@Test
-		public void givenNormal_result200() throws Exception {
-			String folderName = "1";
-			long celebationNo = 1L;
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			
-			GetCelebrationSerivceAPIResponse result = celeServiceAPI.getCelebration(celebationNo, TestConstant.LOCALE_JA);
-			
-			GetCelebrationSerivceAPIResponse expect = GetCelebrationSerivceAPIResponse.builder()
-							.celebrationNo(celebationNo)
-							.title(Entity.createdVarChars[0])
-							.content(Entity.createdVarChars[1])
-							.name(Entity.createdVarChars[2])
-							.profileImagePath(Entity.createdVarChars[0])
-							.build();
-			
-			assertEquals(expect, result);
+  @Nested
+  class GetCelebration {
 
-		}
-		
-		@ParameterizedTest
-		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void givenNodata_result400(Locale locale) throws Exception {
-			long celebationNo = 100000L;
-			
-			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
-			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
-					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+    final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getCelebration/";
 
-			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-				celeServiceAPI.getCelebration(celebationNo, locale);
-			});
+    @Test
+    public void givenNormal_result200() throws Exception {
+      String folderName = "1";
+      long celebationNo = 1L;
+      dbUnitCompo
+          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
 
-			assertEquals(expect, result);
-		}
-	}
-	
-	@Nested
-	class GetCelebrationContent {
-		
-		@Autowired
-		ProfileProperty profileProperty;
-		
-		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getCelebrationContent/";
-		final long CELEBRATION_NO = 1L;
-		final long LOGIN_USER_NO = 1L;
-		
-		final int pageOfElement = 5;
-		final int pagesOfpage = 3;
-		final int currentPageNo = 1;
-		
-		/**
-		 * お祝い書き込みリストのorderbyテスト
-		 * @throws Exception
-		 */
-		@Test
-		public void When2data_givenNoDesc_resultOrderdbyNoAsc() throws Exception {
-			String folderName = "1";
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-					
-			GetCelebrationContentSerivceAPIResponse response  = celeServiceAPI.getCelebrationContent(CELEBRATION_NO,LOGIN_USER_NO,TestConstant.LOCALE_JA);
-			
-			
-			GetCelebrationContentSerivceAPIResponse expect = GetCelebrationContentSerivceAPIResponse.builder()
-					.contentPath(Entity.createdVarChars[1])
-					.no(Entity.createdLongs[0])
-					.owner(true)
-					.replys(List.of(
-							CelebrationReply.builder()
-								.no(Entity.createdLongs[0])
-								.content(Entity.createdVarChars[0])
-								.createdDatetime(Entity.createdDatetimes[0])
-								.name(Entity.createdVarChars[2])
-								.profileImagePath(Entity.createdVarChars[0])
-								.owner(true).build(),
-							CelebrationReply.builder()
-								.no(Entity.createdLongs[1])
-								.content(Entity.createdVarChars[1])
-								.createdDatetime(Entity.createdDatetimes[1])
-								.name(Entity.createdVarChars[2])
-								.profileImagePath(Entity.createdVarChars[0])
-								.owner(true).build()
-							))
-					.build();
-			
-			assertEquals(expect, response);
-		}
-		
-		@Test
-		public void givenNotOwner_resultOwnerFalse() throws Exception {
-			String folderName = "2";
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-					
-			GetCelebrationContentSerivceAPIResponse response  = celeServiceAPI.getCelebrationContent(CELEBRATION_NO,LOGIN_USER_NO,TestConstant.LOCALE_JA);
-			
-			
-			GetCelebrationContentSerivceAPIResponse expect = GetCelebrationContentSerivceAPIResponse.builder()
-					.contentPath(Entity.createdVarChars[1])
-					.no(Entity.createdLongs[0])
-					.owner(false)
-					.replys(List.of(
-							CelebrationReply.builder()
-								.no(Entity.createdLongs[0])
-								.content(Entity.createdVarChars[0])
-								.createdDatetime(Entity.createdDatetimes[0])
-								.name(Entity.createdVarChars[2])
-								.profileImagePath(Entity.createdVarChars[0])
-								.owner(false).build(),
-							CelebrationReply.builder()
-								.no(Entity.createdLongs[1])
-								.content(Entity.createdVarChars[1])
-								.createdDatetime(Entity.createdDatetimes[1])
-								.name(Entity.createdVarChars[2])
-								.profileImagePath(Entity.createdVarChars[0])
-								.owner(true).build()
-							))
-					.build();
-			
-			assertEquals(expect, response);
-		}
-		
-		@Test
-		public void when2data_givenDeleted1data_result1Data() throws Exception {
-			String folderName = "3";
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-					
-			GetCelebrationContentSerivceAPIResponse response  = celeServiceAPI.getCelebrationContent(CELEBRATION_NO,LOGIN_USER_NO,TestConstant.LOCALE_JA);
-			
-			
-			GetCelebrationContentSerivceAPIResponse expect = GetCelebrationContentSerivceAPIResponse.builder()
-					.contentPath(Entity.createdVarChars[1])
-					.no(Entity.createdLongs[0])
-					.owner(true)
-					.replys(List.of(
-							CelebrationReply.builder()
-								.no(Entity.createdLongs[1])
-								.content(Entity.createdVarChars[1])
-								.createdDatetime(Entity.createdDatetimes[1])
-								.name(Entity.createdVarChars[2])
-								.profileImagePath(Entity.createdVarChars[0])
-								.owner(true).build()
-							))
-					.build();
-			
-			assertEquals(expect, response);
-		}
-		
-		@ParameterizedTest
-		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void givenNoCelebrationData_resultError(Locale locale) throws Exception {
-			
-			String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
-			AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
-					messageSource.getMessage(AzusatoException.I0005, new String[] { tableName }, locale));
+      GetCelebrationSerivceAPIResponse result =
+          celeServiceAPI.getCelebration(celebationNo, TestConstant.LOCALE_JA);
 
-			AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-				celeServiceAPI.getCelebrationContent(100000L,LOGIN_USER_NO,locale);
-			});
+      GetCelebrationSerivceAPIResponse expect =
+          GetCelebrationSerivceAPIResponse.builder().celebrationNo(celebationNo)
+              .title(Entity.createdVarChars[0]).content(Entity.createdVarChars[1])
+              .name(Entity.createdVarChars[2]).profileImagePath(Entity.createdVarChars[0]).build();
 
-			assertEquals(expect, result);
+      assertEquals(expect, result);
 
-		}
-	}
-	
-	@Nested
-	class GetCelebrations {
-		
-		@Autowired
-		ProfileProperty profileProperty;
-		
-		final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getCelebrations/";
-		final long LOGIN_USER_NO = 1L;
-		
-		final int pageOfElement = 5;
-		final int pagesOfpage = 3;
-		final int currentPageNo = 1;
-		
-		/**
-		 * お祝いリストのorderbyテスト
-		 * @throws Exception
-		 */
-		@Test
-		public void When2data_givenNoAsc_resultOrderdbyNoDesc() throws Exception {
-			String folderName = "1";
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			GetCelebrationsSerivceAPIRequset req = GetCelebrationsSerivceAPIRequset.builder()
-									.pageReq(MyPageControllerRequest.builder()
-											.currentPageNo(currentPageNo).pagesOfpage(pagesOfpage).pageOfElement(pageOfElement)
-											.build())
-									.build();
-										
-			GetCelebrationsSerivceAPIResponse response  = celeServiceAPI.getCelebrations(req);
-			
-			
-			
-			GetCelebrationsSerivceAPIResponse expect = GetCelebrationsSerivceAPIResponse.builder()
-					.page(MyPageResponse.builder().currentPageNo(1).pages(List.of(1)).hasPrivious(false).hasNext(false).totalPage(1).build())
-					.celebrations(List.of(
-							Celebration.builder()
-								.title(Entity.createdVarChars[2])
-								.name(Entity.createdVarChars[2])
-								.profileImagePath(Entity.createdVarChars[0])
-								.no(Entity.createdLongs[1])
-								.createdDatetime(Entity.createdDatetimes[1])
-								.readCount(1)
-								.build(),
-							Celebration.builder()
-								.title(Entity.createdVarChars[0])
-								.name(Entity.createdVarChars[2])
-								.profileImagePath(Entity.createdVarChars[0])
-								.no(Entity.createdLongs[0])
-								.createdDatetime(Entity.createdDatetimes[0])
-								.readCount(0)
-								.build()
-							))		
-					.build();
-			
-			assertEquals(expect, response);
-		}
-		
-		@Test
-		public void when2data_givenDeleted1data_result1Data() throws Exception {
-			String folderName = "3";
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			GetCelebrationsSerivceAPIRequset req = GetCelebrationsSerivceAPIRequset.builder()
+    }
 
-									.pageReq(MyPageControllerRequest.builder()
-											.currentPageNo(currentPageNo).pagesOfpage(pagesOfpage).pageOfElement(pageOfElement)
-											.build())
-									.build();
-										
-			GetCelebrationsSerivceAPIResponse response  = celeServiceAPI.getCelebrations(req);
-			
-			
-			
-			GetCelebrationsSerivceAPIResponse expect = GetCelebrationsSerivceAPIResponse.builder()
-					.page(MyPageResponse.builder().currentPageNo(1).pages(List.of(1)).hasPrivious(false).hasNext(false).totalPage(1).build())
-					.celebrations(List.of(
-							Celebration.builder()
-								.title(Entity.createdVarChars[0])
-								.name(Entity.createdVarChars[2])
-								.profileImagePath(Entity.createdVarChars[0])
-								.no(Entity.createdLongs[0])
-								.createdDatetime(Entity.createdDatetimes[0])
-								.readCount(0)
-								.build()
-							))		
-					.build();
-			
-			assertEquals(expect, response);
-		}
-		
-		/**
-		 * 7個のデータがあってページングされたら、結局最後の二つを返す。
-		 * @throws Exception
-		 */
-		@Test
-		public void When7data_givenPagined_result2data() throws Exception {
-			String folderName = "4";
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			GetCelebrationsSerivceAPIRequset req = GetCelebrationsSerivceAPIRequset.builder()
-									.pageReq(MyPageControllerRequest.builder()
-											.currentPageNo(2).pagesOfpage(pagesOfpage).pageOfElement(pageOfElement)
-											.build())
-									.build();
-										
-			GetCelebrationsSerivceAPIResponse response  = celeServiceAPI.getCelebrations(req);
-			
-			
-			
-			GetCelebrationsSerivceAPIResponse expect = GetCelebrationsSerivceAPIResponse.builder()
-					.page(MyPageResponse.builder().currentPageNo(2).pages(List.of(1,2)).hasPrivious(false).hasNext(false).totalPage(2).build())
-					.celebrations(List.of(
-							Celebration.builder()
-								.title(Entity.createdVarChars[2])
-								.name(Entity.createdVarChars[2])
-								.profileImagePath(Entity.createdVarChars[0])
-								.no(Entity.createdLongs[1])
-								.createdDatetime(Entity.createdDatetimes[1])
-								.readCount(1)
-								.build(),
-							Celebration.builder()
-								.title(Entity.createdVarChars[0])
-								.name(Entity.createdVarChars[2])
-								.profileImagePath(Entity.createdVarChars[0])
-								.no(Entity.createdLongs[0])
-								.createdDatetime(Entity.createdDatetimes[0])
-								.readCount(0)
-								.build()
-							))		
-					.build();
-			
-			assertEquals(expect, response);
-		}
-		
-	}
-	
-	private void contentPathCheck() {
-		String insertedPath = celeRepo.findAll().get(Entity.GET_INDEXS[0]).getContentPath();
-		Assertions.assertNotNull(insertedPath);
-		Assertions.assertTrue(Files.exists(Paths.get(celeProperty.getServerContentFolderPath())));
-	}
+    @ParameterizedTest
+    @MethodSource("com.my.azusato.common.TestSource#locales")
+    public void givenNodata_result400(Locale locale) throws Exception {
+      long celebationNo = 100000L;
+
+      String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+      AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+          messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale));
+
+      AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+        celeServiceAPI.getCelebration(celebationNo, locale);
+      });
+
+      assertEquals(expect, result);
+    }
+  }
+
+  @Nested
+  class GetCelebrationContent {
+
+    @Autowired
+    ProfileProperty profileProperty;
+
+    final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getCelebrationContent/";
+    final long CELEBRATION_NO = 1L;
+    final long LOGIN_USER_NO = 1L;
+
+    final int pageOfElement = 5;
+    final int pagesOfpage = 3;
+    final int currentPageNo = 1;
+
+    /**
+     * お祝い書き込みリストのorderbyテスト
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void When2data_givenNoDesc_resultOrderdbyNoAsc() throws Exception {
+      String folderName = "1";
+      dbUnitCompo
+          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+
+      GetCelebrationContentSerivceAPIResponse response = celeServiceAPI
+          .getCelebrationContent(CELEBRATION_NO, LOGIN_USER_NO, TestConstant.LOCALE_JA);
+
+
+      GetCelebrationContentSerivceAPIResponse expect = GetCelebrationContentSerivceAPIResponse
+          .builder().contentPath(Entity.createdVarChars[1]).no(Entity.createdLongs[0]).owner(true)
+          .replys(List.of(
+              CelebrationReply.builder().no(Entity.createdLongs[0])
+                  .content(Entity.createdVarChars[0]).createdDatetime(Entity.createdDatetimes[0])
+                  .name(Entity.createdVarChars[2]).profileImagePath(Entity.createdVarChars[0])
+                  .owner(true).build(),
+              CelebrationReply.builder().no(Entity.createdLongs[1])
+                  .content(Entity.createdVarChars[1]).createdDatetime(Entity.createdDatetimes[1])
+                  .name(Entity.createdVarChars[2]).profileImagePath(Entity.createdVarChars[0])
+                  .owner(true).build()))
+          .build();
+
+      assertEquals(expect, response);
+    }
+
+    @Test
+    public void givenNotOwner_resultOwnerFalse() throws Exception {
+      String folderName = "2";
+      dbUnitCompo
+          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+
+      GetCelebrationContentSerivceAPIResponse response = celeServiceAPI
+          .getCelebrationContent(CELEBRATION_NO, LOGIN_USER_NO, TestConstant.LOCALE_JA);
+
+
+      GetCelebrationContentSerivceAPIResponse expect = GetCelebrationContentSerivceAPIResponse
+          .builder().contentPath(Entity.createdVarChars[1]).no(Entity.createdLongs[0]).owner(false)
+          .replys(List.of(
+              CelebrationReply.builder().no(Entity.createdLongs[0])
+                  .content(Entity.createdVarChars[0]).createdDatetime(Entity.createdDatetimes[0])
+                  .name(Entity.createdVarChars[2]).profileImagePath(Entity.createdVarChars[0])
+                  .owner(false).build(),
+              CelebrationReply.builder().no(Entity.createdLongs[1])
+                  .content(Entity.createdVarChars[1]).createdDatetime(Entity.createdDatetimes[1])
+                  .name(Entity.createdVarChars[2]).profileImagePath(Entity.createdVarChars[0])
+                  .owner(true).build()))
+          .build();
+
+      assertEquals(expect, response);
+    }
+
+    @Test
+    public void when2data_givenDeleted1data_result1Data() throws Exception {
+      String folderName = "3";
+      dbUnitCompo
+          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+
+      GetCelebrationContentSerivceAPIResponse response = celeServiceAPI
+          .getCelebrationContent(CELEBRATION_NO, LOGIN_USER_NO, TestConstant.LOCALE_JA);
+
+
+      GetCelebrationContentSerivceAPIResponse expect = GetCelebrationContentSerivceAPIResponse
+          .builder().contentPath(Entity.createdVarChars[1]).no(Entity.createdLongs[0]).owner(true)
+          .replys(List.of(CelebrationReply.builder().no(Entity.createdLongs[1])
+              .content(Entity.createdVarChars[1]).createdDatetime(Entity.createdDatetimes[1])
+              .name(Entity.createdVarChars[2]).profileImagePath(Entity.createdVarChars[0])
+              .owner(true).build()))
+          .build();
+
+      assertEquals(expect, response);
+    }
+
+    @ParameterizedTest
+    @MethodSource("com.my.azusato.common.TestSource#locales")
+    public void givenNoCelebrationData_resultError(Locale locale) throws Exception {
+
+      String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
+      AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
+          messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale));
+
+      AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+        celeServiceAPI.getCelebrationContent(100000L, LOGIN_USER_NO, locale);
+      });
+
+      assertEquals(expect, result);
+
+    }
+  }
+
+  @Nested
+  class GetCelebrations {
+
+    @Autowired
+    ProfileProperty profileProperty;
+
+    final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "getCelebrations/";
+    final long LOGIN_USER_NO = 1L;
+
+    final int pageOfElement = 5;
+    final int pagesOfpage = 3;
+    final int currentPageNo = 1;
+
+    /**
+     * お祝いリストのorderbyテスト
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void When2data_givenNoAsc_resultOrderdbyNoDesc() throws Exception {
+      String folderName = "1";
+      dbUnitCompo
+          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+      GetCelebrationsSerivceAPIRequset req = GetCelebrationsSerivceAPIRequset.builder()
+          .pageReq(MyPageControllerRequest.builder().currentPageNo(currentPageNo)
+              .pagesOfpage(pagesOfpage).pageOfElement(pageOfElement).build())
+          .build();
+
+      GetCelebrationsSerivceAPIResponse response = celeServiceAPI.getCelebrations(req);
+
+
+
+      GetCelebrationsSerivceAPIResponse expect = GetCelebrationsSerivceAPIResponse.builder()
+          .page(MyPageResponse.builder().currentPageNo(1).pages(List.of(1)).hasPrivious(false)
+              .hasNext(false).totalPage(1).build())
+          .celebrations(List.of(
+              Celebration.builder().title(Entity.createdVarChars[2]).name(Entity.createdVarChars[2])
+                  .profileImagePath(Entity.createdVarChars[0]).no(Entity.createdLongs[1])
+                  .createdDatetime(Entity.createdDatetimes[1]).readCount(1).build(),
+              Celebration.builder().title(Entity.createdVarChars[0]).name(Entity.createdVarChars[2])
+                  .profileImagePath(Entity.createdVarChars[0]).no(Entity.createdLongs[0])
+                  .createdDatetime(Entity.createdDatetimes[0]).readCount(0).build()))
+          .build();
+
+      assertEquals(expect, response);
+    }
+
+    @Test
+    public void when2data_givenDeleted1data_result1Data() throws Exception {
+      String folderName = "3";
+      dbUnitCompo
+          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+      GetCelebrationsSerivceAPIRequset req = GetCelebrationsSerivceAPIRequset.builder()
+
+          .pageReq(MyPageControllerRequest.builder().currentPageNo(currentPageNo)
+              .pagesOfpage(pagesOfpage).pageOfElement(pageOfElement).build())
+          .build();
+
+      GetCelebrationsSerivceAPIResponse response = celeServiceAPI.getCelebrations(req);
+
+
+
+      GetCelebrationsSerivceAPIResponse expect = GetCelebrationsSerivceAPIResponse.builder()
+          .page(MyPageResponse.builder().currentPageNo(1).pages(List.of(1)).hasPrivious(false)
+              .hasNext(false).totalPage(1).build())
+          .celebrations(List.of(
+              Celebration.builder().title(Entity.createdVarChars[0]).name(Entity.createdVarChars[2])
+                  .profileImagePath(Entity.createdVarChars[0]).no(Entity.createdLongs[0])
+                  .createdDatetime(Entity.createdDatetimes[0]).readCount(0).build()))
+          .build();
+
+      assertEquals(expect, response);
+    }
+
+    /**
+     * 7個のデータがあってページングされたら、結局最後の二つを返す。
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void When7data_givenPagined_result2data() throws Exception {
+      String folderName = "4";
+      dbUnitCompo
+          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+      GetCelebrationsSerivceAPIRequset req = GetCelebrationsSerivceAPIRequset.builder()
+          .pageReq(MyPageControllerRequest.builder().currentPageNo(2).pagesOfpage(pagesOfpage)
+              .pageOfElement(pageOfElement).build())
+          .build();
+
+      GetCelebrationsSerivceAPIResponse response = celeServiceAPI.getCelebrations(req);
+
+
+
+      GetCelebrationsSerivceAPIResponse expect = GetCelebrationsSerivceAPIResponse.builder()
+          .page(MyPageResponse.builder().currentPageNo(2).pages(List.of(1, 2)).hasPrivious(false)
+              .hasNext(false).totalPage(2).build())
+          .celebrations(List.of(
+              Celebration.builder().title(Entity.createdVarChars[2]).name(Entity.createdVarChars[2])
+                  .profileImagePath(Entity.createdVarChars[0]).no(Entity.createdLongs[1])
+                  .createdDatetime(Entity.createdDatetimes[1]).readCount(1).build(),
+              Celebration.builder().title(Entity.createdVarChars[0]).name(Entity.createdVarChars[2])
+                  .profileImagePath(Entity.createdVarChars[0]).no(Entity.createdLongs[0])
+                  .createdDatetime(Entity.createdDatetimes[0]).readCount(0).build()))
+          .build();
+
+      assertEquals(expect, response);
+    }
+
+  }
+
+  private void contentPathCheck() {
+    String insertedPath = celeRepo.findAll().get(Entity.GET_INDEXS[0]).getContentPath();
+    Assertions.assertNotNull(insertedPath);
+    Assertions.assertTrue(Files.exists(Paths.get(celeProperty.getServerContentFolderPath())));
+  }
 }

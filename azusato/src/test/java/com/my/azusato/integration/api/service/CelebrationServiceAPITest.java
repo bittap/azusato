@@ -148,10 +148,52 @@ public class CelebrationServiceAPITest {
   @Nested
   class readCountUp {
 
+    @Nested
+    @DisplayName("正常系")
+    class normal {
+
+      long celeNo = 1L;
+
+      @Test
+      public void resultReadCountUp() throws Exception {
+        // given
+        CelebrationEntity celeEntity = celeRepo.findById(celeNo).get();
+        int expectedReadCount = celeEntity.getReadCount() + 1;
+
+        CelebrationEntity actual = target.readCountUp(celeNo, null);
+        // result
+        Assertions.assertEquals(expectedReadCount, actual.getReadCount());
+      }
+    }
+
+    @Nested
+    @DisplayName("準正常系")
+    class subnormal {
+
+      @ParameterizedTest
+      @MethodSource("com.my.azusato.integration.api.service.CelebrationServiceAPITest#readCountUp_subnormal_givenNotExistedUser_resultThrow")
+      public void givenNotExistedCelebration_resultThrow(Locale locale, String expectedMessage)
+          throws Exception {
+        long notExistNo = 99999L;
+        AzusatoException expected =
+            new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005, expectedMessage);
+
+        AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+          target.readCountUp(notExistNo, locale);
+        });
+
+        assertEquals(expected, result);
+      }
+    }
   }
 
   static Stream<Arguments> addCelebration_subnormal_givenNotExistedUser_resultThrow() {
     return Stream.of(Arguments.of(Locale.JAPANESE, "ユーザ情報が存在しないです。"),
         Arguments.of(Locale.KOREAN, "유저정보가 존재하지 않습니다."));
+  }
+
+  static Stream<Arguments> readCountUp_subnormal_givenNotExistedUser_resultThrow() {
+    return Stream.of(Arguments.of(Locale.JAPANESE, "お祝い情報が存在しないです。"),
+        Arguments.of(Locale.KOREAN, "축하정보가 존재하지 않습니다."));
   }
 }
