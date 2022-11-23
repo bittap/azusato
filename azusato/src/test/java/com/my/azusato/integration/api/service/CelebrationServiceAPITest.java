@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import com.my.azusato.anonotation.IntegrationService;
 import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
+import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.entity.CelebrationEntity;
 import com.my.azusato.entity.CelebrationNoticeEntity;
@@ -108,12 +109,6 @@ public class CelebrationServiceAPITest {
         contentPathCheck(inserted.getContentPath());
       }
 
-      void contentPathCheck(String insetedContentPath) {
-        Assertions.assertNotNull(insetedContentPath);
-        Assertions.assertTrue(
-            Files.exists(Paths.get(celeProperty.getServerContentFolderPath(), insetedContentPath)));
-      }
-
       @AfterEach
       void deleteContentFloder() {
         File file1 = Paths.get(celeProperty.getServerContentFolderPath()).toFile();
@@ -141,6 +136,89 @@ public class CelebrationServiceAPITest {
         assertEquals(expected, result);
       }
     }
+  }
+
+  @Nested
+  class modifyCelebration {
+
+    long userNo = 1L;
+
+    long celebrationNo = 1L;
+
+    @Nested
+    @DisplayName("正常系")
+    class normal {
+
+      @Test
+      public void resultUpdated() throws Exception {
+        // given
+        ModifyCelebationServiceAPIRequest req = getVaildParameter();
+        // when
+        CelebrationEntity actual = target.modifyCelebartion(req, null);
+
+        // result
+        Assertions.assertEquals(req.getTitle(), actual.getTitle());
+        Assertions.assertEquals(req.getName(),
+            actual.getCommonUser().getCreateUserEntity().getName());
+        contentPathCheck(actual.getContentPath());
+      }
+
+      @AfterEach
+      void deleteContentFloder() {
+        File file1 = Paths.get(celeProperty.getServerContentFolderPath()).toFile();
+        Arrays.asList(file1.listFiles()).forEach(File::delete);
+      }
+    }
+
+    @Nested
+    @DisplayName("準正常系")
+    class subnormal {
+
+      @ParameterizedTest
+      @MethodSource("com.my.azusato.common.TestSource#I0005_celebration_Message")
+      public void givenNotExistedCelebration_resultThrow(Locale locale, String expectedMessage)
+          throws Exception {
+        long notExistNo = 99999L;
+        // given
+        ModifyCelebationServiceAPIRequest req = getVaildParameter();
+        req.setCelebationNo(notExistNo);
+
+        AzusatoException expected =
+            new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005, expectedMessage);
+
+        AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+          target.modifyCelebartion(req, locale);
+        });
+
+        assertEquals(expected, result);
+      }
+
+      @ParameterizedTest
+      @MethodSource("com.my.azusato.common.TestSource#I0006_Message")
+      public void givenDifferenceUser_resultThrow(Locale locale, String expectedMessage)
+          throws Exception {
+        long differenceUser = 99999L;
+        // given
+        ModifyCelebationServiceAPIRequest req = getVaildParameter();
+        req.setUserNo(differenceUser);
+
+        AzusatoException expected =
+            new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0006, expectedMessage);
+
+        AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+          target.modifyCelebartion(req, locale);
+        });
+
+        assertEquals(expected, result);
+      }
+    }
+
+    ModifyCelebationServiceAPIRequest getVaildParameter() throws Exception {
+      return ModifyCelebationServiceAPIRequest.builder().userNo(userNo).celebationNo(celebrationNo)
+          .name("updatedName").title("updatedTitle")
+          .content(new FileInputStream(TestConstant.TEST_CELEBRATION_CONTENT_SMALL_PATH)).build();
+    }
+
   }
 
   @Nested
@@ -240,5 +318,11 @@ public class CelebrationServiceAPITest {
         assertEquals(expected, result);
       }
     }
+  }
+
+  void contentPathCheck(String insetedContentPath) {
+    Assertions.assertNotNull(insetedContentPath);
+    Assertions.assertTrue(
+        Files.exists(Paths.get(celeProperty.getServerContentFolderPath(), insetedContentPath)));
   }
 }

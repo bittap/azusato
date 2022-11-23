@@ -1,7 +1,6 @@
 package com.my.azusato.unit.api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -16,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import com.my.azusato.api.controller.request.MyPageControllerRequest;
 import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
-import com.my.azusato.api.service.request.ModifyCelebationServiceAPIRequest;
 import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse;
 import com.my.azusato.api.service.response.GetCelebrationContentSerivceAPIResponse.CelebrationReply;
 import com.my.azusato.api.service.response.GetCelebrationSerivceAPIResponse;
@@ -36,131 +34,6 @@ public class CelebrationServiceAPITest extends AbstractIntegration {
   CelebrationServiceAPI celeServiceAPI;
 
   final String RESOUCE_BASIC_PATH = "src/test/data/unit/api/service/";
-
-  @Nested
-  class ModifyCelebration {
-
-    final String RESOUCE_PATH = RESOUCE_BASIC_PATH + "modifyCelebration/";
-
-    @Test
-    public void givenNormal_resultUpdated() throws Exception {
-      String folderName = "1";
-      String[] COMPARED_TABLE_NAME = {"user", "celebration", "profile"};
-
-      dbUnitCompo
-          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-
-      ModifyCelebationServiceAPIRequest normalReq = ModifyCelebationServiceAPIRequest.builder()
-          .userNo(Long.valueOf(Entity.createdInts[0]))
-          .celebationNo(Long.valueOf(Entity.createdInts[0])).name(Entity.updatedVarChars[2])
-          .title(Entity.updatedVarChars[0])
-          .content(new FileInputStream(TestConstant.TEST_CELEBRATION_CONTENT_SMALL_PATH)).build();
-
-      celeServiceAPI.modifyCelebartion(normalReq, TestConstant.LOCALE_JA);
-
-      // compare tables
-      for (String table : COMPARED_TABLE_NAME) {
-        // exclude to compare dateTime columns when celebration table
-        if (table.equals("celebration")) {
-          dbUnitCompo.compareTable(
-              Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-              TestConstant.DEFAULT_CELEBRATION_EXCLUDE_UPDATE_DATE_COLUMNS);
-        } else if (table.equals("user") || table.equals("profile")) {
-          dbUnitCompo.compareTable(
-              Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-              TestConstant.DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS);
-        } else {
-          dbUnitCompo.compareTable(
-              Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
-        }
-      }
-
-      contentPathCheck();
-    }
-
-    @ParameterizedTest
-    @MethodSource("com.my.azusato.common.TestSource#locales")
-    public void givenDifferenceUser_resultError(Locale locale) throws Exception {
-      String folderName = "2";
-
-      dbUnitCompo
-          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-      ModifyCelebationServiceAPIRequest normalReq = ModifyCelebationServiceAPIRequest.builder()
-          .userNo(1000L).celebationNo(Long.valueOf(Entity.createdInts[0])).build();
-
-      AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0006,
-          messageSource.getMessage(AzusatoException.I0006, null, locale));
-
-      AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-        celeServiceAPI.modifyCelebartion(normalReq, locale);
-      });
-
-      assertEquals(expect, result);
-
-
-    }
-
-    @ParameterizedTest
-    @MethodSource("com.my.azusato.common.TestSource#locales")
-    public void givenCelebrationDeletedFlag_resultError(Locale locale) throws Exception {
-      String folderName = "3";
-      dbUnitCompo
-          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-
-      ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
-      req.setUserNo(100000L);
-
-      String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
-      AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
-          messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale));
-
-      AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-        celeServiceAPI.modifyCelebartion(req, locale);
-      });
-
-      assertEquals(expect, result);
-    }
-
-    @ParameterizedTest
-    @MethodSource("com.my.azusato.common.TestSource#locales")
-    public void givenUserDeletedFlag_resultError(Locale locale) throws Exception {
-      String folderName = "4";
-      dbUnitCompo
-          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-
-      ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
-      req.setUserNo(100000L);
-
-      String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
-      AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
-          messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale));
-
-      AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-        celeServiceAPI.modifyCelebartion(req, locale);
-      });
-
-      assertEquals(expect, result);
-    }
-
-
-    @ParameterizedTest
-    @MethodSource("com.my.azusato.common.TestSource#locales")
-    public void givenNoCelebrationData_resultError(Locale locale) throws Exception {
-      ModifyCelebationServiceAPIRequest req = new ModifyCelebationServiceAPIRequest();
-      req.setUserNo(100000L);
-
-      String tableName = messageSource.getMessage(CelebrationEntity.TABLE_NAME_KEY, null, locale);
-      AzusatoException expect = new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005,
-          messageSource.getMessage(AzusatoException.I0005, new String[] {tableName}, locale));
-
-      AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-        celeServiceAPI.modifyCelebartion(req, locale);
-      });
-
-      assertEquals(expect, result);
-
-    }
-  }
 
   @Nested
   class GetCelebration {

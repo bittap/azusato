@@ -174,12 +174,13 @@ public class CelebrationServiceAPI {
    * 
    * @param ModifyCelebationServiceAPIRequest 検索条件
    * @param locale エラーメッセージ用
+   * @return 更新されたお祝い情報
    * @throws IOException
    * @throws AzusatoException 対象データ存在なし、生成したユーザではない場合
    */
   @Transactional
   @MethodAnnotation(description = "お祝い情報修正")
-  public void modifyCelebartion(ModifyCelebationServiceAPIRequest req, Locale locale)
+  public CelebrationEntity modifyCelebartion(ModifyCelebationServiceAPIRequest req, Locale locale)
       throws IOException {
     CelebrationEntity fetchedCelebationEntity =
         celeRepo.findByNoAndCommonFlagDeleteFlagAndCommonUserCreateUserEntityCommonFlagDeleteFlag(
@@ -204,9 +205,10 @@ public class CelebrationServiceAPI {
     fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getCommonDate()
         .setUpdateDatetime(now);
 
-    celeRepo.save(fetchedCelebationEntity);
+    CelebrationEntity updated = celeRepo.save(fetchedCelebationEntity);
 
     uploadContent(req.getContent(), fetchedCelebationEntity.getNo());
+    return updated;
   }
 
   /**
