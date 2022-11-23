@@ -28,6 +28,10 @@ spring:
       # DataJpaTestを使うとき、初期h2DBを使わずこの設定のDataSourceを利用する。
       replace: none
       
+logging:
+  level:
+    root: DEBUG
+      
 celebration:
   # お祝いテーブルのコンテンツパスが保持されるサーバーのフォルダ位置
   server-content-folder-path: /git/azusato/azusato/test-resources
