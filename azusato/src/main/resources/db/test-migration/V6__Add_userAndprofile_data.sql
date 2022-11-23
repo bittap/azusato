@@ -17,3 +17,8 @@ insert into user(no,id,name,password,user_type,create_datetime,update_datetime,d
     (4,'unique4','varchar2','varchar3','line','2022-01-02 03:04:05','2022-06-07 08:09:10','0');
 
 insert into profile(user_no,image_path)  values (4,'varchar1');
+
+insert into user(no,id,name,password,user_type,create_datetime,update_datetime,delete_flag) values 
+    (5,'unique5','varchar2','varchar3','admin','2022-01-02 03:04:05','2022-06-07 08:09:10','0');
+
+insert into profile(user_no,image_path)  values (5,'varchar1');
