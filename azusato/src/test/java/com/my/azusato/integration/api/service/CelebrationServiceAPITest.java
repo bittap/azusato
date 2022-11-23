@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,7 +126,7 @@ public class CelebrationServiceAPITest {
     class subnormal {
 
       @ParameterizedTest
-      @MethodSource("com.my.azusato.integration.api.service.CelebrationServiceAPITest#addCelebration_subnormal_givenNotExistedUser_resultThrow")
+      @MethodSource("com.my.azusato.common.TestSource#I0005_user_Message")
       public void givenNotExistedUser_resultThrow(Locale locale, String expectedMessage)
           throws Exception {
         AzusatoException expected =
@@ -171,7 +169,7 @@ public class CelebrationServiceAPITest {
     class subnormal {
 
       @ParameterizedTest
-      @MethodSource("com.my.azusato.integration.api.service.CelebrationServiceAPITest#readCountUp_subnormal_givenNotExistedUser_resultThrow")
+      @MethodSource("com.my.azusato.common.TestSource#I0005_celebration_Message")
       public void givenNotExistedCelebration_resultThrow(Locale locale, String expectedMessage)
           throws Exception {
         long notExistNo = 99999L;
@@ -187,13 +185,60 @@ public class CelebrationServiceAPITest {
     }
   }
 
-  static Stream<Arguments> addCelebration_subnormal_givenNotExistedUser_resultThrow() {
-    return Stream.of(Arguments.of(Locale.JAPANESE, "ユーザ情報が存在しないです。"),
-        Arguments.of(Locale.KOREAN, "유저정보가 존재하지 않습니다."));
-  }
+  @Nested
+  class deleteCelebation {
 
-  static Stream<Arguments> readCountUp_subnormal_givenNotExistedUser_resultThrow() {
-    return Stream.of(Arguments.of(Locale.JAPANESE, "お祝い情報が存在しないです。"),
-        Arguments.of(Locale.KOREAN, "축하정보가 존재하지 않습니다."));
+    long celeNo = 1L;
+
+    long userNo = 1L;
+
+    @Nested
+    @DisplayName("正常系")
+    class normal {
+      @Test
+      public void resultDeleted() throws Exception {
+        // given
+        target.deleteCelebartion(celeNo, userNo, null);
+
+        // result
+        CelebrationEntity actual = celeRepo.findById(celeNo).get();
+        Assertions.assertEquals(true, actual.getCommonFlag().getDeleteFlag());
+      }
+    }
+
+    @Nested
+    @DisplayName("準正常系")
+    class subnormal {
+
+      @ParameterizedTest
+      @MethodSource("com.my.azusato.common.TestSource#I0005_celebration_Message")
+      public void givenNotExistedCelebration_resultThrow(Locale locale, String expectedMessage)
+          throws Exception {
+        long notExistNo = 99999L;
+        AzusatoException expected =
+            new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005, expectedMessage);
+
+        AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+          target.deleteCelebartion(notExistNo, userNo, locale);
+        });
+
+        assertEquals(expected, result);
+      }
+
+      @ParameterizedTest
+      @MethodSource("com.my.azusato.common.TestSource#I0006_Message")
+      public void givenDifferenceUser_resultThrow(Locale locale, String expectedMessage)
+          throws Exception {
+        long differenceUser = 99999L;
+        AzusatoException expected =
+            new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0006, expectedMessage);
+
+        AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
+          target.deleteCelebartion(celeNo, differenceUser, locale);
+        });
+
+        assertEquals(expected, result);
+      }
+    }
   }
 }

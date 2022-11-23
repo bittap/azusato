@@ -51,6 +51,19 @@ public class TestSource {
     );
   }
 
+  public static Stream<Arguments> I0005_celebration_Message() {
+    return Stream.of( //
+        Arguments.of(Locale.JAPANESE, "お祝い情報が存在しないです。"), //
+        Arguments.of(Locale.KOREAN, "축하정보가 존재하지 않습니다.")); //
+  }
+
+  public static Stream<Arguments> I0006_Message() {
+    return Stream.of( //
+        Arguments.of(Locale.JAPANESE, "権限が存在しません。"), //
+        Arguments.of(Locale.KOREAN, "권한이없습니다.") //
+    );
+  }
+
   public static Stream<Arguments> E0002_Message() {
     return Stream.of( //
         Arguments.of(Locale.JAPANESE, "指定したパスにファイルが存在しないため、内容を読み込むのに失敗しました。"), //
