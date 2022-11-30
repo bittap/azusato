@@ -25,24 +25,23 @@
  * 共通データの構成
  * 
  * <pre>
- *  各データは1個ずつにする。
- *  テーブル
- *  user: 管理者、非会員ユーザ、カカオ、ライン
- *  profile: userテーブルに紐づく
- *  celebration： userテーブルに紐づくユーザの作成
- *  celebration_reply： celebrationテーブルに紐づく2件ずつ
- *  celebration_notice: なし
+ * test - migrationフォルダの中のxxx_data.sqlを参考
  * </pre>
  * 
  * <p>
- * データの確認方法 <notice>DBunitは使わない
+ * データの確認方法(Service) <notice>DBunitは使わない
  * 
  * <pre>
- * 1件検索：予測データと結果を比較  * 未来 :findById or しない。
- * 2件以上の検索: 1件の予測データと結果を比較。もし、中で分岐される場合には分岐の分もケースに追加  * 未来 :findById
- * 挿入: 予測データとfindByIdで挿入したデータ比較
- * 更新: 予測データとfindByIdで更新したデータ比較
- * 削除: 予測データとfindByIdで更新したデータ比較 * 未来 :削除したデータが参照できないこと
+ * 検索:Noを比較
+ * 挿入・更新:挿入・更新される必要があるカラムの戻り値を比較(無駄に全カラムの比較はしない)
+ * 削除: findByIdでないか確認
+ * </pre>
+ * 
+ * データの確認方法(Controller) <notice>DBunitは使わない
+ * 
+ * <pre>
+ * 検索:結合テストで行う。レポジトリにて参照したデータを一致するか確認する。
+ * 挿入・更新・削除:しない。
  * </pre>
  * 
  * 
