@@ -130,6 +130,17 @@ public class CelebrationNoticeServiceAPITest {
       assertEquals(5, actual.getNotices().size());
     }
 
+    @Test
+    @Sql(scripts = "file:" + RESOUCE_PATH + "6/" + TestConstant.INIT_SQL_FILE_NAME)
+    @DisplayName("4個のデータがある&参照フラグ=falseは3個場合_")
+    void given4data_resultReturnNoReadLengthIs3() throws Exception {
+      GetCelebrationNoticesSerivceAPIResponse actual =
+          target.celebrationNotices(getGetCelebrationsSerivceAPIRequset(), userNo);
+
+      assertEquals(4, actual.getNotices().size());
+      assertEquals(3, actual.getNoReadLength());
+    }
+
     GetCelebrationsSerivceAPIRequset getGetCelebrationsSerivceAPIRequset() {
       return GetCelebrationsSerivceAPIRequset.builder().pageReq(MyPageControllerRequest.builder()
           .currentPageNo(currentPageNo).pageOfElement(pageOfElement).build()).build();
