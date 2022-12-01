@@ -1,27 +1,8 @@
 ﻿優先度
 
-・celebration_notice, celebration_reply_noticeにreaded追加
-
-・もし、ユーザが非ログインの場合で書き込みを行うとランダムイメージでユーザを登録(●)
-
-・Entityに対するDeleteFlagテストコード追加(下)
-
-・修正ページ参照できないやつ直接URLで叩いた時、エラーモーダルクリック時遷移するように(下)(●)
-=> モーダルを設計しなおす。
-
-・コンテンツlazy表示(中)(●)
 
 ・セッションからログイン情報(名前)等保持するように(下)(●)
 
-・Randomイメージテストコードが遅い。(下)
-
-・ログ保存(中)
-
-・SERVER DOWN(上)
-
-・apple-image?(中)
-
-・ドメイン変更 tk -> com(中)
 
 ・S3変更(中)
 
@@ -30,3 +11,16 @@
 =>AdminIndexControllerTest#givenNotlogin_resultRedicrtLoginPage
 
 ・各APIのログインしている状態確認SecurityConfigでするように(下)
+
+・お祝いテーブルから通知挿入できるように修正(下)
+お祝い・お祝い書き込み追加
+なぜか削除(修正)はできる。...
+
+・通知関連Junit(8月6 または 8月7する予定)
+
+・ページ数はバックエンドで制御]
+
+・プロフィールアップロード時、他の拡張子でアップロードする時以前のデータが消えない(下)
+
+・ページリクエストはPaeableHandlerMethodArugmentResolverを使う
+JPA本(562)
