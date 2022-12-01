@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -25,7 +26,6 @@ import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.exception.AzusatoException;
-import com.my.azusato.factory.EntityFactory;
 import com.my.azusato.property.ProfileProperty;
 import com.my.azusato.repository.UserRepository;
 
@@ -81,22 +81,23 @@ public class ProfileSerivceAPITest {
       @ParameterizedTest
       @MethodSource("com.my.azusato.integration.api.service.ProfileSerivceAPITest#UpdateUserProfile_normal_givenVaildImageType_resultUpdatedAndUploaded")
       public void givenVaildImageType_resultUpdatedAndUploaded(String imageType) throws Exception {
-        UserEntity baseUserEntity = EntityFactory.userByNo1();
-        String expectdFileName = baseUserEntity.getNo() + imageType;
-        String expectedImagePath = "/" + baseUserEntity.getNo() + "." + imageType;
+        UserEntity target = userRepository.findById(1L).get();
+        LocalDateTime beforeUpdDatetime = target.getCommonDate().getUpdateDatetime();
+        String expectdFileName = target.getNo() + imageType;
+        String expectedImagePath = "/" + target.getNo() + "." + imageType;
 
         ModifyUserProfileServiceAPIRequest req = ModifyUserProfileServiceAPIRequest.builder()
             .profileImage(new FileInputStream(TestConstant.TEST_IMAGE_PATH)) //
-            .profileImageType(imageType).userNo(baseUserEntity.getNo()) //
+            .profileImageType(imageType).userNo(target.getNo()) //
             .build(); //
 
         targetService.updateUserProfile(req, TestConstant.LOCALE_JA);
 
-        UserEntity result = userRepository.findById(baseUserEntity.getNo()).get();
+        UserEntity result = userRepository.findById(target.getNo()).get();
 
         assertEquals(expectedImagePath, result.getProfile().getImagePath());
-        Assertions.assertTrue(baseUserEntity.getCommonDate().getUpdateDatetime()
-            .isBefore(result.getCommonDate().getUpdateDatetime()));
+        Assertions
+            .assertTrue(beforeUpdDatetime.isBefore(result.getCommonDate().getUpdateDatetime()));
 
         // ファイル存在有無チェック
         Assertions.assertDoesNotThrow(() -> {

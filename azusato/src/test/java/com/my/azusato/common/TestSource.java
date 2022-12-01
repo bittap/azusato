@@ -63,6 +63,12 @@ public class TestSource {
         Arguments.of(Locale.KOREAN, "축하댓글정보가 존재하지 않습니다.")); //
   }
 
+  public static Stream<Arguments> I0005_celebrationNotice_Message() {
+    return Stream.of( //
+        Arguments.of(Locale.JAPANESE, "お祝い通知情報が存在しないです。"), //
+        Arguments.of(Locale.KOREAN, "축하알람정보가 존재하지 않습니다.")); //
+  }
+
   public static Stream<Arguments> I0006_Message() {
     return Stream.of( //
         Arguments.of(Locale.JAPANESE, "権限が存在しません。"), //

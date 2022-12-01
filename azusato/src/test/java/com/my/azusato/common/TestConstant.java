@@ -69,6 +69,8 @@ public class TestConstant {
 
   public final static String INIT_XML_FILE_NAME = "init.xml";
 
+  public final static String INIT_SQL_FILE_NAME = "init.sql";
+
   public final static String[] DEFAULT_EXCLUDE_COLUMNS =
       {"no", "create_datetime", "update_datetime"};
 

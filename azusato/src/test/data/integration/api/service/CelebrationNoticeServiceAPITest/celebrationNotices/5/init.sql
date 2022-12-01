@@ -1,0 +1,12 @@
+insert into celebration_notice(no,celebration_no,celebration_reply_no,readed,create_datetime,update_datetime,read_datetime,target_user_no,delete_flag) values 
+     (3,2,null,'1','2000-01-01 01:01:01','2000-01-02 01:01:01','2000-01-02 01:01:01',2,'0');
+insert into celebration_notice(no,celebration_no,celebration_reply_no,readed,create_datetime,update_datetime,read_datetime,target_user_no,delete_flag) values 
+     (4,2,null,'1','2000-01-01 01:01:01','2000-01-02 01:01:01','2000-01-02 01:01:01',2,'0');
+insert into celebration_notice(no,celebration_no,celebration_reply_no,readed,create_datetime,update_datetime,read_datetime,target_user_no,delete_flag) values 
+     (5,2,null,'1','2000-01-01 01:01:01','2000-01-02 01:01:01','2000-01-02 01:01:01',2,'0');
+insert into celebration_notice(no,celebration_no,celebration_reply_no,readed,create_datetime,update_datetime,read_datetime,target_user_no,delete_flag) values 
+     (6,2,null,'1','2000-01-01 01:01:01','2000-01-02 01:01:01','2000-01-02 01:01:01',2,'0');
+insert into celebration_notice(no,celebration_no,celebration_reply_no,readed,create_datetime,update_datetime,read_datetime,target_user_no,delete_flag) values 
+     (7,2,null,'1','2000-01-01 01:01:01','2000-01-02 01:01:01','2000-01-02 01:01:01',2,'0');
+insert into celebration_notice(no,celebration_no,celebration_reply_no,readed,create_datetime,update_datetime,read_datetime,target_user_no,delete_flag) values 
+     (8,2,null,'1','2000-01-01 01:01:01','2000-01-02 01:01:01','2000-01-02 01:01:01',2,'0');
