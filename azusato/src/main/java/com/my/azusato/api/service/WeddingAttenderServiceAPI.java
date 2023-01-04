@@ -1,0 +1,79 @@
+package com.my.azusato.api.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.my.azusato.api.controller.request.CreateWeddingAttendRequest;
+import com.my.azusato.api.controller.request.GetWeddingAttendsRequest;
+import com.my.azusato.api.service.response.GetWeddingAttenderServiceAPIResponse;
+import com.my.azusato.entity.QWeddingAttender;
+import com.my.azusato.entity.WeddingAttender;
+import com.my.azusato.entity.WeddingAttender.Division;
+import com.my.azusato.entity.WeddingAttender.Nationality;
+import com.my.azusato.repository.WeddingAttenderRepository;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.JPQLQueryFactory;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class WeddingAttenderServiceAPI {
+
+  private final WeddingAttenderRepository weddingAttendRepository;
+
+  @PersistenceContext
+  private final EntityManager entityManger;
+
+  @Transactional
+  public void create(CreateWeddingAttendRequest request) {
+    WeddingAttender weddingAttend = WeddingAttender.builder() //
+        .name(request.getName()) //
+        .nationality(request.getNationality()) //
+        .attend(request.getAttend()) //
+        .eatting(request.getEatting()) //
+        .remark(request.getRemark()) //
+        .build();
+
+    weddingAttendRepository.save(weddingAttend);
+  }
+
+  @Transactional(readOnly = true)
+  public GetWeddingAttenderServiceAPIResponse get(GetWeddingAttendsRequest request) {
+    QWeddingAttender weddingAttender = QWeddingAttender.weddingAttender;
+    JPQLQueryFactory qFactory = new JPAQueryFactory(entityManger);
+
+    List<Predicate> wheres = getWheres(weddingAttender, request.getNationality(),
+        request.getAttend(), request.getEatting(), request.getDivision());
+
+    QueryResults<WeddingAttender> result = qFactory.selectFrom(weddingAttender) //
+        .where(wheres.toArray(new Predicate[wheres.size()])) //
+        .offset(request.getOffset()) //
+        .limit(request.getLimit()).fetchResults();
+
+    return GetWeddingAttenderServiceAPIResponse.builder() //
+        .weddingAttenders(result.getResults()) //
+        .total(result.getTotal()) //
+        .build();
+  }
+
+  private List<Predicate> getWheres(QWeddingAttender weddingAttender, Nationality nationality,
+      Boolean attend, Boolean eatting, Division division) {
+    List<Predicate> wheres = new ArrayList<>();
+    if (Objects.nonNull(nationality))
+      wheres.add(weddingAttender.nationality.eq(nationality));
+    if (Objects.nonNull(attend))
+      wheres.add(weddingAttender.attend.eq(attend));
+    if (Objects.nonNull(eatting))
+      wheres.add(weddingAttender.eatting.eq(eatting));
+    if (Objects.nonNull(division))
+      wheres.add(weddingAttender.division.eq(division));
+
+    return wheres;
+  }
+}

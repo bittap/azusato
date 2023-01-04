@@ -123,6 +123,9 @@ client:
   datetime-format-thymeleaf: YYYY-MM-dd
   wedding-invitation-date: 2023-09-17
   
+wedding:
+  division-datetime: 2023-05-01
+  
 cookie:
   # 基本クッキーが反映されるパス
   path: /

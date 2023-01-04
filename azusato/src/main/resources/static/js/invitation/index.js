@@ -64,7 +64,7 @@ attend_btn_ele.addEventListener('click',function(){
 });
 
 async function attend() {
-	const res = await fetch("/wedding/attend", {
+	const res = await fetch("/wedding/attender", {
 		method:'POST', 
 		body: new FormData(attend_form_ele)
 	});

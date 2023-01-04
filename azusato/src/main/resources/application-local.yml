@@ -18,6 +18,9 @@ spring:
   web:
     resources:
       static-locations: classpath:/static, file:/git/resources
+  #jpa:
+    #hibernate:
+     #ddl-auto: update
       
 celebration:
   # お祝いテーブルのコンテンツパスが保持されるサーバーのフォルダ位置

@@ -160,11 +160,11 @@
 	                    <div class="mb-3 nationality_wrap">
 	                        <label for="nationality" class="form-label" th:text="#{wedding.attendForm.nationality.title}"></label>
 	                        <div class="form-control content_wrap">
-								<input class="form-check-input" type="radio" name="nationality" th:checked="__${#locale}__ == 'ko'">
+								<input class="form-check-input" type="radio" name="nationality" th:checked="__${#locale}__ == 'ko'" value="KOREA">
 								<label class="form-check-label" for="national" th:text="#{wedding.attendForm.nationality.korea}"></label>
-								<input class="form-check-input" type="radio" name="nationality" th:checked="__${#locale}__ == 'ja'">
+								<input class="form-check-input" type="radio" name="nationality" th:checked="__${#locale}__ == 'ja'" value="JAPAN">
 								<label class="form-check-label" for="national" th:text="#{wedding.attendForm.nationality.japan}"></label>
-								<input class="form-check-input" type="radio" name="nationality">
+								<input class="form-check-input" type="radio" name="nationality" value="ETC">
 								<label class="form-check-label" for="national" th:text="#{wedding.attendForm.nationality.etc}"></label>
 							</div>
 	                    </div>
