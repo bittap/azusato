@@ -11,33 +11,35 @@ import com.my.azusato.view.controller.UserController;
  */
 public class UrlConstant {
 
-	/**
-	 * Url of request mapping of japanese controller
-	 */
-	public static final String JAPANESE_CONTROLLER_REQUEST = "/ja";
+  /**
+   * Url of request mapping of japanese controller
+   */
+  public static final String JAPANESE_CONTROLLER_REQUEST = "/ja";
 
-	/**
-	 * Url of request mapping of korean controller
-	 */
-	public static final String KOREAN_CONTROLLER_REQUEST = "/ko";
+  /**
+   * Url of request mapping of korean controller
+   */
+  public static final String KOREAN_CONTROLLER_REQUEST = "/ko";
 
-	public static final String INDEX_CONTROLLER_REQUSET = "/";
+  public static final String INDEX_CONTROLLER_REQUSET = "/";
 
-	/**
-	 * mapping url for {@link CelebrationController}
-	 */
-	public static final String CELEBRATION_CONTROLLER_REQUSET = "/celebration";
-	
-	public static final String OFFLINE_CONTROLLER_REQUSET = "/offline";
-	
-	/**
-	 * mapping url for {@link UserController}
-	 */
-	public static final String USER_CONTROLLER_REQUSET = "/user";
-	
-	public static final String COMMON_ADMIN_CONTROLLER_REQUSET = "/admin";
+  /**
+   * mapping url for {@link CelebrationController}
+   */
+  public static final String CELEBRATION_CONTROLLER_REQUSET = "/celebration";
 
-	public static class Api {
-		public static final String COMMON_REQUSET = "api/";
-	}
+  public static final String WEDDING_CONTROLLER_REQUSET = "/wedding";
+
+  public static final String OFFLINE_CONTROLLER_REQUSET = "/offline";
+
+  /**
+   * mapping url for {@link UserController}
+   */
+  public static final String USER_CONTROLLER_REQUSET = "/user";
+
+  public static final String COMMON_ADMIN_CONTROLLER_REQUSET = "/admin";
+
+  public static class Api {
+    public static final String COMMON_REQUSET = "api/";
+  }
 }

@@ -1,0 +1,20 @@
+.invitation_message_wrap{
+	font-family: 'Shippori Mincho', serif;
+}
+.attend_message_wrap .attend_message{
+	font-family: 'Shippori Mincho', serif;
+}
+.attend_message_wrap .attend_message #attend_btn{
+	font-family: 'Noto Sans JP', sans-serif;
+}
+@media (max-width: 767px) {
+	.when .name_wrap{
+		font-size: 2.5rem;
+	}
+	.invitation_message_wrap{
+		text-align: left;
+	}
+	.attend_message_wrap .attend_message{
+		text-align: left;
+	}
+}

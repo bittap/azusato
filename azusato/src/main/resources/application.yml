@@ -121,6 +121,7 @@ client:
   page-pageOfElement: 5
   datetime-format-moment-js: YYYY-MM-DD
   datetime-format-thymeleaf: YYYY-MM-dd
+  wedding-invitation-date: 2023-09-17
   
 cookie:
   # 基本クッキーが反映されるパス
