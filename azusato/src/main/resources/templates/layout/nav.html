@@ -40,7 +40,7 @@
 			      </li>
 		     <li class="nav-item px-1">
 				<th:block th:if="${nav} == null or (${nav} != null and ${#lists.size(nav.notices)} == 0)">
-					<a id="nav_celebration" th:href="@{'/'+${#locale}+'/celebration'}" th:title="#{tooltip.click}">
+					<a id="nav_celebration" th:href="@{'/'+${#locale}+'/celebration'}">
 				        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-envelope-paper-heart" viewBox="0 0 16 16">
 							<title th:text="#{celebration.title}"></title>
 						  	<th:block th:if="${header.celebration} == true">
