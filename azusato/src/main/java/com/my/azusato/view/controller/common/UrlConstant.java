@@ -39,6 +39,8 @@ public class UrlConstant {
 
   public static final String COMMON_ADMIN_CONTROLLER_REQUSET = "/admin";
 
+  public static final String WEDDING_ADMIN_CONTROLLER_REQUSET = "/admin/wedding";
+
   public static class Api {
     public static final String COMMON_REQUSET = "api/";
   }

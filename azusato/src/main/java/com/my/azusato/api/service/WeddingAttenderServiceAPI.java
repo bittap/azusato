@@ -48,8 +48,9 @@ public class WeddingAttenderServiceAPI {
     QWeddingAttender weddingAttender = QWeddingAttender.weddingAttender;
     JPQLQueryFactory qFactory = new JPAQueryFactory(entityManger);
 
-    List<Predicate> wheres = getWheres(weddingAttender, request.getNationality(),
-        request.getAttend(), request.getEatting(), request.getDivision());
+    List<Predicate> wheres =
+        getWheres(weddingAttender, request.getNationality(), request.getAttend(),
+            request.getEatting(), request.getDivision(), request.getRemarkNonNull());
 
     QueryResults<WeddingAttender> result = qFactory.selectFrom(weddingAttender) //
         .where(wheres.toArray(new Predicate[wheres.size()])) //
@@ -63,7 +64,7 @@ public class WeddingAttenderServiceAPI {
   }
 
   private List<Predicate> getWheres(QWeddingAttender weddingAttender, Nationality nationality,
-      Boolean attend, Boolean eatting, Division division) {
+      Boolean attend, Boolean eatting, Division division, Boolean remarkNonNull) {
     List<Predicate> wheres = new ArrayList<>();
     if (Objects.nonNull(nationality))
       wheres.add(weddingAttender.nationality.eq(nationality));
@@ -73,6 +74,11 @@ public class WeddingAttenderServiceAPI {
       wheres.add(weddingAttender.eatting.eq(eatting));
     if (Objects.nonNull(division))
       wheres.add(weddingAttender.division.eq(division));
+
+    if (Objects.nonNull(remarkNonNull) && remarkNonNull)
+      wheres.add(weddingAttender.remark.isNotNull());
+    else if (Objects.nonNull(remarkNonNull) && !remarkNonNull)
+      wheres.add(weddingAttender.remark.isNull());
 
     return wheres;
   }

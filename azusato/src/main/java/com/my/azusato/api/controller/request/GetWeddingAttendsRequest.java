@@ -17,18 +17,17 @@ import lombok.NoArgsConstructor;
 public class GetWeddingAttendsRequest {
 
   // TODO Enumのバリデーションチェック
-  @NotNull(message = "{notNull}")
   private Nationality nationality;
 
-  @NotNull(message = "{notNull}")
   private Boolean attend;
 
-  @NotNull(message = "{notNull}")
   private Boolean eatting;
 
   // TODO Enumのバリデーションチェック
   @Size(max = 10, message = "{size-string.max}")
   private Division division;
+
+  private Boolean remarkNonNull;
 
   @NotNull(message = "{notNull}")
   private Integer offset;

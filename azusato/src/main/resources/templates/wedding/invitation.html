@@ -154,40 +154,40 @@
 	                <h1 class="text-center" th:text="#{wedding.attendForm.title}"></h1>
 	                <form id="attend_form">
 	                    <div class="mb-3 mt-4">
-	                        <label for="name" class="form-label" th:text="#{wedding.attendForm.name.title}"></label>
+	                        <label for="name" class="form-label" th:text="#{wedding.name.title}"></label>
 	                        <input type="text" class="form-control" id="name">
 	                    </div>
 	                    <div class="mb-3 nationality_wrap">
-	                        <label for="nationality" class="form-label" th:text="#{wedding.attendForm.nationality.title}"></label>
+	                        <label for="nationality" class="form-label" th:text="#{wedding.nationality.title}"></label>
 	                        <div class="form-control content_wrap">
 								<input class="form-check-input" type="radio" name="nationality" th:checked="__${#locale}__ == 'ko'" value="KOREA">
-								<label class="form-check-label" for="national" th:text="#{wedding.attendForm.nationality.korea}"></label>
+								<label class="form-check-label" for="national" th:text="#{wedding.nationality.korea}"></label>
 								<input class="form-check-input" type="radio" name="nationality" th:checked="__${#locale}__ == 'ja'" value="JAPAN">
-								<label class="form-check-label" for="national" th:text="#{wedding.attendForm.nationality.japan}"></label>
+								<label class="form-check-label" for="national" th:text="#{wedding.nationality.japan}"></label>
 								<input class="form-check-input" type="radio" name="nationality" value="ETC">
-								<label class="form-check-label" for="national" th:text="#{wedding.attendForm.nationality.etc}"></label>
+								<label class="form-check-label" for="national" th:text="#{wedding.nationality.etc}"></label>
 							</div>
 	                    </div>
 	                    <div class="mb-3">
-	                        <label for="attend" class="form-label" th:text="#{wedding.attendForm.attend.title}"></label>
+	                        <label for="attend" class="form-label" th:text="#{wedding.attend.title}"></label>
 	                        <div class="form-control">
-								<input class="form-check-input" type="radio" name="attend" checked>
-								<label class="form-check-label" for="national">Y</label>
-								<input class="form-check-input" type="radio" name="attend">
-								<label class="form-check-label" for="national">N</label>
+								<input class="form-check-input" type="radio" name="attend" value="true" checked>
+								<label class="form-check-label" for="national">〇</label>
+								<input class="form-check-input" type="radio" name="attend" value="false">
+								<label class="form-check-label" for="national">✖</label>
 							</div>
 	                    </div>
 	                    <div class="mb-3">
-	                        <label for="eatting" class="form-label" th:text="#{wedding.attendForm.eatting.title}"></label>
+	                        <label for="eatting" class="form-label" th:text="#{wedding.eatting.title}"></label>
 	                        <div class="form-control">
-								<input class="form-check-input" type="radio" name="eatting" checked>
-								<label class="form-check-label" for="national">Y</label>
-								<input class="form-check-input" type="radio" name="eatting">
-								<label class="form-check-label" for="national">N</label>
+								<input class="form-check-input" type="radio" name="eatting" value="true" checked>
+								<label class="form-check-label" for="national">〇</label>
+								<input class="form-check-input" type="radio" name="eatting" value="false">
+								<label class="form-check-label" for="national">✖</label>
 							</div>
 	                    </div>
 	                   	<div class="mb-3">
-	                   		<label for="remark" class="form-label" th:text="#{wedding.attendForm.remark.title}"></label>
+	                   		<label for="remark" class="form-label" th:text="#{wedding.remark.title}"></label>
   							<textarea th:placeholder="#{wedding.attendForm.remark.placeholder}" class="form-control" id="remark" rows="2"></textarea>
 	                   	</div>
 	                    <button type='button' id="attend_form_btn" class="btn btn-light mt-3" th:text="#{wedding.attendForm.btn}"></button>

@@ -1,0 +1,172 @@
+<html>
+<head th:include = "layout/header :: header(~{::link})">
+	<link rel="stylesheet" href="/css/admin/wedding/index.css">
+</head>
+<body>
+	<!-- nav -->
+	<th:block th:replace = "layout/nav"></th:block>
+	<th:block th:replace = "layout/body :: body(
+			~{::th:block#body_contents},
+			#{admin.wedding.index.title})">
+		<!-- main  content -->
+		<th:block id="body_contents">
+			<div class="container">
+				<div class="search-wrap p-3 rounded shadow mb-3">
+					<p class="text-center fw-bold" th:text="#{search.title}">検索</p>
+					<table class="table table-bordered table-sm table-light">
+						<tbody>
+							<tr>
+								<td class="table-secondary" th:text="#{wedding.nationality.title}"></td>
+								<td>
+									<div class="d-flex flex-wrap option-wrap">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" name="nationality" type="radio" id="nationality1" value="KOREA">
+			  								<label class="form-check-label" for="nationality1" th:text="#{wedding.nationality.korea}"></label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" name="nationality" type="radio" id="nationality2" value="JAPAN">
+			  								<label class="form-check-label" for="nationality2" th:text="#{wedding.nationality.japan}"></label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" name="nationality" type="radio" id="nationality3" value="ETC">
+			  								<label class="form-check-label" for="nationality3" th:text="#{wedding.nationality.etc}"></label>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td class="table-secondary" th:text="#{wedding.attend.title}">参加</td>
+								<td>
+									<div class="d-flex flex-wrap option-wrap">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" name="attend" type="radio" id="attend1" value="true">
+			  								<label class="form-check-label" for="attend1">〇</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" name="attend" type="radio" id="attend2" value="false">
+			  								<label class="form-check-label" for="attend2">✖</label>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td class="table-secondary" th:text="#{wedding.eatting.title}">食事</td>
+								<td>
+									<div class="d-flex flex-wrap option-wrap">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" name="eatting" type="radio" id="eatting1" value="true">
+			  								<label class="form-check-label" for="eatting1">〇</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" name="eatting" type="radio" id="eatting2" value="false">
+			  								<label class="form-check-label" for="eatting2">✖</label>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td class="table-secondary" th:text="#{wedding.division.title}">区分</td>
+								<td>
+									<div class="d-flex flex-wrap option-wrap">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" name="division" type="radio" id="division1" value="first">
+			  								<label class="form-check-label" for="division1" th:text="#{wedding.division.first}">一回目</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" name="division" type="radio" id="division2" value="second">
+			  								<label class="form-check-label" for="division2" th:text="#{wedding.division.second}">二回目</label>
+										</div>
+									</div>
+								</td>
+							</tr>	
+							<tr>
+								<td class="table-secondary" th:text="#{wedding.remark.title}">備考</td>
+								<td>
+									<div class="d-flex flex-wrap option-wrap">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" name="remarkNonNull" type="radio" id="division1" value="true">
+			  								<label class="form-check-label" for="division1" th:text="#{wedding.remark.non-null}">あり</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" name="remarkNonNull" type="radio" id="division2" value="false">
+			  								<label class="form-check-label" for="division2" th:text="#{wedding.remark.null}">なし</label>
+										</div>
+									</div>
+								</td>
+							</tr>		
+						</tbody>
+					</table>
+				</div>
+				<div class="p-3 rounded shadow text-center">
+					<div class="table-responsive">
+						<table class="table table-sm text-center table-striped" style="width:100%;table-layout: fixed">
+							<thead>
+								<th scope="col">No</th>
+								<th scope="col" th:text="#{wedding.name.title}">名前</th>
+								<th scope="col" th:text="#{wedding.nationality.title}">国籍</th>
+	 							<th scope="col" th:text="#{wedding.attend.title}">参加</th>
+								<th scope="col" th:text="#{wedding.eatting.title}">食事</th>
+								<th scope="col" th:text="#{wedding.division.title}">区分</th>
+								<th scope="col" th:text="#{wedding.created-datetime.title}">作成日時</th>
+							</thead>
+							<tbody>
+								<template id="template-list">
+									<tr>
+										<td class="align-middle -no" scope="row" rowspan="1">5</td>
+			      						<td class="-name">山本 あずさあ</td>
+			      						<td class="-nationality">その他</td>
+			      						<td class="-attend">0</td>
+			      						<td class="-eatting">x</td>
+			      						<td class="-division">1回目</td>
+			      						<td class="-created_datetime">01/04</td>
+		      						</tr>
+		      						<tr class="text-start remark-wrap" style="display:none">
+		      							<td colspan="8" class="-remark">
+		      								asdfasdfsafsdaf
+		      							</td>
+		      						</tr>
+	      						</template>
+							</tbody>
+						</table>
+					</div>
+					<small class="d-block text-end mt-4"> 
+						<nav aria-label="Page navigation">
+							<ul class="pagination justify-content-center">
+								<li class="page-item page-pre_wrap">
+									<a class="page-link page-pre" href="#" aria-label="Previous">
+						        		<span aria-hidden="true">&laquo;</span>
+						      		</a>
+									<!--/*
+									<a class="page-link page-pre" href="#" aria-label="Previous" tabindex="-1">
+						        		<span aria-hidden="true">&laquo;</span>
+						      		</a>
+									*/-->
+						    	</li>
+								<div class="page-item_wrap d-flex">
+									<template id="template-page-item">
+										<li class="page-item"><a class="page-link">1</a></li>
+									</template>
+							    	<li class="page-item active"><a class="page-link" href="#">1</a></li>
+							    	<li class="page-item"><a class="page-link" href="#">2</a></li>
+							    	<li class="page-item"><a class="page-link" href="#">3</a></li>
+								</div>
+						    	<li class="page-item page-next_wrap">
+							      	<a class="page-link page-next" href="#" aria-label="Next">
+							        	<span aria-hidden="true">&raquo;</span>
+							     	</a>
+						    	</li>
+						  	</ul>
+						</nav>
+					</small>			
+				</div>
+			</div>	<!-- End Container-->
+		</th:block>
+	</th:block>
+	<script th:inline="javascript">
+		const NATIONALITY_KOREA_TEXT = /*[[#{wedding.nationality.korea}]]*/ "";
+		const NATIONALITY_JAPAN_TEXT = /*[[#{wedding.nationality.japan}]]*/ "";
+		const NATIONALITY_ETC_TEXT = /*[[#{wedding.nationality.etc}]]*/ "";
+	</script>
+	<script src="/js/admin/wedding/index.js"></script>	
+</body>
+</html>
