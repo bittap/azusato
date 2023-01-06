@@ -16,6 +16,7 @@ Paging = function(){
 Paging.prototype.getPaging = function(totalItemSize, itemSizeOfPage, buttonLengthOfPage, currentPageNo){
 	if(itemSizeOfPage < 1 || buttonLengthOfPage < 1 || currentPageNo < 1)
 		throw new Error(`itemSizeOfPage : ${itemSizeOfPage},buttonLengthOfPage : ${buttonLengthOfPage}, currentPageNo : ${currentPageNo}は1より小さくできません。`);
+	
 	const startPage = this.startPage(buttonLengthOfPage,currentPageNo);
 	const endPage = this.endPage(totalItemSize,itemSizeOfPage);
 	
@@ -34,10 +35,10 @@ Paging.prototype.getPaging = function(totalItemSize, itemSizeOfPage, buttonLengt
  * (項目の総数 / 一つのページに表示する項目の数) + (項目の総数 % 一つのページに表示する項目の数 != 0 ? 1 : 0)
  * @param {int} totalItemSize 項目の総数
  * @param {int} itemSizeOfPage 一つのページに表示する項目の数
- * @return {int} 項目の総数 == 0 : 0 , その他 : (項目の総数 / 一つのページに表示する項目の数)切り上げ
+ * @return {int} 項目の総数 == 0 : 1 , その他 : (項目の総数 / 一つのページに表示する項目の数)切り上げ
  */
 Paging.prototype.endPage = function(totalItemSize,itemSizeOfPage){
-	return totalItemSize == 0 ? 0 : Math.ceil(totalItemSize/itemSizeOfPage);
+	return totalItemSize == 0 ? 1 : Math.ceil(totalItemSize/itemSizeOfPage);
 }
 
 /*
@@ -47,7 +48,7 @@ Paging.prototype.endPage = function(totalItemSize,itemSizeOfPage){
  * 1.現在ページ番号 % 表示するページの数 == 0
  *  ・(現在ページ番号 - 表示するページの数) + 1
  * 2.現在ページ番号 % 表示するページの数 != 0
- * 　 ・((現在ページ番号/表示するページの数) * 表示するページの数) + 1
+ * 　 ・(切り捨て(現在ページ番号/表示するページの数) * 表示するページの数) + 1
  * @param {int} buttonLengthOfPage 表示するページの数
  * @param {int} currentPageNo 現在ページ番号
  * @return {int} 最初のページ数
@@ -56,7 +57,7 @@ Paging.prototype.startPage = function(buttonLengthOfPage,currentPageNo){
 	if(currentPageNo % buttonLengthOfPage == 0)
 		return (currentPageNo - buttonLengthOfPage) + 1;
 	else
-		return ((currentPageNo/buttonLengthOfPage) * buttonLengthOfPage) + 1;
+		return (Math.floor(currentPageNo/buttonLengthOfPage) * buttonLengthOfPage) + 1;
 }
 
 /*
@@ -65,8 +66,8 @@ Paging.prototype.startPage = function(buttonLengthOfPage,currentPageNo){
 Paging.prototype.pages = function(startPage,endPage,buttonLengthOfPage){
 	const pages = new Array();
 	
-	for (var i = startPage; i < (startPage + buttonLengthOfPage) -1 && i <= endPage ; i++) {
-		pages.push(startPage++);
+	for (var i = startPage; i < (startPage + buttonLengthOfPage) && i <= endPage ; i++) {
+		pages.push(i);
 	}
 	
 	return pages;

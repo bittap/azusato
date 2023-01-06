@@ -23,6 +23,8 @@ public class UrlConstant {
 
   public static final String INDEX_CONTROLLER_REQUSET = "/";
 
+  public static final String SCRIPT_TEST_CONTROLLER_REQUSET = "/test/script";
+
   /**
    * mapping url for {@link CelebrationController}
    */

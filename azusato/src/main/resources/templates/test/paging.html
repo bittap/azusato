@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+	<script src="/js/common/paging.js"></script>
+	
+	<script>
+	const pagingCommon = new Paging();
+	
+	/*
+	* itemSizeOfPageは固定の場合
+	*/
+	function endPageTest1(){
+		const totalItemSize = new Array(0,1,50,51,100,101);
+		const fixedItemSizeOfPage = 10;
+		const expected = new Array(1,1,5,6,10,11);
+		for(var i = 0; i < totalItemSize.length; i++){
+			const result = pagingCommon.endPage(totalItemSize[i],fixedItemSizeOfPage);
+			if(expected[i] != result){
+				document.write(`endPageTest[1]テスト失敗 期待値 : ${expected[i]} , 結果 : ${result}`);
+			}
+		}	
+	}
+	
+	/*
+	* totalItemSizeは固定の場合
+	*/
+	function endPageTest2(){
+		const fixedTotalItemSize = 51;
+		const itemSizeOfPage = new Array(1,5);
+		const expected = new Array(51,11);
+		for(var i = 0; i < itemSizeOfPage.length; i++){
+			const result = pagingCommon.endPage(fixedTotalItemSize,itemSizeOfPage[i]);
+			if(expected[i] != result){
+				document.write(`endPageTest[2]テスト失敗 期待値 : ${expected[i]} , 結果 : ${result}`);
+			}
+		}	
+	}
+	
+	/*
+	* buttonLengthOfPageは固定の場合
+	*/
+	function startPageTest1(){
+		const buttonLengthOfPage = 5;
+		const currentPageNo = new Array(1,5,6,7,8,9,10);
+		const expected = new Array(1,1,6,6,6,6,6);
+		for(var i = 0; i < currentPageNo.length; i++){
+			const result = pagingCommon.startPage(buttonLengthOfPage,currentPageNo[i]);
+			if(expected[i] != result){
+				document.write(`startPageTest[1]テスト失敗 期待値 : ${expected[i]} , 結果 : ${result}`);
+			}
+		}	
+	}
+	
+	/*
+	* currentPageNoは固定の場合
+	*/
+	function startPageTest2(){
+		const buttonLengthOfPage = new Array(1,3,10,11,12);
+		const currentPageNo = 50;
+		const expected = new Array(50,49,41,45,49);
+		for(var i = 0; i < buttonLengthOfPage.length; i++){
+			const result = pagingCommon.startPage(buttonLengthOfPage[i],currentPageNo);
+			if(expected[i] != result){
+				document.write(`startPageTest[2]テスト失敗 期待値 : ${expected[i]} , 結果 : ${result}`);
+			}
+		}	
+	}
+	
+	function hasPreviousTest(){
+		const startPage = new Array(1,2);
+		const expected = new Array(false,true);
+		for(var i = 0; i < startPage.length; i++){
+			const result = pagingCommon.hasPrevious(startPage[i]);
+			if(expected[i] != result){
+				document.write(`hasPreviousTestテスト失敗 期待値 : ${expected[i]} , 結果 : ${result}`);
+			}
+		}	
+	}
+	
+	function hasNextTest(){
+		const endPage = new Array(5,6);
+		const pages = new Array(1,2,3,4,5);
+		const expected = new Array(false,true);
+		for(var i = 0; i < endPage.length; i++){
+			const result = pagingCommon.hasNext(endPage[i],pages);
+			if(expected[i] != result){
+				document.write(`hasNextTestテスト失敗 期待値 : ${expected[i]} , 結果 : ${result}`);
+			}
+		}		
+	}
+	
+	function pagesTest(){
+		const startPage = new Array(1,4);
+		const endPage = new Array(5,5);
+		const buttonLengthOfPage = 3;
+		const expected = new Array(new Array(1,2,3),new Array(4,5));
+		for(var i = 0; i < startPage.length; i++){
+			const result = pagingCommon.pages(startPage[i],endPage[i],buttonLengthOfPage);
+			if(JSON.stringify(expected[i]) != JSON.stringify(result)){
+				document.write(`hasNextTestテスト失敗 期待値 : ${expected[i]} , 結果 : ${result}`);
+			}
+		}		
+	}
+	
+	function getPagingTest1(){
+		const itemSizeOfPage = 5;
+		const buttonLengthOfPage = 3;
+		const totalItemSize = (itemSizeOfPage * 7) + 1; // 最大8ページ
+		const currentPageNo = new Array(1,2,3,4,5,6,7,8);
+		const expected = new Array(
+			{
+				"hasPrevious" : false,
+				"pages" : [1,2,3],
+				"hasNext" : true
+			},
+			{
+				"hasPrevious" : false,
+				"pages" : [1,2,3],
+				"hasNext" : true
+			},
+			{
+				"hasPrevious" : false,
+				"pages" : [1,2,3],
+				"hasNext" : true
+			},
+			{
+				"hasPrevious" : true,
+				"pages" : [4,5,6],
+				"hasNext" : true
+			},
+			{
+				"hasPrevious" : true,
+				"pages" : [4,5,6],
+				"hasNext" : true
+			},
+			{
+				"hasPrevious" : true,
+				"pages" : [4,5,6],
+				"hasNext" : true
+			},
+			{
+				"hasPrevious" : true,
+				"pages" : [7,8],
+				"hasNext" : false
+			},
+			{
+				"hasPrevious" : true,
+				"pages" : [7,8],
+				"hasNext" : false
+			}
+		);
+		for(var i = 0; i < currentPageNo.length; i++){
+			const result = pagingCommon.getPaging(totalItemSize, itemSizeOfPage, buttonLengthOfPage, currentPageNo[i]);
+			if(JSON.stringify(expected[i]) != JSON.stringify(result)){
+				document.write(`getPagingTest1テスト失敗 期待値 : ${expected[i]} , 結果 : ${result}`);
+			}
+		}
+	}
+	
+	function getPagingTest2(){
+		const itemSizeOfPage = 5;
+		const buttonLengthOfPage = 3;
+		const totalItemSize = 6; 
+		const currentPageNo = [1];
+		const expected = new Array(
+			{
+				"hasPrevious" : false,
+				"pages" : [1,2],
+				"hasNext" : false
+			}
+		);
+		for(var i = 0; i < currentPageNo.length; i++){
+			const result = pagingCommon.getPaging(totalItemSize, itemSizeOfPage, buttonLengthOfPage, currentPageNo[i]);
+			if(JSON.stringify(expected[i]) != JSON.stringify(result)){
+				document.write(`getPagingTest2テスト失敗 期待値 : ${expected[i]} , 結果 : ${result}`);
+			}
+		}
+	}
+	
+	endPageTest1();
+	endPageTest2();
+	startPageTest1();
+	startPageTest2();
+	hasPreviousTest();
+	hasNextTest();
+	pagesTest();
+	getPagingTest1();
+	getPagingTest2();
+	
+	</script>
+</body>
+</html>
