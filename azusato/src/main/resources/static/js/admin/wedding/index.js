@@ -1,12 +1,15 @@
 // URLSearchParamsを取得
 const urlParams = urlCommon.urlParams;
+const PAGE_NO_ATTRIBUTE_NAME = "data-page-no";
+const itemSizeOfPage = 10;
+const buttonLengthOfPage = 5;
 
 const initEvent = function(){
 	const radios = document.querySelectorAll('.search-wrap input[type="radio"]');
 	radios.forEach(radio => {
 		allowUncheck(radio);
 		addSearchClickEvent(radio);
-	})
+	});
 }
 
 const initContent = async function(searchParams){
@@ -41,11 +44,12 @@ const initContent = async function(searchParams){
 			}else{
 				REMARK_TAG.textContent = weddingAttender.remark;
 			}
-			
-			// TODO
-			paging();
-			
 		})
+		
+		const pageInfo = pagingCommon.getPaging(51,itemSizeOfPage,buttonLengthOfPage,searchParams.currentPageNo);
+		pagingUiCommon.create(pageInfo,searchParams.currentPageNo,function(){
+			search(this.getAttribute(PAGE_NO_ATTRIBUTE_NAME));
+		});
 	})
 }
 
@@ -80,14 +84,13 @@ const isNoRemark = function(remark){
 
 const getList = async function(searchParams){
 	console.log("参加情報取得");
-	const currentPageNo = getCurrentPageno();
 	const urlParams =  new URLSearchParams({
 		"nationality": searchParams?.nationality,
 		"attend": searchParams?.attend,
 		"eatting": searchParams?.eatting,
 		"division": searchParams?.division,
 		"remarkNonNull": searchParams?.remarkNonNull,
-		"offset": PAGE_PAGES_OF_PAGE*(currentPageNo-1),
+		"offset": getOffset(searchParams.currentPageNo),
 		"limit": PAGE_PAGES_OF_ELEMENT
 	});
 	console.log("urlParams:"+urlParams);
@@ -126,21 +129,30 @@ const allowUncheck = function(radio){
 
 const addSearchClickEvent = function(radio){
 	radio.addEventListener('click',function(){
-		search();
+		search(1);
 	});
 }
 
-const search = function(){
+const search = function(currentPageNo){
+	console.log("search currentPageNo: " + currentPageNo);
 	const searchParams = {
 		"nationality": document.querySelector('input[name="nationality"]:checked')?.value,
 		"attend": document.querySelector('input[name="attend"]:checked')?.value,
 		"eatting": document.querySelector('input[name="eatting"]:checked')?.value,
 		"division": document.querySelector('input[name="division"]:checked')?.value,
 		"remarkNonNull": document.querySelector('input[name="remarkNonNull"]:checked')?.value,	
+		"currentPageNo": currentPageNo,
+		"limit": PAGE_PAGES_OF_ELEMENT
 	}
 	
 	initContent(searchParams);
 }
 
+const getOffset = function getOffset(currentPageNo){
+	return PAGE_PAGES_OF_PAGE*(currentPageNo-1);
+}
+
 initEvent();
-initContent();
+initContent({
+	"currentPageNo": getCurrentPageno(),
+});
