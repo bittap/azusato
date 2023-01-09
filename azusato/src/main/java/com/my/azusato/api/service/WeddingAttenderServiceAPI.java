@@ -43,6 +43,12 @@ public class WeddingAttenderServiceAPI {
     weddingAttendRepository.save(weddingAttend);
   }
 
+  /**
+   * 結婚式参加者リストを取得する。
+   * 
+   * @param request SELECTクエリの付加要素
+   * @return 結婚式参加者リスト
+   */
   @Transactional(readOnly = true)
   public GetWeddingAttenderServiceAPIResponse get(GetWeddingAttendsRequest request) {
     QWeddingAttender weddingAttender = QWeddingAttender.weddingAttender;
@@ -63,17 +69,21 @@ public class WeddingAttenderServiceAPI {
         .build();
   }
 
-  private List<Predicate> getWheres(QWeddingAttender weddingAttender, Nationality nationality,
-      Boolean attend, Boolean eatting, Division division, Boolean remarkNonNull) {
+  /**
+   * 結婚式参加者リストのwhere文を作る。
+   * 
+   */
+  private List<Predicate> getWheres(QWeddingAttender weddingAttender, String nationality,
+      Boolean attend, Boolean eatting, String division, Boolean remarkNonNull) {
     List<Predicate> wheres = new ArrayList<>();
     if (Objects.nonNull(nationality))
-      wheres.add(weddingAttender.nationality.eq(nationality));
+      wheres.add(weddingAttender.nationality.eq(Nationality.valueOf(nationality)));
     if (Objects.nonNull(attend))
       wheres.add(weddingAttender.attend.eq(attend));
     if (Objects.nonNull(eatting))
       wheres.add(weddingAttender.eatting.eq(eatting));
     if (Objects.nonNull(division))
-      wheres.add(weddingAttender.division.eq(division));
+      wheres.add(weddingAttender.division.eq(Division.valueOf(division)));
 
     if (Objects.nonNull(remarkNonNull) && remarkNonNull)
       wheres.add(weddingAttender.remark.isNotNull());

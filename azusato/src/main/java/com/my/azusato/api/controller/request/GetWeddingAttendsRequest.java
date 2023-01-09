@@ -2,9 +2,9 @@ package com.my.azusato.api.controller.request;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import com.my.azusato.entity.WeddingAttender.Division;
 import com.my.azusato.entity.WeddingAttender.Nationality;
+import com.my.azusato.validator.annotation.ValueOfEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,16 +16,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetWeddingAttendsRequest {
 
-  // TODO Enumのバリデーションチェック
-  private Nationality nationality;
+  @ValueOfEnum(enumClass = Nationality.class)
+  private String nationality;
 
   private Boolean attend;
 
   private Boolean eatting;
 
-  // TODO Enumのバリデーションチェック
-  @Size(max = 10, message = "{size-string.max}")
-  private Division division;
+  @ValueOfEnum(enumClass = Division.class)
+  private String division;
 
   private Boolean remarkNonNull;
 
