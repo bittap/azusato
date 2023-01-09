@@ -61,6 +61,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+		  <groupId>org.mockito</groupId>
+		  <artifactId>mockito-inline</artifactId>
+		  <scope>test</scope>
+		</dependency>
 		<!-- Csrf https://stackoverflow.com/questions/25605373/unit-testing-controllers-with-csrf-protection-enabled-in-spring-security -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
