@@ -64,9 +64,15 @@ attend_btn_ele.addEventListener('click',function(){
 });
 
 async function attend() {
-	const res = await fetch("/wedding/attender", {
+	const res = await fetch(apiUrl + "/wedding/attender", {
 		method:'POST', 
-		body: new FormData(attend_form_ele)
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+			'Accept-Language': language,
+			'X-CSRF-TOKEN': document.querySelector('[name="_csrf"]').getAttribute('content')
+		},
+		body: JSON.stringify(Object.fromEntries(new FormData(attend_form_ele)))
 	});
 	
 	if(!res.ok) {

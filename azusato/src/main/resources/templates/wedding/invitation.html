@@ -155,7 +155,7 @@
 	                <form id="attend_form">
 	                    <div class="mb-3 mt-4">
 	                        <label for="name" class="form-label" th:text="#{wedding.name.title}"></label>
-	                        <input type="text" class="form-control" id="name">
+	                        <input type="text" class="form-control" id="name" name="name">
 	                    </div>
 	                    <div class="mb-3 nationality_wrap">
 	                        <label for="nationality" class="form-label" th:text="#{wedding.nationality.title}"></label>
@@ -188,7 +188,7 @@
 	                    </div>
 	                   	<div class="mb-3">
 	                   		<label for="remark" class="form-label" th:text="#{wedding.remark.title}"></label>
-  							<textarea th:placeholder="#{wedding.attendForm.remark.placeholder}" class="form-control" id="remark" rows="2"></textarea>
+  							<textarea th:placeholder="#{wedding.attendForm.remark.placeholder}" class="form-control" id="remark" rows="2" name="remark"></textarea>
 	                   	</div>
 	                    <button type='button' id="attend_form_btn" class="btn btn-light mt-3" th:text="#{wedding.attendForm.btn}"></button>
 	                </form>
@@ -203,6 +203,10 @@
 	<th:block th:replace = "layout/modal"></th:block>
 	<script src="/js/common/modal.js"></script>
 	<script th:inline="javascript">
+		const language = /*[[${#locale}]]*/ "language";
+		const apiUrl = "/"+/*[[${@environment.getProperty('client.api-url')}]]*/ "commonApiUrl";
+		const DEFAULT_ERROR_TITLE = "E-0001";
+		const DEFAULT_ERROR_BODY = /*[[#{E-0001}]]*/ "default error body";
 		const WEDDING_INVITATION_DATE = /*[[${@environment.getProperty('client.wedding-invitation-date')}]]*/ "";
 		const WEDDING_TOOLTIP_TITLE = /*[[#{wedding.tooltip.title}]]*/ "";
 		const ATTEND_MODAL_TITLE = /*[[#{wedding.attendForm.attend.modal.title}]]*/ "";
