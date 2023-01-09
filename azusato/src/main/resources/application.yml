@@ -124,7 +124,7 @@ client:
   wedding-invitation-date: 2023-09-17
   
 wedding:
-  division-datetime: 2023-05-01
+  division-date: 2023-09-01
   
 cookie:
   # 基本クッキーが反映されるパス

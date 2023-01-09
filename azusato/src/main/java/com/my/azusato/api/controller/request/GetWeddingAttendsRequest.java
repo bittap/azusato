@@ -2,13 +2,13 @@ package com.my.azusato.api.controller.request;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import com.my.azusato.entity.WeddingAttender.Division;
 import com.my.azusato.entity.WeddingAttender.Nationality;
 import com.my.azusato.validator.annotation.ValueOfEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.bytebuddy.implementation.bytecode.Division;
 
 @AllArgsConstructor
 @Data

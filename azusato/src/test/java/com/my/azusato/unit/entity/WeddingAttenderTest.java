@@ -1,39 +1,16 @@
 package com.my.azusato.unit.entity;
 
 import static org.mockito.Mockito.mockStatic;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedStatic;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import com.my.azusato.common.TestConstant;
 import com.my.azusato.entity.WeddingAttender;
-import com.my.azusato.entity.WeddingAttender.Division;
 import com.my.azusato.entity.WeddingAttender.Nationality;
-import com.my.azusato.provider.ApplicationContextProvider;
 
-@ExtendWith({SpringExtension.class, MockitoExtension.class})
-@ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class) // yaml読み込む
-@ActiveProfiles(value = TestConstant.PROFILES)
-@Import(ApplicationContextProvider.class)
 public class WeddingAttenderTest {
-
-  @Value("${wedding.division-datetime}")
-  private String weddingDivisionDatetime;
 
   @Nested
   class create {
@@ -62,7 +39,6 @@ public class WeddingAttenderTest {
           Assertions.assertEquals(created.getEatting(), eatting);
           Assertions.assertEquals(created.getRemark(), remark);
           Assertions.assertEquals(created.getCreatedDatetime(), mockedValue);
-          Assertions.assertEquals(created.getDivision(), Division.FIRST);
         }
       }
 
@@ -104,32 +80,5 @@ public class WeddingAttenderTest {
         });
       }
     }
-  }
-
-
-  @Nested
-  class DivisionTest {
-
-    @Nested
-    class valueOf {
-
-      @Nested
-      @DisplayName("正常系")
-      class normal {
-
-        @ParameterizedTest
-        @MethodSource("com.my.azusato.unit.entity.WeddingAttenderTest#Division_valueOf_normal_ok")
-        void ok(LocalDate createdDate, Division expected) {
-          System.out.println("wedding-division-datetime : " + weddingDivisionDatetime);
-          Division result = Division.valueOf(createdDate);
-          Assertions.assertEquals(expected, result);
-        }
-      }
-    }
-  }
-
-  public static Stream<Arguments> Division_valueOf_normal_ok() {
-    return Stream.of(Arguments.of(LocalDate.of(2023, 1, 1), Division.FIRST),
-        Arguments.of(LocalDate.of(2023, 5, 1), Division.SECOND));
   }
 }

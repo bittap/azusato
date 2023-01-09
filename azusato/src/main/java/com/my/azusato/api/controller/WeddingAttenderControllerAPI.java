@@ -3,6 +3,7 @@ package com.my.azusato.api.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +35,7 @@ public class WeddingAttenderControllerAPI {
   @ResponseStatus(HttpStatus.OK)
   @MethodAnnotation(description = "API_wed_attend_002 結婚式参加者リスト")
   public GetWeddingAttenderServiceAPIResponse get(
-      @RequestBody @Validated GetWeddingAttendsRequest request) {
+      @ModelAttribute @Validated GetWeddingAttendsRequest request) {
     return weddingAttendService.get(request);
   }
 }

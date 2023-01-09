@@ -43,4 +43,4 @@ profile:
   client-image-folder-path: /git/azusato/azusato/test-resources
   
 wedding:
-  division-datetime: 2023-05-01
+  division-date: 2023-05-01

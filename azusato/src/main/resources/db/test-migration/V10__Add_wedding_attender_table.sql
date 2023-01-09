@@ -9,7 +9,6 @@ create table wedding_attender (
   , name varchar(10) not null comment 'ネーム'
   , nationality enum('KOREA','JAPAN','ETC') not null comment '国籍'
   , remark varchar(1000) comment '備考'
-  , division enum('FIRST','SECOND') not null comment '区分'
   , PRIMARY KEY (no)
 )
 COMMENT='結婚式参加';

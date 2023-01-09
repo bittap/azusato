@@ -69,11 +69,11 @@
 								<td>
 									<div class="d-flex flex-wrap option-wrap">
 										<div class="form-check form-check-inline">
-											<input class="form-check-input" name="division" type="radio" id="division1" value="first">
+											<input class="form-check-input" name="beforeWeddingDivisionDatetime" type="radio" id="division1" value="true">
 			  								<label class="form-check-label" for="division1" th:text="#{wedding.division.first}">一回目</label>
 										</div>
 										<div class="form-check form-check-inline">
-											<input class="form-check-input" name="division" type="radio" id="division2" value="second">
+											<input class="form-check-input" name="beforeWeddingDivisionDatetime" type="radio" id="division2" value="false">
 			  								<label class="form-check-label" for="division2" th:text="#{wedding.division.second}">二回目</label>
 										</div>
 									</div>
@@ -163,9 +163,12 @@
 		</th:block>
 	</th:block>
 	<script th:inline="javascript">
+		const DIVISION_DATE =  /*[[${@environment.getProperty('wedding.division-date')}]]*/ "";
 		const NATIONALITY_KOREA_TEXT = /*[[#{wedding.nationality.korea}]]*/ "";
 		const NATIONALITY_JAPAN_TEXT = /*[[#{wedding.nationality.japan}]]*/ "";
 		const NATIONALITY_ETC_TEXT = /*[[#{wedding.nationality.etc}]]*/ "";
+		const DIVISION_FIRST_DATE = /*[[#{wedding.division.first}]]*/ "";
+		const DIVISION_SECOND_DATE = /*[[#{wedding.division.second}]]*/ "";
 	</script>
 	<script src="/js/admin/wedding/index.js"></script>	
 </body>

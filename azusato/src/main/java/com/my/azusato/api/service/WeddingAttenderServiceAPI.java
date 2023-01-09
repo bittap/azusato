@@ -1,10 +1,13 @@
 package com.my.azusato.api.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.my.azusato.api.controller.request.CreateWeddingAttendRequest;
@@ -30,6 +33,9 @@ public class WeddingAttenderServiceAPI {
   @PersistenceContext
   private final EntityManager entityManger;
 
+  @Value("${wedding.division-date}")
+  private String divisionDate;
+
   @Transactional
   public void create(CreateWeddingAttendRequest request) {
     WeddingAttender weddingAttend = WeddingAttender.builder() //
@@ -47,6 +53,7 @@ public class WeddingAttenderServiceAPI {
    * 結婚式参加者リストを取得する。
    * 
    * @param request SELECTクエリの付加要素
+   * @param weddingDivisionDatetime
    * @return 結婚式参加者リスト
    */
   @Transactional(readOnly = true)
@@ -75,7 +82,9 @@ public class WeddingAttenderServiceAPI {
    * 
    */
   private List<Predicate> getWheres(QWeddingAttender weddingAttender, String nationality,
-      Boolean attend, Boolean eatting, String division, Boolean remarkNonNull) {
+      Boolean attend, Boolean eatting, String divisionString, Boolean remarkNonNull) {
+    LocalDate divisionDatetime = LocalDate.parse(divisionDate, DateTimeFormatter.ISO_LOCAL_DATE);
+
     List<Predicate> wheres = new ArrayList<>();
     if (Objects.nonNull(nationality))
       wheres.add(weddingAttender.nationality.eq(Nationality.valueOf(nationality)));
@@ -83,8 +92,15 @@ public class WeddingAttenderServiceAPI {
       wheres.add(weddingAttender.attend.eq(attend));
     if (Objects.nonNull(eatting))
       wheres.add(weddingAttender.eatting.eq(eatting));
-    if (Objects.nonNull(division))
-      wheres.add(weddingAttender.division.eq(Division.valueOf(division)));
+
+    if (Objects.nonNull(divisionString)) {
+      Division division = Division.valueOf(divisionString);
+      if (division == Division.FIRST)
+        wheres.add(weddingAttender.createdDatetime.before(divisionDatetime.atStartOfDay()));
+      else if (division == Division.SECOND)
+        wheres.add(weddingAttender.createdDatetime.goe(divisionDatetime.atStartOfDay()));
+    }
+
 
     if (Objects.nonNull(remarkNonNull) && remarkNonNull)
       wheres.add(weddingAttender.remark.isNotNull());

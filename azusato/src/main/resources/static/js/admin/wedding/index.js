@@ -3,6 +3,7 @@ const urlParams = urlCommon.urlParams;
 const PAGE_NO_ATTRIBUTE_NAME = "data-page-no";
 const itemSizeOfPage = 10;
 const buttonLengthOfPage = 5;
+const divisionDatetime = moment(new Date(DIVISION_DATE)).format(DATETIME_FORMAT);
 
 const initEvent = function(){
 	const radios = document.querySelectorAll('.search-wrap input[type="radio"]');
@@ -28,6 +29,7 @@ const initContent = async function(searchParams){
 			const NATION_TAG = clone.querySelector(".-nationality");
 			const ATTEND_TAG = clone.querySelector(".-attend");
 			const EATTING_TAG = clone.querySelector(".-eatting");
+			const DIVISION_TAG = clone.querySelector(".-division");
 			const CREATED_DATETIME_TAG = clone.querySelector(".-created_datetime");
 			const REMARK_WRAP_TAG = clone.querySelector(".remark-wrap");
 			const REMARK_TAG = clone.querySelector(".-remark");
@@ -37,6 +39,7 @@ const initContent = async function(searchParams){
 			NATION_TAG.textContent = getNationText(weddingAttender.nationality);
 			ATTEND_TAG.textContent = getAttendText(weddingAttender.attend);
 			EATTING_TAG.textContent = getEattingText(weddingAttender.eatting);
+			DIVISION_TAG.textContent = getDivisionText(weddingAttender.createdDatetime);
 			CREATED_DATETIME_TAG.textContent = getCreatedDatetimeText(weddingAttender.createdDatetime);
 			
 			if(isNoRemark(weddingAttender.remark)){
@@ -51,6 +54,13 @@ const initContent = async function(searchParams){
 			search(this.getAttribute(PAGE_NO_ATTRIBUTE_NAME));
 		});
 	})
+}
+
+const getDivisionText = function(createdDatetimeString){
+	const divisionDatetime = moment(new Date(DIVISION_DATE)).format(DATETIME_FORMAT);
+	const createdDatetime = moment(new Date(createdDatetimeString)).format(DATETIME_FORMAT);
+	
+	return createdDatetime.isBefore(divisionDatetime) ? DIVISION_FIRST_DATE : DIVISION_SECOND_DATE;
 }
 
 const getNationText = function(nationality){
