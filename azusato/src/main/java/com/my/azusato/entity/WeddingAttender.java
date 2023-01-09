@@ -1,5 +1,6 @@
 package com.my.azusato.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.persistence.Column;
@@ -63,7 +64,7 @@ public class WeddingAttender extends BaseEntity {
     weddingAttend.eatting = eatting;
     weddingAttend.remark = remark;
     weddingAttend.createdDatetime = LocalDateTime.now();
-    weddingAttend.division = Division.valueOf(weddingAttend.createdDatetime);
+    weddingAttend.division = Division.valueOf(LocalDate.from(weddingAttend.createdDatetime));
     return weddingAttend;
   }
 
@@ -77,16 +78,18 @@ public class WeddingAttender extends BaseEntity {
     /**
      * 生成日時と環境変数の{@code wedding-division-datetime}比較で{@link Division}を返す。
      * 
-     * @param createdDatetime 生成日時
-     * @return 生成日時 > {@code wedding-division-datetime} : {@link Division#FIRST} , その以外 :
-     *         {@link Division#SECOND}
+     * @param createdDate 生成日時
+     * @return 生成日時 >= {@code wedding-division-datetime} : {@link Division#SECOND} , その以外 :
+     *         {@link Division#FIRST}
      */
-    public static Division valueOf(LocalDateTime createdDatetime) {
-      LocalDateTime divisionDatetime =
-          LocalDateTime.parse(ApplicationContextProvider.getApplicationContext().getEnvironment()
-              .getProperty("wedding-division-datetime"), DateTimeFormatter.ISO_LOCAL_DATE);
+    public static Division valueOf(LocalDate createdDate) {
+      LocalDate divisionDatetime =
+          LocalDate.parse(ApplicationContextProvider.getApplicationContext().getEnvironment()
+              .getProperty("wedding.division-datetime"), DateTimeFormatter.ISO_LOCAL_DATE);
 
-      return createdDatetime.isAfter(divisionDatetime) ? Division.SECOND : Division.FIRST;
+      return createdDate.isEqual(divisionDatetime) || createdDate.isAfter(divisionDatetime)
+          ? Division.SECOND
+          : Division.FIRST;
     }
   }
 
@@ -98,6 +101,6 @@ public class WeddingAttender extends BaseEntity {
    *
    */
   public enum Nationality {
-    KOREA, JAPAN, ETC
+    KOREA, JAPAN, ETC;
   }
 }
