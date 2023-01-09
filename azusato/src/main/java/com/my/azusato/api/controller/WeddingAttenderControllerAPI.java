@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping(value = Api.COMMON_REQUSET + "wedding/")
 @RequiredArgsConstructor
-@Validated
 public class WeddingAttenderControllerAPI {
 
   private final WeddingAttenderServiceAPI weddingAttendService;
@@ -27,14 +26,15 @@ public class WeddingAttenderControllerAPI {
   @PostMapping("attender")
   @ResponseStatus(HttpStatus.CREATED)
   @MethodAnnotation(description = "API_wed_attend_001 結婚式参加の登録")
-  public void create(@RequestBody CreateWeddingAttendRequest request) {
+  public void create(@RequestBody @Validated CreateWeddingAttendRequest request) {
     weddingAttendService.create(request);
   }
 
   @GetMapping("attenders")
   @ResponseStatus(HttpStatus.OK)
   @MethodAnnotation(description = "API_wed_attend_002 結婚式参加者リスト")
-  public GetWeddingAttenderServiceAPIResponse get(@RequestBody GetWeddingAttendsRequest request) {
+  public GetWeddingAttenderServiceAPIResponse get(
+      @RequestBody @Validated GetWeddingAttendsRequest request) {
     return weddingAttendService.get(request);
   }
 }
