@@ -41,3 +41,6 @@ profile:
   server-default-image-folder-path: src\main\resources\static\image\default\profile
   # クライアントの本イメージのファイルの格納場所
   client-image-folder-path: /git/azusato/azusato/test-resources
+  
+wedding:
+  division-datetime: 2023-05-01
