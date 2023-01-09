@@ -60,6 +60,7 @@ public class WeddingAttenderServiceAPI {
 
     QueryResults<WeddingAttender> result = qFactory.selectFrom(weddingAttender) //
         .where(wheres.toArray(new Predicate[wheres.size()])) //
+        .orderBy(weddingAttender.no.desc()) //
         .offset(request.getOffset()) //
         .limit(request.getLimit()).fetchResults();
 
