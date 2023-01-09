@@ -4,6 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import com.my.azusato.entity.WeddingAttender.Nationality;
+import com.my.azusato.validator.annotation.ValueOfEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,9 +20,9 @@ public class CreateWeddingAttendRequest {
   @Size(max = 10, message = "{size-string.max}")
   private String name;
 
-  // TODO Enumのバリデーションチェック
   @NotNull(message = "{notNull}")
-  private Nationality nationality;
+  @ValueOfEnum(enumClass = Nationality.class)
+  private String nationality;
 
   @NotNull(message = "{notNull}")
   private Boolean attend;

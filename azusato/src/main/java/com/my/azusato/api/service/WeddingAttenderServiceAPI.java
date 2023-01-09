@@ -34,7 +34,7 @@ public class WeddingAttenderServiceAPI {
   public void create(CreateWeddingAttendRequest request) {
     WeddingAttender weddingAttend = WeddingAttender.builder() //
         .name(request.getName()) //
-        .nationality(request.getNationality()) //
+        .nationality(Nationality.valueOf(request.getNationality())) //
         .attend(request.getAttend()) //
         .eatting(request.getEatting()) //
         .remark(request.getRemark()) //
