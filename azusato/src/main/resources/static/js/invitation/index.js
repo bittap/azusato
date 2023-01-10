@@ -66,7 +66,7 @@ attend_btn_ele.addEventListener('click',function(){
 async function attend() {
 	const entries = Object.fromEntries(new FormData(attend_form_ele));
 	
-	if(entries.remark == '' || !/\S/.test(entries.remark)){
+	if(!/\S/.test(entries.remark)){
 		entries.remark = null;
 	}
 	
