@@ -14,11 +14,12 @@ const initEvent = function(){
 }
 
 const initContent = async function(searchParams){
+	document.querySelector('#list-container').innerHTML = "";
 	getList(searchParams).then(result => {
 		console.log("結果",result);
 		// コンテンツのtemplate
 		const tempContent = document.querySelector('#template-list');
-		tempContent.weddingAttenders.forEach((weddingAttender) => {
+		result.weddingAttenders.forEach((weddingAttender) => {
 			const clone = tempContent.content.cloneNode(true);
 			
 			/*
@@ -41,24 +42,24 @@ const initContent = async function(searchParams){
 			EATTING_TAG.textContent = getEattingText(weddingAttender.eatting);
 			DIVISION_TAG.textContent = getDivisionText(weddingAttender.createdDatetime);
 			CREATED_DATETIME_TAG.textContent = getCreatedDatetimeText(weddingAttender.createdDatetime);
+			REMARK_TAG.textContent = weddingAttender.remark;
 			
-			if(isNoRemark(weddingAttender.remark)){
-				REMARK_WRAP_TAG.style.display = none;
-			}else{
-				REMARK_TAG.textContent = weddingAttender.remark;
-			}
+			document.querySelector('#list-container').appendChild(clone);
 		})
 		
-		const pageInfo = pagingCommon.getPaging(51,itemSizeOfPage,buttonLengthOfPage,searchParams.currentPageNo);
+		const pageInfo = pagingCommon.getPaging(result.total,itemSizeOfPage,buttonLengthOfPage,searchParams.currentPageNo);
 		pagingUiCommon.create(pageInfo,searchParams.currentPageNo,function(){
 			search(this.getAttribute(PAGE_NO_ATTRIBUTE_NAME));
 		});
-	})
+	}).catch(e =>{
+		console.log(e);
+		modalCommon.displayErrorModal(e.title,e.message);
+	});
 }
 
 const getDivisionText = function(createdDatetimeString){
-	const divisionDatetime = moment(new Date(DIVISION_DATE)).format(DATETIME_FORMAT);
-	const createdDatetime = moment(new Date(createdDatetimeString)).format(DATETIME_FORMAT);
+	const divisionDatetime = moment(new Date(DIVISION_DATE));
+	const createdDatetime = moment(new Date(createdDatetimeString));
 	
 	return createdDatetime.isBefore(divisionDatetime) ? DIVISION_FIRST_DATE : DIVISION_SECOND_DATE;
 }
@@ -89,7 +90,7 @@ const getCreatedDatetimeText = function(createdDatetime){
 }
 
 const isNoRemark = function(remark){
-	return remark != null ? true : false; 
+	return remark != null ? false : true; 
 }
 
 const getList = async function(searchParams){
@@ -101,7 +102,12 @@ const getList = async function(searchParams){
 		"division": searchParams?.division,
 		"remarkNonNull": searchParams?.remarkNonNull,
 		"offset": getOffset(searchParams.currentPageNo),
-		"limit": PAGE_PAGES_OF_ELEMENT
+		"limit": itemSizeOfPage
+	});
+	[...urlParams.entries()].forEach(([key, value]) => {
+		  if (value === "undefined") {
+			 urlParams.delete(key);
+		  }
 	});
 	console.log("urlParams:"+urlParams);
 	
@@ -151,8 +157,7 @@ const search = function(currentPageNo){
 		"eatting": document.querySelector('input[name="eatting"]:checked')?.value,
 		"division": document.querySelector('input[name="division"]:checked')?.value,
 		"remarkNonNull": document.querySelector('input[name="remarkNonNull"]:checked')?.value,	
-		"currentPageNo": currentPageNo,
-		"limit": PAGE_PAGES_OF_ELEMENT
+		"currentPageNo": currentPageNo
 	}
 	
 	initContent(searchParams);
