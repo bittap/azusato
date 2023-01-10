@@ -86,7 +86,7 @@ async function attend() {
 		return Promise.reject(result);
 	}else{
 		modalCommon.displayOneBtnModal(ATTEND_MODAL_OK_TITLE,ATTEND_MODAL_OK_BODY,async function(){
-			location.reload(false);
+			location.reload();
 		})
 	}
 }
