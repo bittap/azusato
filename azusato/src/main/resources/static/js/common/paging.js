@@ -30,6 +30,11 @@ Paging.prototype.getPaging = function(totalItemSize, itemSizeOfPage, buttonLengt
 	
 }
 
+
+Paging.prototype.getOffset = function(itemSizeOfPage,currentPageNo){
+	return itemSizeOfPage*(currentPageNo-1);
+}
+
 /*
  * 最後のページ数を返す
  * (項目の総数 / 一つのページに表示する項目の数) + (項目の総数 % 一つのページに表示する項目の数 != 0 ? 1 : 0)
