@@ -69,11 +69,11 @@
 								<td>
 									<div class="d-flex flex-wrap option-wrap">
 										<div class="form-check form-check-inline">
-											<input class="form-check-input" name="beforeWeddingDivisionDatetime" type="radio" id="division1" value="true">
+											<input class="form-check-input" name="division" type="radio" id="division1" value="FIRST">
 			  								<label class="form-check-label" for="division1" th:text="#{wedding.division.first}">一回目</label>
 										</div>
 										<div class="form-check form-check-inline">
-											<input class="form-check-input" name="beforeWeddingDivisionDatetime" type="radio" id="division2" value="false">
+											<input class="form-check-input" name="division" type="radio" id="division2" value="SECOND">
 			  								<label class="form-check-label" for="division2" th:text="#{wedding.division.second}">二回目</label>
 										</div>
 									</div>
@@ -99,7 +99,7 @@
 				</div>
 				<div class="p-3 rounded shadow text-center">
 					<div class="table-responsive">
-						<table class="table table-sm text-center table-striped" style="width:100%;table-layout: fixed">
+						<table class="table table-sm text-center content-table" style="width:100%;table-layout: fixed">
 							<thead>
 								<th scope="col">No</th>
 								<th scope="col" th:text="#{wedding.name.title}">名前</th>
@@ -108,25 +108,22 @@
 								<th scope="col" th:text="#{wedding.eatting.title}">食事</th>
 								<th scope="col" th:text="#{wedding.division.title}">区分</th>
 								<th scope="col" th:text="#{wedding.created-datetime.title}">作成日時</th>
+								<th scope="col" th:text="#{wedding.remark.title}">備考</th>
 							</thead>
-							<tbody>
-								<template id="template-list">
+							<tbody id="list-container">
+							</tbody>
+							<template id="template-list">
 									<tr>
 										<td class="align-middle -no" scope="row" rowspan="1">5</td>
-			      						<td class="-name">山本 あずさあ</td>
-			      						<td class="-nationality">その他</td>
-			      						<td class="-attend">0</td>
-			      						<td class="-eatting">x</td>
-			      						<td class="-division">1回目</td>
-			      						<td class="-created_datetime">01/04</td>
+			      						<td class="align-middle -name">山本 あずさあ</td>
+			      						<td class="align-middle -nationality">その他</td>
+			      						<td class="align-middle -attend">0</td>
+			      						<td class="align-middle -eatting">x</td>
+			      						<td class="align-middle -division">1回目</td>
+			      						<td class="align-middle -created_datetime">01/04</td>
+			      						<td class="-remark text-start">asdfasdfsafsdaf</td>
 		      						</tr>
-		      						<tr class="text-start remark-wrap" style="display:none">
-		      							<td colspan="8" class="-remark">
-		      								asdfasdfsafsdaf
-		      							</td>
-		      						</tr>
-	      						</template>
-							</tbody>
+	      					</template>
 						</table>
 					</div>
 					<small class="d-block text-end mt-4"> 
