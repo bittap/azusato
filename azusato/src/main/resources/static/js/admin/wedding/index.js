@@ -164,7 +164,7 @@ const search = function(currentPageNo){
 }
 
 const getOffset = function getOffset(currentPageNo){
-	return PAGE_PAGES_OF_PAGE*(currentPageNo-1);
+	return itemSizeOfPage*(currentPageNo-1);
 }
 
 initEvent();
