@@ -4,6 +4,7 @@ const PAGE_NO_ATTRIBUTE_NAME = "data-page-no";
 const itemSizeOfPage = 10;
 const buttonLengthOfPage = 5;
 const divisionDatetime = moment(new Date(DIVISION_DATE)).format(DATETIME_FORMAT);
+const FIRST_PAGE_NO = 1;
 
 const initEvent = function(){
 	const radios = document.querySelectorAll('.search-wrap input[type="radio"]');
@@ -32,7 +33,6 @@ const initContent = async function(searchParams){
 			const EATTING_TAG = clone.querySelector(".-eatting");
 			const DIVISION_TAG = clone.querySelector(".-division");
 			const CREATED_DATETIME_TAG = clone.querySelector(".-created_datetime");
-			const REMARK_WRAP_TAG = clone.querySelector(".remark-wrap");
 			const REMARK_TAG = clone.querySelector(".-remark");
 			
 			NO_TAG.textContent = weddingAttender.no;
@@ -101,7 +101,7 @@ const getList = async function(searchParams){
 		"eatting": searchParams?.eatting,
 		"division": searchParams?.division,
 		"remarkNonNull": searchParams?.remarkNonNull,
-		"offset": getOffset(searchParams.currentPageNo),
+		"offset": pagingCommon.getOffset(itemSizeOfPage,searchParams.currentPageNo),
 		"limit": itemSizeOfPage
 	});
 	[...urlParams.entries()].forEach(([key, value]) => {
@@ -123,15 +123,6 @@ const getList = async function(searchParams){
 }
 
 /*
- * 現在ページ番号を取得する。
- * クエリパラメータにない場合は1を返す。
- * @return {int} 現在ページの番号
- */
-const getCurrentPageno = function(){
-	return urlParams.has("currentPageNo") ? urlParams.get("currentPageNo") : 1 ;
-}
-
-/*
  * 活性しているラジオボタンを押下した場合、非活性させる機能を追加
  */
 const allowUncheck = function(radio){
@@ -145,7 +136,7 @@ const allowUncheck = function(radio){
 
 const addSearchClickEvent = function(radio){
 	radio.addEventListener('click',function(){
-		search(1);
+		search(FIRST_PAGE_NO);
 	});
 }
 
@@ -163,11 +154,7 @@ const search = function(currentPageNo){
 	initContent(searchParams);
 }
 
-const getOffset = function getOffset(currentPageNo){
-	return itemSizeOfPage*(currentPageNo-1);
-}
-
 initEvent();
 initContent({
-	"currentPageNo": getCurrentPageno(),
+	"currentPageNo": FIRST_PAGE_NO,
 });
