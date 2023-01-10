@@ -102,6 +102,8 @@ public class TestConstant {
   public final static String COMMON_ENTITY_FOLDER = COMMON_TEST_DATA_FOLDER + "entity/";
 
   public static class Entity {
+    public static final long[] ADMIN_USER_NOS = {1, 5};
+
     public static final int[] GET_INDEXS = {0, 1, 2};
     public static final String[] uniques = {"unique1", "unique2", "unique3", "unique4"};
     public static final String[] createdVarChars =
