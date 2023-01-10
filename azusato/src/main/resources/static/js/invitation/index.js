@@ -64,6 +64,12 @@ attend_btn_ele.addEventListener('click',function(){
 });
 
 async function attend() {
+	const entries = Object.fromEntries(new FormData(attend_form_ele));
+	
+	if(entries.remark == '' || !/\S/.test(entries.remark)){
+		entries.remark = null;
+	}
+	
 	const res = await fetch(apiUrl + "/wedding/attender", {
 		method:'POST', 
 		headers: {
@@ -72,7 +78,7 @@ async function attend() {
 			'Accept-Language': language,
 			'X-CSRF-TOKEN': document.querySelector('[name="_csrf"]').getAttribute('content')
 		},
-		body: JSON.stringify(Object.fromEntries(new FormData(attend_form_ele)))
+		body: JSON.stringify(entries)
 	});
 	
 	if(!res.ok) {
