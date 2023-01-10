@@ -17,6 +17,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.property.CelebrationProperty;
 import com.my.azusato.property.ProfileProperty;
+import com.my.azusato.repository.ProfileRepository;
 import com.my.azusato.repository.UserRepository;
 
 /**
@@ -47,6 +48,9 @@ public abstract class AbstractIntegration {
 
   @Autowired
   protected UserRepository userRepo;
+
+  @Autowired
+  protected ProfileRepository profileRepo;
 
   public AbstractIntegration() {
     // サポートjavatime

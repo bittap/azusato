@@ -22,15 +22,15 @@ import com.my.azusato.api.controller.ProfileControllerAPI;
 import com.my.azusato.api.controller.response.DefaultRandomProfileResponse;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
-import com.my.azusato.common.TestLogin;
 import com.my.azusato.common.TestStream;
+import com.my.azusato.entity.ProfileEntity;
+import com.my.azusato.entity.UserEntity;
 import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.login.LoginUser;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
 
 public class ProfileControllerAPITest extends AbstractIntegration {
-
-  final static String RESOUCE_BASIC_PATH = "src/test/data/integration/api/controller/profile/";
 
   @Nested
   class RandomProfile {
@@ -70,16 +70,10 @@ public class ProfileControllerAPITest extends AbstractIntegration {
   @Nested
   class uploadImage {
 
-    final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "upload-image/";
-
     @Test
     public void givenFile_resultReturn200() throws Exception {
-      String folderName = "1";
-      String expectFileName = "1." + Entity.ImageType[0];
-      String[] COMPARED_TABLE_NAME = {"user", "profile"};
-
-      dbUnitCompo
-          .initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+      UserEntity adminUser = userRepo.findById(Entity.ADMIN_USER_NOS[0]).get();
+      String expectedFileName = "1." + Entity.ImageType[0];
 
       MockMultipartFile multipartFile = new MockMultipartFile("profileImage",
           TestConstant.TEST_IMAGE_FILENAME, null, TestStream.getTestImageBytes());
@@ -87,52 +81,17 @@ public class ProfileControllerAPITest extends AbstractIntegration {
       mockMvc
           .perform(multipart(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET
               + ProfileControllerAPI.UPLOAD_IMG_URL).file(multipartFile)
-                  .with(user(TestLogin.adminLoginUser())).with(csrf()))
+                  .with(user(new LoginUser(adminUser))).with(csrf()))
           .andDo(print()).andExpect(status().isOk()).andReturn();
+
+      ProfileEntity result = profileRepo.findById(adminUser.getNo()).get();
 
       // ファイル存在有無チェック
       Assertions.assertDoesNotThrow(() -> {
-        Paths.get(profileProperty.getClientImageFolderPath() + expectFileName);
+        Paths.get(profileProperty.getClientImageFolderPath() + expectedFileName);
       });
 
-      // compare tables
-      for (String table : COMPARED_TABLE_NAME) {
-        // exclude to compare dateTime columns when celebration table
-        if (table.equals("user")) {
-          dbUnitCompo.compareTable(
-              Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table,
-              TestConstant.DEFAULT_EXCLUDE_UPDATE_DATE_COLUMNS);
-        } else {
-          dbUnitCompo.compareTable(
-              Paths.get(RESOUCE_PATH, folderName, TestConstant.EXPECT_XML_FILE_NAME), table);
-        }
-      }
+      Assertions.assertEquals("/" + expectedFileName, result.getImagePath());
     }
-
-    // SpringBootTestではテスト不可能のため、省略
-    // @ParameterizedTest
-    // @MethodSource("com.my.azusato.integration.api.controller.ProfileControllerAPITest#givenNoPermitExtension_resultThrow400")
-    // public void givenExceedMaxFileSize_resultThrow400(Locale locale, String message) throws
-    // Exception {
-    // MockMultipartFile multipartFile = new MockMultipartFile("profileImage",
-    // TestConstant.TEST_LARGE_IMAGE_FILENAME,null, TestStream.getTestLargeImageBytes());
-    //
-    // MvcResult mvcResult = mockMvc
-    // .perform(
-    // multipart(TestConstant.MAKE_ABSOLUTE_URL + Api.COMMON_REQUSET +
-    // ProfileControllerAPI.UPLOAD_IMG_URL)
-    // .file(multipartFile)
-    // .locale(locale)
-    // .with(user(TestLogin.adminLoginUser()))
-    // .with(csrf()))
-    // .andDo(print()).andExpect(status().isBadRequest()).andReturn();
-    //
-    // String resultBody = mvcResult.getResponse()
-    // .getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
-    // ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
-    //
-    // assertEquals(new ErrorResponse(AzusatoException.I0004, message), result);
-    // }
-
   }
 }
