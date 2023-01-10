@@ -58,8 +58,6 @@ public class UserContollerAPITest extends AbstractIntegration {
   @Nested
   class AddNonMember {
 
-    final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "addNonmember/";
-
     @ParameterizedTest
     @MethodSource("com.my.azusato.integration.api.controller.UserContollerAPITest#givenVaildParameter_resultOk")
     public void givenVaildParameter_resultOk(AddNonMemberUserAPIRequest req) throws Exception {
