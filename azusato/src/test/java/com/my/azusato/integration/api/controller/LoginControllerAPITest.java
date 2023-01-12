@@ -6,24 +6,19 @@ import static org.springframework.security.test.web.servlet.response.SecurityMoc
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.nio.charset.Charset;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.config.SecurityConfig;
@@ -36,159 +31,123 @@ import com.my.azusato.property.CookieProperty;
 
 public class LoginControllerAPITest extends AbstractIntegration {
 
-	final static String RESOUCE_BASIC_PATH = "src/test/data/integration/api/controller/";
-	
-	@Autowired
-	private CookieProperty cookieProperty;
+  @Autowired
+  private CookieProperty cookieProperty;
 
-	@Nested
-	class Login {
+  @Nested
+  class Login {
 
-		final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "login/";
+    @ParameterizedTest
+    @MethodSource("com.my.azusato.integration.api.controller.LoginControllerAPITest#thenRealtiveUser_resultOk")
+    public void thenRealtiveUser_resultOk(Long no) throws Exception {
+      UserEntity targetUser = userRepo.findById(no).get();
 
-		@ParameterizedTest
-		@MethodSource("com.my.azusato.integration.api.controller.LoginControllerAPITest#thenRealtiveUser_resultOk")
-		public void thenRealtiveUser_resultOk(String folderName, List<GrantedAuthority> expectedRoles) throws Exception {
-			String userName = Entity.createdVarChars[0];
-			
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+      List<GrantedAuthority> expectedRoles = AuthorityUtils
+          .createAuthorityList(Grant.ROLE_PRIFIX + targetUser.getUserType().toString());
 
-			mockMvc
-					.perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
-							.param(SecurityConfig.USERNAME_PARAMETER, userName)
-							.param(SecurityConfig.PASSWORD_PARAMETER, Entity.createdVarChars[1])
-							.with(csrf()))
-					.andDo(print())
-					.andExpect(authenticated().withUsername(userName).withAuthorities(expectedRoles))
-					.andExpect(status().isOk()).andReturn();
-		}
-		
-		@Test
-		public void givenSavedIdTrue_thenResultsavedCookie_and_ivenSavedIdFalse_thenResultdeleteCookie() throws Exception {
-			String userName = Entity.createdVarChars[0];
-			String folderName = "6";
-			
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			// ユーザID保存 trueの場合
-			mockMvc
-					.perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
-							.param(SecurityConfig.USERNAME_PARAMETER, userName)
-							.param(SecurityConfig.PASSWORD_PARAMETER, Entity.createdVarChars[1])
-							.param(cookieProperty.getLoginSaveIdName(), "true")
-							.with(csrf())
-							)
-					.andDo(print())
-					.andExpect(status().isOk())
-					.andExpect(cookie().exists(cookieProperty.getLoginSaveIdName()))
-					.andExpect(cookie().maxAge(cookieProperty.getLoginSaveIdName(),cookieProperty.getCookieMaxTime()))
-					.andExpect(cookie().value(cookieProperty.getLoginSaveIdName(),userName))
-					.andExpect(cookie().path(cookieProperty.getLoginSaveIdName(), cookieProperty.getPath()))
-					.andReturn();
-			
-			// ユーザID保存 falseの場合
-			mockMvc
-					.perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
-							.param(SecurityConfig.USERNAME_PARAMETER, userName)
-							.param(SecurityConfig.PASSWORD_PARAMETER, Entity.createdVarChars[1])
-							.param(cookieProperty.getLoginSaveIdName(), "false")
-							.with(csrf())
-							)
-					.andDo(print())
-					.andExpect(status().isOk())
-					.andExpect(cookie().exists(cookieProperty.getLoginSaveIdName()))
-					.andExpect(cookie().maxAge(cookieProperty.getLoginSaveIdName(),0))
-					.andExpect(cookie().path(cookieProperty.getLoginSaveIdName(), cookieProperty.getPath()))
-					.andReturn();
-		}
-		
-		
-		
-		@ParameterizedTest
-		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void thenNotMatchPassword_result400(Locale locale) throws Exception {
-			String userName = Entity.createdVarChars[0];
-			String folderName = "5";
-			
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
-			MvcResult mvcResult = mockMvc
-					.perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
-							.param(SecurityConfig.USERNAME_PARAMETER, userName)
-							.param(SecurityConfig.PASSWORD_PARAMETER, "notMatchedPassword")
-							.with(csrf())
-							.locale(locale)
-							)
-					.andDo(print())
-					.andExpect(status().isBadRequest()).andReturn();
-			
-			String resultBody = mvcResult.getResponse()
-					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
-			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+      mockMvc
+          .perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
+              .param(SecurityConfig.USERNAME_PARAMETER, targetUser.getId())
+              .param(SecurityConfig.PASSWORD_PARAMETER, Entity.createdVarChars[1]).with(csrf()))
+          .andDo(print())
+          .andExpect(
+              authenticated().withUsername(targetUser.getId()).withAuthorities(expectedRoles))
+          .andExpect(status().isOk()).andReturn();
+    }
 
-			assertEquals(new ErrorResponse(AzusatoException.I0010, messageSource.getMessage(AzusatoException.I0010, null, locale)),
-					result);
-		}
-		
-		@ParameterizedTest
-		@MethodSource("com.my.azusato.common.TestSource#locales")
-		public void thenNotFoundUser_result400(Locale locale) throws Exception {
-			MvcResult mvcResult = mockMvc
-					.perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
-							.param(SecurityConfig.USERNAME_PARAMETER, Entity.createdVarChars[0])
-							.param(SecurityConfig.PASSWORD_PARAMETER, Entity.createdVarChars[1])
-							.with(csrf())
-							.locale(locale)
-							)
-					.andDo(print())
-					.andExpect(status().isBadRequest()).andReturn();
-			
-			String resultBody = mvcResult.getResponse()
-					.getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
-			ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+    @Test
+    public void givenSavedIdTrue_thenResultsavedCookie_and_givenSavedIdFalse_thenResultdeleteCookie()
+        throws Exception {
+      UserEntity targetUser = userRepo.findById(1L).get();
+      String id = targetUser.getId();
+      // ユーザID保存 trueの場合
+      mockMvc
+          .perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
+              .param(SecurityConfig.USERNAME_PARAMETER, id)
+              .param(SecurityConfig.PASSWORD_PARAMETER, Entity.createdVarChars[1])
+              .param(cookieProperty.getLoginSaveIdName(), "true").with(csrf()))
+          .andDo(print()).andExpect(status().isOk())
+          .andExpect(cookie().exists(cookieProperty.getLoginSaveIdName()))
+          .andExpect(cookie().maxAge(cookieProperty.getLoginSaveIdName(),
+              cookieProperty.getCookieMaxTime()))
+          .andExpect(cookie().value(cookieProperty.getLoginSaveIdName(), id))
+          .andExpect(cookie().path(cookieProperty.getLoginSaveIdName(), cookieProperty.getPath()))
+          .andReturn();
 
-			assertEquals(new ErrorResponse(AzusatoException.I0009, messageSource.getMessage(AzusatoException.I0009, null, locale)),
-					result);
-		}
+      // ユーザID保存 falseの場合
+      mockMvc
+          .perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
+              .param(SecurityConfig.USERNAME_PARAMETER, id)
+              .param(SecurityConfig.PASSWORD_PARAMETER, Entity.createdVarChars[1])
+              .param(cookieProperty.getLoginSaveIdName(), "false").with(csrf()))
+          .andDo(print()).andExpect(status().isOk())
+          .andExpect(cookie().exists(cookieProperty.getLoginSaveIdName()))
+          .andExpect(cookie().maxAge(cookieProperty.getLoginSaveIdName(), 0))
+          .andExpect(cookie().path(cookieProperty.getLoginSaveIdName(), cookieProperty.getPath()))
+          .andReturn();
+    }
 
-	}
-	
-	@Nested
-	class Logout {
 
-		final static String RESOUCE_PATH = RESOUCE_BASIC_PATH + "logout/";
 
-		@Test
-		public void thenLogout_resultOk() throws Exception {
-			String userName = Entity.createdVarChars[0];
-			String folderName = "1";
-			
-			dbUnitCompo.initalizeTable(Paths.get(RESOUCE_PATH, folderName, TestConstant.INIT_XML_FILE_NAME));
+    @ParameterizedTest
+    @MethodSource("com.my.azusato.common.TestSource#locales")
+    public void thenNotMatchPassword_result400(Locale locale) throws Exception {
+      UserEntity targetUser = userRepo.findById(1L).get();
 
-			// login
-			mockMvc
-					.perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
-							.param(SecurityConfig.USERNAME_PARAMETER, userName)
-							.param(SecurityConfig.PASSWORD_PARAMETER, Entity.createdVarChars[1])
-							.with(csrf()))
-					.andDo(print())
-					.andExpect(status().isOk()).andReturn();
-			
-			// logout
-			mockMvc
-			.perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGOUT_URL)
-					.with(csrf())
-					)
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andReturn();
-		}
-	}
-	
-	public static Stream<Arguments> thenRealtiveUser_resultOk(){
-		return Stream.of(
-					Arguments.of("1",AuthorityUtils.createAuthorityList(Grant.ROLE_PRIFIX+UserEntity.Type.admin.toString())),
-					Arguments.of("2",AuthorityUtils.createAuthorityList(Grant.ROLE_PRIFIX+UserEntity.Type.kakao.toString())),
-					Arguments.of("3",AuthorityUtils.createAuthorityList(Grant.ROLE_PRIFIX+UserEntity.Type.line.toString())),
-					Arguments.of("4",AuthorityUtils.createAuthorityList(Grant.ROLE_PRIFIX+UserEntity.Type.nonmember.toString()))
-				);
-	}
+      MvcResult mvcResult =
+          mockMvc.perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
+              .param(SecurityConfig.USERNAME_PARAMETER, targetUser.getId())
+              .param(SecurityConfig.PASSWORD_PARAMETER, "notMatchedPassword").with(csrf())
+              .locale(locale)).andDo(print()).andExpect(status().isBadRequest()).andReturn();
+
+      String resultBody =
+          mvcResult.getResponse().getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+      ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+
+      assertEquals(new ErrorResponse(AzusatoException.I0010,
+          messageSource.getMessage(AzusatoException.I0010, null, locale)), result);
+    }
+
+    @ParameterizedTest
+    @MethodSource("com.my.azusato.common.TestSource#locales")
+    public void thenNotFoundUser_result400(Locale locale) throws Exception {
+      MvcResult mvcResult =
+          mockMvc.perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
+              .param(SecurityConfig.USERNAME_PARAMETER, Entity.createdVarChars[0])
+              .param(SecurityConfig.PASSWORD_PARAMETER, Entity.createdVarChars[1]).with(csrf())
+              .locale(locale)).andDo(print()).andExpect(status().isBadRequest()).andReturn();
+
+      String resultBody =
+          mvcResult.getResponse().getContentAsString(Charset.forName(TestConstant.DEFAULT_CHARSET));
+      ErrorResponse result = om.readValue(resultBody, ErrorResponse.class);
+
+      assertEquals(new ErrorResponse(AzusatoException.I0009,
+          messageSource.getMessage(AzusatoException.I0009, null, locale)), result);
+    }
+
+  }
+
+  @Nested
+  class Logout {
+
+    @Test
+    public void givenLogInAndLogout_thenResultOk() throws Exception {
+      UserEntity targetUser = userRepo.findById(1L).get();
+
+      // login
+      mockMvc
+          .perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGIN_URL)
+              .param(SecurityConfig.USERNAME_PARAMETER, targetUser.getId())
+              .param(SecurityConfig.PASSWORD_PARAMETER, Entity.createdVarChars[1]).with(csrf()))
+          .andDo(print()).andExpect(status().isOk()).andReturn();
+
+      // logout
+      mockMvc.perform(MockMvcRequestBuilders.post(SecurityConfig.API_LOGOUT_URL).with(csrf()))
+          .andDo(print()).andExpect(status().isOk()).andReturn();
+    }
+  }
+
+  public static Stream<Long> thenRealtiveUser_resultOk() {
+    return Stream.of(1L, 2L, 3L, 4L);
+  }
 }
