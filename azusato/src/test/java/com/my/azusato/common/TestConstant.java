@@ -103,6 +103,7 @@ public class TestConstant {
 
   public static class Entity {
     public static final long[] ADMIN_USER_NOS = {1, 5};
+    public static final long[] NONMEMBER_USER_NOS = {2};
 
     public static final int[] GET_INDEXS = {0, 1, 2};
     public static final String[] uniques = {"unique1", "unique2", "unique3", "unique4"};
