@@ -79,10 +79,12 @@ public class CelebrationServiceAPITest {
       }
 
       @Test
-      @DisplayName("管理者意外で投稿&管理者存在_結果お祝いデータ&各お祝い通知テーブルに管理者をターゲットで挿入される")
+      @DisplayName("管理者以外で投稿&管理者存在_結果お祝いデータ&各お祝い通知テーブルに管理者をターゲットで挿入される")
       public void givenNotAdminWriterAndAdminExist_resultInsetedCelebrationAndCelebrationNotice()
           throws Exception {
         // given
+        celeNoticeRepo.deleteAll();
+
         AddCelebrationServiceAPIRequest req = getVaildParameter();
         // when
         target.addCelebartion(req, null);
