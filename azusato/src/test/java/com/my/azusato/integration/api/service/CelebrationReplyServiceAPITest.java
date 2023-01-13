@@ -37,7 +37,7 @@ class CelebrationReplyServiceAPITest {
   CelebrationReplyRepository celeReplyRepo;
 
   @Autowired
-  CelebrationNoticeRepository celeNotiRepo;
+  CelebrationNoticeRepository celeNoticeRepo;
 
   @Autowired
   UserRepository userRepo;
@@ -59,6 +59,8 @@ class CelebrationReplyServiceAPITest {
       @DisplayName("書き込み作成者が他人で書き込みが二つある場合_結果書き込み「三つ」と「通知」は二つ")
       void givenWriterSelfAndNoReply_resultReply1AndNoticeZero() {
         // given
+        celeNoticeRepo.deleteAll();
+
         long writerUserNo = 3;
         AddCelebrationReplyAPIReqeust req =
             AddCelebrationReplyAPIReqeust.builder().name(name).content(content).build();
@@ -71,7 +73,7 @@ class CelebrationReplyServiceAPITest {
         List<CelebrationReplyEntity> CelebrationReplys =
             celeReplyRepo.findByCelebrationNo(targetCelebrationNo);
         List<CelebrationNoticeEntity> CelebrationNotices =
-            celeNotiRepo.findAllByCelebrationNo(targetCelebrationNo);
+            celeNoticeRepo.findAllByCelebrationNo(targetCelebrationNo);
 
         Assertions.assertEquals(name, writer.getName());
 
