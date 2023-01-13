@@ -9,12 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
-import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.my.azusato.common.TestConstant;
+import com.my.azusato.common.TestConstant.Entity;
+import com.my.azusato.entity.UserEntity;
 import com.my.azusato.property.CelebrationProperty;
 import com.my.azusato.property.ProfileProperty;
 import com.my.azusato.repository.ProfileRepository;
@@ -52,29 +53,31 @@ public abstract class AbstractIntegration {
   @Autowired
   protected ProfileRepository profileRepo;
 
+  protected UserEntity adminUser;
+
   public AbstractIntegration() {
     // サポートjavatime
     om.registerModule(new JavaTimeModule());
   }
 
-
   /**
    * テストフォルダにあるファイル全部削除する。
    */
   @BeforeEach
-  @Commit
-  public void superBeforeEach() {
-    allFileDelete();
-  }
-
-  /**
-   * テストし使用したファイルを全部削除する。
-   */
-  private void allFileDelete() {
+  public void deleteAllFileInTestFolder() {
     File file1 = Paths.get(celeProperty.getServerContentFolderPath()).toFile();
     Arrays.asList(file1.listFiles()).forEach(File::delete);
 
     File file2 = Paths.get(profileProperty.getClientImageFolderPath()).toFile();
     Arrays.asList(file2.listFiles()).forEach(File::delete);
   }
+
+  protected UserEntity getAdminUser() {
+    return userRepo.findById(Entity.ADMIN_USER_NOS[0]).get();
+  }
+
+  protected UserEntity getNonMember() {
+    return userRepo.findById(Entity.NONMEMBER_USER_NOS[0]).get();
+  }
+
 }
