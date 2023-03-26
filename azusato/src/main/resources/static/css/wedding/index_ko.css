@@ -1,5 +1,5 @@
-.invitation_message_wrap{
-	font-family: 'Nanum Pen Script', cursive;
+.invitation_message_wrap > p{
+	/* font-family: 'Nanum Pen Script', cursive; */
 }
 .attend_message_wrap .attend_message{
 	font-family: 'Nanum Pen Script', cursive; 
