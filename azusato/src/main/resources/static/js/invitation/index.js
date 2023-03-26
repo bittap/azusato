@@ -40,6 +40,14 @@ opacityHiddenEles.forEach(ele => {
   observer.observe(ele)
 });
 
+//setInterval(function(){
+//	const countDowns = getCountDown(WEDDING_INVITATION_DATE);
+//	days_ele.textContent = countDowns.days;
+//	hours_ele.textContent = countDowns.hours;
+//	minutes_ele.textContent = countDowns.minutes;
+//	seconds_ele.textContent = countDowns.seconds;
+//},1000);
+
 imgEles.forEach(function(imgEle){
 	const src = imgEle.getAttribute('src');
 	imgEle.addEventListener('click',function(){
@@ -93,4 +101,76 @@ function changeImageSrc(src){
 
 function getSeconds(date){
 	return date.getTime() / 1000; 
+}
+
+function getCountDown(dateToStr){
+	dateTo = moment(dateToStr);
+	dateFrom = moment();
+	
+	if(dateFrom.isBefore(dateTo)){
+		// 結婚式日時 - 今の日時
+		const differSeconds = Math.floor(dateTo.diff(dateFrom) / 1000);
+		// xxx秒 / 60 x 60 x 24 => xxx日
+		const days = getDay(differSeconds);
+		// 時分秒
+		const hoMiSeOfSeconds = differSeconds - (days.seconds);
+		// .時分秒 / 60 x 60 => xxx時間
+		const hours = getHours(hoMiSeOfSeconds);
+		// 分秒
+		const miSeOfSeconds = hoMiSeOfSeconds - (hours.seconds);
+		// 分秒 / 60 => xxx分
+		const minutes = getMinutes(miSeOfSeconds);
+		// 分秒 - xxx分 => 秒 
+		const seconds = miSeOfSeconds - (minutes.seconds);
+		return {
+			"days" : days.result,
+			"hours" : hours.result,
+			"minutes" : minutes.result,
+			"seconds" : seconds
+		}
+	}else{
+		return {
+			"days" : 0,
+			"hours" : 0,
+			"minutes" : 0,
+			"seconds" : 0
+		}
+	}
+	
+
+};
+
+function calculateCountDown(seconds,type){
+	let mod = null;
+	switch (type) {
+	case "D":
+		mod =  60 * 60 * 24;
+		break;
+	case "H":
+		mod =  60 * 60;
+		break;
+	case "S":
+		mod =  60;
+		break;
+	default:
+		 throw `calculateCountDownのタイプは"D","H","S"以外にはサポートしません。`;
+	}
+	
+	const result = Math.floor(seconds / mod);
+	return {
+		"result" : result,
+		"seconds" : result * mod
+	};
+}
+
+function getDay(seconds){
+	return calculateCountDown(seconds, "D");
+}
+
+function getHours(seconds){
+	return calculateCountDown(seconds, "H");
+}
+
+function getMinutes(seconds){
+	return calculateCountDown(seconds, "S");
 }
