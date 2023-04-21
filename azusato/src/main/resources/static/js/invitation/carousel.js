@@ -4,29 +4,15 @@ class Carousel {
   constructor(el) {
     this.el = el;
     this.carouselOptions = ['previous', 'play', 'next'];
-    this.carouselData = [
-      {
-        'id': '1',
-        'src': '/image/wedding2.jpg',
-      },
-      {
-        'id': '2',
-        'src': '/image/wedding3.jpg',
-      },
-      {
-        'id': '3',
-        'src': '/image/wedding4.jpg',
-      },
-      {
-        'id': '4',
-        'src': '/image/wedding5.jpg',
-      },
-      {
-        'id': '5',
-        'src': '/image/wedding6.jpg',
-      }
-    ];
-    this.carouselInView = [1, 2, 3, 4, 5];
+    this.carouselData = [];
+    this.carouselInView = [];
+    for(let i = 1; i<=20; i++){
+    	this.carouselData.push({
+            'id': i,
+            'src': '/image/wedding/'+i+'.jpg'
+    	})
+    	this.carouselInView.push(i);
+    }
     this.carouselContainer;
     this.carouselPlayState;
   }
@@ -34,9 +20,26 @@ class Carousel {
   mounted() {
     this.setupCarousel();
   }
+  
+  isWide(src){
+	  return new Promise((resolve, reject) => {
+		 const img = new Image();
+		 img.onload = () => {
+			 let isWide = false;
+			 if(img.width > img.height){
+				 isWide = true;
+			 }else{
+				 isWide = false;
+			 }
+			 resolve(isWide);
+		 }
+		 img.onerror = reject;
+		 img.src = src
+	  });
+  }
 
   // Build carousel html
-  setupCarousel() {
+  async setupCarousel() {
     const container = document.createElement('div');
     const controls = document.createElement('div');
 
@@ -44,20 +47,24 @@ class Carousel {
     this.el.append(container, controls);
     container.className = 'carousel-container';
     controls.className = 'carousel-controls';
+    
+    for(let i = 0; i < this.carouselData.length; i++){
+    	const item = this.carouselData[i];
+    	const carouselItem = item.src ? document.createElement('img') : document.createElement('div');
 
-    // Take dataset array and append items to container
-    this.carouselData.forEach((item, index) => {
-      const carouselItem = item.src ? document.createElement('img') : document.createElement('div');
+        // Add item attributes
+        const isWide = await this.isWide(item.src);
+        carouselItem.className = `carousel-item carousel-item-${i + 1}`;
+        carouselItem.src = item.src;
+        
+        carouselItem.setAttribute('data-isWide', isWide);
+        carouselItem.setAttribute('loading', 'lazy');
+        // Used to keep track of carousel items, infinite items possible in carousel however min 5 items required
+        carouselItem.setAttribute('data-index', `${i + 1}`);
 
-      container.append(carouselItem);
-      
-      // Add item attributes
-      carouselItem.className = `carousel-item carousel-item-${index + 1}`;
-      carouselItem.src = item.src;
-      carouselItem.setAttribute('loading', 'lazy');
-      // Used to keep track of carousel items, infinite items possible in carousel however min 5 items required
-      carouselItem.setAttribute('data-index', `${index + 1}`);
-    });
+        
+        container.append(carouselItem);
+    }
 
     this.carouselOptions.forEach((option) => {
       const btn = document.createElement('button');
@@ -82,7 +89,7 @@ class Carousel {
     // Set container property
     this.carouselContainer = container;
   }
-
+  
   setControls(controls) {
     controls.forEach(control => {
       control.onclick = (event) => {
@@ -137,27 +144,6 @@ class Carousel {
     this.carouselData.slice(0, 5).forEach((data, index) => {
       document.querySelector(`.carousel-item-${index + 1}`).src = data.src;
     });
-  }
-
-  add() {
-    const newItem = {
-      'id': '',
-      'src': '',
-    };
-    const lastItem = this.carouselData.length;
-    const lastIndex = this.carouselData.findIndex(item => item.id == lastItem);
-    
-    // Assign properties for new carousel item
-    Object.assign(newItem, {
-      id: `${lastItem + 1}`,
-      src: `http://fakeimg.pl/300/?text=${lastItem + 1}`
-    });
-
-    // Then add it to the "last" item in our carouselData
-    this.carouselData.splice(lastIndex + 1, 0, newItem);
-
-    // Shift carousel to display new item
-    this.next();
   }
 
   play() {
