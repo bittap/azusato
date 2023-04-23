@@ -5,7 +5,7 @@
 	<meta property="og:title" th:content="#{wedding.og.title}" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" th:content="'https://azusato.com/' + ${#locale} + '/wedding/invitation'" />
-	<meta property="og:image" content="/image/main.PNG" />
+	<meta property="og:image" content="/image/wedding/main.jpg" />
 	<meta property="og:description" th:content="#{wedding.og.description}" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
  	<link rel="stylesheet" href="/css/bootstrap_wedding.css">
@@ -76,7 +76,7 @@
 			<p class="time">
 				2023.09.17 SUN PM 15:40
 			</p>
-			<p th:text="#{wedding.hall.name}">
+			<p class="place" th:text="#{wedding.hall.name}">
 			</p>
 		</div>
 		<div class="mx-auto mobile-fluid opacity-hidden invitation_message_wrap">
@@ -158,7 +158,6 @@
 		<hr>
 		<footer class="footer py-1 text-center">
 			<p>© 2023 Copyright: Kim Tae Yeong</p>
-			image <a href="https://www.freepik.com/">by Freepik</a>
 		</footer>
 	</div>
 	<!-- modal -->
@@ -214,6 +213,11 @@
 	      </div>	
 	    </div>
 	</div>
+	<!-- The Modal -->
+	<div id="imagePriviewModal" class="imagePriviewModal">
+	  	<!-- Modal Content (The Image) -->
+	  	<img class="modal-content" id="imagePriviewImg">
+  	</div>
 	<th:block th:replace = "layout/modal"></th:block>
 	<script src="/js/common/modal.js"></script>
 	<script th:inline="javascript">

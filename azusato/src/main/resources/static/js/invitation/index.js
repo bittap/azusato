@@ -13,14 +13,8 @@ var twoDaysFromNow = (new Date().getTime() / 1000) + (86400 * 2) + 1;
 
 // Set up FlipDown
 var flipdown = new FlipDown(getSeconds(new Date(WEDDING_INVITATION_DATE))) //
-
   // Start the countdown
-  .start()
-
-  // Do something when the countdown ends
-  .ifEnded(() => {
-    
-  });
+  .start();
 
 const observer = new IntersectionObserver(entries => {
   // 감지한 모든 .card 요소의 정보를 entries 배열로 전달받습니다.

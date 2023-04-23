@@ -11,8 +11,8 @@
 	.when .name_wrap{
 		font-size: 2.5rem;
 	}
-	.invitation_message_wrap{
-		/* text-align: left; */
+	.when .place{
+	  font-size: 1.6rem;
 	}
 	.attend_message_wrap .attend_message{
 		text-align: left;

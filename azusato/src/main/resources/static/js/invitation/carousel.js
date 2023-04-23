@@ -17,8 +17,9 @@ class Carousel {
     this.carouselPlayState;
   }
 
-  mounted() {
-    this.setupCarousel();
+  async mounted() {
+    await this.setupCarousel();
+    this.previewImage();
   }
   
   isWide(src){
@@ -167,6 +168,29 @@ class Carousel {
       // Use play state prop to store interval ID and run next method on a 1.5 second interval
       this.carouselPlayState = setInterval(startPlaying, 1500);
     };
+  }
+  
+  previewImage(){
+	const body = document.querySelector('body');
+	const preventScrollClassName = "no_scroll";
+    const imagePriviewModal = document.querySelector('#imagePriviewModal');
+    const previewImg = imagePriviewModal.querySelector('#imagePriviewImg');
+
+    let imgs = document.querySelectorAll('.carousel img');
+    imgs.forEach(function(img){
+      img.onclick = function(){
+    	  body.classList.add(preventScrollClassName);
+          previewImg.src = this.src;
+          previewImg.setAttribute('data-isWide', this.getAttribute('data-isWide'));
+          
+          imagePriviewModal.style.display = "block";
+      }
+    })
+
+    imagePriviewModal.onclick = function(){
+    	body.classList.remove(preventScrollClassName);
+        imagePriviewModal.style.display = "none";
+    }
   }
 
 }
