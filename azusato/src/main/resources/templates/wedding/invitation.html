@@ -2,7 +2,7 @@
 <head>
 	<title>Wedding Invitation</title>
 	<meta name="_csrf" th:content="${_csrf.token}" />
-	<meta property="og:title" th:content="#{wedding.og.title}" />
+	<meta property="og:title" content="Wedding Invitation" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" th:content="'https://azusato.com/' + ${#locale} + '/wedding/invitation'" />
 	<meta property="og:image" content="/image/wedding/main.jpg" />
@@ -219,6 +219,11 @@
 	  	<img class="modal-content" id="imagePriviewImg">
   	</div>
 	<th:block th:replace = "layout/modal"></th:block>
+	<script type="text/javascript" src="/js/external/touch-emulator.js"></script>
+	<script>
+		// タッチイベントのdebug用
+		TouchEmulator();
+	</script>
 	<script src="/js/common/modal.js"></script>
 	<script th:inline="javascript">
 		const language = /*[[${#locale}]]*/ "language";
