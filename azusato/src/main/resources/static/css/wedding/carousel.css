@@ -275,6 +275,10 @@ body.no_scroll{
   .modal-content {
     max-width: 95%!important;
   }
+  .imagePriviewModal:has(.modal-content[data-iswide='true']){
+    padding-bottom: 25vh;
+    padding-top: 25vh;
+  }
 }
 
 
