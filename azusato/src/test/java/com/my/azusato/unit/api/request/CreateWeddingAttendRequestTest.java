@@ -36,12 +36,12 @@ public class CreateWeddingAttendRequestTest {
     @Test
     void min() {
       var inValidParam = getValid();
-      inValidParam.setAttenderNumber((byte) 0);
+      inValidParam.setAttenderNumber((byte) -1);
 
       var result = validator.validate(inValidParam);
       Assertions.assertFalse(result.isEmpty());
       Assertions.assertEquals(1, result.size());
-      Assertions.assertEquals("最小1以上の{0}を入力してください。", result.iterator().next().getMessage());
+      Assertions.assertEquals("最小0以上の{0}を入力してください。", result.iterator().next().getMessage());
     }
   }
 

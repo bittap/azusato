@@ -35,6 +35,6 @@ public class CreateWeddingAttendRequest {
   private String remark;
 
   @NotNull(message = "{notNull}")
-  @Min(value = 1, message = "{min}")
+  @Min(value = 0, message = "{min}")
   private Byte attenderNumber;
 }

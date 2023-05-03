@@ -41,6 +41,8 @@ imgEles.forEach(function(imgEle){
 	});
 });
 
+setControlSelectbox();
+
 attend_btn_ele.addEventListener('click',function(){
 	modalCommon.displayTwoBtnModal(ATTEND_MODAL_TITLE,ATTEND_MODAL_BODY,async function(){
 		try{
@@ -77,6 +79,48 @@ async function attend() {
 		modalCommon.displayOneBtnModal(ATTEND_MODAL_OK_TITLE,ATTEND_MODAL_OK_BODY,async function(){
 			location.reload();
 		})
+	}
+}
+
+function setControlSelectbox(){
+	const attendRadioBtns = document.querySelectorAll(".form-control input[type='radio'][name='attend']")
+	const attenderNumberSel = document.querySelector(".form-control [name='attenderNumber']");
+	const options = [...attenderNumberSel.options];
+
+	for (let radioBtn of attendRadioBtns) {
+		if(radioBtn.value == "true"){
+			radioBtn.addEventListener('change',function(){
+				//console.log('〇ボタンに変更')
+				const disableValue = "0";
+				const selectedValue = "1";
+				options.forEach(option => {
+					if(disableValue == option.value){
+						option.disabled = true;
+					}else{
+						option.disabled = false;
+					}
+					if(selectedValue == option.value){
+						option.selected = true;
+					}
+				});
+			});
+		}else{
+			radioBtn.addEventListener('change',function(){
+				//console.log('✖ボタンに変更')
+				const ableValue = "0";
+				const selectedValue = "0";
+				options.forEach(option => {
+					if(ableValue == option.value){
+						option.disabled = false;
+					}else{
+						option.disabled = true;
+					}
+					if(selectedValue == option.value){
+						option.selected = true;
+					}
+				});
+			});
+		}
 	}
 }
 

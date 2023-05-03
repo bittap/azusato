@@ -213,6 +213,17 @@ public class WeddingAttenderServiceAPITest {
           Assertions.assertEquals(expected.size(), result.getTotal());
         }
       }
+
+      @Nested
+      class sumAttenderNumber {
+        @Test
+        void checkResult() {
+          var req = GetWeddingAttendsRequest.builder().offset(offset).limit(limit).build();
+          var result = service.get(req);
+
+          Assertions.assertEquals(15, result.getTotalAttenderNumber());
+        }
+      }
     }
   }
 }

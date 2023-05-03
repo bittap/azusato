@@ -9,10 +9,10 @@ import com.my.azusato.entity.WeddingAttender;
 public interface WeddingAttenderRepository extends JpaRepository<WeddingAttender, Long> {
 
   /**
-   * 参加者数に対する総計を取得する。
+   * 参加する人に対して参加者数の総計を取得する。
    * 
    * @return 参加者数の総計
    */
-  @Query(value = "SELECT SUM(attenderNumber) FROM WeddingAttender")
+  @Query(value = "SELECT SUM(attenderNumber) FROM WeddingAttender WHERE attend = TRUE")
   public int sumAttenderNumber();
 }
