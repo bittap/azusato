@@ -24,6 +24,7 @@ public class WeddingAttenderTest {
       boolean attend = true;
       boolean eatting = true;
       String remark = "remark";
+      byte attenderNumber = 10;
 
       @Test
       void ok() {
@@ -33,12 +34,13 @@ public class WeddingAttenderTest {
           mockedLocalDate.when(() -> LocalDateTime.now()).thenReturn(mockedValue);
 
           WeddingAttender created = vaild();
-          Assertions.assertEquals(created.getName(), name);
-          Assertions.assertEquals(created.getNationality(), nationality);
-          Assertions.assertEquals(created.getAttend(), attend);
-          Assertions.assertEquals(created.getEatting(), eatting);
-          Assertions.assertEquals(created.getRemark(), remark);
-          Assertions.assertEquals(created.getCreatedDatetime(), mockedValue);
+          Assertions.assertEquals(name, created.getName());
+          Assertions.assertEquals(nationality, created.getNationality());
+          Assertions.assertEquals(attend, created.getAttend());
+          Assertions.assertEquals(eatting, created.getEatting());
+          Assertions.assertEquals(remark, created.getRemark());
+          Assertions.assertEquals(mockedValue, created.getCreatedDatetime());
+          Assertions.assertEquals(attenderNumber, created.getAttenderNumber());
         }
       }
 
@@ -49,6 +51,7 @@ public class WeddingAttenderTest {
             .attend(attend) //
             .eatting(eatting) //
             .remark(remark) //
+            .attenderNumber(attenderNumber) //
             .build();
       }
     }
@@ -58,25 +61,37 @@ public class WeddingAttenderTest {
     class subnormal {
 
       @Test
-      void givenNotNullParameter_resultDoesNotThrowException() {
-        Assertions.assertDoesNotThrow(() -> {
-          WeddingAttender.builder() //
-              .name("name") //
-              .nationality(Nationality.KOREA) //
-              .attend(true) //
-              .eatting(true) //
-              .remark(null) //
-              .build();
+      void nameIsNull() {
+        Assertions.assertThrows(NullPointerException.class, () -> {
+          WeddingAttender.builder().name(null).build();
         });
       }
 
       @Test
-      void givenNullParameter_resultThrowException() {
+      void nationalityIsNull() {
         Assertions.assertThrows(NullPointerException.class, () -> {
-          WeddingAttender.builder().name(null).build();
           WeddingAttender.builder().nationality(null).build();
+        });
+      }
+
+      @Test
+      void attendIsNull() {
+        Assertions.assertThrows(NullPointerException.class, () -> {
           WeddingAttender.builder().attend(null).build();
+        });
+      }
+
+      @Test
+      void eattingIsNull() {
+        Assertions.assertThrows(NullPointerException.class, () -> {
           WeddingAttender.builder().eatting(null).build();
+        });
+      }
+
+      @Test
+      void attenderNumberIsNull() {
+        Assertions.assertThrows(NullPointerException.class, () -> {
+          WeddingAttender.builder().attenderNumber(null).build();
         });
       }
     }
