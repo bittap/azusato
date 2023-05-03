@@ -6,7 +6,7 @@ class Carousel {
     this.carouselOptions = ['previous', 'play', 'next'];
     this.carouselData = [];
     this.carouselInView = [];
-    for(let i = 1; i<=20; i++){
+    for(let i = 1; i<=18; i++){
     	this.carouselData.push({
             'id': i,
             'src': '/image/wedding/'+i+'.jpg'
@@ -17,7 +17,9 @@ class Carousel {
     this.carouselPlayState;
     this.startX = 0;
     this.movedDistance = 30;
-    this.mainImgId = 'carouselMainImage';
+    this.mainItemNumber = 3;
+    this.keepStartXHandler = this.keepStartX.bind(this);
+    this.triggerNextOrPreviousHandler = this.triggerNextOrPrevious.bind(this);
   }
 
   async mounted() {
@@ -25,23 +27,6 @@ class Carousel {
     this.previewImage();
   }
   
-  isWide(src){
-	  return new Promise((resolve, reject) => {
-		 const img = new Image();
-		 img.onload = () => {
-			 let isWide = false;
-			 if(img.width > img.height){
-				 isWide = true;
-			 }else{
-				 isWide = false;
-			 }
-			 resolve(isWide);
-		 }
-		 img.onerror = reject;
-		 img.src = src
-	  });
-  }
-
   // Build carousel html
   async setupCarousel() {
     const container = document.createElement('div');
@@ -58,20 +43,15 @@ class Carousel {
 
         // Add item attributes
         const isWide = await this.isWide(item.src);
-        const classIndexName = `carousel-item-${i + 1}`;
-        carouselItem.className = `carousel-item ${classIndexName}`;
+        const itemNumber = i+1;
+        const classItemName = `carousel-item-${itemNumber}`;
+        carouselItem.className = `carousel-item ${classItemName}`;
         carouselItem.src = item.src;
-        if(this.isMainImage(classIndexName)){
-        	this.addMainImageId(carouselItem);
-        }
-        
         carouselItem.setAttribute('data-isWide', isWide);
         carouselItem.setAttribute('loading', 'lazy');
-        // Used to keep track of carousel items, infinite items possible in carousel however min 5 items required
-        carouselItem.setAttribute('data-index', `${i + 1}`);
         container.append(carouselItem);
         
-        if(this.isMainImage(classIndexName)){
+        if(this.isMainImage(itemNumber)){
       	  this.addEventMoveWithSwipe(carouselItem);
         }
     }
@@ -99,6 +79,27 @@ class Carousel {
     this.carouselContainer = container;
   }
   
+  isWide(src){
+	  return new Promise((resolve, reject) => {
+		 const img = new Image();
+		 img.onload = () => {
+			 let isWide = false;
+			 if(img.width > img.height){
+				 isWide = true;
+			 }else{
+				 isWide = false;
+			 }
+			 resolve(isWide);
+		 }
+		 img.onerror = reject;
+		 img.src = src
+	  });
+  }
+  
+  isMainImage(itemNumber){
+	  return itemNumber == this.mainItemNumber ? true : false;
+  }
+  
   setControls(controls) {
     controls.forEach(control => {
       control.onclick = (event) => {
@@ -118,7 +119,34 @@ class Carousel {
 
     return;
   }
+  
+  removeEventMoveWithSwipe(ele){
+	  ele.removeEventListener('touchstart',this.keepStartXHandler);
+	  ele.removeEventListener('touchend',this.triggerNextOrPreviousHandler);
+  }
 
+  addEventMoveWithSwipe(ele){
+	  ele.addEventListener('touchstart',this.keepStartXHandler);
+	  ele.addEventListener('touchend',this.triggerNextOrPreviousHandler);
+  }
+  
+  keepStartX(event) {
+    let touch = event.changedTouches[0];
+    this.startX = touch.screenX;
+  }
+  
+  triggerNextOrPrevious(event){
+  	let touch = event.changedTouches[0];
+    let endX =  touch.screenX;
+    if(this.startX + this.movedDistance <= endX) {
+      this.next();
+      event.preventDefault();
+    }else if(this.startX - this.movedDistance >= endX){
+      this.previous();
+      event.preventDefault();
+    }
+  }
+  
   previous() {
     // Update order of items in data array to be shown in carousel
     this.carouselData.unshift(this.carouselData.pop());
@@ -126,81 +154,28 @@ class Carousel {
     // Push the first item to the end of the array so that the previous item is front and center
     this.carouselInView.push(this.carouselInView.shift());
 
-    // Update the css class for each carousel item in view
-    this.carouselInView.forEach((item, index) => {
-      console.log("item : %s , index : %s",item,index);
-      this.carouselContainer.children[index].className = `carousel-item carousel-item-${item}`;
-      if(`carousel-item-${item}` === "carousel-item-3"){
-    	  this.addEventMoveWithSwipe(document.querySelector('.carousel-item-3'));
-      }
-    });
-
-    //this.rotateImg();
-  }
-  
-//  rotateImg(){
-//    // Using the first 5 items in data array update content of carousel items in view
-//    this.carouselData.slice(0, 5).forEach((data, index) => {
-//      const className = `carousel-item-${index + 1}`;
-//      const ele = document.querySelector(`.${className}`);
-//      console.log("ele.src : %s , data.src : %s",ele.src,data.src);
-//      
-//      this.clearEventMoveWithSwipe(ele);
-//
-//      ele.src = data.src;
-//      if(this.isMainImage(className)){
-//    	  this.addEventMoveWithSwipe(ele);
-//      }
-//    });
-//  }
-  
-  addMainImageId(ele){
-	  ele.id = this.mainImgId;
-  }
-  
-  isMainImage(className){
-	  return className == "carousel-item-3" ? true : false;
-  }
-  
-  clearEventMoveWithSwipe(ele){
-	let eleJquery = $(ele);
-	// 既存のクリックEvent削除
-	eleJquery.off("touchstart");
-	eleJquery.off("touchend");
-  }
-  
-  addEventMoveWithSwipe(ele){
-	  const carouselClass = this;
-	  ele.addEventListener('touchstart',function(event){
-	  	let touch = event.changedTouches[0];
-	    this.startX = touch.screenX;
-	  },{'once':true});
-	  ele.addEventListener('touchend',function(event){
-	  	let touch = event.changedTouches[0];
-	    let endX =  touch.screenX;
-	    if(this.startX + carouselClass.movedDistance <= endX) {
-	      carouselClass.next();
-	      event.preventDefault();
-	    }
-	    if(this.startX - carouselClass.movedDistance >= endX){
-	      carouselClass.previous();
-	      event.preventDefault();
-	    }
-	  },{'once':true});
+    this.rotateImg();
   }
 
   next() {
     // Update order of items in data array to be shown in carousel
     this.carouselData.push(this.carouselData.shift());
-
+    
     // Take the last item and add it to the beginning of the array so that the next item is front and center
     this.carouselInView.unshift(this.carouselInView.pop());
 
+    this.rotateImg();
+  }
+  
+  rotateImg(){
     // Update the css class for each carousel item in view
-    this.carouselInView.forEach((item, index) => {
-      this.carouselContainer.children[index].className = `carousel-item carousel-item-${item}`;
-      if(`carousel-item-${item}` === "carousel-item-3"){
-      	  this.addEventMoveWithSwipe(document.querySelector('.carousel-item-3'));
+    this.carouselInView.forEach((itemNumber, index) => {
+      const ele =  this.carouselContainer.children[index];
+      ele.className = `carousel-item carousel-item-${itemNumber}`;
+      console.log("remove swipe")
+      this.removeEventMoveWithSwipe(ele);
+      if(this.isMainImage(itemNumber)){
+      	  this.addEventMoveWithSwipe(ele);
       }
     });
   }
