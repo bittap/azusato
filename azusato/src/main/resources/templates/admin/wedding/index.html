@@ -106,6 +106,7 @@
 								<th scope="col" th:text="#{wedding.nationality.title}">国籍</th>
 	 							<th scope="col" th:text="#{wedding.attend.title}">参加</th>
 								<th scope="col" th:text="#{wedding.eatting.title}">食事</th>
+								<th scope="col" th:text="#{wedding.attender-number.title}">参加者数</th>
 								<th scope="col" th:text="#{wedding.division.title}">区分</th>
 								<th scope="col" th:text="#{wedding.created-datetime.title}">作成日時</th>
 								<th scope="col" th:text="#{wedding.remark.title}">備考</th>
@@ -119,6 +120,7 @@
 			      						<td class="align-middle -nationality">その他</td>
 			      						<td class="align-middle -attend">0</td>
 			      						<td class="align-middle -eatting">x</td>
+			      						<td class="align-middle -attenderNumber">2</td>
 			      						<td class="align-middle -division">1回目</td>
 			      						<td class="align-middle -created_datetime">01/04</td>
 			      						<td class="-remark text-start">asdfasdfsafsdaf</td>
@@ -126,26 +128,23 @@
 	      					</template>
 						</table>
 					</div>
-					<small class="d-block text-end mt-4"> 
+					<small class="d-block text-center"> 
+						<p>
+							<span th:text="#{total} + #{wedding.attender-number.title}">総参加者数</span>
+							<span> : </span>
+							<span id="totalAttenderNumber"></span>
+						</p>
 						<nav aria-label="Page navigation">
 							<ul class="pagination justify-content-center">
 								<li class="page-item page-pre_wrap">
 									<button class="page-link page-pre" aria-label="Previous">
 						        		<span aria-hidden="true">&laquo;</span>
 						      		</button>
-									<!--/*
-									<a class="page-link page-pre" href="#" aria-label="Previous" tabindex="-1">
-						        		<span aria-hidden="true">&laquo;</span>
-						      		</a>
-									*/-->
 						    	</li>
 								<div class="page-item_wrap d-flex">
 									<template id="template-page-item">
 										<li class="page-item"><button class="page-link">1</button></li>
 									</template>
-<!-- 							    	<li class="page-item active"><button class="page-link">1</button></li>
-							    	<li class="page-item"><button class="page-link">2</button></li>
-							    	<li class="page-item"><button class="page-link">3</button></li> -->
 								</div>
 						    	<li class="page-item page-next_wrap">
 							      	<button class="page-link page-next" aria-label="Next">

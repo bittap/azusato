@@ -21,7 +21,10 @@ const initContent = async function(searchParams){
 		const tempContent = document.querySelector('#template-list');
 		result.weddingAttenders.forEach((weddingAttender) => {
 			const clone = tempContent.content.cloneNode(true);
-			
+			const TR_TAG = clone.querySelector("tr");
+			if(weddingAttender.attenderNumber > 1){
+				TR_TAG.style.backgroundColor = '#198754';
+			}
 			/*
 			 * タグ
 			 */
@@ -31,8 +34,8 @@ const initContent = async function(searchParams){
 			const ATTEND_TAG = clone.querySelector(".-attend");
 			const EATTING_TAG = clone.querySelector(".-eatting");
 			const DIVISION_TAG = clone.querySelector(".-division");
+			const ATTENDER_NUMBER_TAG = clone.querySelector(".-attenderNumber");
 			const CREATED_DATETIME_TAG = clone.querySelector(".-created_datetime");
-			const REMARK_WRAP_TAG = clone.querySelector(".remark-wrap");
 			const REMARK_TAG = clone.querySelector(".-remark");
 			
 			NO_TAG.textContent = weddingAttender.no;
@@ -41,12 +44,13 @@ const initContent = async function(searchParams){
 			ATTEND_TAG.textContent = getAttendText(weddingAttender.attend);
 			EATTING_TAG.textContent = getEattingText(weddingAttender.eatting);
 			DIVISION_TAG.textContent = getDivisionText(weddingAttender.createdDatetime);
+			ATTENDER_NUMBER_TAG.textContent = weddingAttender.attenderNumber;
 			CREATED_DATETIME_TAG.textContent = getCreatedDatetimeText(weddingAttender.createdDatetime);
 			REMARK_TAG.textContent = weddingAttender.remark;
 			
 			document.querySelector('#list-container').appendChild(clone);
 		})
-		
+		document.querySelector('#totalAttenderNumber').textContent = result.totalAttenderNumber;
 		const pageInfo = pagingCommon.getPaging(result.total,itemSizeOfPage,buttonLengthOfPage,searchParams.currentPageNo);
 		pagingUiCommon.create(pageInfo,searchParams.currentPageNo,function(){
 			search(this.getAttribute(PAGE_NO_ATTRIBUTE_NAME));
@@ -164,7 +168,7 @@ const search = function(currentPageNo){
 }
 
 const getOffset = function getOffset(currentPageNo){
-	return PAGE_PAGES_OF_PAGE*(currentPageNo-1);
+	return itemSizeOfPage*(currentPageNo-1);
 }
 
 initEvent();

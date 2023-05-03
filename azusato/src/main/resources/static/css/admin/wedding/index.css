@@ -24,21 +24,24 @@
 	width:15%;
 }
 .table th:nth-child(3) {
-	width:10%;
+	width:8%;
 }
 .table th:nth-child(4) {
-	width:10%;
+	width:8%;
 }
 .table th:nth-child(5) {
-	width:10%;
+	width:8%;
 }
 .table th:nth-child(6) {
-	width:10%;
+	width:8%;
 }
 .table th:nth-child(7) {
-	width:15%;
+	width:8%;
 }
 .table th:nth-child(8) {
+	width:15%;
+}
+.table th:nth-child(9) {
 	width:20%;
 }
 .table .-remark{
@@ -70,9 +73,12 @@
 		width:4rem;
 	}
 	.table th:nth-child(7) {
-		width:6rem;
+		width:4rem;
 	}
 	.table th:nth-child(8) {
+		width:6rem;
+	}
+	.table th:nth-child(9) {
 		width:20rem;
 	}
 }
