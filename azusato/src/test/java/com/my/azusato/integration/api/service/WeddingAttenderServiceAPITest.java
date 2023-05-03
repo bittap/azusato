@@ -47,12 +47,13 @@ public class WeddingAttenderServiceAPITest {
       boolean attend = true;
       boolean eatting = true;
       String remark = "remark";
+      byte attenderNumber = 10;
 
       @Test
       void ok() {
         int beforeSize = repo.findAll().size();
-        CreateWeddingAttendRequest req =
-            new CreateWeddingAttendRequest(name, nationality, attend, eatting, remark);
+        CreateWeddingAttendRequest req = new CreateWeddingAttendRequest(name, nationality, attend,
+            eatting, remark, attenderNumber);
         service.create(req);
 
         Assertions.assertEquals(beforeSize + 1, repo.findAll().size());

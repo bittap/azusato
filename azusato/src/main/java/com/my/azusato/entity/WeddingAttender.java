@@ -46,9 +46,14 @@ public class WeddingAttender extends BaseEntity {
   @Comment("生成日時")
   private LocalDateTime createdDatetime;
 
+  @Column(nullable = false)
+  @Comment("参加者数")
+  private Byte attenderNumber;
+
   @Builder
   private static WeddingAttender create(@NonNull String name, @NonNull Nationality nationality,
-      @NonNull Boolean attend, @NonNull Boolean eatting, String remark) {
+      @NonNull Boolean attend, @NonNull Boolean eatting, String remark,
+      @NonNull Byte attenderNumber) {
     WeddingAttender weddingAttend = new WeddingAttender();
     weddingAttend.name = name;
     weddingAttend.nationality = nationality;
@@ -56,6 +61,7 @@ public class WeddingAttender extends BaseEntity {
     weddingAttend.eatting = eatting;
     weddingAttend.remark = remark;
     weddingAttend.createdDatetime = LocalDateTime.now();
+    weddingAttend.attenderNumber = attenderNumber;
     return weddingAttend;
   }
 

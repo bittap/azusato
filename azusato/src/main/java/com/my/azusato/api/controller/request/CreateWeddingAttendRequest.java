@@ -1,5 +1,6 @@
 package com.my.azusato.api.controller.request;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -32,4 +33,8 @@ public class CreateWeddingAttendRequest {
 
   @Size(max = 1000, message = "{size-string.max}")
   private String remark;
+
+  @NotNull(message = "{notNull}")
+  @Min(value = 1, message = "{min}")
+  private Byte attenderNumber;
 }

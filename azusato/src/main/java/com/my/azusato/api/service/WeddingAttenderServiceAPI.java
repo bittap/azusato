@@ -44,6 +44,7 @@ public class WeddingAttenderServiceAPI {
         .attend(request.getAttend()) //
         .eatting(request.getEatting()) //
         .remark(request.getRemark()) //
+        .attenderNumber(request.getAttenderNumber()) //
         .build();
 
     weddingAttendRepository.save(weddingAttend);

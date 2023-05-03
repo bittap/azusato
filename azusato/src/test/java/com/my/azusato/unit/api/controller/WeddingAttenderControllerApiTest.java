@@ -107,8 +107,10 @@ class WeddingAttenderControllerApiTest {
       boolean attend = true;
       boolean eatting = true;
       String remark = "remark";
+      byte attenderNumber = 10;
 
-      return new CreateWeddingAttendRequest(name, nationality, attend, eatting, remark);
+      return new CreateWeddingAttendRequest(name, nationality, attend, eatting, remark,
+          attenderNumber);
     }
   }
 
@@ -150,6 +152,7 @@ class WeddingAttenderControllerApiTest {
         boolean attend = true;
         boolean eatting = true;
         String remark = "remark";
+        byte attenderNumber = 10;
 
         return WeddingAttender.builder() //
             .name(name) //
@@ -157,6 +160,7 @@ class WeddingAttenderControllerApiTest {
             .attend(attend) //
             .eatting(eatting) //
             .remark(remark) //
+            .attenderNumber(attenderNumber) //
             .build();
       }
     }
@@ -221,6 +225,8 @@ class WeddingAttenderControllerApiTest {
     CreateWeddingAttendRequest para7 = testClass.vaildParameter();
     para7.setNationality("invalid");
 
+    CreateWeddingAttendRequest para8 = testClass.vaildParameter();
+    para8.setAttenderNumber((byte) 0);
 
     return Stream.of(Arguments.of(TestConstant.LOCALE_JA, para1, "名前は必修項目です。"),
         Arguments.of(TestConstant.LOCALE_JA, para2, "名前は最大10桁数まで入力可能です。"),
@@ -229,6 +235,7 @@ class WeddingAttenderControllerApiTest {
         Arguments.of(TestConstant.LOCALE_JA, para5, "食事は必修項目です。"),
         Arguments.of(TestConstant.LOCALE_JA, para6, "備考は最大1000桁数まで入力可能です。"),
         Arguments.of(TestConstant.LOCALE_JA, para7, "国籍は不正な値です。"),
+        Arguments.of(TestConstant.LOCALE_JA, para8, "最小1以上の参加者数を入力してください。"),
 
         Arguments.of(TestConstant.LOCALE_KO, para1, "이름을 입력해주세요."),
         Arguments.of(TestConstant.LOCALE_KO, para2, "글자 수 10을 초과해서 이름을 입력하는 것은 불가능합니다."),
@@ -236,7 +243,8 @@ class WeddingAttenderControllerApiTest {
         Arguments.of(TestConstant.LOCALE_KO, para4, "참가을 입력해주세요."),
         Arguments.of(TestConstant.LOCALE_KO, para5, "식사을 입력해주세요."),
         Arguments.of(TestConstant.LOCALE_KO, para6, "글자 수 1000을 초과해서 비고을 입력하는 것은 불가능합니다."),
-        Arguments.of(TestConstant.LOCALE_KO, para7, "국적을 올바르게 입력해주세요."));
+        Arguments.of(TestConstant.LOCALE_KO, para7, "국적을 올바르게 입력해주세요."),
+        Arguments.of(TestConstant.LOCALE_KO, para8, "최소1이상의 참석인원을 입력해주세요."));
   }
 
   static Stream<Arguments> get_subnormal_givenInVaildParameter_resultBadRequest() throws Exception {
