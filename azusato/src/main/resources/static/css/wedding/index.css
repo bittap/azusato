@@ -164,6 +164,9 @@ input:-webkit-autofill:focus {
   border-bottom: 1px solid #fff;
   background: transparent;
 }
+#attend_form .form-select {
+	width: 30%;
+}
 .myform .btn {
   width: 100%;
   font-weight: 800;
@@ -235,14 +238,6 @@ input:-webkit-autofill:focus {
 	font-weight: bolder;
 }
 
-#attendForm:not([style*="display: none"]) .tooltip{
-	display: none;
-}
-#attendForm[style*="display: block;"] .tooltip{
-	display: none;
-}
-
-
 @media (max-width: 767px) {
   .myImg {
     height: 100%!important;
@@ -288,6 +283,9 @@ input:-webkit-autofill:focus {
   }
   .invitation_message_wrap{
   	font-size: 1.45rem;
+  }
+  #attend_form .form-select {
+	width: 100%;
   }
 }
 
