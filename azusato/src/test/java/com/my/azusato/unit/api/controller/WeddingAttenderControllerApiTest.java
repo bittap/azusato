@@ -117,7 +117,7 @@ class WeddingAttenderControllerApiTest {
       @Test
       void ok() throws Exception {
         GetWeddingAttenderServiceAPIResponse response =
-            new GetWeddingAttenderServiceAPIResponse(List.of(validWeddingAttender()), 1);
+            new GetWeddingAttenderServiceAPIResponse(List.of(validWeddingAttender()), 1, 16);
 
         when(service.get(Mockito.any())).thenReturn(response);
 
@@ -135,8 +135,7 @@ class WeddingAttenderControllerApiTest {
         GetWeddingAttenderServiceAPIResponse result =
             om.readValue(resultBody, GetWeddingAttenderServiceAPIResponse.class);
 
-        assertEquals(response.getWeddingAttenders(), result.getWeddingAttenders());
-        assertEquals(response.getTotal(), result.getTotal());
+        assertEquals(response, result);
       }
 
       WeddingAttender validWeddingAttender() {

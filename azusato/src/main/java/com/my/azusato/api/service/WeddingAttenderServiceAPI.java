@@ -75,6 +75,7 @@ public class WeddingAttenderServiceAPI {
     return GetWeddingAttenderServiceAPIResponse.builder() //
         .weddingAttenders(result.getResults()) //
         .total(result.getTotal()) //
+        .totalAttenderNumber(weddingAttendRepository.sumAttenderNumber()) //
         .build();
   }
 
