@@ -92,7 +92,24 @@
 		</div>
 		<div class="mx-auto d-flex flex-column my-2 mobile-fluid opacity-hidden image_wrap carousel_wrap">
 			<div class="sub_title">GALLERY</div>
-			<div class="carousel"></div>
+			<div class="carousel">
+				<div class="carousel-container">
+					<th:block th:each="i : ${#numbers.sequence(1,18)}">
+					   <img th:class="${'carousel-item carousel-item-' + i}" th:src="'/image/wedding/' + ${i}  + '.jpg'" th:data-iswide="${i} == 1 or ${i} == 5  or ${i} == 12 or ${i} == 16 ? true : false" loading="lazy">
+					</th:block>
+				</div>
+				<div class="carousel-controls">
+					<button class="carousel-control carousel-control-previous" data-name="previous">
+						<span class="ax-hidden">previous</span>
+					</button>
+					<button class="carousel-control carousel-control-play" data-name="play">
+						<span class="ax-hidden">play</span>
+					</button>
+					<button class="carousel-control carousel-control-next" data-name="next">
+						<span class="ax-hidden">next</span>
+					</button>
+				</div>
+			</div>
 		</div>
 		<div class="sub_title_wrap mobile-fluid opacity-hidden location_wrap">
 			<div class="sub_title">LOCATION</div>
@@ -215,11 +232,6 @@
 	  	<img class="modal-content" id="imagePriviewImg">
   	</div>
 	<th:block th:replace = "layout/modal"></th:block>
-	<script type="text/javascript" src="/js/external/touch-emulator.js"></script>
-	<script>
-		// タッチイベントのdebug用
-		TouchEmulator();
-	</script>
 	<script src="/js/common/modal.js"></script>
 	<script th:inline="javascript">
 		const language = /*[[${#locale}]]*/ "language";
@@ -238,5 +250,10 @@
 	<script type="text/javascript" src="/js/external/flipdown/flipdown.js"></script>
 	<script type="text/javascript" src="/js/invitation/index.js"></script>
 	<script type="text/javascript" src="/js/invitation/carousel.js"></script>
+	<script type="text/javascript" src="/js/external/touch-emulator.js"></script>
+	<script>
+		// タッチイベントのdebug用
+		TouchEmulator();
+	</script>
 </body>
 </html>

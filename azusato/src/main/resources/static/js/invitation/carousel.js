@@ -6,98 +6,42 @@ class Carousel {
     this.carouselOptions = ['previous', 'play', 'next'];
     this.carouselData = [];
     this.carouselInView = [];
-    for(let i = 1; i<=18; i++){
-    	this.carouselData.push({
-            'id': i,
-            'src': '/image/wedding/'+i+'.jpg'
-    	})
-    	this.carouselInView.push(i);
-    }
-    this.carouselContainer;
+    this.carouselContainer = document.querySelector('.carousel-container');;
     this.carouselPlayState;
     this.startX = 0;
     this.movedDistance = 30;
-    this.mainItemNumber = 3;
     this.keepStartXHandler = this.keepStartX.bind(this);
     this.triggerNextOrPreviousHandler = this.triggerNextOrPrevious.bind(this);
   }
 
   async mounted() {
     await this.setupCarousel();
-    this.previewImage();
+    this.setPreviewImage();
   }
   
   // Build carousel html
   async setupCarousel() {
-    const container = document.createElement('div');
-    const controls = document.createElement('div');
-
-    // Add container for carousel items and controls
-    this.el.append(container, controls);
-    container.className = 'carousel-container';
-    controls.className = 'carousel-controls';
+    const controls = document.querySelector('.carousel-controls');
     
-    for(let i = 0; i < this.carouselData.length; i++){
-    	const item = this.carouselData[i];
-    	const carouselItem = item.src ? document.createElement('img') : document.createElement('div');
+    // ボタンに機能を追加
+    this.setControls([...controls.children]);
 
-        // Add item attributes
-        const isWide = await this.isWide(item.src);
-        const itemNumber = i+1;
-        const classItemName = `carousel-item-${itemNumber}`;
-        carouselItem.className = `carousel-item ${classItemName}`;
-        carouselItem.src = item.src;
-        carouselItem.setAttribute('data-isWide', isWide);
-        carouselItem.setAttribute('loading', 'lazy');
-        container.append(carouselItem);
-        
-        if(this.isMainImage(itemNumber)){
-      	  this.addEventMoveWithSwipe(carouselItem);
+    for(let i = 1; i <=this.carouselContainer.children.length; i++){
+    	const children = this.carouselContainer.children[i-1];
+    	this.carouselData.push({
+            'id': i,
+            'src': children.src
+    	})
+    	this.carouselInView.push(i);
+    	
+        if(this.isMainImage(i)){
+        	this.addEventMoveWithSwipe(children);
         }
     }
-    
-    this.carouselOptions.forEach((option) => {
-      const btn = document.createElement('button');
-      const axSpan = document.createElement('span');
-
-      // Add accessibilty spans to button
-      axSpan.innerText = option;
-      axSpan.className = 'ax-hidden';
-      btn.append(axSpan);
-
-      // Add button attributes
-      btn.className = `carousel-control carousel-control-${option}`;
-      btn.setAttribute('data-name', option);
-
-      // Add carousel control options
-      controls.append(btn);
-    });
-
-    // After rendering carousel to our DOM, setup carousel controls' event listeners
-    this.setControls([...controls.children]);
-    // Set container property
-    this.carouselContainer = container;
-  }
-  
-  isWide(src){
-	  return new Promise((resolve, reject) => {
-		 const img = new Image();
-		 img.onload = () => {
-			 let isWide = false;
-			 if(img.width > img.height){
-				 isWide = true;
-			 }else{
-				 isWide = false;
-			 }
-			 resolve(isWide);
-		 }
-		 img.onerror = reject;
-		 img.src = src
-	  });
   }
   
   isMainImage(itemNumber){
-	  return itemNumber == this.mainItemNumber ? true : false;
+	  return itemNumber == 3 ? true : false;
   }
   
   setControls(controls) {
@@ -172,7 +116,6 @@ class Carousel {
     this.carouselInView.forEach((itemNumber, index) => {
       const ele =  this.carouselContainer.children[index];
       ele.className = `carousel-item carousel-item-${itemNumber}`;
-      console.log("remove swipe")
       this.removeEventMoveWithSwipe(ele);
       if(this.isMainImage(itemNumber)){
       	  this.addEventMoveWithSwipe(ele);
@@ -203,7 +146,7 @@ class Carousel {
     };
   }
   
-  previewImage(){
+  setPreviewImage(){
 	const body = document.querySelector('body');
 	const preventScrollClassName = "no_scroll";
     const imagePriviewModal = document.querySelector('#imagePriviewModal');
@@ -232,7 +175,7 @@ class Carousel {
 // Refers to the carousel root element you want to target, use specific class selectors if using multiple carousels
 const el = document.querySelector('.carousel');
 // Create a new carousel object
-const exampleCarousel = new Carousel(el);
+const carousel = new Carousel(el);
 // Setup carousel and methods
-exampleCarousel.mounted();
+carousel.mounted();
 
