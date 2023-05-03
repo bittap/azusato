@@ -38,6 +38,7 @@ import com.my.azusato.entity.WeddingAttender;
 import com.my.azusato.entity.WeddingAttender.Nationality;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
+import com.my.azusato.unit.api.request.CreateWeddingAttendRequestTest;
 import com.my.azusato.view.controller.common.HttpConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
@@ -102,15 +103,7 @@ class WeddingAttenderControllerApiTest {
     }
 
     CreateWeddingAttendRequest vaildParameter() {
-      String name = "name";
-      String nationality = Nationality.KOREA.toString();
-      boolean attend = true;
-      boolean eatting = true;
-      String remark = "remark";
-      byte attenderNumber = 10;
-
-      return new CreateWeddingAttendRequest(name, nationality, attend, eatting, remark,
-          attenderNumber);
+      return CreateWeddingAttendRequestTest.getValid();
     }
   }
 
