@@ -17,4 +17,7 @@
 	.attend_message_wrap .attend_message{
 		text-align: left;
 	}
+	.invitation_message_wrap .message{
+  		font-size: 1rem;
+    }
 }

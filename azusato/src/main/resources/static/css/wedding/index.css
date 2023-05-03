@@ -53,6 +53,9 @@ input:-webkit-autofill:focus {
 	width:60%; 
 	font-size: 1.5rem; 
 }
+.invitation_message_wrap .message{
+	line-height: 2.5;
+}
 .count_down_wrap p{
 	font-size: 4.0rem; 
 	font-weight: 600; 

@@ -1,9 +1,18 @@
 .invitation_message_wrap > p{
   font-family: 'Nanum Pen Script', cursive;
 }
+.invitation_message_wrap .message{
+  font-size: 2rem;
+}
 .attend_message_wrap .attend_message{
 	font-family: 'Nanum Pen Script', cursive; 
 }
 .attend_message_wrap .attend_message #attend_btn{
 	font-family: 'Noto Sans KR', sans-serif;
+}
+
+@media (max-width: 767px) {
+  .invitation_message_wrap .message{
+  	font-size: 1.3rem;
+  }
 }

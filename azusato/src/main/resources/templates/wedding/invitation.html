@@ -2,11 +2,11 @@
 <head>
 	<title>Wedding Invitation</title>
 	<meta name="_csrf" th:content="${_csrf.token}" />
-	<meta property="og:title" content="Wedding Invitation" />
+	<meta property="og:title" content="Wedding Invitation❤" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" th:content="'https://azusato.com/' + ${#locale} + '/wedding/invitation'" />
 	<meta property="og:image" content="/image/wedding/main.jpg" />
-	<meta property="og:description" th:content="#{wedding.og.description}" />
+	<meta property="og:description" content="2023.09.17 15:40 Wedding City Sindorim 8F Statice Hall" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
  	<link rel="stylesheet" href="/css/bootstrap_wedding.css">
  	<link rel="preconnect" href="https://fonts.bunny.net">
@@ -81,11 +81,7 @@
 		</div>
 		<div class="mx-auto mobile-fluid opacity-hidden invitation_message_wrap">
 			<div class="sub_title">MESSAGE</div>
-			<p th:text="#{wedding.invitation.message-1}"></p>
-			<p th:text="#{wedding.invitation.message-2}"></p>
-			<p th:text="#{wedding.invitation.message-3}"></p>
-			<p th:text="#{wedding.invitation.message-4}"></p>
-			<p th:text="#{wedding.invitation.message-5}"></p>
+			<p th:utext="#{wedding.invitation.message}" class="message"></p>
 		</div>
 		<div class="sub_title_wrap count_down_wrap mobile-fluid opacity-hidden count_down_wrap"> 
 			<div class="sub_title">COUNT DOWN</div>
