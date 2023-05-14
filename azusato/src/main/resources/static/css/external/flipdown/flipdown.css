@@ -283,3 +283,20 @@
     height: 25px;
   }
 }
+
+@media (max-width: 370px) {
+  .flipdown .rotor,
+  .flipdown .rotor-leaf,
+  .flipdown .rotor-leaf-front,
+  .flipdown .rotor-leaf-rear,
+  .flipdown .rotor-top,
+  .flipdown .rotor-bottom,
+  .flipdown .rotor:after {
+    width: 24px;
+  }
+  
+  .flipdown .rotor-group:nth-child(n+2):nth-child(-n+3):before,
+  .flipdown .rotor-group:nth-child(n+2):nth-child(-n+3):after {
+    left: 59px;
+  }
+}

@@ -93,7 +93,7 @@ function setControlAttendRadio(){
 	for (let radioBtn of attendRadioBtns) {
 		if(radioBtn.value == "true"){
 			radioBtn.addEventListener('change',function(){
-				console.log('〇ボタンに変更')
+				//console.log('〇ボタンに変更')
 				if(korean){
 					addedFamilyArea.style.display = "block";
 				}
@@ -106,7 +106,7 @@ function setControlAttendRadio(){
 			});
 		}else{
 			radioBtn.addEventListener('change',function(){
-				console.log('✖ボタンに変更')
+				//console.log('✖ボタンに変更')
 				if(korean){
 					addedFamilyArea.style.display = "none";
 				}
