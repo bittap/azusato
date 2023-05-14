@@ -7,6 +7,9 @@
 .attend_message_wrap .attend_message #attend_btn{
 	font-family: 'Noto Sans JP', sans-serif;
 }
+#attend_form #addedFamilyArea{
+	display: none;
+}
 @media (max-width: 767px) {
 	.when .name_wrap{
 		font-size: 2.5rem;

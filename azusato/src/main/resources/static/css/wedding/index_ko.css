@@ -10,6 +10,9 @@
 .attend_message_wrap .attend_message #attend_btn{
 	font-family: 'Noto Sans KR', sans-serif;
 }
+#attend_form #addedFamilyArea{
+	display: block;
+}
 
 @media (max-width: 767px) {
   .invitation_message_wrap .message{

@@ -158,10 +158,16 @@
 								<input class="form-check-input" type="radio" name="attend" value="false">
 								<label class="form-check-label" for="national">✖</label>
 							</div>
-							<select name="attenderNumber" class="form-select my-2" aria-label="Number of attenderes">
-							  <option value="0" th:text="'0' + #{wedding.attender-number.select.suffix.title}" disabled></option>
-							  <th:block th:each="i : ${#numbers.sequence(0,10)}">
-								  <option th:value="${i+1}" th:selected="${i==0}" th:text="#{wedding.attender-number.select.prefix.title}  + ${i} + #{wedding.attender-number.select.suffix.title}"></option>
+						</div>
+                    </div>
+                    <div class="mb-3" id="addedFamilyArea">
+	                    <label for="attenderNumber" class="form-label">추가인원</label>
+                    	<div class="form-control content_wrap">
+	                    	<select name="attenderNumber" class="form-select my-2" aria-label="Number of attenderes">
+	                    	  <option value="0" hidden></option>
+	                    	  <option selected value="1" th:text="'0' + #{wedding.attender-number.select.suffix.title}"></option>
+							  <th:block th:each="i : ${#numbers.sequence(1,10)}">
+								  <option th:value="${i+1}" th:text=" ${i} + #{wedding.attender-number.select.suffix.title}"></option>
 							  </th:block>
 							</select>
 						</div>

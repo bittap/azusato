@@ -1,3 +1,5 @@
+const korean = language === "ko" ? true : false;
+
 const changedImgEle = document.querySelector('#changedImage');
 const imgEles = document.querySelectorAll('#images img');
 const days_ele = document.querySelector('#days');
@@ -41,7 +43,7 @@ imgEles.forEach(function(imgEle){
 	});
 });
 
-setControlSelectbox();
+setControlAttendRadio();
 
 attend_btn_ele.addEventListener('click',function(){
 	modalCommon.displayTwoBtnModal(ATTEND_MODAL_TITLE,ATTEND_MODAL_BODY,async function(){
@@ -82,23 +84,21 @@ async function attend() {
 	}
 }
 
-function setControlSelectbox(){
+function setControlAttendRadio(){
 	const attendRadioBtns = document.querySelectorAll(".form-control input[type='radio'][name='attend']")
 	const attenderNumberSel = document.querySelector(".form-control [name='attenderNumber']");
+	const addedFamilyArea = document.querySelector("#attend_form #addedFamilyArea");
 	const options = [...attenderNumberSel.options];
 
 	for (let radioBtn of attendRadioBtns) {
 		if(radioBtn.value == "true"){
 			radioBtn.addEventListener('change',function(){
-				//console.log('〇ボタンに変更')
-				const disableValue = "0";
+				console.log('〇ボタンに変更')
+				if(korean){
+					addedFamilyArea.style.display = "block";
+				}
 				const selectedValue = "1";
 				options.forEach(option => {
-					if(disableValue == option.value){
-						option.disabled = true;
-					}else{
-						option.disabled = false;
-					}
 					if(selectedValue == option.value){
 						option.selected = true;
 					}
@@ -106,15 +106,12 @@ function setControlSelectbox(){
 			});
 		}else{
 			radioBtn.addEventListener('change',function(){
-				//console.log('✖ボタンに変更')
-				const ableValue = "0";
+				console.log('✖ボタンに変更')
+				if(korean){
+					addedFamilyArea.style.display = "none";
+				}
 				const selectedValue = "0";
 				options.forEach(option => {
-					if(ableValue == option.value){
-						option.disabled = false;
-					}else{
-						option.disabled = true;
-					}
 					if(selectedValue == option.value){
 						option.selected = true;
 					}
