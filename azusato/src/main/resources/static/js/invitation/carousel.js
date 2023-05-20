@@ -83,10 +83,10 @@ class Carousel {
   	let touch = event.changedTouches[0];
     let endX =  touch.screenX;
     if(this.startX + this.movedDistance <= endX) {
-      this.next();
+      this.previous();
       event.preventDefault();
     }else if(this.startX - this.movedDistance >= endX){
-      this.previous();
+      this.next();
       event.preventDefault();
     }
   }
