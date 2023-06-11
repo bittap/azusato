@@ -39,7 +39,7 @@ jobs:
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         source: /home/runner/work/azusato/azusato/azusato/target/azusato.jar  # ローカルのビルド済みJARファイルのパス
-        target: /project  # サーバー上の宛先ディレクトリ
+        target: /project/test  # サーバー上の宛先ディレクトリ
 
     - name: Serverで再デプロイスクリプトを実行
       uses: appleboy/ssh-action@v0.1.10
