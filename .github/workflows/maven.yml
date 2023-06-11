@@ -38,7 +38,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
-        source: /azusato/target/azusato.jar  # ローカルのビルド済みJARファイルのパス
+        source: /home/runner/work/azusato/azusato/azusato/target/azusato.jar  # ローカルのビルド済みJARファイルのパス
         target: /project  # サーバー上の宛先ディレクトリ
 
     - name: Serverで再デプロイスクリプトを実行
