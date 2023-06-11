@@ -37,5 +37,4 @@ jobs:
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         script: |
-           /home/ubuntu/helloworld.sh
-           ls -al
+           /project/azusato/build.sh
