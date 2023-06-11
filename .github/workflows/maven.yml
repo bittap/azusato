@@ -32,7 +32,7 @@ jobs:
       run: mvn -B package --file azusato/pom.xml -DskipTests=true
 
     - name: Deploy to Server
-      uses: appleboy/scp-action@v1
+      uses: appleboy/scp-action@v0.1.4
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
