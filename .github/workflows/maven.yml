@@ -41,7 +41,7 @@ jobs:
         source: azusato/target/azusato.jar  # ローカルのビルド済みJARファイルのパス
         target: /project  # サーバー上の宛先ディレクトリ
 
-    - name: executing remote ssh commands using ssh key
+    - name: Serverで再デプロイスクリプトを実行
       uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ secrets.HOST }}
