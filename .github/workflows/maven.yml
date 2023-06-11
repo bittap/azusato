@@ -40,7 +40,7 @@ jobs:
         port: ${{ secrets.PORT }}
         source: /home/runner/work/azusato/azusato/azusato/target/azusato.jar  # ローカルのビルド済みJARファイルのパス
         target: /project  # サーバー上の宛先ディレクトリ
-        strip_components: 5 # /project/github/workspace/azusato/target/azusato.jarで後ろからパスをx回飛ぶ
+        strip_components: 4 # /project/github/workspace/azusato/target/azusato.jarで後ろからパスをx回飛ぶ
 
     - name: Serverで再デプロイスクリプトを実行
       uses: appleboy/ssh-action@v0.1.10
