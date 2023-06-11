@@ -27,8 +27,20 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: maven
+
     - name: Build with Maven
       run: mvn -B package --file azusato/pom.xml -DskipTests=true
+
+    - name: Deploy to Server
+      uses: appleboy/scp-action@v1
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        source: azusato/target/azusato.jar  # ローカルのビルド済みJARファイルのパス
+        target: /project  # サーバー上の宛先ディレクトリ
+
     - name: executing remote ssh commands using ssh key
       uses: appleboy/ssh-action@v0.1.10
       with:
