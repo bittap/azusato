@@ -26,13 +26,14 @@ jobs:
     # 同じシェルでは実行結果を共有できる
     steps:
     - uses: actions/checkout@v3 # コードをチェックアウト
+
     - name: Set up JDK 11 # javaをセットアップ
       uses: actions/setup-java@v3 
       # 設定
       with:
         java-version: '11' # バージョン
-        distribution: 'temurin' # TODO
-        cache: maven # TODO
+        distribution: 'temurin' # Eclipse TemurinのOpen Jdkを使う。
+        cache: maven # pom.xmlの内容をキャッシュする。
 
     - name: Build with Maven # mavenによるビルド
       run: mvn -B package --file azusato/pom.xml -DskipTests=true # Mavenコマンド内、"-B"(ビルド)コマンドを使ってビルドを行う。その時にテストコードはスキップ、pom.xmlは指定したパスにあるpom.xmlを使う。
@@ -47,9 +48,9 @@ jobs:
         port: ${{ secrets.PORT }}
         source: /home/runner/work/azusato/azusato/azusato/target/azusato.jar  # ローカルのビルド済みJARファイルのパス
         target: /project  # サーバー上の宛先ディレクトリ
-        strip_components: 4 # /project/github/workspace/azusato/target/azusato.jarで後ろからパスをx回飛ばす
+        strip_components: 4 # /project/github/workspace/azusato/target/azusato.jarで後ろからパスをx回飛ばす。ただし、最後のパスは飛ばす回数に含まれない。
 
-    - name: Execute deploy script in server # Serverでデプロイスクリプトを実行
+    - name: Execute deploy script in server # Serverにあるデプロイスクリプトを実行
       uses: appleboy/ssh-action@v0.1.10
       # 設定
       with:
