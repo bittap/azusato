@@ -1,3 +1,13 @@
+.who {
+	display: block!important;
+}
+.who p {
+	font-size: 1.5rem;
+}
+.who p span {
+	font-size: 1rem;
+}
+
 .invitation_message_wrap > p{
   font-family: 'Nanum Pen Script', cursive;
 }
@@ -14,8 +24,18 @@
 	display: block;
 }
 
+.attend_message_wrap{
+	display: none
+}
+
 @media (max-width: 767px) {
   .invitation_message_wrap .message{
   	font-size: 1.3rem;
+  }
+  .who p {
+	font-size: 1.2rem;
+  }
+  .who p span {
+	font-size: 0.8rem;
   }
 }
