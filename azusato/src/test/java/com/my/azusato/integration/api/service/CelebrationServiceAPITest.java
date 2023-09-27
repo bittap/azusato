@@ -320,6 +320,17 @@ public class CelebrationServiceAPITest {
         assertEquals(1L, actual.getReplys().get(0).getNo());
         assertEquals(2L, actual.getReplys().get(1).getNo());
       }
+
+      @Test
+      void givenDifferenceId_resultNoOwner() {
+        GetCelebrationContentSerivceAPIResponse actual =
+            target.getCelebrationContent(celebrationNo, 99999L, null);
+
+        assertEquals(celebrationNo, actual.getNo());
+        assertEquals(2, actual.getReplys().size());
+        assertEquals(false, actual.getReplys().get(0).getOwner());
+        assertEquals(false, actual.getReplys().get(1).getOwner());
+      }
     }
 
     @Nested
@@ -335,7 +346,7 @@ public class CelebrationServiceAPITest {
             new AzusatoException(HttpStatus.BAD_REQUEST, AzusatoException.I0005, expectedMessage);
 
         AzusatoException result = Assertions.assertThrows(AzusatoException.class, () -> {
-          target.getCelebration(notExistNo, locale);
+          target.getCelebrationContent(notExistNo, 1L, locale);
         });
 
         assertEquals(expected, result);
@@ -417,6 +428,33 @@ public class CelebrationServiceAPITest {
         });
 
         assertEquals(expected, result);
+      }
+    }
+  }
+
+  @Nested
+  class getPage {
+
+    @Nested
+    @DisplayName("正常系")
+    class normal {
+
+      @Test
+      void givenCelebrationNo_resultCalculatedPageNo() {
+        int result = target.getPage(1L, Locale.JAPANESE);
+        assertEquals(1, result);
+      }
+    }
+
+    @Nested
+    @DisplayName("準正常系")
+    class subnormal {
+
+      @Test
+      void givenNoCelebrationNo_resultException() {
+        Assertions.assertThrows(AzusatoException.class, () -> {
+          target.getPage(9999L, Locale.JAPANESE);
+        });
       }
     }
   }
