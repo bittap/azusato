@@ -1,0 +1,63 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# githubactionsのネーム
+name: Java CI with Maven
+
+# Event欄
+on:
+  push: # プッシュのイベントをキャッチ
+    branches: [ "master" ] # 対象は"master"ブランチ
+  pull_request: # プールリクエストのイベントをキャッチ
+    branches: [ "master" ] # 対象は"master"ブランチ
+
+# ワークフロー(複数のジョブ(job)を持つことができる)
+jobs:
+  # jobを実行するVMマシーン(コンテナ)
+  build:
+    runs-on: ubuntu-latest # ubuntuの最新版を使う
+
+    # 一つのシェルの中で実行
+    # 同じシェルでは実行結果を共有できる
+    steps:
+    - uses: actions/checkout@v3 # コードをチェックアウト
+
+    - name: Set up JDK 11 # javaをセットアップ
+      uses: actions/setup-java@v3 
+      # 設定
+      with:
+        java-version: '11' # バージョン
+        distribution: 'temurin' # Eclipse TemurinのOpen Jdkを使う。
+        cache: maven # pom.xmlの内容をキャッシュする。
+
+    - name: Build with Maven # mavenによるビルド
+      run: mvn -B package --file azusato/pom.xml -DskipTests=true # Mavenコマンド内、"-B"(ビルド)コマンドを使ってビルドを行う。その時にテストコードはスキップ、pom.xmlは指定したパスにあるpom.xmlを使う。
+
+    - name: Upload jar to server # サーバーへjarをアップロード
+      uses: appleboy/scp-action@v0.1.4
+      # 設定
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        source: /home/runner/work/azusato/azusato/azusato/target/azusato.jar  # ローカルのビルド済みJARファイルのパス
+        target: /project  # サーバー上の宛先ディレクトリ
+        strip_components: 4 # /project/github/workspace/azusato/target/azusato.jarで後ろからパスをx回飛ばす。ただし、最後のパスは飛ばす回数に含まれない。
+
+    - name: Execute deploy script in server # Serverにあるデプロイスクリプトを実行
+      uses: appleboy/ssh-action@v0.1.10
+      # 設定
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        # 指定したファイルを実行して新しいjarにより、デプロイを行う。
+        script: | 
+           /project/azusato/build.sh 
