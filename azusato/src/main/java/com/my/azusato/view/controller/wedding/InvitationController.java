@@ -17,7 +17,7 @@ public class InvitationController {
   private final static String VIEW_FOLDER_NAME = "wedding/";
 
   @GetMapping("invitation")
-  public ModelAndView write() {
+  public ModelAndView invitation() {
     ModelAndView mav = new ModelAndView(VIEW_FOLDER_NAME + "invitation");
     return mav;
   }
