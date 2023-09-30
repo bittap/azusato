@@ -11,6 +11,10 @@ import com.my.azusato.view.controller.UserController;
  */
 public class UrlConstant {
 
+  private UrlConstant() {
+
+  }
+
   /**
    * Url of request mapping of japanese controller
    */
@@ -42,6 +46,11 @@ public class UrlConstant {
   public static final String WEDDING_ADMIN_CONTROLLER_REQUSET = "/admin/wedding";
 
   public static class Api {
+
+    private Api() {
+
+    }
+
     public static final String COMMON_REQUSET = "api/";
   }
 }

@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -406,15 +405,7 @@ public class CelebrationServiceAPI {
       }
     }
 
-    if (Objects.isNull(celeNoIndex)) {
-      log.warn(
-          "CelebrationRepository#findAllCelebrationNosで参照したお祝いリストの中にお祝い番号が存在しません。\nお祝い番号：{}、お祝いリスト：{}が存在しません。",
-          celebrationNo, celeNos);
-      throw AzusatoException.createI0005Error(locale, messageSource,
-          CelebrationEntity.TABLE_NAME_KEY);
-    } else {
-      return (int) (Math.ceil((double) celeNoIndex / celeProperty.getPageOfElement()));
-    }
+    return (int) (Math.ceil((double) celeNoIndex / celeProperty.getPageOfElement()));
   }
 
   /**

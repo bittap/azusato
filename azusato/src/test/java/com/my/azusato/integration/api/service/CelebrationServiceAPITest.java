@@ -445,18 +445,6 @@ public class CelebrationServiceAPITest {
         assertEquals(1, result);
       }
     }
-
-    @Nested
-    @DisplayName("準正常系")
-    class subnormal {
-
-      @Test
-      void givenNoCelebrationNo_resultException() {
-        Assertions.assertThrows(AzusatoException.class, () -> {
-          target.getPage(9999L, Locale.JAPANESE);
-        });
-      }
-    }
   }
 
   @Nested

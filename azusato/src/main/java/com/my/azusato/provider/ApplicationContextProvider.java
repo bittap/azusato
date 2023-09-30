@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * {@link Bean}に登録されいないクラスでSpring {@link Bean}を使うため。
@@ -18,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Component
-@Slf4j
 public class ApplicationContextProvider implements ApplicationContextAware {
   private static ApplicationContext context;
 
@@ -33,11 +31,8 @@ public class ApplicationContextProvider implements ApplicationContextAware {
 
   public static HttpServletRequest getCurrentHttpRequest() {
     RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-    if (requestAttributes instanceof ServletRequestAttributes) {
-      HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-      return request;
-    }
-    log.debug("Not called in the context of an HTTP request");
-    return null;
+
+    HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+    return request;
   }
 }
