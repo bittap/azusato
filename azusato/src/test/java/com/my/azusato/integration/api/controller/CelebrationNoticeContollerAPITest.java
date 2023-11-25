@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestLogin;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 
-public class CelebrationNoticeContollerAPITest extends AbstractIntegration {
+public class CelebrationNoticeContollerAPITest extends AbstractIntegrationForTest {
 
   static final String COMMON_URL = "celebration-notice";
 

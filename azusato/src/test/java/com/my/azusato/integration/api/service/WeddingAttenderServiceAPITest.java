@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import com.my.azusato.anonotation.IntegrationService;
+import com.my.azusato.anonotation.IntegrationServiceForTest;
 import com.my.azusato.api.controller.request.CreateWeddingAttendRequest;
 import com.my.azusato.api.controller.request.GetWeddingAttendsRequest;
 import com.my.azusato.api.service.WeddingAttenderServiceAPI;
@@ -23,7 +23,7 @@ import com.my.azusato.entity.WeddingAttender.Division;
 import com.my.azusato.entity.WeddingAttender.Nationality;
 import com.my.azusato.repository.WeddingAttenderRepository;
 
-@IntegrationService
+@IntegrationServiceForTest
 public class WeddingAttenderServiceAPITest {
 
   @Autowired

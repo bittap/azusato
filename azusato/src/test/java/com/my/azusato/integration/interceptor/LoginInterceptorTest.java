@@ -16,11 +16,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.NestedServletException;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.entity.UserEntity;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.view.controller.common.CookieConstant;
 
-public class LoginInterceptorTest extends AbstractIntegration {
+public class LoginInterceptorTest extends AbstractIntegrationForTest {
 
   private final String NOT_EXIST_URL = "test";
 

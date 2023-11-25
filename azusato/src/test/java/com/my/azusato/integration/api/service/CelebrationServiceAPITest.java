@@ -21,7 +21,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import com.my.azusato.anonotation.IntegrationService;
+import com.my.azusato.anonotation.IntegrationServiceForTest;
 import com.my.azusato.api.controller.request.MyPageControllerRequest;
 import com.my.azusato.api.service.CelebrationServiceAPI;
 import com.my.azusato.api.service.request.AddCelebrationServiceAPIRequest;
@@ -40,7 +40,7 @@ import com.my.azusato.repository.CelebrationNoticeRepository;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.UserRepository;
 
-@IntegrationService
+@IntegrationServiceForTest
 @ExtendWith(MockitoExtension.class)
 public class CelebrationServiceAPITest {
 

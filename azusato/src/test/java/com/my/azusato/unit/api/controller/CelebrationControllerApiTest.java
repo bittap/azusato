@@ -38,7 +38,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.my.azusato.anonotation.UnitController;
+import com.my.azusato.anonotation.UnitControllerForTest;
 import com.my.azusato.api.controller.CelebrationControllerAPI;
 import com.my.azusato.api.controller.request.MyPageControllerRequest;
 import com.my.azusato.api.service.CelebrationServiceAPI;
@@ -55,7 +55,7 @@ import com.my.azusato.view.controller.common.HttpConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 import com.my.azusato.view.controller.common.ValueConstant;
 
-@UnitController
+@UnitControllerForTest
 @Import(value = CelebrationControllerAPI.class)
 class CelebrationControllerApiTest {
 

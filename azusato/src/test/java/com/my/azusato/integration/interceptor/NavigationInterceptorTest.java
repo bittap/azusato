@@ -12,11 +12,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.servlet.ModelAndView;
 import com.my.azusato.api.service.response.GetCelebrationNoticesSerivceAPIResponse;
 import com.my.azusato.common.TestConstant;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 import com.my.azusato.interceptor.NavigationInterceptor;
 import com.my.azusato.login.LoginUser;
 
-public class NavigationInterceptorTest extends AbstractIntegration {
+public class NavigationInterceptorTest extends AbstractIntegrationForTest {
 
   @Nested
   class postHandle {

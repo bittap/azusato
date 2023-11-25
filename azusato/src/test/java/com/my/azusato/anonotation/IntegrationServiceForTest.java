@@ -48,6 +48,6 @@ import com.my.azusato.common.TestConstant;
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @ActiveProfiles(value = TestConstant.PROFILES)
 @ImportAutoConfiguration(value = MessageSourceAutoConfiguration.class)
-public @interface IntegrationService {
+public @interface IntegrationServiceForTest {
 
 }

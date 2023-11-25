@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.my.azusato.anonotation.UnitController;
+import com.my.azusato.anonotation.UnitControllerForTest;
 import com.my.azusato.api.controller.CelebrationReplyControllerAPI;
 import com.my.azusato.api.controller.request.AddCelebrationReplyAPIReqeust;
 import com.my.azusato.api.service.CelebrationReplyServiceAPI;
@@ -34,7 +34,7 @@ import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.view.controller.common.HttpConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
-@UnitController
+@UnitControllerForTest
 @Import(value = CelebrationReplyControllerAPI.class)
 class CelebrationReplyControllerApiTest {
 

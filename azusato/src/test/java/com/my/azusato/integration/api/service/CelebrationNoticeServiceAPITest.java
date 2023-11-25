@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import com.my.azusato.anonotation.IntegrationService;
+import com.my.azusato.anonotation.IntegrationServiceForTest;
 import com.my.azusato.api.controller.request.MyPageControllerRequest;
 import com.my.azusato.api.service.CelebrationNoticeServiceAPI;
 import com.my.azusato.api.service.request.GetCelebrationsSerivceAPIRequset;
@@ -25,7 +25,7 @@ import com.my.azusato.entity.CelebrationNoticeEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.repository.CelebrationNoticeRepository;
 
-@IntegrationService
+@IntegrationServiceForTest
 @ExtendWith(MockitoExtension.class)
 public class CelebrationNoticeServiceAPITest {
 

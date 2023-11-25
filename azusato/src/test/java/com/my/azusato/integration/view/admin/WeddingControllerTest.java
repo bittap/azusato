@@ -6,9 +6,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.my.azusato.common.TestConstant;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 
-public class WeddingControllerTest extends AbstractIntegration {
+public class WeddingControllerTest extends AbstractIntegrationForTest {
 
   @Nested
   public class invitation {

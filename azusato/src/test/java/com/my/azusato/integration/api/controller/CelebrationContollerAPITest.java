@@ -26,13 +26,13 @@ import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.common.TestStream;
 import com.my.azusato.entity.UserEntity;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.view.controller.common.HttpConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 import com.my.azusato.view.controller.common.ValueConstant;
 
-public class CelebrationContollerAPITest extends AbstractIntegration {
+public class CelebrationContollerAPITest extends AbstractIntegrationForTest {
 
   @Nested
   class AddCelebration {

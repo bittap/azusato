@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.my.azusato.anonotation.UnitController;
+import com.my.azusato.anonotation.UnitControllerForTest;
 import com.my.azusato.api.controller.CelebrationNoticeControllerAPI;
 import com.my.azusato.api.service.CelebrationNoticeServiceAPI;
 import com.my.azusato.common.TestConstant;
@@ -26,7 +26,7 @@ import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
-@UnitController
+@UnitControllerForTest
 @Import(value = CelebrationNoticeControllerAPI.class)
 class CelebrationNoticeControllerApiTest {
 
