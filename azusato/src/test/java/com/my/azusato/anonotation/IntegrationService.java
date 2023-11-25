@@ -12,11 +12,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
 import com.my.azusato.common.TestConstant;
-import com.my.azusato.provider.ApplicationContextProvider;
 
 /**
  * Service~Repositoryまでの結合テスト用のアノテーション
@@ -49,7 +47,6 @@ import com.my.azusato.provider.ApplicationContextProvider;
     includeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION, value = {Service.class})})
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @ActiveProfiles(value = TestConstant.PROFILES)
-@Import(ApplicationContextProvider.class)
 @ImportAutoConfiguration(value = MessageSourceAutoConfiguration.class)
 public @interface IntegrationService {
 
