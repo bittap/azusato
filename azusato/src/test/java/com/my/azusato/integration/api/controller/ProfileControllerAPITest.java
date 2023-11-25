@@ -25,12 +25,12 @@ import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.common.TestStream;
 import com.my.azusato.entity.ProfileEntity;
 import com.my.azusato.entity.UserEntity;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
 
-public class ProfileControllerAPITest extends AbstractIntegration {
+public class ProfileControllerAPITest extends AbstractIntegrationForTest {
 
   @Nested
   class RandomProfile {

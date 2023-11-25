@@ -8,10 +8,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestLogin;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 import com.my.azusato.view.controller.common.UrlConstant;
 
-public class InvitationControllerTest extends AbstractIntegration {
+public class InvitationControllerTest extends AbstractIntegrationForTest {
 
   @Nested
   public class invitation {

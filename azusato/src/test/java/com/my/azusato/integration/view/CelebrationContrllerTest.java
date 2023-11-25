@@ -22,14 +22,14 @@ import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestLogin;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 import com.my.azusato.view.controller.CelebrationController;
 import com.my.azusato.view.controller.common.ModelConstant;
 import com.my.azusato.view.controller.common.UrlConstant;
 import com.my.azusato.view.controller.response.CelebrationModifyResponse;
 import com.my.azusato.view.controller.response.HeaderReponse;
 
-public class CelebrationContrllerTest extends AbstractIntegration {
+public class CelebrationContrllerTest extends AbstractIntegrationForTest {
 
   @Nested
   public class list {

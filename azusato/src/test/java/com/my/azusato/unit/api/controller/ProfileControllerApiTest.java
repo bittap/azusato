@@ -22,7 +22,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.my.azusato.anonotation.UnitController;
+import com.my.azusato.anonotation.UnitControllerForTest;
 import com.my.azusato.api.controller.ProfileControllerAPI;
 import com.my.azusato.api.service.ProfileServiceAPI;
 import com.my.azusato.common.TestConstant;
@@ -32,7 +32,7 @@ import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
-@UnitController
+@UnitControllerForTest
 @Import(value = ProfileControllerAPI.class)
 class ProfileControllerApiTest {
 

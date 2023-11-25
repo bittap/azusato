@@ -12,11 +12,11 @@ import com.my.azusato.api.controller.request.AddCelebrationReplyAPIReqeust;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.common.TestLogin;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 import com.my.azusato.view.controller.common.HttpConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
-public class CelebrationReplyContollerAPITest extends AbstractIntegration {
+public class CelebrationReplyContollerAPITest extends AbstractIntegrationForTest {
 
   @Nested
   class AddReplyCelebration {

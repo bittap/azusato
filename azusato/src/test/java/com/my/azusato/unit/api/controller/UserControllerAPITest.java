@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.my.azusato.anonotation.UnitController;
+import com.my.azusato.anonotation.UnitControllerForTest;
 import com.my.azusato.api.controller.UserControllerAPI;
 import com.my.azusato.api.controller.request.AddNonMemberUserAPIRequest;
 import com.my.azusato.api.service.UserServiceAPI;
@@ -43,7 +43,7 @@ import com.my.azusato.view.controller.common.CookieConstant;
 import com.my.azusato.view.controller.common.HttpConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
-@UnitController
+@UnitControllerForTest
 @Import(value = UserControllerAPI.class)
 public class UserControllerAPITest {
 

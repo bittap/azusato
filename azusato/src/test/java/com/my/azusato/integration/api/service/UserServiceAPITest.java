@@ -12,7 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import com.my.azusato.anonotation.IntegrationService;
+import com.my.azusato.anonotation.IntegrationServiceForTest;
 import com.my.azusato.api.service.UserServiceAPI;
 import com.my.azusato.api.service.request.AddNonMemberUserServiceAPIRequest;
 import com.my.azusato.api.service.response.GetSessionUserServiceAPIResponse;
@@ -23,7 +23,7 @@ import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.repository.UserRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
 
-@IntegrationService
+@IntegrationServiceForTest
 public class UserServiceAPITest {
 
   @Autowired

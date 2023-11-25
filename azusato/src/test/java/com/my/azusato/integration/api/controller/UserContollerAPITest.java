@@ -22,13 +22,13 @@ import com.my.azusato.api.service.response.GetSessionUserServiceAPIResponse;
 import com.my.azusato.common.TestConstant;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.entity.UserEntity;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.view.controller.common.CookieConstant;
 import com.my.azusato.view.controller.common.HttpConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
-public class UserContollerAPITest extends AbstractIntegration {
+public class UserContollerAPITest extends AbstractIntegrationForTest {
 
   @Nested
   class getLoginUser {
