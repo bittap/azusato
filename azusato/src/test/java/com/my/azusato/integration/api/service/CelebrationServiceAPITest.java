@@ -441,7 +441,7 @@ public class CelebrationServiceAPITest {
 
       @Test
       void givenCelebrationNo_resultCalculatedPageNo() {
-        int result = target.getPage(1L, Locale.JAPANESE);
+        int result = target.getPage(1L);
         assertEquals(1, result);
       }
     }

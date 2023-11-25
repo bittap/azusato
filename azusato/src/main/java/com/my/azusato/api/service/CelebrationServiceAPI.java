@@ -394,7 +394,7 @@ public class CelebrationServiceAPI {
    * @return ページ番号
    * @throws AzusatoException celebrationNoに該当するお祝い番号が存在しない時
    */
-  public Integer getPage(Long celebrationNo, Locale locale) {
+  public Integer getPage(Long celebrationNo) {
     List<Long> celeNos = celeRepo.findAllCelebrationNos();
 
     Integer celeNoIndex = null;
