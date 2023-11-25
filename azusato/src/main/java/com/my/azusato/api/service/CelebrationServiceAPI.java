@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -388,25 +389,32 @@ public class CelebrationServiceAPI {
   }
 
   /**
-   * お祝い番号よりページ情報を返す。
+   * お祝い番号よりページ番号を返す。 <br>
+   * 削除されたお祝い情報を除いて番号を計算する <br>
+   * お祝い番号の情報が削除された場合には1ページを返す。
    * 
    * @param celebrationNo お祝い番号
    * @return ページ番号
    * @throws AzusatoException celebrationNoに該当するお祝い番号が存在しない時
    */
   public Integer getPage(Long celebrationNo) {
+    // 対象のお祝い情報が削除された場合には初期値を使う
+    final int DEFAULT_PAGE_NO = 1;
     List<Long> celeNos = celeRepo.findAllCelebrationNos();
 
-    Integer celeNoIndex = null;
+    Integer targetNo = null;
 
+    // 削除されたお祝い情報を除いて番号を取得する
     for (int i = 0; i < celeNos.size(); i++) {
       if (celeNos.get(i).equals(celebrationNo)) {
-        celeNoIndex = i + 1;
+        targetNo = i + 1;
         break;
       }
     }
 
-    return (int) (Math.ceil((double) celeNoIndex / celeProperty.getPageOfElement()));
+
+    return Objects.isNull(targetNo) ? DEFAULT_PAGE_NO
+        : (int) (Math.ceil((double) targetNo / celeProperty.getPageOfElement()));
   }
 
   /**

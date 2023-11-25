@@ -444,6 +444,12 @@ public class CelebrationServiceAPITest {
         int result = target.getPage(1L);
         assertEquals(1, result);
       }
+
+      @Test
+      void givenNonCelebrationNo_resultDefaultPageNo() {
+        int result = target.getPage(111111111111111111L);
+        assertEquals(1, result);
+      }
     }
   }
 
