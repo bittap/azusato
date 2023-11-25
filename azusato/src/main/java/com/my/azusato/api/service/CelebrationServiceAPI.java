@@ -47,8 +47,8 @@ import com.my.azusato.repository.CelebrationNoticeRepository;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.UserRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service API for celebration.
@@ -61,7 +61,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class CelebrationServiceAPI {
 
   private final UserRepository userRepo;
@@ -318,7 +317,7 @@ public class CelebrationServiceAPI {
   @Transactional
   @MethodAnnotation(description = "対象のお祝い情報のコンテンツパスと書き込み情報の返却")
   public GetCelebrationContentSerivceAPIResponse getCelebrationContent(Long celebationNo,
-      Long userNo, Locale locale) {
+      @NonNull Long userNo, Locale locale) {
     CelebrationEntity fetchedCelebationEntity = celeRepo.findById(celebationNo).orElseThrow(() -> {
       throw AzusatoException.createI0005Error(locale, messageSource,
           CelebrationEntity.TABLE_NAME_KEY);
@@ -326,9 +325,9 @@ public class CelebrationServiceAPI {
 
     return GetCelebrationContentSerivceAPIResponse.builder()
         .contentPath(fetchedCelebationEntity.getContentPath()).no(fetchedCelebationEntity.getNo())
-        .owner(
-            fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getNo() == userNo ? true
-                : false)
+        .owner(userNo.equals(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getNo())
+            ? true
+            : false)
         .replys(fetchedCelebationEntity.getReplys().stream()
             // deleted == falseだけ
             .filter((e1) -> {
@@ -338,7 +337,9 @@ public class CelebrationServiceAPI {
             .sorted((e1, e2) -> Long.compare(e1.getNo(), e2.getNo())).map((e2) -> {
               CelebrationReply reply = CelebrationReply.builder().no(e2.getNo())
                   .content(e2.getContent()).createdDatetime(e2.getCommonDate().getCreateDatetime())
-                  .owner(e2.getCommonUser().getCreateUserEntity().getNo() == userNo ? true : false)
+                  .owner(userNo.equals(
+                      fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getNo()) ? true
+                          : false)
                   .name(e2.getCommonUser().getCreateUserEntity().getName()).profileImagePath(
                       e2.getCommonUser().getCreateUserEntity().getProfile().getImagePath())
                   .build();
@@ -399,7 +400,7 @@ public class CelebrationServiceAPI {
     Integer celeNoIndex = null;
 
     for (int i = 0; i < celeNos.size(); i++) {
-      if (celeNos.get(i) == celebrationNo) {
+      if (celeNos.get(i).equals(celebrationNo)) {
         celeNoIndex = i + 1;
         break;
       }
