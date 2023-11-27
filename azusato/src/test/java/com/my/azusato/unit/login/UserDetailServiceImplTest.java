@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.my.azusato.common.TestConstant.Entity;
 import com.my.azusato.entity.UserEntity;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 import com.my.azusato.login.UserDetailServiceImpl;
 
-public class UserDetailServiceImplTest extends AbstractIntegration {
+public class UserDetailServiceImplTest extends AbstractIntegrationForTest {
 
   @Autowired
   UserDetailServiceImpl userDetailServiceImpl;

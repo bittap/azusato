@@ -28,7 +28,7 @@ import org.springframework.util.MultiValueMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.my.azusato.anonotation.UnitController;
+import com.my.azusato.anonotation.UnitControllerForTest;
 import com.my.azusato.api.controller.WeddingAttenderControllerAPI;
 import com.my.azusato.api.controller.request.CreateWeddingAttendRequest;
 import com.my.azusato.api.service.WeddingAttenderServiceAPI;
@@ -42,7 +42,7 @@ import com.my.azusato.unit.api.request.CreateWeddingAttendRequestTest;
 import com.my.azusato.view.controller.common.HttpConstant;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
 
-@UnitController
+@UnitControllerForTest
 @Import(value = WeddingAttenderControllerAPI.class)
 class WeddingAttenderControllerApiTest {
 

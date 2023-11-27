@@ -25,11 +25,11 @@ import com.my.azusato.config.SecurityConfig;
 import com.my.azusato.entity.UserEntity;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 import com.my.azusato.login.Grant;
 import com.my.azusato.property.CookieProperty;
 
-public class LoginControllerAPITest extends AbstractIntegration {
+public class LoginControllerAPITest extends AbstractIntegrationForTest {
 
   @Autowired
   private CookieProperty cookieProperty;

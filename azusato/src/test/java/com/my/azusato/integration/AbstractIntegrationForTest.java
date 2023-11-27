@@ -31,7 +31,7 @@ import com.my.azusato.repository.UserRepository;
 @Transactional
 @ActiveProfiles(TestConstant.PROFILES)
 @AutoConfigureMockMvc
-public abstract class AbstractIntegration {
+public abstract class AbstractIntegrationForTest {
 
   @Autowired
   protected MockMvc mockMvc;
@@ -55,7 +55,7 @@ public abstract class AbstractIntegration {
 
   protected UserEntity adminUser;
 
-  public AbstractIntegration() {
+  public AbstractIntegrationForTest() {
     // サポートjavatime
     om.registerModule(new JavaTimeModule());
   }

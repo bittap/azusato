@@ -20,11 +20,11 @@ import org.springframework.web.server.ResponseStatusException;
 import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.exception.GlobalExceptionHandler;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class GlobalExceptionHandlerTest extends AbstractIntegration {
+public class GlobalExceptionHandlerTest extends AbstractIntegrationForTest {
 
   @Autowired
   private GlobalExceptionHandler errorHandler;

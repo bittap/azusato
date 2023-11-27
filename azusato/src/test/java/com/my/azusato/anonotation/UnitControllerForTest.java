@@ -56,6 +56,6 @@ import com.my.azusato.config.WebMvcConfig;
     // コントローラーを追加する方法は上記のコメントの例を参考
     @ComponentScan.Filter(type = FilterType.ANNOTATION, value = {Controller.class})})
 @ActiveProfiles(TestConstant.PROFILES) // application-test.xmlを使う。
-public @interface UnitController {
+public @interface UnitControllerForTest {
 
 }

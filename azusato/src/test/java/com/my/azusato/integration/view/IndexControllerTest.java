@@ -19,14 +19,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.my.azusato.common.TestLogin;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 import com.my.azusato.locale.LocaleConstant;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.view.controller.common.ModelConstant;
 import com.my.azusato.view.controller.common.UrlConstant;
 import com.my.azusato.view.controller.response.HeaderReponse;
 
-public class IndexControllerTest extends AbstractIntegration {
+public class IndexControllerTest extends AbstractIntegrationForTest {
 
 	@Nested
 	public class Status_200 {

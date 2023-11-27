@@ -19,7 +19,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
-import com.my.azusato.anonotation.IntegrationService;
+import com.my.azusato.anonotation.IntegrationServiceForTest;
 import com.my.azusato.api.service.ProfileServiceAPI;
 import com.my.azusato.api.service.request.ModifyUserProfileServiceAPIRequest;
 import com.my.azusato.common.TestConstant;
@@ -30,7 +30,7 @@ import com.my.azusato.property.ProfileProperty;
 import com.my.azusato.repository.UserRepository;
 
 @Import(ProfileServiceAPI.class)
-@IntegrationService
+@IntegrationServiceForTest
 public class ProfileSerivceAPITest {
 
   @Autowired
@@ -57,7 +57,7 @@ public class ProfileSerivceAPITest {
       Map<String, Boolean> expect = expect();
       System.out.printf("expect : %s\n", expect);
       for (int i = 0; i < 10000; i++) {
-        String result = targetService.getDefaultProfilePath();
+        String result = targetService.getDefaultProfilePath(Locale.JAPANESE);
 
         if (expect.containsKey(result)) {
           expect.put(result, true);
@@ -68,7 +68,6 @@ public class ProfileSerivceAPITest {
         Assertions.assertTrue(v);
       });
     }
-
   }
 
   @Nested

@@ -13,13 +13,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.my.azusato.common.TestConstant;
-import com.my.azusato.integration.AbstractIntegration;
+import com.my.azusato.integration.AbstractIntegrationForTest;
 import com.my.azusato.view.controller.UserController;
 import com.my.azusato.view.controller.common.ModelConstant;
 import com.my.azusato.view.controller.common.UrlConstant;
 import com.my.azusato.view.controller.response.HeaderReponse;
 
-public class UserContrllerTest extends AbstractIntegration {
+public class UserContrllerTest extends AbstractIntegrationForTest {
 	
 	private final int MODEL_SIZE = 1 + TestConstant.SPRING_MODEL_SIZE;
 

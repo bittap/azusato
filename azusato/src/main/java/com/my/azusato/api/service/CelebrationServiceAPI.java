@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -47,8 +48,8 @@ import com.my.azusato.repository.CelebrationNoticeRepository;
 import com.my.azusato.repository.CelebrationRepository;
 import com.my.azusato.repository.UserRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service API for celebration.
@@ -61,7 +62,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class CelebrationServiceAPI {
 
   private final UserRepository userRepo;
@@ -318,7 +318,7 @@ public class CelebrationServiceAPI {
   @Transactional
   @MethodAnnotation(description = "対象のお祝い情報のコンテンツパスと書き込み情報の返却")
   public GetCelebrationContentSerivceAPIResponse getCelebrationContent(Long celebationNo,
-      Long userNo, Locale locale) {
+      @NonNull Long userNo, Locale locale) {
     CelebrationEntity fetchedCelebationEntity = celeRepo.findById(celebationNo).orElseThrow(() -> {
       throw AzusatoException.createI0005Error(locale, messageSource,
           CelebrationEntity.TABLE_NAME_KEY);
@@ -326,9 +326,9 @@ public class CelebrationServiceAPI {
 
     return GetCelebrationContentSerivceAPIResponse.builder()
         .contentPath(fetchedCelebationEntity.getContentPath()).no(fetchedCelebationEntity.getNo())
-        .owner(
-            fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getNo() == userNo ? true
-                : false)
+        .owner(userNo.equals(fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getNo())
+            ? true
+            : false)
         .replys(fetchedCelebationEntity.getReplys().stream()
             // deleted == falseだけ
             .filter((e1) -> {
@@ -338,7 +338,9 @@ public class CelebrationServiceAPI {
             .sorted((e1, e2) -> Long.compare(e1.getNo(), e2.getNo())).map((e2) -> {
               CelebrationReply reply = CelebrationReply.builder().no(e2.getNo())
                   .content(e2.getContent()).createdDatetime(e2.getCommonDate().getCreateDatetime())
-                  .owner(e2.getCommonUser().getCreateUserEntity().getNo() == userNo ? true : false)
+                  .owner(userNo.equals(
+                      fetchedCelebationEntity.getCommonUser().getCreateUserEntity().getNo()) ? true
+                          : false)
                   .name(e2.getCommonUser().getCreateUserEntity().getName()).profileImagePath(
                       e2.getCommonUser().getCreateUserEntity().getProfile().getImagePath())
                   .build();
@@ -387,25 +389,32 @@ public class CelebrationServiceAPI {
   }
 
   /**
-   * お祝い番号よりページ情報を返す。
+   * お祝い番号よりページ番号を返す。 <br>
+   * 削除されたお祝い情報を除いて番号を計算する <br>
+   * お祝い番号の情報が削除された場合には1ページを返す。
    * 
    * @param celebrationNo お祝い番号
    * @return ページ番号
    * @throws AzusatoException celebrationNoに該当するお祝い番号が存在しない時
    */
-  public Integer getPage(Long celebrationNo, Locale locale) {
+  public Integer getPage(Long celebrationNo) {
+    // 対象のお祝い情報が削除された場合には初期値を使う
+    final int DEFAULT_PAGE_NO = 1;
     List<Long> celeNos = celeRepo.findAllCelebrationNos();
 
-    Integer celeNoIndex = null;
+    Integer targetNo = null;
 
+    // 削除されたお祝い情報を除いて番号を取得する
     for (int i = 0; i < celeNos.size(); i++) {
-      if (celeNos.get(i) == celebrationNo) {
-        celeNoIndex = i + 1;
+      if (celeNos.get(i).equals(celebrationNo)) {
+        targetNo = i + 1;
         break;
       }
     }
 
-    return (int) (Math.ceil((double) celeNoIndex / celeProperty.getPageOfElement()));
+
+    return Objects.isNull(targetNo) ? DEFAULT_PAGE_NO
+        : (int) (Math.ceil((double) targetNo / celeProperty.getPageOfElement()));
   }
 
   /**
