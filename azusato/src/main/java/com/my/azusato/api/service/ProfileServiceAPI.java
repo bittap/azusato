@@ -10,15 +10,14 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
-
 import javax.transaction.Transactional;
-
 import org.apache.commons.io.IOUtils;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import com.my.azusato.annotation.MethodAnnotation;
 import com.my.azusato.api.service.request.ModifyUserProfileServiceAPIRequest;
 import com.my.azusato.entity.ProfileEntity;
@@ -28,7 +27,6 @@ import com.my.azusato.exception.AzusatoException;
 import com.my.azusato.property.ProfileProperty;
 import com.my.azusato.repository.UserRepository;
 import com.my.azusato.view.controller.common.ValueConstant;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,79 +44,93 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProfileServiceAPI {
 
-	private final UserRepository userRepo;
-	
-	private final MessageSource messageSource;
-	
-	private final ProfileProperty profileProperty;
-	
-	private final Random random = new Random();
-	
-	
-	/**
-	 * イメージを外部フォルダに格納する。
-	 * ファイルネームは"userNo.extention"
-	 * @param profileImage 書き込み対象のデータ
-	 * @param extention 拡張子
-	 * @param userNo ファイルネーム
-	 * @return 絶対パスのファイルネーム
-	 * @throws IOException 書き込みエラー
-	 */
-	private String uploadImage(InputStream profileImage, String extention , Long userNo) throws IOException {
-		final String FOLDER = profileProperty.getClientImageFolderPath();
-		String fileName = String.valueOf(userNo) + "." + extention;
-		Path filePath = Paths.get(FOLDER,fileName);
-		try(profileImage;OutputStream os = new FileOutputStream(filePath.toFile())){
-			IOUtils.copy(profileImage, os);
-			return "/"+fileName;
-		}
-	}
-	
-	/**
-	 * 既に登録した基本イメージファイルパスを返す。 
-	 * 基本イメージがあるクラスパスの中にあるファイルを全部取得し、その中でランダムでファイルのイメージパスを取得する。
-	 * @return クライアント側からアクセスするpath
-	 */
-	@MethodAnnotation(description = "既に登録した基本イメージファイルパスの返却")
-	public String getDefaultProfilePath()  {
-		File folder = Paths.get(profileProperty.getServerDefaultImageFolderPath()).toFile();
-		log.debug("folder : {}",folder.getAbsolutePath());
-		
-		String[] files = folder.list();
-		int fileCount = files.length;
+  private final UserRepository userRepo;
 
-		int generatedNumber = random.nextInt(fileCount) + 1;
-		int resolvedFileIndex = generatedNumber-1;
-		
-		log.debug("fileName : {}, fileCount : {}, resolvedFileIndex = {}",Arrays.asList(files).stream().collect(Collectors.joining(",")), fileCount,resolvedFileIndex);
+  private final MessageSource messageSource;
 
-		return Paths.get(profileProperty.getClientDefaultImageFolderPath(),files[resolvedFileIndex]).toString();
-	}
+  private final ProfileProperty profileProperty;
 
-	/**
-	 * イメージをアップロードし、アップロードされたイメージパスにてイメージパスをしたい更新する。
-	 * @param req request parameter
-	 * @param locale エラーメッセージ用。使用しない。
-	 * @throws IOException イメージを外部フォルダに書き込む時のエラー
-	 * @throws AzusatoException パラメータにあるuserNoより参照したユーザ情報が存在しない。
-	 */
-	@Transactional
-	@MethodAnnotation(description = "プロフィールのイメージのアップロード&更新")
-	public void updateUserProfile(ModifyUserProfileServiceAPIRequest req, Locale locale) throws IOException {
-		log.debug("req : {}", req);
-		
-		UserEntity modifyTargetUserEntity = userRepo.findByNoAndCommonFlagDeleteFlag(req.getUserNo(),ValueConstant.DEFAULT_DELETE_FLAG).orElseThrow(() -> {
-			throw AzusatoException.createI0005Error(locale, messageSource, UserEntity.TABLE_NAME_KEY);
-		});
-		
-		String uploadedPath = uploadImage(req.getProfileImage(), req.getProfileImageType(), modifyTargetUserEntity.getNo());
+  private final Random random = new Random();
 
-		ProfileEntity profileEntity = modifyTargetUserEntity.getProfile();
-		profileEntity.setImagePath(uploadedPath);
 
-		CommonDateEntity commonDateEntity = modifyTargetUserEntity.getCommonDate();
-		commonDateEntity.setUpdateDatetime(LocalDateTime.now());
-		
-		userRepo.save(modifyTargetUserEntity);
-	}
+  /**
+   * イメージを外部フォルダに格納する。 ファイルネームは"userNo.extention"
+   * 
+   * @param profileImage 書き込み対象のデータ
+   * @param extention 拡張子
+   * @param userNo ファイルネーム
+   * @return 絶対パスのファイルネーム
+   * @throws IOException 書き込みエラー
+   */
+  private String uploadImage(InputStream profileImage, String extention, Long userNo)
+      throws IOException {
+    final String FOLDER = profileProperty.getClientImageFolderPath();
+    String fileName = String.valueOf(userNo) + "." + extention;
+    Path filePath = Paths.get(FOLDER, fileName);
+    try (profileImage; OutputStream os = new FileOutputStream(filePath.toFile())) {
+      IOUtils.copy(profileImage, os);
+      return "/" + fileName;
+    }
+  }
+
+  /**
+   * 既に登録した基本イメージファイルパスを返す。 基本イメージがあるクラスパスの中にあるファイルを全部取得し、その中でランダムでファイルのイメージパスを取得する。
+   * 
+   * @return クライアント側からアクセスするpath
+   */
+  @MethodAnnotation(description = "既に登録した基本イメージファイルパスの返却")
+  public String getDefaultProfilePath(Locale locale) {
+    File folder = Paths.get(profileProperty.getServerDefaultImageFolderPath()).toFile();
+    log.debug("folder : {}", folder.getAbsolutePath());
+
+    String[] files = folder.list();
+    if (Objects.isNull(files)) {
+      throw new AzusatoException(HttpStatus.INTERNAL_SERVER_ERROR, AzusatoException.E0001,
+          messageSource.getMessage(AzusatoException.E0001, null, locale));
+    }
+    int fileCount = files.length;
+
+    int generatedNumber = random.nextInt(fileCount) + 1;
+    int resolvedFileIndex = generatedNumber - 1;
+
+    log.debug("fileName : {}, fileCount : {}, resolvedFileIndex = {}",
+        Arrays.asList(files).stream().collect(Collectors.joining(",")), fileCount,
+        resolvedFileIndex);
+
+    return Paths.get(profileProperty.getClientDefaultImageFolderPath(), files[resolvedFileIndex])
+        .toString();
+  }
+
+  /**
+   * イメージをアップロードし、アップロードされたイメージパスにてイメージパスをしたい更新する。
+   * 
+   * @param req request parameter
+   * @param locale エラーメッセージ用。使用しない。
+   * @throws IOException イメージを外部フォルダに書き込む時のエラー
+   * @throws AzusatoException パラメータにあるuserNoより参照したユーザ情報が存在しない。
+   */
+  @Transactional
+  @MethodAnnotation(description = "プロフィールのイメージのアップロード&更新")
+  public void updateUserProfile(ModifyUserProfileServiceAPIRequest req, Locale locale)
+      throws IOException {
+    log.debug("req : {}", req);
+
+    UserEntity modifyTargetUserEntity =
+        userRepo.findByNoAndCommonFlagDeleteFlag(req.getUserNo(), ValueConstant.DEFAULT_DELETE_FLAG)
+            .orElseThrow(() -> {
+              throw AzusatoException.createI0005Error(locale, messageSource,
+                  UserEntity.TABLE_NAME_KEY);
+            });
+
+    String uploadedPath = uploadImage(req.getProfileImage(), req.getProfileImageType(),
+        modifyTargetUserEntity.getNo());
+
+    ProfileEntity profileEntity = modifyTargetUserEntity.getProfile();
+    profileEntity.setImagePath(uploadedPath);
+
+    CommonDateEntity commonDateEntity = modifyTargetUserEntity.getCommonDate();
+    commonDateEntity.setUpdateDatetime(LocalDateTime.now());
+
+    userRepo.save(modifyTargetUserEntity);
+  }
 }

@@ -57,7 +57,7 @@ public class ProfileSerivceAPITest {
       Map<String, Boolean> expect = expect();
       System.out.printf("expect : %s\n", expect);
       for (int i = 0; i < 10000; i++) {
-        String result = targetService.getDefaultProfilePath();
+        String result = targetService.getDefaultProfilePath(Locale.JAPANESE);
 
         if (expect.containsKey(result)) {
           expect.put(result, true);
@@ -68,7 +68,6 @@ public class ProfileSerivceAPITest {
         Assertions.assertTrue(v);
       });
     }
-
   }
 
   @Nested
