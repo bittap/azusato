@@ -40,6 +40,11 @@ body.modal-open { /* prevent body from scrolling when a modal is opend */
 	color: #9161a8;
 }
 
+/** 現在のページに対してイベントが発生しないようにする */
+.page-item.active .page-link {
+	pointer-events: none;
+}
+
 
 html {
     font-size: 20px;
