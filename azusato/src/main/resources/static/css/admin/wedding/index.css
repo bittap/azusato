@@ -81,4 +81,8 @@
 	.table th:nth-child(9) {
 		width:20rem;
 	}
+	/** 幅が狭くて2行表示されるの防止 */
+	.search-wrap .table > tbody > tr > td:nth-child(2) .form-check-inline{
+		width: auto;
+	}
 }
