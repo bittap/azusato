@@ -1,14 +1,20 @@
 const MUSIC_PATH = document.currentScript.getAttribute('music-path');
+const MUSIC_TARGET = "#background-audio";
 
+/*
+* 音楽の再生を停止する
+*/
+function stopBackgroundMusic(){
+	document.querySelector(MUSIC_TARGET).pause();
+}
 /*
  * relate to play background music
  */
 $(document).ready(function(){
 	// モーダルを表示
 	modalCommon.displayTwoBtnModal(BACKGROUND_MUSIC_MODAL_TITLE,BACKGROUND_MUSIC_MODAL_BODY,function(){
-		createAudioTag();
 		console.log("yes start music play");
-		document.querySelector('#background-audio').play();
+		document.querySelector(MUSIC_TARGET).play();
 	});
 
 	function createAudioTag(){
@@ -23,4 +29,6 @@ $(document).ready(function(){
 		
 		document.body.appendChild(audioTag);
 	}
+	
+	createAudioTag();
 })
