@@ -20,6 +20,10 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +39,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   private final HttpServletRequest httpServletRequest;
 
   @ExceptionHandler(value = {Exception.class})
+  @ApiResponses(value = {@ApiResponse(responseCode = "500", description = "予期せぬエラー",
+      content = {@Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorResponse.class))}),})
   public ResponseEntity<Object> handleMyException(Exception ex) {
     log.error("error", ex);
 

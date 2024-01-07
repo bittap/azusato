@@ -9,27 +9,31 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.my.azusato.annotation.MethodAnnotation;
-import com.my.azusato.api.controller.request.ModifyUserProfileAPIRequest;
 import com.my.azusato.api.controller.request.UploadProfileImageAPIRequest;
 import com.my.azusato.api.controller.response.DefaultRandomProfileResponse;
 import com.my.azusato.api.service.ProfileServiceAPI;
 import com.my.azusato.api.service.request.ModifyUserProfileServiceAPIRequest;
 import com.my.azusato.exception.AzusatoException;
+import com.my.azusato.exception.ErrorResponse;
 import com.my.azusato.login.LoginUser;
 import com.my.azusato.view.controller.common.UrlConstant.Api;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,6 +50,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value = Api.COMMON_REQUSET)
 @Slf4j
 @RequiredArgsConstructor
+@Tag(name = "プロフィール")
 public class ProfileControllerAPI {
 
   public static final String COMMON_URL = "profile";
@@ -67,6 +72,8 @@ public class ProfileControllerAPI {
    * 
    * @return {@link DefaultRandomProfileResponse}
    */
+  @Operation(summary = "API_pro_001 ランダムイメージの情報取得", description = "既に登録したランダムイメージの情報を取得する。")
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "プロフィールパス"),})
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   @GetMapping(value = RANDOM_URL)
@@ -82,24 +89,27 @@ public class ProfileControllerAPI {
   }
 
   /**
-   * イメージのアップロード&更新を行う。
-   * <ul>
-   * <li>200 : 成功</li>
-   * <li>400 : <br>
-   * パラメータがnull<br>
-   * サポートしない拡張子</li>
-   * <li>401 : ログインしていない</li>
-   * <li>500 : その他エラー</li>
-   * </ul>
-   * 
-   * @param req リクエストパラメータ
-   * @param loginUser ログインしたユーザ情報
+   * @param req
+   * @param loginUser
    * @throws IOException
    */
+  @Operation(summary = "API_pro_002 イメージのアップロード&更新", description = "イメージのアップロード&更新を行う。")
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "成功"),
+      @ApiResponse(responseCode = "400", description = "" //
+          + "・ パラメータがnull<br>" //
+          + "・ サポートしない拡張子", //
+          content = {@Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorResponse.class))}),
+      @ApiResponse(responseCode = "401", description = "ログインしていない",
+          content = {@Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorResponse.class))}),})
   @ResponseStatus(HttpStatus.OK)
   @PostMapping(value = UPLOAD_IMG_URL, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @MethodAnnotation(description = "API_pro_002 イメージのアップロード&更新")
-  public void uploadImage(@Validated @ModelAttribute UploadProfileImageAPIRequest req,
+  public void uploadImage( //
+      @Parameter(name = "イメージファイルのデータ(MultipartFile)", required = true) //
+      @Validated @ModelAttribute UploadProfileImageAPIRequest req, //
+      @Parameter(name = "ログインしたユーザ情報", required = true) //
       @AuthenticationPrincipal LoginUser loginUser) throws IOException {
     String extension = FilenameUtils.getExtension(req.getProfileImage().getOriginalFilename());
     // ファイル拡張子チェック
@@ -125,40 +135,5 @@ public class ProfileControllerAPI {
 
 
     profileService.updateUserProfile(serviceReq, servletRequest.getLocale());
-
   }
-
-
-  /**
-   * ネーム、プロフィールイメージ情報を更新する。
-   * <ul>
-   * <li>200 : 成功</li>
-   * <li>400 : ログインしたユーザが存在しない</li>
-   * <li>500 : 更新対象のユーザが存在しない</li>
-   * </ul>
-   */
-  @PutMapping
-  public ResponseEntity<Void> updateUserProfile(
-      @RequestBody @Validated ModifyUserProfileAPIRequest req) {
-    // if(SessionUtil.isLoginSession(httpSession) == false) {
-    // ErrorResponse errorResponse = new ErrorResponse(AzusatoException.I0002,
-    // messageSource.getMessage(AzusatoException.I0002, null, servletRequest.getLocale()));
-    // ResponseEntity<Object> response =
-    // ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    // log.debug("[セッション情報が存在しない], response : {}",response);
-    // }else {
-    // LoginUserDto loginUserDto = SessionUtil.getLoginSession(httpSession);
-    // ModifyUserProfileServiceAPIRequest serviceReq = ModifyUserProfileServiceAPIRequest.builder()
-    // .name(req.getName())
-    // .profileImageBase64(req.getProfileImageBase64()).profileImageType(req.getProfileImageType())
-    // .userNo(loginUserDto.getNo())
-    // .build();
-    //
-    // profileServiceAPI.updateUserProfile(serviceReq,servletRequest.getLocale());
-    // }
-
-    return ResponseEntity.ok(null);
-  }
-
-
 }
