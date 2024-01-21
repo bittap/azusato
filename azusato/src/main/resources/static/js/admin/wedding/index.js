@@ -15,8 +15,10 @@ const initEvent = function(){
 
 const initContent = async function(searchParams){
 	document.querySelector('#list-container').innerHTML = "";
-	getList(searchParams).then(result => {
-		console.log("結果",result);
+	try {
+		// Loading画面を表示
+		modalCommon.displayLoadingModal();
+		const result = await getList(searchParams); 
 		// コンテンツのtemplate
 		const tempContent = document.querySelector('#template-list');
 		result.weddingAttenders.forEach((weddingAttender) => {
@@ -55,10 +57,13 @@ const initContent = async function(searchParams){
 		pagingUiCommon.create(pageInfo,searchParams.currentPageNo,function(){
 			search(this.getAttribute(PAGE_NO_ATTRIBUTE_NAME));
 		});
-	}).catch(e =>{
+	} catch(e) {
 		console.log(e);
 		modalCommon.displayErrorModal(e.title,e.message);
-	});
+	} finally {
+		await asyncCommon.delay(LOADING_MODAL_DELAY);
+		modalCommon.hideLoadingModal();
+	}
 }
 
 const getDivisionText = function(createdDatetimeString){
