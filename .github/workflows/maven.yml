@@ -44,7 +44,7 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.KEY }}
+        key: ${{ secrets.KEY }} # ※ ppkファイルの場合rsaファイルに変換する必要がある
         port: ${{ secrets.PORT }}
         source: /home/runner/work/azusato/azusato/azusato/target/azusato.jar  # ローカルのビルド済みJARファイルのパス
         target: /project  # サーバー上の宛先ディレクトリ
