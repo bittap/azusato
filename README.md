@@ -2,7 +2,9 @@
 
 二つの目的のため、開発したウェブアプリケーション。
 + [プロポーズ](https://azusato.com/)
-+ [結婚式招待状](https://azusato.com/wedding/invitation)
++ [結婚式招待状](https://azusato.com/wedding/invitation)   
+
+日本人・韓国人に対応するために日本語・韓国語をサポートする
 
 ## 技術
 ### サーバ
@@ -37,6 +39,7 @@
 ## システム構成図
 ![あずさと - 構成図.jpg](./readme/azusato_server_img.jpg)
 ## ソフトウェアアーキテクチャー図
+![あずさと - ソフトウェアアーキテクチャー図.jpg](./readme/azusato_software_architecture_img.jpg)
 
 
 
