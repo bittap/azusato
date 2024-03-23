@@ -22,7 +22,7 @@
 + QueryDSL
 ### テスト
 + Junit
-### CI/CD
+### CD
 + GithubActions
 ### プロジェクトの構築と管理
 + Maven
