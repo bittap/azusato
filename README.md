@@ -1,6 +1,6 @@
 # azusato(あずさと)
 
-二つの目的のため、開発したウェブアプリケーション。
+二つの目的のために、開発したウェブアプリケーション。
 + [プロポーズ](https://azusato.com/)
 + [結婚式招待状](https://azusato.com/wedding/invitation)   
 
