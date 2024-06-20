@@ -15,6 +15,13 @@
 + DDDを使い、ドメインの修正はServiceではなく、Entityで修正するようにしたかった。
 + 動的クエリをQueryDSLを使って実装したかった。（JPA標準のCreteriaだと実装が理解しにくい不便がある。）
 
+## プロジェクト期間
+
++ [プロポーズ](https://azusato.com/) 2022/01 ~ 2022/07
+  
+     ※ 開発完了後に少しずつ改善を行い、デプロイの自動化やバグ改修、カバレッジ確保、Bug Spots等の対応を行いました。
++ [結婚式招待状](https://azusato.com/wedding/invitation)   2023/03 ~ 2022/06
+
 
 ## 特徴
 
@@ -45,7 +52,7 @@
 + QueryDSL
 ### テスト
 + Junit
-### CD
+### デプロイの自動化
 + GithubActions
 ### プロジェクトの構築と管理
 + Maven
